@@ -30,3 +30,14 @@ www.ozoon.com
 ## 2026-09-03 09:03:56 UTC
 
 ## 2026-09-03 13:36:17 UTC
+
+## 2026-09-03 17:24:39 UTC
+- NEW www.ozoon.com live HTTP 200 with Server: PWS/8.3.1.0.8; CNAME to wnacloud.com (shared hosting edge)
+- NEW Wildcard-dominated subdomain space — 0 genuinely dedicated hosts after filtering
+- NEW 6 code-level hypotheses from reposcan (hardcoded creds, SQLi, debug mode, API keys) in Ozoon GitHub repos
+- CHANGED Deep port scan shows 27 non-web ports but likely shared proxy EOF responses, not real services
+- NEW `ozoon.eu` — actual gambling platform (sportsbook/casino/poker), NOT in inventory. Discovered via web search; ozoon.com is marketing-only.
+- NEW `services.ozoon.eu` — backend service domain found in HTML `<link rel="preconnect">` hints on ozoon.eu.
+- NEW 3 test pages exposed in ozoon.eu sitemap: `/promotions-test` (live, empty), `/blackjack-main-test` (404), `/casino/how-to-play-casino/odds-test` (404).
+- NEW Legacy "Bodog" branding at `/contents/chatbox-psat` — customer survey still references old brand name.
+- NEW ozoon.com runs Next.js on PWS/8.3.1.0.8 with CNAME to `wnacloud.com`; ozoon.eu uses Next.js + micro-frontend architecture (React 19 + TanStack Query shared runtime).
