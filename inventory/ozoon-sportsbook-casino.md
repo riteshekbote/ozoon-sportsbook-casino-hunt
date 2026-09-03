@@ -41,3 +41,5 @@ www.ozoon.com
 - NEW 3 test pages exposed in ozoon.eu sitemap: `/promotions-test` (live, empty), `/blackjack-main-test` (404), `/casino/how-to-play-casino/odds-test` (404).
 - NEW Legacy "Bodog" branding at `/contents/chatbox-psat` — customer survey still references old brand name.
 - NEW ozoon.com runs Next.js on PWS/8.3.1.0.8 with CNAME to `wnacloud.com`; ozoon.eu uses Next.js + micro-frontend architecture (React 19 + TanStack Query shared runtime).
+
+## 2026-09-03 20:08:18 UTC
