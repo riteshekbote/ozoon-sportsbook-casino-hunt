@@ -28,3 +28,10 @@ https://www.ozoon.com/ -> 200 len=?
 https://www.ozoon.com/api/ -> HTTP 404
 https://www.ozoon.com/robots.txt -> 200 len=?
 https://www.ozoon.com/sitemap.xml -> 200 len=?
+
+## 2026-09-03 22:51:16 UTC
+https://www.ozoon.com -> 200 len=?
+https://www.ozoon.com/ -> 200 len=?
+https://www.ozoon.com/api/ -> HTTP 404
+https://www.ozoon.com/robots.txt -> 200 len=?
+https://www.ozoon.com/sitemap.xml -> 200 len=?

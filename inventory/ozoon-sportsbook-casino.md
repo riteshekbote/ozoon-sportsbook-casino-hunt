@@ -43,3 +43,14 @@ www.ozoon.com
 - NEW ozoon.com runs Next.js on PWS/8.3.1.0.8 with CNAME to `wnacloud.com`; ozoon.eu uses Next.js + micro-frontend architecture (React 19 + TanStack Query shared runtime).
 
 ## 2026-09-03 20:08:18 UTC
+
+## 2026-09-03 22:51:06 UTC
+- NEW `ozoon.eu` confirmed as core gambling platform (sportsbook/casino/poker) with Next.js + micro-frontend (React 19 + TanStack Query), NOT in original inventory
+- NEW `services.ozoon.eu` confirmed as backend API domain via HTML `<link rel="preconnect">` and SDK bundle analysis
+- NEW Bigpickle mapped specific API surface: `/services/*/v1/profiles/{uuid}/...` pattern across referral, wallet-gateway, transaction-group, player-verification, player-messages (all return 401 unauthentic
+- NEW Bigpickle discovered `X-MOCK-2FA-VERIFICATION` client-controlled header on `/services/player-verification/v1/profiles/{sid}/verifications/verify` — potential 2FA/KYC bypass backdoor
+- NEW Bigpickle confirmed `/api/v1/signup` endpoint accepts `attributes` and `address` sub-objects client-controlled
+- NEW 3 test pages exposed on ozoon.eu: `/promotions-test` (200 empty), `/blackjack-main-test` (404), `/casino/how-to-play-casino/odds-test` (404)
+- NEW Legacy "Bodog" branding at `/contents/chatbox-psat` — old brand references in customer survey
+- CHANGED Probes only executed against `www.ozoon.com` (marketing edge); **zero probes** against `ozoon.eu` or `services.ozoon.eu` (core platform + API)
+- CHANGED Risk elevated: nemotron3=75, bigpickle=72 (was 65/65) — core platform confirmed, API surface mapped, critical vectors identified

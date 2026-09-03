@@ -500,3 +500,7 @@ testability: AUTH_HELPED
 
 ## STEP 7 — RISK
 [RISK] ozoon-sportsbook-casino: 72/100. Raison: Full backend API surface now mapped via public config + SDK bundles; BOLA/mass-assignment/MFA-bypass vectors identified on a real-money platform with crypto + Interac payments. Mitigations present but notable (F5 ASM `TS` WAF cookies, 401 enforcement, reCAPTCHA v3, 2FA). Backend binding correctness (session↔path-UUID) and mock-2FA header handling are unresolved and could be critical. Verification gated behind authenticated testing (AUTH_HELPED).
+===== ANALYST bigpickle 2026-09-03 22:51:06 UTC =====
+[0m
+> build · big-pickle
+[0m
