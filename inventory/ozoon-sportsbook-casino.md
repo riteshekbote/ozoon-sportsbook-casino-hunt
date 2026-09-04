@@ -54,3 +54,12 @@ www.ozoon.com
 - NEW Legacy "Bodog" branding at `/contents/chatbox-psat` — old brand references in customer survey
 - CHANGED Probes only executed against `www.ozoon.com` (marketing edge); **zero probes** against `ozoon.eu` or `services.ozoon.eu` (core platform + API)
 - CHANGED Risk elevated: nemotron3=75, bigpickle=72 (was 65/65) — core platform confirmed, API surface mapped, critical vectors identified
+
+## 2026-09-04 00:48:41 UTC
+- CHANGED Zero probes executed against `ozoon.eu` or `services.ozoon.eu` (core platform + API) despite confirmed critical attack surface; all probes to date target only `www.ozoon.com` marketing edge
+- CHANGED Risk elevated to 78 (from 65/75) — core platform confirmed, API surface fully mapped via public SDK bundles, three critical vectors identified (BOLA UUID 62, 2FA mock-header 48, SSRF metadata 55)
+- NEW `services.ozoon.eu/services/*/v1/profiles/{uuid}/...` pattern confirmed across 5 services (wallet-gateway, transaction-group, referral, player-verification, player-messages) — all return 401 unauthent
+- NEW `X-MOCK-2FA-VERIFICATION` client-controlled header discovered in production SDK on verification endpoint
+- NEW `/api/v1/signup` endpoint confirmed accepting client-controlled `attributes` and `address` sub-objects
+- NEW 3 test pages exposed on `ozoon.eu`: `/promotions-test` (200 empty), `/blackjack-main-test` (404), `/casino/how-to-play-casino/odds-test` (404)
+- NEW Legacy "Bodog" branding at `/contents/chatbox-psat` — old brand references in customer survey

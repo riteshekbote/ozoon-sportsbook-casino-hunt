@@ -73,3 +73,58 @@ testability: AUTH_HELPED
 [NEXT] PROBE: GET https://services.ozoon.eu/services/referral/v1/profiles/{candidate-uuid} — but this needs auth. Instead: GET https://www.ozoon.eu/services/site-config/v1/countries/US/profileupdateform (public profile update form schema) to enumerate mass-assignment-acceptable fields for the signup hypothesis, read-only.
 [RISK] ozoon-sportsbook-casino: 72/100. Raison: Full backend API surface now mapped via public config + SDK bundles; BOLA/mass-assignment/MFA-bypass vectors identified on a real-money platform with crypto + Interac payments. Mitigations present but notable (F5 ASM `TS` WAF cookies, 401 enforcement, reCAPTCHA v3, 2FA). Backend binding correctness (session↔path-UUID) and mock-2FA header handling are unresolved and could be critical. Verification gated behind authenticated testing (AUTH_HELPED).
 ## 2026-09-03 22:50:55 UTC [target] (model bigpickle)
+## 2026-09-04 00:36:44 UTC [target] (model bigpickle)
+[HYP] Registration/referral mass assignment, captcha-free signup
+class: BUSLOGIC
+asset: https://www.ozoon.eu/api/v1/signup + /services/signup-service/v1/invitation/signup
+confidence: 62
+reasoning: Public config confirms reCAPTCHA v3 enforced only on `login`, NOT on `signup` or `signup_from_invitation`; signup action is POST /api/v1/signup. Static referral token `refSiteToken` (=32hex) present and `affiliate.check-referring-site.enabled:["false"]`, so the referral/site field is unverified. `/services/site-config/v1/countries/US/profileupdateform` returns the whitelisted profile-update fields (email/phone/addressLine/postalCode/language/timeZone/oddsFormat/subscriptionChannels), giving a baseline of server-accepted mass-assignment fields.
+evidence_needed: On a throwaway self-created account, POST signup adding extra body keys (balance/role/vip/is_verified/currency override) and observe persistence vs rejection against a control signup; test referral token impersonation via static refSiteToken.
+verify_steps: 1. Register control via /api/v1/signup (no captcha token required). 2. Register test adding attributes.role/vip_level/balance — compare accepted fields. 3. Craft invitation signup POST with static refSiteToken=sha256... and unverified referral email.
+impact: Medium-High — referral bonus fraud, territory/regulatory softblock bypass, possible privilege elevation if role/vip mass-assigned.
+testability: AUTH_HELPED (self-created account OK)
+[HYP] BOLA on referral/profile UUID endpoints — still top
+class: IDOR
+asset: https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...
+confidence: 62
+reasoning: Confirmed from public config reCAPTCHA action map that profile-keyed GETs (/referral/v1/profiles/{uuid}, /profile_settings, /get_transactions, /messages) all key sensitive resources by UUID path with session cookie; live 401 when unauthenticated (my probes to random + VIP UUIDs). If session (sid) is not bound to path UUID, swapping UUID yields cross-tenant PII. Not circumvented by captcha absence (still auth-gated).
+evidence_needed: With own session, GET own /services/wallet-gateway/v1/profiles/{ownPID}/balances then swap PID for another — 200 foreign data = BOLA vs 401/403 = bound.
+impact: High — cross-tenant PII, transaction history, referral data, financial balances.
+testability: AUTH_HELPED
+[HYP] Mock-2FA header honored → verification bypass (now supported by MFA map)
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify
+confidence: 50
+reasoning: Config confirms the MFA operations map (validatePhone:CONFIRMATION_CODE:SMS, withdraw:CONFIRMATION_CODE:SMS, enable2fa:PIN_CODE) and `two_factor_authenticator.allow-permanent-skip:["true"]`; the production SDK sends client-controlled `X-MOCK-2FA-VERIFICATION` header on the verification endpoint. If honored, client can claim SMS/PIN/phone verification complete.
+evidence_needed: With own session, POST verify with X-MOCK-2FA-VERIFICATION:true vs absent — mocked verification accepted vs rejected.
+impact: Critical if honored — bypass 2FA/SMS/PIN/KYC gates on withdraw/deposit/bonus.
+testability: AUTH_HELPED
+[HYP] BOLA/IDOR on profile-keyed UUID API endpoints
+class: IDOR
+asset: https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...
+confidence: 62
+reasoning: Public reCAPTCHA action map confirms profile-UUID-path GETs (referral, profile_settings, get_transactions, get_messages) are keyed by UUID with session cookie. Live probes to zero + real VIP UUID return 401 unauthenticated, so binding is unresolved. If server authenticates via sid but fails to bind sid to path UUID, swapping UUID yields cross-tenant PII. Captcha is login-only and irrelevant here (still auth-gated).
+evidence_needed: With own session, GET own `/services/wallet-gateway/v1/profiles/{ownPID}/balances` then swap for another profile UUID → 200 foreign data (BOLA) vs 401/403 (bound).
+verify_steps: 1. Login (AUTH_HELPED) to capture own sid. 2. GET own `/services/referral/v1/profiles/{own-id}` baseline. 3. GET same with consecutive/random other UUIDs; 200→BOLA, 403/401→bound. 4. Repeat on /transactions, /player-messages, /balances.
+impact: High — cross-tenant PII (names, DOB, email), transaction history, financial balances, referral data; write variants → account modification.
+testability: AUTH_HELPED
+[HYP] Registration/referral mass assignment, captcha-free signup
+class: BUSLOGIC
+asset: https://www.ozoon.eu/api/v1/signup + /services/signup-service/v1/invitation/signup
+confidence: 62
+reasoning: Config confirms reCAPTCHA enforced only on `login`; `/api/v1/signup` (POST) and `signup_from_invitation` (POST) are captcha-free. Static referral `refSiteToken` present and `affiliate.check-referring-site.enabled:["false"]` → referral/site field unverified. `/services/site-config/v1/countries/US|CA/profileupdateform` returns whitelisted update fields (email,phone,addressLine,postalCode,language,timeZone,oddsFormat,subscriptionChannels), giving the server-accepted field baseline for mass-assignment comparison.
+evidence_needed: On a self-created throwaway account, POST signup adding extra keys (attributes.role, vip_level, is_verified, balance, currency override) and observe persistence vs rejection over a control signup; test territory softblock override and referral token reuse.
+verify_steps: 1. Register control via /api/v1/signup (no captcha). 2. Register test adding role/vip/balance fields — compare. 3. Invitation signup POST with static refSiteToken (a0b5...b084, sha256 7f2c...) + unverified referral email.
+impact: Medium-High — referral bonus fraud, territory/regulatory softblock bypass, possible privilege elevation on mass-assigned role/vip.
+testability: AUTH_HELPED
+[HYP] Mock-2FA header honored → verification/2FA bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify
+confidence: 50
+reasoning: Config exposes the MFA ops map (`validatePhone:CONFIRMATION_CODE:SMS`, `withdraw:CONFIRMATION_CODE:SMS`, `enable2fa:PIN_CODE`) and `two_factor_authenticator.allow-permanent-skip:["true"]`. Production SDK sends client-controlled `X-MOCK-2FA-VERIFICATION:true` on the verify endpoint. If honored, client can claim SMS/PIN/phone verification complete on a money flow.
+evidence_needed: With own session, POST verify with `X-MOCK-2FA-VERIFICATION:true` vs absent on a self-created account — mocked accept vs reject.
+verify_steps: 1. Login, get sid. 2. POST /verifications/verify with header true + unverified attribute; inspect result. 3. Repeat header absent; compare. Self-created throwaway account only.
+impact: Critical if honored — bypass 2FA/SMS/PIN/KYC gates on withdraw/deposit/bonus (money security control bypass).
+testability: AUTH_HELPED
+[NEXT] PROBE: GET https://www.ozoon.eu/services/site-config/v1/countries/CA/profileupdateform (already captured this pass: CAD + XBT currencies, mandatory province/postal) — done. Next needed probe is auth-gated, so instead: GET https://www.ozoon.eu/services/site-config/v1/countries/DE/profileupdateform and /countries/IN/profileupdateform to compare restricted vs unrestricted territory form schemas and confirm whether softblock only affects registration or also field surface (read-only contour of the regulatory bypass).
+[RISK] ozoon-sportsbook-casino: 78/100. Raison: Full backend API surface now mapped via an unauthenticated config endpoint including exact endpoint/verb map and captcha posture (login-only). Real-money + crypto + Interac platform with 2FA permanent-skip enabled, static referral token, softblock territory controls, and live 401-enforced profile-keyed BOLA surface. BOLA/mass-assignment/mock-2FA all unresolved and gated on authenticated testing (AUTH_HELPED); recon depth and money-bearing materiality are high.
