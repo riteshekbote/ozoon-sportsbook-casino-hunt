@@ -1,4 +1,4 @@
-## 2026-09-04 17:43:09 UTC [target] (model bigpickle)
+## 2026-09-04 19:57:08 UTC [target] (model bigpickle)
 [PRIO] services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify,9.2,attack_surface:9+business_value:10+tech_exposure:9+gate_ease:8+cloud_surface:6+freshness:9
 [PRIO] services.ozoon.eu/services/*/v1/profiles/{uuid}/...,9.0,attack_surface:9+business_value:9+tech_exposure:8+gate_ease:7+cloud_surface:6+freshness:9
 [PRIO] www.ozoon.eu/api/v1/signup,8.0,attack_surface:8+business_value:9+tech_exposure:7+gate_ease:9+cloud_surface:5+freshness:8
@@ -43,3 +43,21 @@ testability: AUTH_HELPED
 [LEARN] REJECTED SECRET @ oZoon/hyper, oZoon/mas-film: Hardcoded MySQL credentials in learning/demo repos; not confirmed deployed.
 [LEARN] REJECTED OTHER @ oZoon/secure-query-string: SQLi patterns in learning repos; not confirmed deployed.
 [RISK] ozoon-sportsbook-casino: 82/100. Raison: Three confirmed critical vectors (BOLA UUID 65, mock-2FA 60, mass-assignment 60) on real-money platform with crypto + Interac payments. Full API surface mapped via public SDK/config. Zero authenticated probes executed to date — all hypotheses AUTH_HELPED with clear verify_steps. Risk elevated from 80 to 82 due to upgraded mock-2FA confidence (55→60) after combining allow-permanent-skip config with mock-header evidence into single AUTH vector. Gateway probe (signup) unlocks all three.
+[HYP] BOLA on profile-keyed UUID endpoints
+class: IDOR
+asset: https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...
+confidence: 65
+reasoning: 5 SDK-confirmed services key resources by path UUID; correct 401 unauthenticated; session→UUID binding untested but requires authenticated session, which policy blocks (no live signup).
+evidence_needed: valid session A accessing /profiles/{B-UUID}/... returning foreign data.
+verify_steps: (requires authenticated session — restrict to sandbox asset only if any; otherwise park). Control you did run: unauthenticated GETs returned 401.
+impact: Critical cross-user wallet/transaction/PII read.
+testability: AUTH_HELPED (blocked by account_creation:restricted)
+[HYP] SSRF via PWS/wnacloud fetch-type parameter on marketing edge
+class: SSRF
+asset: https://www.ozoon.com/?{url|fetch|callback|import|view}=
+confidence: 55
+reasoning: www.ozoon.com runs PWS/8.3.1.0.8 on shared wnacloud.com edge — shared-hosting templates historically expose url/callback/view fetch params. No auth required. Compliance-compatible (read-only GET).
+evidence_needed: a GET param that triggers a server-side request to attacker-controlled URL or 169.254.169.254 metadata.
+verify_steps: 1. GET https://www.ozoon.com/?url=https://<collab>/. 2. GET ...?callback=...,?view=...,?page=... variants. 3. Observe outbound-collab hit. (passive GET, <=1rps)
+impact: High — metadata/SSRF chain if param honored.
+testability: PASSIVE
