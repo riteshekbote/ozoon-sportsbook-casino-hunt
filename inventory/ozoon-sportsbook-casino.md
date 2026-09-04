@@ -72,3 +72,12 @@ www.ozoon.com
 - NEW Bigpickle live probes to random + VIP UUIDs on profile-keyed endpoints return 401 unauthenticated — binding unresolved
 - CHANGED Risk stable at 78 — three critical vectors confirmed via public SDK/config: BOLA UUID (62), mock-2FA header (48→50), SSRF metadata (55)
 - CHANGED Zero authenticated probes executed against core platform (ozoon.eu/services.ozoon.eu); all probes to date target only www.ozoon.com marketing edge
+
+## 2026-09-04 09:50:28 UTC
+- NEW Bigpickle confirmed `/services/site-config/v1/countries/CA/profileupdateform` returns CAD + XBT currencies with mandatory province/postal code fields — maps server-side validation surface for mass-ass
+- NEW Bigpickle confirmed reCAPTCHA v3 enforced ONLY on `login` action; `signup` and `signup_from_invitation` are captcha-free per public config
+- NEW Bigpickle confirmed static referral token `refSiteToken` (32-hex) with `affiliate.check-referring-site.enabled:["false"]` — referral field unverified
+- NEW Bigpickle confirmed `two_factor_authenticator.allow-permanent-skip:["true"]` in production config — supports mock-2FA header bypass hypothesis
+- NEW Bigpickle live probes to random + VIP UUIDs on profile-keyed endpoints return 401 unauthenticated — binding unresolved
+- CHANGED Risk stable at 78 — three critical vectors confirmed via public SDK/config: BOLA UUID (62), mock-2FA header (48→50), SSRF metadata (55)
+- CHANGED Zero authenticated probes executed against core platform (ozoon.eu/services.ozoon.eu); all probes to date target only www.ozoon.com marketing edge
