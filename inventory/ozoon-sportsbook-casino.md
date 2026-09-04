@@ -96,3 +96,12 @@ www.ozoon.com
 - CHANGED Zero authenticated probes executed against core platform (`ozoon.eu`/`services.ozoon.eu`); all 18 probe rounds to date target only `www.ozoon.com` marketing edge
 - CHANGED Bigpickle risk elevated to 80 (from 78); nemotron3 at 78 — divergence on next action (bigpickle: active signup POST vs nemotron3: passive GET profileupdateform)
 - NEW Bigpickle PRIO scores confirm `services.ozoon.eu` UUID endpoints (9.5) and `player-verification` (8.5) as highest-value targets, both gate_ease 6-7 (AUTH_HELPED)
+
+## 2026-09-04 22:19:14 UTC
+- CHANGED No new recon executed this cycle; KB is pure consolidation of prior findings. All three FINAL hypotheses remain AUTH_HELPED and unprobed.
+- CHANGED KB now flags the signup gateway as `account_creation:restricted` (BOLA LEARN tail) — POST /api/v1/signup is a mutating create on a live real-money platform requiring explicit program authorization, no
+- NEW `ozoon.eu` and `services.ozoon.eu` confirmed as core gambling platform + backend API but **still absent from inventory file** (only `ozoon.com`/`www.ozoon.com` listed)
+- NEW Three FINAL hypotheses refined with AUTH_HELPED test paths: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all require authenticated session
+- CHANGED Zero authenticated probes executed against core platform (`ozoon.eu`/`services.ozoon.eu`); all 18 probe rounds to date target only `www.ozoon.com` marketing edge
+- CHANGED Bigpickle risk elevated to 80 (from 78); nemotron3 at 78 — divergence on next action (bigpickle: active signup POST vs nemotron3: passive GET profileupdateform)
+- NEW Bigpickle PRIO scores confirm `services.ozoon.eu` UUID endpoints (9.5) and `player-verification` (8.5) as highest-value targets, both gate_ease 6-7 (AUTH_HELPED)
