@@ -102,3 +102,13 @@
 - LEARN: REJECTED SECRET @ oZoon/hyper, oZoon/mas-film (reposcan): Hardcoded MySQL credentials in GitHub repos are in learning/demo repos, not confirmed deployed to ozoo
 - LEARN: REJECTED OTHER @ oZoon/secure-query-string (reposcan): SQL injection patterns in learning repos. Not confirmed as deployed code. Requires deployment confirmatio
 - LEARN: ACCEPTED BUSLOGIC @ www.ozoon.eu/api/v1/signup: Captcha-free signup with client-controlled attributes/address; static referral token unverified.
+
+## RANKED HYPOTHESES 2026-09-04 18:02:21 UTC
+- [60] https://services.ozoon.eu/services/player-verification/v1/profiles/{ownPID}/verifications/verify: Mock-2FA verification header honored in production — client-controlled bypass of SMS/PIN/KYC gates (from art/lead_bigpickle.txt)
+- NEXT(hypotheses-bigpickle.txt): PROBE: POST https://www.ozoon.eu/api/v1/signup — register throwaway account (captcha-free per config) to capture session cookie (sid) and ownPID for authenticat
+- LEARN: ACCEPTED AUTH @ services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify: Mock-2FA header in production SDK + allow-permanent-skip 
+- LEARN: ACCEPTED IDOR @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: Confirmed UUID-path BOLA surface across 5 services; binding unresolved; AUTH_HELPED testing
+- LEARN: ACCEPTED BUSLOGIC @ www.ozoon.eu/api/v1/signup: Captcha-free signup with client-controlled attributes/address; static referral token unverified. Gateway probe t
+- LEARN: REJECTED SECRET @ www.ozoon.com:3306: Port 3306 response likely shared proxy EOF pattern; no auth testing without service confirmation.
+- LEARN: REJECTED SECRET @ oZoon/hyper, oZoon/mas-film: Hardcoded MySQL credentials in learning/demo repos; not confirmed deployed.
+- LEARN: REJECTED OTHER @ oZoon/secure-query-string: SQLi patterns in learning repos; not confirmed deployed.

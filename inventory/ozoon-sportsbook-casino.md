@@ -87,3 +87,5 @@ www.ozoon.com
 - NEW Bigpickle next action shifted to AUTH_HELPED gateway: POST https://www.ozoon.eu/api/v1/signup (register throwaway for session cookie) vs nemotron3's passive GET profileupdateform
 - CHANGED Both models confirm zero authenticated probes executed against ozoon.eu/services.ozoon.eu despite confirmed critical attack surface; all probes to date target only www.ozoon.com marketing edge
 - NEW Bigpickle PRIO scores: services.ozoon.eu UUID endpoints 9.5, player-verification 8.5, www.ozoon.eu signup 7.5 — all AUTH_HELPED gate_ease 6-8
+
+## 2026-09-04 18:02:21 UTC
