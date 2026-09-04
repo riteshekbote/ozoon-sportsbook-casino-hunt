@@ -81,3 +81,9 @@ www.ozoon.com
 - NEW Bigpickle live probes to random + VIP UUIDs on profile-keyed endpoints return 401 unauthenticated — binding unresolved
 - CHANGED Risk stable at 78 — three critical vectors confirmed via public SDK/config: BOLA UUID (62), mock-2FA header (48→50), SSRF metadata (55)
 - CHANGED Zero authenticated probes executed against core platform (ozoon.eu/services.ozoon.eu); all probes to date target only www.ozoon.com marketing edge
+
+## 2026-09-04 14:26:01 UTC
+- NEW Bigpickle risk elevated to 80 (from 78) with three refined FINAL hypotheses: BOLA UUID (confidence 65↑), Mock-2FA header (55↑), Mass-assignment (60↑) — nemotron3 remains at 78
+- NEW Bigpickle next action shifted to AUTH_HELPED gateway: POST https://www.ozoon.eu/api/v1/signup (register throwaway for session cookie) vs nemotron3's passive GET profileupdateform
+- CHANGED Both models confirm zero authenticated probes executed against ozoon.eu/services.ozoon.eu despite confirmed critical attack surface; all probes to date target only www.ozoon.com marketing edge
+- NEW Bigpickle PRIO scores: services.ozoon.eu UUID endpoints 9.5, player-verification 8.5, www.ozoon.eu signup 7.5 — all AUTH_HELPED gate_ease 6-8
