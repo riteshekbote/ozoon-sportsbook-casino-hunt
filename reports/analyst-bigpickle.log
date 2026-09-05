@@ -4036,3 +4036,129 @@ STEP 6 — LEARNING
 
 STEP 7 — RISK
 [RISK] ozoon-sportsbook-casino: 81/100 (was 81). No live differential evidence this cycle — all three critical vectors remain AUTH_HELPED/unprobed, account creation still restricted. New knowledge gained is confirmatory, not amplificatory: backend fingerprint confirmed as GoBet/Beatrix (`io.crazy88.beatrix` package leak, `beatrixTheme:"bodo"`), which materially raises prior that the UUID-profile BOLA pattern (a Beatrix architecture hallmark) is real, but hypothesis-grade until an authenticated bind test. Signup route WAF guard observed lowers mass-assignment automated-probe feasibility and hardens the gateway (gate_ease 2). Hold at 81; +1 on first authenticated BOLA/bypass confirmation, −2 if header/params stripped server-side — the net-risk curve is unchanged pending authorization.
+===== ANALYST bigpickle 2026-09-05 15:34:45 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" "https://services.ozoon.eu/services/site-config/v1/countries/CA/profileupdateform" 2>/dev/null
+200
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" "https://services.ozoon.eu/services/site-config/v1/countries" 2>/dev/null
+404
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" "https://services.ozoon.eu/services/wallet-gateway/v1/profiles/00000000-0000-0000-0000-000000000000/balances" 2>/dev/null
+401
+[0m
+[0m$ [0mcurl -s "https://services.ozoon.eu/services/site-config/v1/countries/US/profileupdateform" 2>/dev/null | head -c 2000
+{"phoneRegex":"[2-9]\\d{9}","phonePrefix":"1","stateLabel":"state","postalCodeLabel":"zip-code","postalCodeRegex":"^(\\d{5})(?:[ \\-](\\d{4}))?$","postalCodeLookupAvailable":true,"mandatoryState":true,"mandatoryPostalCode":true,"subscriptionChannels":["EMAIL","SMS","PHONE"],"hostedContactMethods":[],"currencies.default":"USD","currencies":["USD"],"currencies_published":["USD"],"countrycode":"US","profileupdateform.fields":["email,phone","addressLine","postalCode","language,timeZone","oddsFormat,","subscriptionChannels"],"profileupdateform.optionalfields":["addressLine","language","timeZone","oddsFormat","subscriptionChannels"],"profileupdateform.hostfields":[]}
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" "https://services.ozoon.eu/services/referral/v1/profiles/00000000-0000-0000-0000-000000000000/referrals" 2>/dev/null
+404
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" "https://services.ozoon.eu/services/player-messages/v1/profiles/00000000-0000-0000-0000-000000000000/messages" 2>/dev/null
+404
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" "https://services.ozoon.eu/services/transaction-group/v1/profiles/00000000-0000-0000-0000-000000000000/transactions" 2>/dev/null
+401
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" "https://services.ozoon.eu/services/player-verification/v1/profiles/00000000-0000-0000-0000-000000000000/verifications" 2>/dev/null
+404
+[0m
+[0m$ [0mcurl -s -i "https://services.ozoon.eu/services/wallet-gateway/v1/profiles/00000000-0000-0000-0000-000000000000/balances" 2>/dev/null | head -c 1500
+HTTP/2 401 
+set-cookie: JSESSIONID=C824C62601D8AAA8350FF962281A8730; Path=/; Secure; HttpOnly;SameSite=Strict
+date: Sat, 05 Sep 2026 15:26:11 GMT
+age: 0
+referrer-policy: strict-origin-when-cross-origin
+access-control-allow-credentials: true
+set-cookie: TS0181f769=014b5d5d07080151133e2c0750f526ccee5c750470911df6ecbbed67b1016bcb18995a789ce047a9812c8c65d8be88e3caf26f7fa57494a49010b548d2852320088facd567; Path=/
+strict-transport-security: max-age=63072000
+
+{"timestamp":"2026-09-05T15:26:12.067Z","status":401,"message":"Authentication required for requested route","error":"Unauthorized","errorCode":"unauthorized"}
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code} %{http_version}\n" -X OPTIONS "https://services.ozoon.eu/services/wallet-gateway/v1/profiles/00000000-0000-0000-0000-000000000000/balances" 2>/dev/null
+200 2
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}\n" "https://services.ozoon.eu/services/site-config/v1/countries/CA/profiles" 2>/dev/null
+404
+[0m
+Let me check some additional surfaces for this cycle — fresh, passive, read-only probes on the scoped API host.
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}\n" "https://services.ozoon.eu/services/site-config/v1/countries/CA/profileupdateform/" 2>/dev/null
+404
+[0m
+[0m$ [0mcurl -s -i "https://services.ozoon.eu/services/transaction-group/v1/profiles/00000000-0000-0000-0000-000000000000/transactions" 2>/dev/null | grep -iE "set-cookie|errorCode|status" | head -c 800
+set-cookie: JSESSIONID=20FAFACAF694F0B427C4F8B52D85A797; Path=/; Secure; HttpOnly;SameSite=Strict
+set-cookie: TS0181f769=014b5d5d070ae3bbacc2c837f15ae36729226b5ec90155261280ba9182a08c1b18454d04c4b0ecb19ef0526d9756dd38607d29b838002cc61a5be357362c6b5262df017808; Path=/
+{"timestamp":"2026-09-05T15:26:19.575Z","status":401,"message":"Authentication required for requested route","error":"Unauthorized","errorCode":"unauthorized"}
+[0m
+I have fresh passive data on the auth-gate discriminator: I see a `JSESSIONID` set-cookie on the 401 response. This is notable — the gateway issues a JSESSIONID even on unauthenticated requests, which reveals a session-cookie model. Also note the OPTIONS returns 200 (Spring Security config). Let me probe a couple more passive surfaces consistent with the KB — checking whether the auth discriminator differs across services or by HTTP method, and whether there's any deployed-but-unversioned path.
+
+The main critical vectors remain AUTH_HELPED — only authorized probing can resolve them, and that's gated on program authorization per the account_creation:restricted flag. I should not do mutating signup POSTs. Let me do a couple more read-only probes then write up.
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}\n" "https://services.ozoon.eu/services/wallet-gateway/v1/profiles/00000000-0000-0000-0000-000000000000/balances?limit=1" 2>/dev/null; curl -s -o /dev/null -w "%{http_code}\n" "https://services.ozoon.eu/services/wallet-gateway/v1/profiles/00000000-0000-0000-0000-000000000000/deposit" 2>/dev/null
+401
+404
+[0m
+I have enough fresh passive signal for this cycle. Key delta: the auth gate issues `JSESSIONID` even on anonymous 401s — evidence of a Java Servlet session model behind the gateway, and consistent 401 discriminator across wallet-gateway and transaction-group (both auth-prechecked). All three critical vectors remain AUTH_HELPED (authorization-gated), account creation restricted. Writing up.
+
+STEP 1 — DELTA:
+- [NEW] Anonymous request to wallet-gateway/transaction-group `/profiles/{uuid}/...` returns `set-cookie: JSESSIONID=...` alongside 401 — gateway issues a Java Servlet session cookie even before authentication, exposing a session-based auth model behind the BFF.
+- [NEW] `OPTIONS` on wallet-gateway UUID route → 200 (Spring Security not method-guarding preflight); GET → 401 signifying route-resource exists vs 404 unknowns.
+- [CHANGED] All three critical vectors (BOLA 65, mass-assignment 58, mock-2FA 55) remain AUTH_HELPED; zero authenticated probes executed; account creation remains restricted (account_creation:restricted).
+
+STEP 2 — PRIORITIZE:
+- [PRIO] services.ozoon.eu/services/wallet-gateway/v1/profiles/{uuid}/balances,6.90,attack_surface:9+business_value:9+tech_exposure:6+gate_ease:3+cloud_surface:5+freshness:6
+- [PRIO] services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify,7.05,attack_surface:7+business_value:10+tech_exposure:7+gate_ease:3+cloud_surface:5+freshness:8
+- [PRIO] www.ozoon.eu/api/v1/signup,6.75,attack_surface:8+business_value:9+tech_exposure:6+gate_ease:2+cloud_surface:5+freshness:8
+- [PRIO] services.ozoon.eu/services/*/v1/... JSESSIONID session-diff,5.00,attack_surface:7+business_value:4+tech_exposure:7+gate_ease:4+cloud_surface:3+freshness:9
+
+STEP 3 — HYPOTHESES:
+[HYP] BOLA on profile-keyed UUID endpoints (session identity may not be bound to path UUID)
+class: IDOR
+asset: https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...
+confidence: 65
+reasoning: SDK bundles confirm 5 services key resources by UUID path. Bogus-UUID probe returns structured 401 `errorCode:"unauthorized"` (auth pre-check precedes resource lookup), a clean differential baseline. JSESSIONID issued pre-auth confirms a Servlet session model where bind-to-path-UUID is unresolved. Backend fingerprinted GoBet/Beatrix (`io.crazy88.beatrix` package, `beatrixTheme:"bodo"`), a profile-centric UUID-key architecture hallmark.
+evidence_needed: Authorized A accessing /profiles/{B-UUID}/... returns B's data while ownPID returns A's data.
+verify_steps: POST signup A → sid+ownPID; GET /services/wallet-gateway/v1/profiles/{ownPID-A}/balances with A sid (200); control {bogus-uuid} (recorded 401); authorized B GET /profiles/{ownPID-B}/... with A sid.
+impact: Critical — cross-user PII/financial read (wallets, transactions, messages, verification state); ATO enabler.
+testability: AUTH_HELPED
+
+[HYP] Mock-2FA verification header honored in production — client-controlled 2FA/KYC gate bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{ownPID}/verifications/verify
+confidence: 55
+reasoning: Production SDK sends X-MOCK-2FA-VERIFICATION:true; config exposes two_factor_authenticator.allow-permanent-skip:["true"]. isMockProviderEnabled:false is client-side contrary evidence only; server-side honoring untested. 401 baseline + JSESSIONID session model confirmed.
+evidence_needed: With own session, POST verify with mock header succeeds while identical request without it is rejected.
+verify_steps: POST signup → sid+ownPID; POST .../verifications/verify + X-MOCK-2FA-VERIFICATION:true,{"verificationType":"PHONE"} → record; control without header.
+impact: Critical — bypass SMS/PIN/2FA/KYC on withdraw/deposit/bonus on real-money platform.
+testability: AUTH_HELPED
+
+[HYP] Mass assignment on signup — server may persist unmapped privilege/territory/balance fields
+class: BUSLOGIC
+asset: https://www.ozoon.eu/api/v1/signup
+confidence: 58
+reasoning: Captcha-free signup with client-controlled attributes/address sub-objects (confirmed); static referral token; affiliate.check-referring-site.enabled:["false"]. CA/US/DE profileupdateform whitelist flat (no role/vip/attributes/country member) — but that's the update DTO, not signup payload. WAF staged on GET signup (Request Rejected support_id 6279731412718049849) — automated POST likely tripped.
+evidence_needed: Injected keys (attributes.role/vip_level, address.country) persist in whoami/profile or cause privileged side effects.
+verify_steps: Minimal control signup → set-cookie + whoami; signup with injected attributes.role/admin, vip_level/5, restricted-territory country; compare persisted fields.
+impact: Medium-High — territory softblock bypass, referral fraud; privilege elevation if persisted.
+testability: AUTH_HELPED
+
+STEP 4 — SELF-CRITIQUE:
+- [PARKED] JSESSIONID session-diff as standalone hypothesis — merely confirms Servlet session model behind auth gate; no session-fixation/deserialization evidence, no passive verify path; absorbed into BOLA rationale as supporting context.
+- [PARKED] profileupdateform introspection — descriptive-only / known-public path REJECTED-class alone.
+- [PARKED] api.wicket-keeper.com / games.glovefrog.plus — third-party, ownership unconfirmed, off-scope.
+- [PARKED] PWS/wnacloud SSRF param enumeration — no collab server, no passive evidence path.
+- [FINAL] BOLA UUID — 65 — broadest surface, clean 401 discriminator + new Servlet-session/JSESSIONID context; AUTH_HELPED.
+- [FINAL] Mass-assignment signup — 58 — WAF-on-signup lowers gate_ease; AUTH_HELPED.
+- [FINAL] Mock-2FA bypass — 55 — highest money-gate value; isMockProviderEnabled:false dampened; AUTH_HELPED.
+
+STEP 5 — NEXT ACTION:
+- [NEXT] HUMAN: Request program authorization (bugs.olivermaicher.eu) to create one throwaway account on www.ozoon.eu. If granted, drive signup from a real browser profile (GET /api/v1/signup is WAF-blocked — scripted POST without matching TLS/UA fingerprint likely blocked). Fire exactly: POST https://www.ozoon.eu/api/v1/signup `{"email":"<throwaway>@<valid-domain>","password":"Test1234!","country":"CA","language":"en","attributes":{},"address":{"country":"CA","addressLine":"123 Test St","postalCode":"K1A 0A6"}}` → capture sid+ownPID, then baseline GET https://services.ozoon.eu/services/wallet-gateway/v1/profiles/{ownPID}/balances (200 vs recorded 401 errorCode:"unauthorized") to unlock BOLA/2FA/mass-assignment differential.
+
+STEP 6 — LEARNING:
+- [LEARN] ACCEPTED MISCONFIG @ services.ozoon.eu/services/wallet-gateway,v1/profiles/{uuid}/balances: anonymous request returns `set-cookie: JSESSIONID=...` + structured 401 — gateway issues a Java Servlet session cookie pre-authentication; same for transaction-group — consistent session-based auth model behind BFF (supporting context for BOLA bind test).
+- [LEARN] ACCEPTED MISCONFIG @ services.ozoon.eu/services/wallet-gateway/v1/profiles/{uuid}/balances: OPTIONS → 200 (Spring Security returns 200 for permissive preflight), GET → 401, /deposit child → 404 — route-resource valid vs unknown discriminator at child-path depth too.
+- [LEARN] REJECTED OTHER @ services.ozoon.eu: /services/site-config/v1/countries/US/profileupdateform re-read is flat public config (USD, US state/zip mandatory) — known-public descriptive config, no new attack surface.
+- [LEARN] REJECTED OTHER @ services.ozoon.eu: consistent 401/404 gate means no anonymous route-methodology leak across wallet-gateway/transaction-group/player-verification beyond already-recorded discriminators.
+
+STEP 7 — RISK:
+- [RISK] ozoon-sportsbook-casino: 81/100 (was 81). No live differential evidence this cycle — all three critical vectors remain hypothesis-grade, account creation still restricted. New context is confirmatory (JSESSIONID Servlet-session model behind BFF adds mild support to the BOLA bind-unresolved prior; OPTIONS-200 confirms Spring Security is not the discriminator) not amplificatory. Risk curve unchanged pending authorization. Hold at 81; +1 on first authenticated BOLA/bypass confirmation, −2 if header/params stripped server-side.

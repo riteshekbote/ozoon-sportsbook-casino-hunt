@@ -718,3 +718,31 @@ testability: AUTH_HELPED
 [LEARN] REJECTED OTHER @ www.ozoon.eu/robots.txt: only sitemap_index.xml + disallow: (all) — known-public-file class, no findings.
 [LEARN] REJECTED OTHER @ services.ozoon.eu/services/site-config/v1/countries: bare /countries and unknown-country /countries/XX/profiles are descriptive-error 404 only — no enumeration/restricted-territory leak beyond known codes.
 [RISK] ozoon-sportsbook-casino: 81/100 (was 81). No live differential evidence this cycle — all three critical vectors remain AUTH_HELPED/unprobed, account creation still restricted. New knowledge gained is confirmatory, not amplificatory: backend fingerprint confirmed as GoBet/Beatrix (`io.crazy88.beatrix` package leak, `beatrixTheme:"bodo"`), which materially raises prior that the UUID-profile BOLA pattern (a Beatrix architecture hallmark) is real, but hypothesis-grade until an authenticated bind test. Signup route WAF guard observed lowers mass-assignment automated-probe feasibility and hardens the gateway (gate_ease 2). Hold at 81; +1 on first authenticated BOLA/bypass confirmation, −2 if header/params stripped server-side — the net-risk curve is unchanged pending authorization.
+## 2026-09-05 15:26:39 UTC [target] (model bigpickle)
+[HYP] BOLA on profile-keyed UUID endpoints (session identity may not be bound to path UUID)
+class: IDOR
+asset: https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...
+confidence: 65
+reasoning: SDK bundles confirm 5 services key resources by UUID path. Bogus-UUID probe returns structured 401 `errorCode:"unauthorized"` (auth pre-check precedes resource lookup), a clean differential baseline. JSESSIONID issued pre-auth confirms a Servlet session model where bind-to-path-UUID is unresolved. Backend fingerprinted GoBet/Beatrix (`io.crazy88.beatrix` package, `beatrixTheme:"bodo"`), a profile-centric UUID-key architecture hallmark.
+evidence_needed: Authorized A accessing /profiles/{B-UUID}/... returns B's data while ownPID returns A's data.
+verify_steps: POST signup A → sid+ownPID; GET /services/wallet-gateway/v1/profiles/{ownPID-A}/balances with A sid (200); control {bogus-uuid} (recorded 401); authorized B GET /profiles/{ownPID-B}/... with A sid.
+impact: Critical — cross-user PII/financial read (wallets, transactions, messages, verification state); ATO enabler.
+testability: AUTH_HELPED
+[HYP] Mock-2FA verification header honored in production — client-controlled 2FA/KYC gate bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{ownPID}/verifications/verify
+confidence: 55
+reasoning: Production SDK sends X-MOCK-2FA-VERIFICATION:true; config exposes two_factor_authenticator.allow-permanent-skip:["true"]. isMockProviderEnabled:false is client-side contrary evidence only; server-side honoring untested. 401 baseline + JSESSIONID session model confirmed.
+evidence_needed: With own session, POST verify with mock header succeeds while identical request without it is rejected.
+verify_steps: POST signup → sid+ownPID; POST .../verifications/verify + X-MOCK-2FA-VERIFICATION:true,{"verificationType":"PHONE"} → record; control without header.
+impact: Critical — bypass SMS/PIN/2FA/KYC on withdraw/deposit/bonus on real-money platform.
+testability: AUTH_HELPED
+[HYP] Mass assignment on signup — server may persist unmapped privilege/territory/balance fields
+class: BUSLOGIC
+asset: https://www.ozoon.eu/api/v1/signup
+confidence: 58
+reasoning: Captcha-free signup with client-controlled attributes/address sub-objects (confirmed); static referral token; affiliate.check-referring-site.enabled:["false"]. CA/US/DE profileupdateform whitelist flat (no role/vip/attributes/country member) — but that's the update DTO, not signup payload. WAF staged on GET signup (Request Rejected support_id 6279731412718049849) — automated POST likely tripped.
+evidence_needed: Injected keys (attributes.role/vip_level, address.country) persist in whoami/profile or cause privileged side effects.
+verify_steps: Minimal control signup → set-cookie + whoami; signup with injected attributes.role/admin, vip_level/5, restricted-territory country; compare persisted fields.
+impact: Medium-High — territory softblock bypass, referral fraud; privilege elevation if persisted.
+testability: AUTH_HELPED

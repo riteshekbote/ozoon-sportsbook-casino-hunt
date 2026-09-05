@@ -155,3 +155,14 @@ www.ozoon.com
 - NEW `chat.ozoon.eu` live in-scope subdomain (CNAME `ozoon.eu.glb.network`); widget-only, no Ozoon API logic
 - NEW `games.glovefrog.plus` jackpotApiBase third-party; Ozoon ownership unconfirmed; off-scope until verified
 - NEW `/services/*/v{2,3}/api-docs` and `/actuator*` → gateway 404; no anonymous schema/actuator leak
+
+## 2026-09-05 15:34:45 UTC
+- NEW Inventory file (ozoon-sportsbook-casino.md) lists only `ozoon.com`/`www.ozoon.com` (marketing edge); `ozoon.eu` (core gambling platform) and `services.ozoon.eu` (backend API) confirmed in-scope per sc
+- NEW Direct core-API probes executed: Spring Boot stack behind BFF confirmed; structured 401 `errorCode:"unauthorized"` for valid-route bogus UUID = auth pre-check precedes resource lookup; internal-only `
+- NEW `chat.ozoon.eu` live in-scope subdomain (CNAME `ozoon.eu.glb.network`); widget-only, no Ozoon API logic
+- NEW `games.glovefrog.plus` jackpotApiBase third-party; Ozoon ownership unconfirmed; off-scope until verified
+- NEW `/services/*/v{2,3}/api-docs` and `/actuator*` → gateway 404; no anonymous schema/actuator leak
+- CHANGED Zero authenticated probes executed against core platform (`ozoon.eu`/`services.ozoon.eu`) across all probe rounds; all probes target only `www.ozoon.com` marketing edge
+- CHANGED Production SSR flag `isMockProviderEnabled:false` (client MockProvider chunk) is mild contrary evidence for mock-2FA path → confidence 60→55
+- CHANGED Three FINAL hypotheses refined with AUTH_HELPED test paths: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all require authenticated session via signup gateway
+- CHANGED Bigpickle PRIO scores confirm `services.ozoon.eu` UUID endpoints (9.5) and `player-verification` (8.5) as highest-value targets, both gate_ease 6-7 (AUTH_HELPED)
