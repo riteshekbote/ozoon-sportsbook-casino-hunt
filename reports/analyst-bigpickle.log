@@ -3497,3 +3497,542 @@ testability: AUTH_HELPED
 ## STEP 7 — RISK
 
 [RISK] ozoon-sportsbook-casino: 81/100 (was 82). All three critical vectors remain hypothesis-grade — zero authenticated probes executed, account creation restricted. First direct core-API probes executed this cycle: Spring Boot stack confirmed behind BFF, structured 401 auth-gate discriminator recorded, internal-only split-horizon backend hostname found (not reachable). Mock-2FA dampened to 55 on isMockProviderEnabled:false contrary evidence. BOLA 65 and mass-assignment 60 unchanged. Hold at 81; adjust only on live differential evidence (+1 bypass/BOLA confirmed, −2 if header/params stripped server-side).
+===== ANALYST bigpickle 2026-09-05 12:12:10 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mpwd && ls -la
+/home/runner/work/ozoon-sportsbook-casino-hunt/ozoon-sportsbook-casino-hunt
+total 180
+drwxr-xr-x 12 runner runner  4096 Sep  5 12:06 .
+drwxr-xr-x  3 runner runner  4096 Sep  5 12:06 ..
+drwxr-xr-x  7 runner runner  4096 Sep  5 12:06 .git
+drwxr-xr-x  3 runner runner  4096 Sep  5 12:06 .github
+-rw-r--r--  1 runner runner  1642 Sep  5 12:06 README.md
+-rw-r--r--  1 runner runner    32 Sep  5 12:06 analyst-out.txt
+-rw-r--r--  1 runner runner 47069 Sep  5 12:06 analyst-prompt.txt
+-rw-r--r--  1 runner runner 43332 Sep  5 12:06 ctx.txt
+drwxr-xr-x  2 runner runner  4096 Sep  5 12:06 inventory
+drwxr-xr-x  2 runner runner  4096 Sep  5 12:06 knowledge
+drwxr-xr-x  2 runner runner  4096 Sep  5 12:06 leads
+-rw-r--r--  1 runner runner  2078 Sep  5 12:06 probe-results.md
+drwxr-xr-x  2 runner runner  4096 Sep  5 12:06 recon-notes
+drwxr-xr-x  2 runner runner  4096 Sep  5 12:06 reports
+drwxr-xr-x  2 runner runner  4096 Sep  5 12:06 reposcan-raw
+-rw-r--r--  1 runner runner  3150 Sep  5 12:06 scope.yml
+drwxr-xr-x  2 runner runner  4096 Sep  5 12:06 scripts
+-rw-r--r--  1 runner runner    33 Sep  5 12:06 state_bigpickle.json
+-rw-r--r--  1 runner runner    33 Sep  5 12:06 state_laguna.json
+-rw-r--r--  1 runner runner    33 Sep  5 12:06 state_ling3.json
+-rw-r--r--  1 runner runner    33 Sep  5 12:06 state_longcat.json
+-rw-r--r--  1 runner runner    33 Sep  5 12:06 state_mimo.json
+-rw-r--r--  1 runner runner    33 Sep  5 12:06 state_nemotron3.json
+drwxr-xr-x  2 runner runner  4096 Sep  5 12:06 triage
+[0m
+[0m→ [0mRead state_bigpickle.json
+[0m→ [0mRead scope.yml
+[0m→ [0mRead ctx.txt
+[0m→ [0mRead inventory
+Let me look at the knowledge, leads, and remaining context to understand the full landscape before running analysis.
+[0m
+[0m$ [0mls -la knowledge leads recon-notes triage reports scripts probes 2>/dev/null; echo "---probe-results---"; cat probe-results.md
+knowledge:
+total 20
+drwxr-xr-x  2 runner runner  4096 Sep  5 12:06 .
+drwxr-xr-x 12 runner runner  4096 Sep  5 12:06 ..
+-rw-r--r--  1 runner runner 11798 Sep  5 12:06 index.md
+
+leads:
+total 236
+drwxr-xr-x  2 runner runner   4096 Sep  5 12:06 .
+drwxr-xr-x 12 runner runner   4096 Sep  5 12:06 ..
+-rw-r--r--  1 runner runner 104431 Sep  5 12:06 lead-bigpickle.md
+-rw-r--r--  1 runner runner    663 Sep  5 12:06 lead-laguna.md
+-rw-r--r--  1 runner runner    650 Sep  5 12:06 lead-ling3.md
+-rw-r--r--  1 runner runner    676 Sep  5 12:06 lead-longcat.md
+-rw-r--r--  1 runner runner     18 Sep  5 12:06 lead-mimo.md
+-rw-r--r--  1 runner runner  99677 Sep  5 12:06 lead-nemotron3.md
+-rw-r--r--  1 runner runner   5037 Sep  5 12:06 reposcan-ozoon-sportsbook-casino.md
+
+recon-notes:
+total 12
+drwxr-xr-x  2 runner runner 4096 Sep  5 12:06 .
+drwxr-xr-x 12 runner runner 4096 Sep  5 12:06 ..
+-rw-r--r--  1 runner runner  831 Sep  5 12:06 DEDICATED-DEEP.md
+
+reports:
+total 648
+drwxr-xr-x  2 runner runner   4096 Sep  5 12:06 .
+drwxr-xr-x 12 runner runner   4096 Sep  5 12:06 ..
+-rw-r--r--  1 runner runner 296826 Sep  5 12:06 analyst-bigpickle.log
+-rw-r--r--  1 runner runner   2821 Sep  5 12:06 analyst-laguna.log
+-rw-r--r--  1 runner runner   2808 Sep  5 12:06 analyst-ling3.log
+-rw-r--r--  1 runner runner   2834 Sep  5 12:06 analyst-longcat.log
+-rw-r--r--  1 runner runner 267621 Sep  5 12:06 analyst-nemotron3.log
+-rw-r--r--  1 runner runner   7722 Sep  5 12:06 hypotheses-bigpickle.txt
+-rw-r--r--  1 runner runner     51 Sep  5 12:06 hypotheses-laguna.txt
+-rw-r--r--  1 runner runner     50 Sep  5 12:06 hypotheses-ling3.txt
+-rw-r--r--  1 runner runner     52 Sep  5 12:06 hypotheses-longcat.txt
+-rw-r--r--  1 runner runner   8459 Sep  5 12:06 hypotheses-nemotron3.txt
+-rw-r--r--  1 runner runner  32893 Sep  5 12:06 hypotheses.md
+-rw-r--r--  1 runner runner     39 Sep  5 12:06 valid-bugs.md
+
+scripts:
+total 28
+drwxr-xr-x  2 runner runner  4096 Sep  5 12:06 .
+drwxr-xr-x 12 runner runner  4096 Sep  5 12:06 ..
+-rw-r--r--  1 runner runner 16987 Sep  5 12:06 sync-issues.py
+
+triage:
+total 88
+drwxr-xr-x  2 runner runner 4096 Sep  5 12:06 .
+drwxr-xr-x 12 runner runner 4096 Sep  5 12:06 ..
+-rw-r--r--  1 runner runner    0 Sep  5 12:06 .gitkeep
+-rw-r--r--  1 runner runner  203 Sep  5 12:06 run-2026-09-02-21-52.md
+-rw-r--r--  1 runner runner  224 Sep  5 12:06 run-2026-09-02-23-50.md
+-rw-r--r--  1 runner runner  178 Sep  5 12:06 run-2026-09-03-02-55.md
+-rw-r--r--  1 runner runner  205 Sep  5 12:06 run-2026-09-03-07-48.md
+-rw-r--r--  1 runner runner  155 Sep  5 12:06 run-2026-09-03-12-35.md
+-rw-r--r--  1 runner runner  182 Sep  5 12:06 run-2026-09-03-16-40.md
+-rw-r--r--  1 runner runner  149 Sep  5 12:06 run-2026-09-03-19-27.md
+-rw-r--r--  1 runner runner  178 Sep  5 12:06 run-2026-09-03-21-52.md
+-rw-r--r--  1 runner runner  172 Sep  5 12:06 run-2026-09-03-23-46.md
+-rw-r--r--  1 runner runner  304 Sep  5 12:06 run-2026-09-04-02-55.md
+-rw-r--r--  1 runner runner  822 Sep  5 12:06 run-2026-09-04-07-43.md
+-rw-r--r--  1 runner runner  224 Sep  5 12:06 run-2026-09-04-12-30.md
+-rw-r--r--  1 runner runner  347 Sep  5 12:06 run-2026-09-04-16-35.md
+-rw-r--r--  1 runner runner  248 Sep  5 12:06 run-2026-09-04-19-07.md
+-rw-r--r--  1 runner runner 5887 Sep  5 12:06 run-2026-09-04-21-33.md
+-rw-r--r--  1 runner runner  189 Sep  5 12:06 run-2026-09-04-23-17.md
+-rw-r--r--  1 runner runner  749 Sep  5 12:06 run-2026-09-05-01-06.md
+-rw-r--r--  1 runner runner  171 Sep  5 12:06 run-2026-09-05-05-50.md
+-rw-r--r--  1 runner runner  174 Sep  5 12:06 run-2026-09-05-09-57.md
+---probe-results---
+
+## 2026-09-02 21:55:20 UTC
+
+
+## 2026-09-03 00:00:11 UTC
+
+
+## 2026-09-03 04:18:13 UTC
+
+
+## 2026-09-03 09:03:56 UTC
+
+
+## 2026-09-03 13:36:17 UTC
+
+
+## 2026-09-03 17:24:54 UTC
+https://www.ozoon.com/ -> 200 len=?
+https://www.ozoon.com/api/ -> HTTP 404
+https://www.ozoon.com/robots.txt -> 200 len=?
+https://www.ozoon.com/sitemap.xml -> 200 len=?
+https://www.ozoon.com/hyper/ -> HTTP 404
+https://www.ozoon.com/mas-film/ -> HTTP 404
+https://www.ozoon.com:3306/ -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
+
+## 2026-09-03 20:08:24 UTC
+https://www.ozoon.com/ -> 200 len=?
+https://www.ozoon.com/api/ -> HTTP 404
+https://www.ozoon.com/robots.txt -> 200 len=?
+https://www.ozoon.com/sitemap.xml -> 200 len=?
+
+## 2026-09-03 22:51:16 UTC
+https://www.ozoon.com -> 200 len=?
+https://www.ozoon.com/ -> 200 len=?
+https://www.ozoon.com/api/ -> HTTP 404
+https://www.ozoon.com/robots.txt -> 200 len=?
+https://www.ozoon.com/sitemap.xml -> 200 len=?
+
+## 2026-09-04 00:48:52 UTC
+https://www.ozoon.com -> 200 len=?
+https://www.ozoon.com/ -> 200 len=?
+https://www.ozoon.com/api/ -> HTTP 404
+https://www.ozoon.com/robots.txt -> 200 len=?
+https://www.ozoon.com/sitemap.xml -> 200 len=?
+
+## 2026-09-04 05:14:05 UTC
+https://www.ozoon.com -> 200 len=?
+https://www.ozoon.com/ -> 200 len=?
+https://www.ozoon.com/api/ -> HTTP 404
+https://www.ozoon.com/robots.txt -> 200 len=?
+https://www.ozoon.com/sitemap.xml -> 200 len=?
+
+## 2026-09-04 09:50:35 UTC
+https://www.ozoon.com -> 200 len=?
+https://www.ozoon.com/ -> 200 len=?
+https://www.ozoon.com/api/ -> HTTP 404
+https://www.ozoon.com/robots.txt -> 200 len=?
+https://www.ozoon.com/sitemap.xml -> 200 len=?
+
+## 2026-09-04 14:26:01 UTC
+
+
+## 2026-09-04 18:02:21 UTC
+
+
+## 2026-09-04 20:04:48 UTC
+https://www.ozoon.com/?{url|fetch|callback|import|view -> 200 len=?
+https://www.ozoon.com/?url=https://<collab>/ -> 200 len=?
+
+## 2026-09-04 22:19:16 UTC
+https://www.ozoon.com/?{url|view|page|callback -> 200 len=?
+
+## 2026-09-05 00:16:35 UTC
+
+
+## 2026-09-05 04:46:34 UTC
+https://www.ozoon.com/?{url|view|page|callback -> 200 len=?
+
+## 2026-09-05 08:43:46 UTC
+[0m
+[0m→ [0mRead knowledge/index.md
+[0m→ [0mRead reports/hypotheses-bigpickle.txt
+The knowledge base is largely consolidated and I've reviewed all the context. This is a deep-hunt cycle. My state indicates phase POC, target api. Let me review the prior cycle's results and current surface. The key finding from last cycle: first direct core-API probes executed — Spring Boot stack, structured 401 discriminator, split-horizon hostname. All three critical vectors remain AUTH_HELPED/unprobed.
+
+Let me check the nemotron3 lead to see if there's useful new content, and the knowledge index.
+I have full context now. The knowledge base is pure consolidation — the current cycle has no new recon executed. My hypotheses remain AUTH_HELPED. Let me run my analysis.
+
+Per the deep-hunt directives, I should still attempt useful read-only/passive probing to add value this cycle rather than pure consolidation. Let me consider what passive GET probes are safe and productive against the core platform surface.
+
+The knowledge indicates the wallet-gateway UUID endpoint returns 401 baseline. Let me do a couple of focused passive probes to test server behavior on the signup/API surface without mutating data. Key fresh probes that are read-only:
+- Explore whether the BFF gateway exposes other unauthenticated routes on www.ozoon.eu (e.g., public config, i18n, translation files that may contain internal data/URLs).
+- Check `www.ozoon.eu` for the signup JS chunk reference / config leak.
+
+Let me do a few safe GET probes at low rate.
+[0m
+[0m$ [0mcd /tmp/opencode && for url in \
+  "https://www.ozoon.eu/" \
+  "https://www.ozoon.eu/api/v1/signup" \
+  "https://www.ozoon.eu/robots.txt" \
+  ; do echo "=== $url ==="; curl -sk -o /dev/null -w "%{http_code} %{size_download}B ct=%{content_type}\n" -m 20 "$url"; sleep 1.2; done
+=== https://www.ozoon.eu/ ===
+200 749265B ct=text/html; charset=utf-8
+=== https://www.ozoon.eu/api/v1/signup ===
+200 3042B ct=text/html; charset=utf-8
+=== https://www.ozoon.eu/robots.txt ===
+200 73B ct=text/plain
+[0m
+The signup endpoint returns 200 (GET returns the form page, likely). Let me grab the homepage and grep the HTML for fresh internal/API surface. Let me pull the signup page HTML and any config/endpoint references.
+[0m$ [0mcd /tmp/opencode && curl -sk -m 25 "https://www.ozoon.eu/" -o ozoon_home.html && wc -c ozoon_home.html && echo "--- endpoints/urls referenced ---" && grep -oE 'https?://[a-zA-Z0-9.-]+\.(eu|com|net|plus)[a-zA-Z0-9/._-]*' ozoon_home.html | sort -u | head -50
+755974 ozoon_home.html
+--- endpoints/urls referenced ---
+http://11.cdn.bit2host.eu/assetsbg/images/ozoon/Social-Icons/gold__Facebook.png
+http://11.cdn.bit2host.eu/assetsbg/images/ozoon/Social-Icons/gold__Instagram.png
+http://11.cdn.bit2host.eu/assetsbg/images/ozoon/Social-Icons/gold__Telegram.png
+http://11.cdn.bit2host.eu/assetsbg/images/ozoon/Social-Icons/gold__TikTok.png
+http://11.cdn.bit2host.eu/assetsbg/images/ozoon/Social-Icons/gold__X.png
+http://11.cdn.bit2host.eu/assetsbg/images/ozoon/Social-Icons/gold__YouTube.png
+http://www.ozoon.eu/cms/BDG/
+http://www.ozoon.eu/cms/BDG/5ZsHHCYPT
+http://www.ozoon.eu/cms/BDG/BiOT9
+http://www.ozoon.eu/cms/BDG/DuWRavp8SeOpIAEc25OjLg//bdg_18.webp
+http://www.ozoon.eu/cms/BDG/FwsY2VKPTzGyeNG2Jsb6jw//Poker
+http://www.ozoon.eu/cms/BDG/GMpn5DxgR4ilZGg5BKOHYA//payment-methods_bitcoin-cash.webp
+http://www.ozoon.eu/cms/BDG/IkwnTWpeSwCW5qhjHg7bg//OZOON_PRIMARY_LOGO_V1_12152025.png
+http://www.ozoon.eu/cms/BDG/LES5y5sWRmCcRwcCYvEJdQ//licensed.svg
+http://www.ozoon.eu/cms/BDG/Pqm7yPp2QUCTnTwfIH50HQ//payment-methods_visa.webp
+http://www.ozoon.eu/cms/BDG/Q8WgsTPyQ52lysfFm0CZBA//payment-methods_master.webp
+http://www.ozoon.eu/cms/BDG/RfCyrzyYSiSzv6zJMTjsQ//Prop
+http://www.ozoon.eu/cms/BDG/SK
+http://www.ozoon.eu/cms/BDG/T01H8flqTnaYIB5JYH7N2w//Parlay
+http://www.ozoon.eu/cms/BDG/VIE8tXcHQOOGFwGMbcI7hg//Instant
+http://www.ozoon.eu/cms/BDG/Vl11MI0zQZOu99j6IMGqlw//Casino
+http://www.ozoon.eu/cms/BDG/W4fhjJdRQiNZ6yezyVlRA//bdg_gamblers-anon.webp
+http://www.ozoon.eu/cms/BDG/XOjkD23NTla9YhXlk7EJVw//24_7
+http://www.ozoon.eu/cms/BDG/YDYzYC8JQxqIZmtDIyBTHA//Epic_Casino_424x2.webp
+http://www.ozoon.eu/cms/BDG/bg2cqAFoSAOa7rwx4BWfvw//payment-methods_tether.webp
+http://www.ozoon.eu/cms/BDG/dUfm9wv4SNqMg0If4da5Jg//payment-methods_interact.webp
+http://www.ozoon.eu/cms/BDG/etKUeMxJTOKnRPR1d8fM9Q//OZN_Logo.svg
+http://www.ozoon.eu/cms/BDG/h8Xws6GlTpaYs5NsU9JIwg//payment-methods_litecoin.webp
+http://www.ozoon.eu/cms/BDG/iAOusk0MTqmXCwDiCYadA//payment-methods_bitcoin.webp
+http://www.ozoon.eu/cms/BDG/opMDsKInSKOEjxEiupT5zA//SSL
+http://www.ozoon.eu/cms/BDG/rHGwtdMVRTmRr
+http://www.ozoon.eu/cms/BDG/zQ399aXQrCkiFSpX3sFAQ//Hotdrop_Jackpot_424x220.webp
+http://www.ozoon.euhttp
+http://www.ozoon.euhttps
+https://api.wicket-keeper.com
+https://chat.ozoon.eu/webChat.html
+https://fonts.googleapis.com/css2
+https://games.glovefrog.plus/services/b2b/api/v1
+https://policies.google.com/privacy
+https://policies.google.com/terms
+https://sealimg.certcga.com/
+https://services.ozoon.eu
+https://services.ozoon.eu/assets/apps/cross-messaging-app/receiver.html
+https://static.hotjar.com/c/hotjar-
+https://twitter.com/OzoonCA
+https://www.facebook.com/OzoonCA/
+https://www.facebook.com/OzoonCanada
+https://www.googletagmanager.com/gtm.js
+https://www.googletagmanager.com/ns.html
+https://www.instagram.com/ozoon_ca/
+[0m
+Fresh surface links `https://api.wicket-keeper.com` (a third-party API endpoint referenced in homepage HTML) and confirms `games.glovefrog.plus/services/b2b/api/v1` (jackpot B2B API). Let me examine what `api.wicket-keeper.com` is — it could be an Ozoon-owned backend or third-party chat/CRM. Let me grep the page for the context of this URL.
+[0m$ [0mcd /tmp/opencode && echo "=== wicket-keeper context ==="; grep -oE '.{120}wicket-keeper.{160}' ozoon_home.html; echo; echo "=== glovefrog context ==="; grep -oE '.{80}glovefrog.{120}' ozoon_home.html; echo; echo "=== games alternate hosts ==="; grep -oE 'https?://[a-zA-Z0-9.-]*games[a-zA-Z0-9.-]*[^"'"'"' ]*' ozoon_home.html | sort -u | head; echo "=== ozoon host variants ==="; grep -oE 'https://[a-z0-9.-]+\.ozoon\.eu' ozoon_home.html | sort -u
+=== wicket-keeper context ===
+eURL\":\"https://chat.ozoon.eu/webChat.html\"},\"apmRum\":{\"enabled\":true,\"samplingRate\":0.03,\"url\":\"https://api.wicket-keeper.com\",\"webVitals\":{\"inp\":{\"threshold\":-1}}},\"availableCurrencies\":[{\"code\":\"USD\",\"name\":\"US Dollar\",\"symbol\":\"$$\"}],\"beatrixTheme\":\"bodo
+
+=== glovefrog context ===
+a.lv',\n  currency: 'USD',\n  language: 'en',\n  jackpotApiBase: 'https://games.glovefrog.plus/services/b2b/api/v1',\n  refreshIntervalMs: 6000,\n\n  feedCredentials: 'include',\n\n  backgroundImageEnabled: tr
+
+=== games alternate hosts ===
+https://games.glovefrog.plus/services/b2b/api/v1
+=== ozoon host variants ===
+https://chat.ozoon.eu
+https://services.ozoon.eu
+https://www.ozoon.eu
+[0m
+`api.wicket-keeper.com` is an APM/RUM (application performance monitoring) endpoint — a third-party monitoring service, not an Ozoon application backend. That's third-party; ownership needs confirmation. `games.glovefrog.plus` is the jackpotApiBase (already known, third-party).
+
+The homepage also reveals `availableCurrencies: [{code:"USD"...}]` despite the CA/site-config showing CAD+XBT. Interesting but not necessarily vulnerable.
+
+Let me get the `/api/v1/signup` GET response (200) to see the form/config surface, and probe a few likely-unauthenticated config endpoints on www.ozoon.eu that are read-only. Let me also look at the signup page HTML for the request shape/endpoints.
+[0m$ [0mcd /tmp/opencode && curl -sk -m 25 "https://www.ozoon.eu/api/v1/signup" -o signup.html && wc -c signup.html && echo "--- urls in signup page ---" && grep -oE 'https?://[a-zA-Z0-9.-]+\.(eu|com|net|plus)[a-zA-Z0-9/._-]*' signup.html | sort -u | head -40
+3042 signup.html
+--- urls in signup page ---
+[0m
+[0m→ [0mRead /tmp/opencode/signup.html
+Interesting — a GET to `/api/v1/signup` returns a WAF "Request Rejected" page (Apache/BigIP-style block), not a 200 signup form. So the earlier `200 3042B ct=text/html` is actually this WAF rejection page. Notably the WAF applies to non-standard method/probing of the API route. This is a WAF block, not the login/signup form.
+
+Let me probe a couple of truly passive GET config endpoints that might be served (site-config country forms, whoami) to check for anonymous leaks — read-only and low-rate. Specifically the site-config endpoint that was confirmed 200 this cycle.
+[0m
+[0m$ [0mcd /tmp/opencode && for url in \
+  "https://services.ozoon.eu/services/site-config/v1/countries/CA/profileupdateform" \
+  "https://services.ozoon.eu/services/site-config/v1/countries/US/profileupdateform" \
+  "https://services.ozoon.eu/services/site-config/v1/countries/DE/profileupdateform" \
+  ; do echo "=== $url ==="; curl -sk -o /dev/null -w "%{http_code} %{size_download}B ct=%{content_type}\n" -m 20 "$url"; sleep 1.2; done
+=== https://services.ozoon.eu/services/site-config/v1/countries/CA/profileupdateform ===
+200 784B ct=application/json
+=== https://services.ozoon.eu/services/site-config/v1/countries/US/profileupdateform ===
+200 669B ct=application/json
+=== https://services.ozoon.eu/services/site-config/v1/countries/DE/profileupdateform ===
+200 688B ct=application/json
+[0m
+This country-profileupdateform endpoint is unauthenticated and returns country-specific profile field config — useful for mass-assignment differential. Let me check whether this endpoint returns identical/whitelisted fields across countries (the mass-assignment baseline). Let me fetch one to see the schema, particularly whether restricted-territory countries exist and reveal server-side validation whitelist.
+[0m$ [0mcd /tmp/opencode && echo "=== CA ==="; curl -sk -m 20 "https://services.ozoon.eu/services/site-config/v1/countries/CA/profileupdateform" | python3 -m json.tool; echo "=== US ==="; curl -sk -m 20 "https://services.ozoon.eu/services/site-config/v1/countries/US/profileupdateform" | python3 -m json.tool
+=== CA ===
+{
+    "phoneRegex": "[2-9]\\d{9}|3\\d{6}",
+    "phonePrefix": "1",
+    "stateLabel": "province",
+    "postalCodeLabel": "postal-code",
+    "postalCodeRegex": "^[ABCEGHJKLMNPRSTVXYabceghjklmnprstvxy]\\d[ABCEGHabceghJ-Nj-nPRSTprstV-Zv-z][ \\-]?\\d[ABCEGHabceghJ-Nj-nPRSTprstV-Zv-z]\\d$",
+    "postalCodeLookupAvailable": true,
+    "mandatoryState": true,
+    "mandatoryPostalCode": true,
+    "subscriptionChannels": [
+        "EMAIL",
+        "SMS",
+        "PHONE"
+    ],
+    "hostedContactMethods": [],
+    "currencies.default": "CAD",
+    "currencies": [
+        "CAD",
+        "XBT"
+    ],
+    "currencies_published": [
+        "CAD"
+    ],
+    "countrycode": "CA",
+    "profileupdateform.fields": [
+        "email,phone",
+        "addressLine",
+        "postalCode",
+        "language,timeZone",
+        "oddsFormat,",
+        "subscriptionChannels"
+    ],
+    "profileupdateform.optionalfields": [
+        "addressLine",
+        "language",
+        "timeZone",
+        "oddsFormat",
+        "subscriptionChannels"
+    ],
+    "profileupdateform.hostfields": []
+}
+=== US ===
+{
+    "phoneRegex": "[2-9]\\d{9}",
+    "phonePrefix": "1",
+    "stateLabel": "state",
+    "postalCodeLabel": "zip-code",
+    "postalCodeRegex": "^(\\d{5})(?:[ \\-](\\d{4}))?$",
+    "postalCodeLookupAvailable": true,
+    "mandatoryState": true,
+    "mandatoryPostalCode": true,
+    "subscriptionChannels": [
+        "EMAIL",
+        "SMS",
+        "PHONE"
+    ],
+    "hostedContactMethods": [],
+    "currencies.default": "USD",
+    "currencies": [
+        "USD"
+    ],
+    "currencies_published": [
+        "USD"
+    ],
+    "countrycode": "US",
+    "profileupdateform.fields": [
+        "email,phone",
+        "addressLine",
+        "postalCode",
+        "language,timeZone",
+        "oddsFormat,",
+        "subscriptionChannels"
+    ],
+    "profileupdateform.optionalfields": [
+        "addressLine",
+        "language",
+        "timeZone",
+        "oddsFormat",
+        "subscriptionChannels"
+    ],
+    "profileupdateform.hostfields": []
+}
+[0m
+This confirms a mass-assignment-relevant detail: the profile update form whitelist (`profileupdateform.fields`) across countries includes a flat list — `email,phone`, `addressLine`, `postalCode`, `language,timeZone`, `oddsFormat`, `subscriptionChannels`. Notably absent: any `country`, `attributes`, `role`, `vip_level` field mapping. This is an important data point: the profile-update whitelist does NOT include role/privilege fields. But this is the *update* form, not the signup payload — the signup `attributes`/`address` sub-objects were separately confirmed.
+
+Also noteworthy: no restricted-territory country is rejected here (CA, US, DE all return 200 forms). Let me probe whether there's a country that's banned/restricted that would show different behavior, to map territory soft-block. But that's speculative. 
+
+The key finding this cycle: the signup POST route is WAF-blocked for non-standard requests (GET returned "Request Rejected"), meaning active signup POST would likely need to mimic a real browser to not trip the WAF. This is useful for the HUMAN next-action.
+
+Let me test a couple more read-only things: whether the WAF rejects odd methods on other /api/v1 routes, and check the CMS/public config endpoints that might leak internal info. Let me check the signup-from-invitation and login routes behavior as read-only GET.
+
+Actually, I should be judicious with rate (limit 1 rps). Let me do a few more focused passive GETs to bound the surface, then finalize. Let me check if the WAF block is method-specific or applies to the /api/v1/ prefix generally, and whether unauthenticated config endpoints leak on other services.
+[0m$ [0mcd /tmp/opencode && for url in \
+  "https://www.ozoon.eu/api/v1/login" \
+  "https://www.ozoon.eu/api/v1/whoami" \
+  "https://services.ozoon.eu/services/site-config/v1/countries" \
+  "https://services.ozoon.eu/services/site-config/v1/countries/XX/profileupdateform" \
+  ; do echo "=== $url ==="; code=$(curl -sk -o /dev/null -w "%{http_code} %{size_download}B ct=%{content_type}" -m 20 "$url"); echo "$code"; sleep 1.2; done
+=== https://www.ozoon.eu/api/v1/login ===
+404 110B ct=application/json
+=== https://www.ozoon.eu/api/v1/whoami ===
+404 110B ct=application/json
+=== https://services.ozoon.eu/services/site-config/v1/countries ===
+404 122B ct=application/json
+=== https://services.ozoon.eu/services/site-config/v1/countries/XX/profileupdateform ===
+404 190B ct=application/json
+[0m
+Useful data:
+- `www.ozoon.eu/api/v1/login` (GET) → 404 JSON, but `GET /api/v1/signup` → WAF "Request Rejected" page. This asymmetry is notable: the signup route specifically is WAF-protected (likely because signup is a high-value abuse target and recent enumeration), while login/whoami simply 404 on GET (they need POST but return 404 not 405).
+- `/services/site-config/v1/countries/XX/profileupdateform` → 404 JSON (190B), so unknown countries 404 while known country codes return 200 — no enumeration of restricted-territory leads here beyond known codes.
+
+Let me check the WAF block response more — the support ID and whether the block is triggered on the signup specifically. Also let me verify the JSON 404 shape for login (is it the Spring whitelabel or structured). Let me capture body of the login 404.
+[0m$ [0mcd /tmp/opencode && echo "=== login 404 body ==="; curl -sk -m 20 "https://www.ozoon.eu/api/v1/login"; echo; echo "=== countries/XX body ==="; curl -sk -m 20 "https://services.ozoon.eu/services/site-config/v1/countries/XX/profileupdateform"; echo
+=== login 404 body ===
+{"timestamp":"2026-09-05T12:07:57.349+0000","status":404,"error":"Not Found","message":"No message available"}
+=== countries/XX body ===
+{"timestamp":"2026-09-05T12:08:07.710875906Z","status":404,"exception":"io.crazy88.beatrix.siteconfig.exception.CountryNotFoundException","error":"Not Found","errorCode":"COUNTRY_NOT_FOUND"}
+[0m
+Two important findings this cycle:
+
+1. `www.ozoon.eu/api/v1/login` GET → Spring Boot default Whitelabel 404 JSON (`{"timestamp":"2026-09-05T...","status":404,"error":"Not Found"}`) — confirms a Spring Boot backend directly fronting `/api/v1` on www.ozoon.eu (not only services.ozoon.eu). The timestamp is in server local time; not a vuln.
+
+2. `services.ozoon.eu/services/site-config/.../XX/profileupdateform` 404 error body leaks the internal exception class: `io.crazy88.beatrix.siteconfig.exception.CountryNotFoundException`. This reveals:
+   - Package structure: `io.crazy88.beatrix` — confirms the "Beatrix" platform (the `beatrixTheme:"bodo"` field in the homepage config) is the backend framework.
+   - An internal exception class name is exposed in a structured 404 — a minor info leak (framework/package naming), REJECTED-class per scope (descriptive errors), but confirms Spring Boot + GoBet/Beatrix family backend.
+
+This is useful for tech fingerprinting (mass-assignment form validation is likely `io.crazy88.beatrix.siteconfig` DTO-based, suggesting strict DTO binding — lowers mass-assignment confidence on the update path but signup path separate).
+
+Let me also note the WAF asymmetry — the signup route specifically is WAF-guarded, which raises the gate for automated signup abuse but the HUMAN action (real browser) should bypass. This is highly relevant to the NEXT step.
+
+Let me do one final passive check: verify the site-config endpoint reveals country-enabled gating (enabled countries for signup/registration), which could map the territory-softblock. Let me check if there's a supported-countries/config endpoint.
+
+Actually I have enough for a solid cycle. Let me consolidate findings without over-probing. Key new data this cycle:
+- `api.wicket-keeper.com` = third-party APM (ownership unconfirmed, deprioritize like glovefrog)
+- `io.crazy88.beatrix.*` package leak in 404 = backend fingerprint (Beatrix/GoBet platform) + descriptive-error is REJECTED-class but the fingerprint is a real learn
+- Signup GET route is WAF-blocked ("Request Rejected" + support ID) — different from login 404; WAF on the mutating signup path
+- site-config country profileupdateform whitelist maps mass-assignment fields (flat list; no role/privilege/attributes in update form)
+- login/whoami GET → 404 (not 405) on www.ozoon.eu `/api/v1`
+
+Now emit the analysis blocks. Risk holds at 81 — nothing changed the differential evidence, but new fingerprint (crazy88/beatrix) and WAF-on-signup info added. The Beatrix platform is a known sportsbook supplier; that strengthens the mass-assignment/known-go-bet DTO patterns and the BOLA surface (Beatrix profile-centric).
+[0m$ [0mcd /tmp/opencode && curl -sk -m 20 "https://www.ozoon.eu/robots.txt"
+user-agent: *
+sitemap: https://www.ozoon.eu/sitemap_index.xml
+
+disallow:
+[0m
+robots.txt references `sitemap_index.xml` (a common WordPress/RankMath pattern). Let me not chase this — known-public-file class. I have sufficient new evidence. Let me finalize.
+[0m$ [0mcd /tmp/opencode && cat > /dev/tcp_check.txt 2>/dev/null <<'EOF'
+noop
+EOF
+echo done
+done
+/bin/bash: line 1: /dev/tcp_check.txt: Permission denied
+[0m
+Ignoring that irrelevant shell artifact. Here is my analysis output for this deep-hunt cycle.
+
+STEP 1 — DELTA
+- NEW: `services.ozoon.eu/services/site-config/v1/countries/{CC}/profileupdateform` 404 leaks internal exception class `io.crazy88.beatrix.siteconfig.exception.CountryNotFoundException` — confirms backend = GoBet/Beatrix ("Beatrix" theme + `io.crazy88.beatrix` package) Spring Boot; known-country codes (CA/US/DE) return 200, unknown (XX) returns structured 404 JSON.
+- NEW: `api.wicket-keeper.com` referenced in www.ozoon.eu homepage SSR JSON as `apmRum.url` — third-party APM/RUM endpoint (Wicket-keeper monitor), ownership unconfirmed → deprioritize like glovefrog.
+- NEW: `GET https://www.ozoon.eu/api/v1/signup` returns WAF block page ("Request Rejected", support_id 6279731412718049849, Apache/BigIP-style), while `GET /api/v1/login` and `/api/v1/whoami` return plain Spring 404 JSON — WAF is specifically staged on the mutating signup path; login/whoami are not method-guarded (404 not 405).
+- NEW: site-config CA/US/DE `profileupdateform.fields` whitelist is a flat list (`email,phone`, `addressLine`, `postalCode`, `language,timeZone`, `oddsFormat`, `subscriptionChannels`) — no role/vip/attributes/country member in the update DTO; currencies default CARRIES per-country (CA: CAD+XBT with XBT not published; US: USD).
+- NO_DELTA: `services.ozoon.eu` UUID BOLA surface (65), mock-2FA (55), signup mass-assignment (60) — all remain AUTH_HELPED, zero authenticated probes.
+
+STEP 2 — PRIORITIZE
+[PRIO] services.ozoon.eu/services/*/v1/profiles/{uuid}/...,6.95,attack_surface:9+business_value:9+tech_exposure:6+gate_ease:3+cloud_surface:5+freshness:6
+[PRIO] services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify,7.05,attack_surface:7+business_value:10+tech_exposure:7+gate_ease:3+cloud_surface:5+freshness:8
+[PRIO] www.ozoon.eu/api/v1/signup,6.75,attack_surface:8+business_value:9+tech_exposure:6+gate_ease:2+cloud_surface:5+freshness:8
+[PRIO] services.ozoon.eu/services/site-config/v1/countries/{CC}/profileupdateform,5.60,attack_surface:6+business_value:6+tech_exposure:5+gate_ease:9+cloud_surface:3+freshness:8
+
+STEP 3 — HYPOTHESES
+[HYP] BOLA on profile-keyed UUID endpoints — session identity may not be bound to path UUID
+class: IDOR
+asset: https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...
+confidence: 65
+reasoning: SDK bundles confirm 5 services key resources by UUID path; bogus-UUID probe returns structured 401 errorCode:"unauthorized" (auth pre-check precedes resource lookup), a clean differential baseline. Backend fingerprint now confirmed GoBet/Beatrix (`io.crazy88.beatrix` package in 404, homepage config `beatrixTheme:"bodo"`), a profile-centric architecture where UUID-path keys are the norm. Split-horizon backend (services.services.ozoon.eu NXDOMAIN) forces all traffic through this public gateway — no bypass host.
+evidence_needed: Authorized A accessing /profiles/{B-UUID}/... returns B's data while ownPID returns A's data.
+verify_steps: 1. POST signup A → sid+ownPID. 2. GET /services/wallet-gateway/v1/profiles/{ownPID-A}/balances with A sid (200). 3. Control: {bogus-uuid} (recorded 401 baseline). 4. Authorized B: GET /profiles/{ownPID-B}/... with A sid. 5. Non-401/404 foreign data = BOLA. (PREREQ: authorization for two throwaway accounts.)
+impact: Critical — cross-user PII/financial read (wallets, transactions, messages, verification state); ATO enabler.
+testability: AUTH_HELPED
+
+[HYP] Mock-2FA verification header may be honored in production — client-controlled 2FA/KYC gate bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{ownPID}/verifications/verify
+confidence: 55
+reasoning: Production SDK sends X-MOCK-2FA-VERIFICATION:true; config exposes two_factor_authenticator.allow-permanent-skip:["true"]. SSR isMockProviderEnabled:false is client-side contrary evidence only; server-side honoring untested. Beatrix supplier historically ships mock-provider switches for KYC; 401 baseline shape confirmed.
+evidence_needed: With own session, POST verify with mock header succeeds while identical request without it is rejected.
+verify_steps: PREREQ: authorization. 1. POST signup → sid+ownPID. 2. POST .../verifications/verify + X-MOCK-2FA-VERIFICATION:true, {"verificationType":"PHONE"} → record. 3. Control: same without header. 4. Step-2 success + step-3 rejection = confirmed.
+impact: Critical — bypass SMS/PIN/2FA/KYC on withdraw/deposit/bonus on real-money platform.
+testability: AUTH_HELPED
+
+[HYP] Mass assignment on signup — server may persist unmapped privilege/territory/balance fields
+class: BUSLOGIC
+asset: https://www.ozoon.eu/api/v1/signup
+confidence: 58
+reasoning: Captcha-free signup with client-controlled attributes/address sub-objects (confirmed); static referral token; affiliate.check-referring-site.enabled:["false"]. CA/US/DE profileupdateform whitelist is flat and contains no role/vip/attributes/country member, but that is the update DTO, not the signup payload. Beatrix DTO binding (strict `io.crazy88.beatrix.siteconfig`) suggests type-safe DTOs but unknown-key behavior on signup unverified. Gate lowered to 2: GET of signup is WAF-blocked, so automated signup POST will likely trip the WAF absent a real browser/TLS fingerprint.
+evidence_needed: Injected keys (attributes.role/vip_level, address.country) persist in whoami/profile or cause privileged side effects.
+verify_steps: PREREQ: authorization. 1. Minimal control signup → set-cookie + whoami. 2. Signup with injected attributes.role/admin, vip_level/5, restricted-territory country. 3. Compare persisted fields.
+impact: Medium-High — territory softblock bypass, referral fraud; privilege elevation if persisted.
+testability: AUTH_HELPED
+
+STEP 4 — SELF-CRITIQUE
+[PARKED] services.site-config profileupdateform introspection — descriptive-only / known-public path; REJECTED-class alone.
+[PARKED] api.wicket-keeper.com — third-party APM, Ozoon ownership unconfirmed → out-of-scope until verified.
+[PARKED] PWS/wnacloud SSRF param enumeration — no collab callback server, no passive evidence path.
+[PARKED] chat.ozoon.eu / games.glovefrog.plus / services.services.ozoon.eu — unchanged third-party or unreachable.
+[FINAL] BOLA UUID — 65 — broadest surface, clean 401 discriminator + now-confirmed Beatrix profile-centric backend; AUTH_HELPED.
+[FINAL] Mass-assignment signup — 58 (was 60) — WAF-on-signup lowers gate_ease and shows automated probing is guarded; AUTH_HELPED.
+[FINAL] Mock-2FA bypass — 55 — highest money-gate value; isMockProviderEnabled:false dampened; AUTH_HELPED.
+
+STEP 5 — NEXT ACTION
+[NEXT] HUMAN: Request program authorization (bugs.olivermaicher.eu) to create one throwaway account on www.ozoon.eu. If granted, drive the signup from a real browser profile (GET /api/v1/signup is WAF-blocked — "Request Rejected" support_id 6279731412718049849 — so a scripted POST without a matching TLS/UA fingerprint will likely be blocked). Fire exactly: POST https://www.ozoon.eu/api/v1/signup `{"email":"<throwaway>@<valid-domain>","password":"Test1234!","country":"CA","language":"en","attributes":{},"address":{"country":"CA","addressLine":"123 Test St","postalCode":"K1A 0A6"}}` → capture sid + ownPID, then baseline GET https://services.ozoon.eu/services/wallet-gateway/v1/profiles/{ownPID}/balances (expected 200 vs recorded 401 errorCode:"unauthorized") to unlock the BOLA/2FA/mass-assignment differential.
+
+STEP 6 — LEARNING
+[LEARN] ACCEPTED MISCONFIG @ services.ozoon.eu/services/site-config/v1/countries/{CC}/profileupdateform: unknown country → structured 404 leaking internal exception `io.crazy88.beatrix.siteconfig.exception.CountryNotFoundException`; confirms GoBet/Beatrix backend package naming (info-level, itself descriptive-error REJECTED class, but a genuine fingerprint).
+[LEARN] ACCEPTED MISCONFIG @ www.ozoon.eu/api/v1: GET /api/v1/login and /api/v1/whoami → Spring Boot Whitelabel 404 JSON (no method guard, 404 not 405); signup GET → WAF "Request Rejected" (support_id 6279731412718049849) → WAF is staged on the mutating signup path, not login/whoami.
+[LEARN] ACCEPTED MISCONFIG @ services.ozoon.eu/services/site-config/v1/countries/{CC}/profileupdateform: per-country profile-update whitelist is flat (email,phone/addressLine/postalCode/language,timeZone/oddsFormat/subscriptionChannels) with no role/vip/attributes country member; CA exposes CAD+XBT (XBT unpublished), US=USD — update DTO is strict but signup DTO separate.
+[LEARN] ACCEPTED OTHER @ www.ozoon.eu: homepage SSR JSON references api.wicket-keeper.com as apmRum.url — third-party RUM/APM endpoint, ownership unconfirmed; off-scope pending verification (parallel to glovefrog).
+[LEARN] REJECTED OTHER @ www.ozoon.eu/robots.txt: only sitemap_index.xml + disallow: (all) — known-public-file class, no findings.
+[LEARN] REJECTED OTHER @ services.ozoon.eu/services/site-config/v1/countries: bare /countries and unknown-country /countries/XX/profiles are descriptive-error 404 only — no enumeration/restricted-territory leak beyond known codes.
+
+STEP 7 — RISK
+[RISK] ozoon-sportsbook-casino: 81/100 (was 81). No live differential evidence this cycle — all three critical vectors remain AUTH_HELPED/unprobed, account creation still restricted. New knowledge gained is confirmatory, not amplificatory: backend fingerprint confirmed as GoBet/Beatrix (`io.crazy88.beatrix` package leak, `beatrixTheme:"bodo"`), which materially raises prior that the UUID-profile BOLA pattern (a Beatrix architecture hallmark) is real, but hypothesis-grade until an authenticated bind test. Signup route WAF guard observed lowers mass-assignment automated-probe feasibility and hardens the gateway (gate_ease 2). Hold at 81; +1 on first authenticated BOLA/bypass confirmation, −2 if header/params stripped server-side — the net-risk curve is unchanged pending authorization.
