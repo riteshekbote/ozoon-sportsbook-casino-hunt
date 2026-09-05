@@ -4888,3 +4888,1165 @@ STEP 6 — LEARNING
 
 STEP 7 — RISK
 [RISK] ozoon-sportsbook-casino: 81/100 (unchanged). No amplificatory delta this cycle — logout-405 and auth-alias-404 findings are REJECTED-class confirmatory only. All three critical vectors (BOLA 65, mock-2FA 55, mass-assignment 58) remain AUTH_HELPED and unprobed; account creation still restricted pending program authorization. Hold at 81; +1 on first authenticated BOLA/bypass confirmation, −2 if header/params stripped server-side. The net-risk curve is flat pending authorization.
+===== ANALYST bigpickle 2026-09-05 21:47:51 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mls -la && echo "---" && ls -la art 2>/dev/null; ls -la inventory 2>/dev/null
+total 204
+drwxr-xr-x 12 runner runner  4096 Sep  5 21:45 .
+drwxr-xr-x  3 runner runner  4096 Sep  5 21:45 ..
+drwxr-xr-x  7 runner runner  4096 Sep  5 21:45 .git
+drwxr-xr-x  3 runner runner  4096 Sep  5 21:45 .github
+-rw-r--r--  1 runner runner  1642 Sep  5 21:45 README.md
+-rw-r--r--  1 runner runner    32 Sep  5 21:45 analyst-out.txt
+-rw-r--r--  1 runner runner 57757 Sep  5 21:45 analyst-prompt.txt
+-rw-r--r--  1 runner runner 54020 Sep  5 21:45 ctx.txt
+drwxr-xr-x  2 runner runner  4096 Sep  5 21:45 inventory
+drwxr-xr-x  2 runner runner  4096 Sep  5 21:45 knowledge
+drwxr-xr-x  2 runner runner  4096 Sep  5 21:45 leads
+-rw-r--r--  1 runner runner  2194 Sep  5 21:45 probe-results.md
+drwxr-xr-x  2 runner runner  4096 Sep  5 21:45 recon-notes
+drwxr-xr-x  2 runner runner  4096 Sep  5 21:45 reports
+drwxr-xr-x  2 runner runner  4096 Sep  5 21:45 reposcan-raw
+-rw-r--r--  1 runner runner  3150 Sep  5 21:45 scope.yml
+drwxr-xr-x  2 runner runner  4096 Sep  5 21:45 scripts
+-rw-r--r--  1 runner runner    33 Sep  5 21:45 state_bigpickle.json
+-rw-r--r--  1 runner runner    33 Sep  5 21:45 state_laguna.json
+-rw-r--r--  1 runner runner    33 Sep  5 21:45 state_ling3.json
+-rw-r--r--  1 runner runner    33 Sep  5 21:45 state_longcat.json
+-rw-r--r--  1 runner runner    33 Sep  5 21:45 state_mimo.json
+-rw-r--r--  1 runner runner    33 Sep  5 21:45 state_nemotron3.json
+drwxr-xr-x  2 runner runner  4096 Sep  5 21:45 triage
+---
+total 32
+drwxr-xr-x  2 runner runner  4096 Sep  5 21:45 .
+drwxr-xr-x 12 runner runner  4096 Sep  5 21:45 ..
+-rw-r--r--  1 runner runner 23332 Sep  5 21:45 ozoon-sportsbook-casino.md
+[0m
+[0m✱ [0mGlob "**/ozoon*"[90m 1 match[0m
+[0m✱ [0mGlob "**/scope.yml"[90m 1 match[0m
+[0m→ [0mRead scope.yml
+[0m→ [0mRead probe-results.md
+[0m→ [0mRead analyst-out.txt
+[0m
+[0m$ [0mcat state_bigpickle.json; echo "---"; ls leads knowledge recon-notes triage reports scripts 2>/dev/null
+{"phase": "POC", "target": "api"}---
+knowledge:
+index.md
+
+leads:
+lead-bigpickle.md
+lead-laguna.md
+lead-ling3.md
+lead-longcat.md
+lead-mimo.md
+lead-nemotron3.md
+reposcan-ozoon-sportsbook-casino.md
+
+recon-notes:
+DEDICATED-DEEP.md
+
+reports:
+analyst-bigpickle.log
+analyst-laguna.log
+analyst-ling3.log
+analyst-longcat.log
+analyst-nemotron3.log
+hypotheses-bigpickle.txt
+hypotheses-laguna.txt
+hypotheses-ling3.txt
+hypotheses-longcat.txt
+hypotheses-nemotron3.txt
+hypotheses.md
+valid-bugs.md
+
+scripts:
+sync-issues.py
+
+triage:
+run-2026-09-02-21-52.md
+run-2026-09-02-23-50.md
+run-2026-09-03-02-55.md
+run-2026-09-03-07-48.md
+run-2026-09-03-12-35.md
+run-2026-09-03-16-40.md
+run-2026-09-03-19-27.md
+run-2026-09-03-21-52.md
+run-2026-09-03-23-46.md
+run-2026-09-04-02-55.md
+run-2026-09-04-07-43.md
+run-2026-09-04-12-30.md
+run-2026-09-04-16-35.md
+run-2026-09-04-19-07.md
+run-2026-09-04-21-33.md
+run-2026-09-04-23-17.md
+run-2026-09-05-01-06.md
+run-2026-09-05-05-50.md
+run-2026-09-05-09-57.md
+run-2026-09-05-13-17.md
+run-2026-09-05-16-08.md
+run-2026-09-05-18-22.md
+run-2026-09-05-20-42.md
+[0m
+[0m$ [0mwc -l triage/run-2026-09-05-20-42.md reports/hypotheses-bigpickle.txt reports/hypotheses.md leads/lead-bigpickle.md 2>/dev/null; echo "---"; head -60 triage/run-2026-09-05-20-42.md
+6 triage/run-2026-09-05-20-42.md
+    42 reports/hypotheses-bigpickle.txt
+   354 reports/hypotheses.md
+   949 leads/lead-bigpickle.md
+  1351 total
+---
+
+===== TRIAGE 2026-09-05 20:42:21 UTC =====
+[0m
+> build · mimo-v2.5-free
+[0m
+No leads provided in the `LEADS:` section. Please paste the probe results to validate.
+[0m
+[0m→ [0mRead reports/hypotheses-bigpickle.txt
+No new recon since my last cycle (19:34). Doing narrow passive delta probes: re-fetch the services SSR shell to grep for undiscovered service prefixes/domains, and pull the sitemap index for new staging/test paths.
+[0m
+[0m$ [0mcd /tmp/opencode && curl -s --max-time 30 -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" https://www.ozoon.eu/sitemap_index.xml -o sitemap_index.xml -w "HTTP %{http_code} bytes=%{size_download}\n"; head -c 1200 sitemap_index.xml
+HTTP 200 bytes=197
+<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+    <sitemap>
+    <loc>https://www.ozoon.eu/sitemap.xml</loc>
+	</sitemap>
+
+</sitemapindex>
+[0m
+[0m$ [0mcd /tmp/opencode && curl -s --max-time 30 -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" https://services.ozoon.eu/ -o svc_ssr.html -w "HTTP %{http_code} bytes=%{size_download}\n"; wc -c svc_ssr.html
+HTTP 200 bytes=743247
+743247 svc_ssr.html
+[0m
+[0m$ [0mcd /tmp/opencode && rg -o 'https://services\.services\.ozoon\.eu[^"'"'"' )]*' svc_ssr.html | sort -u | head -40; echo "=== /services/ prefixes ==="; rg -o '/services/[a-z][a-z0-9-]*/v[0-9]+' svc_ssr.html | sort -u; echo "=== near-service hostnames ==="; rg -o 'https://[a-z0-9.-]*ozoon[a-z0-9.-]*' svc_ssr.html | sort -u | head -40
+/bin/bash: line 1: rg: command not found
+=== /services/ prefixes ===
+/bin/bash: line 1: rg: command not found
+/bin/bash: line 1: rg: command not found
+=== near-service hostnames ===
+[0m
+[0m$ [0mcd /tmp/opencode && grep -oE 'https://services\.services\.ozoon\.eu[^" ]*' svc_ssr.html | sort -u | head -40; echo "=== /services/ v-prefixes ==="; grep -oE '/services/[a-z][a-z0-9-]*/v[0-9]+' svc_ssr.html | sort -u; echo "=== ozoon hostnames ==="; grep -oE 'https://[a-z0-9.-]*ozoon[a-z0-9.-]*' svc_ssr.html | sort -u | head -40
+https://services.services.ozoon.eu
+https://services.services.ozoon.eu/assets/apps/cross-messaging-app/receiver.html
+https://services.services.ozoon.eu\
+=== /services/ v-prefixes ===
+=== ozoon hostnames ===
+https://chat.ozoon.eu
+https://services.ozoon.eu
+https://services.services.ozoon.eu
+https://www.ozoon.eu
+[0m
+[0m$ [0mcd /tmp/opencode && echo "=== apiBase/serviceBase keys ==="; grep -oE '"[a-zA-Z_-]*[Bb]ase[a-zA-Z_-]*":"[^"]*"' svc_ssr.html | sort -u | head -30; echo "=== known-vs-unknown service tokens ==="; grep -oE 'services/(wallet-gateway|transaction-group|referral|player-verification|player-messages|site-config)' svc_ssr.html | sort | uniq -c; echo "=== any other 'services/<word>' inside strings ==="; grep -oE 'services/[a-zA-Z0-9._/-]+' svc_ssr.html | sort -u | head -40
+=== apiBase/serviceBase keys ===
+=== known-vs-unknown service tokens ===
+=== any other 'services/<word>' inside strings ===
+services/b2b/api/v1
+[0m
+[0m$ [0mcd /tmp/opencode && grep -oE '.{120}services/b2b/api/v1.{120}' svc_ssr.html | head -5
+'Bovada',\n  host: 'bovada.lv',\n  currency: 'USD',\n  language: 'en',\n  jackpotApiBase: 'https://games.glovefrog.plus/services/b2b/api/v1',\n  refreshIntervalMs: 6000,\n\n  feedCredentials: 'include',\n\n  backgroundImageEnabled: true,\n  backgroundImage: c
+[0m
+[0m$ [0mcd /tmp/opencode && echo "=== host: entries ==="; grep -oE "host: '[^']*'" svc_ssr.html | sort -u; echo "=== wss/ws endpoints ==="; grep -oE 'wss?://[^"'"'"' ]*' svc_ssr.html | sort -u | head -20; echo "=== graphql/actuator/swagger hits ==="; grep -oiE '[a-zA-Z0-9._/-]*(graphql|actuator|swagger|api-docs|\.json)[a-zA-Z0-9._/-]*' svc_ssr.html | sort -u | head -20
+=== host: entries ===
+host: 'bovada.lv'
+=== wss/ws endpoints ===
+=== graphql/actuator/swagger hits ===
+/content/manifest.json
+res.json
+[0m
+[0m$ [0mcd /tmp/opencode && curl -s --max-time 30 -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" https://services.ozoon.eu/content/manifest.json -w "\nHTTP %{http_code} bytes=%{size_download}\n" -o manifest.json; head -c 600 manifest.json
+HTTP 404 bytes=0
+[0m
+[0m$ [0mcd /tmp/opencode && curl -s --max-time 40 -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" "https://www.ozoon.eu/sitemap.xml" -o sitemap.xml -w "HTTP %{http_code} bytes=%{size_download}\n"; grep -oE '<loc>[^<]*</loc>' sitemap.xml | sed 's/<[^>]*>//g' | sort -u
+...output truncated...
+
+Full output saved to: /home/runner/.local/share/opencode/tool-output/tool_0738975a1001HuI8pqY77KzEdW
+
+https://www.ozoon.eu/casino/slots/5-reel/diamond-reef
+https://www.ozoon.eu/casino/slots/5-reel/diamond-rhino
+https://www.ozoon.eu/casino/slots/5-reel/dice-bonanza
+https://www.ozoon.eu/casino/slots/5-reel/dice-mania
+https://www.ozoon.eu/casino/slots/5-reel/dice-million
+https://www.ozoon.eu/casino/slots/5-reel/dim-sum-prize
+https://www.ozoon.eu/casino/slots/5-reel/dog-pound-dollars
+https://www.ozoon.eu/casino/slots/5-reel/dollars-to-donuts
+https://www.ozoon.eu/casino/slots/5-reel/double-deck-blackjack
+https://www.ozoon.eu/casino/slots/5-reel/double-flame-blazing
+https://www.ozoon.eu/casino/slots/5-reel/dracula-s-bloody-reels
+https://www.ozoon.eu/casino/slots/5-reel/dragon-age
+https://www.ozoon.eu/casino/slots/5-reel/dragon-era
+https://www.ozoon.eu/casino/slots/5-reel/dragon-fortune-frenzy-christmas-edition
+https://www.ozoon.eu/casino/slots/5-reel/dragon-harmony
+https://www.ozoon.eu/casino/slots/5-reel/dragon-kings
+https://www.ozoon.eu/casino/slots/5-reel/dragon-phoenix
+https://www.ozoon.eu/casino/slots/5-reel/dragon-s-7s-hot
+https://www.ozoon.eu/casino/slots/5-reel/dragon-s-fortune-frenzy
+https://www.ozoon.eu/casino/slots/5-reel/dragon-s-gold-100
+https://www.ozoon.eu/casino/slots/5-reel/dragon-scroll-xl
+https://www.ozoon.eu/casino/slots/5-reel/dragon-wealth-hold-win
+https://www.ozoon.eu/casino/slots/5-reel/dragon-wish
+https://www.ozoon.eu/casino/slots/5-reel/dreams-of-macau
+https://www.ozoon.eu/casino/slots/5-reel/dwarf-dragon
+https://www.ozoon.eu/casino/slots/5-reel/dynamite-diggin-doug
+https://www.ozoon.eu/casino/slots/5-reel/dynasty-treasures
+https://www.ozoon.eu/casino/slots/5-reel/eggs-with-legs
+https://www.ozoon.eu/casino/slots/5-reel/egypt-fire
+https://www.ozoon.eu/casino/slots/5-reel/electro-goals
+https://www.ozoon.eu/casino/slots/5-reel/electro-reels
+https://www.ozoon.eu/casino/slots/5-reel/elvis-frog-in-vegas
+https://www.ozoon.eu/casino/slots/5-reel/enchanted-forest-of-fortune
+https://www.ozoon.eu/casino/slots/5-reel/enchanted-garden
+https://www.ozoon.eu/casino/slots/5-reel/expanding-naughty-cupid
+https://www.ozoon.eu/casino/slots/5-reel/expansion
+https://www.ozoon.eu/casino/slots/5-reel/faerie-spells
+https://www.ozoon.eu/casino/slots/5-reel/fairytale-fortunes-jack-and-the-giants
+https://www.ozoon.eu/casino/slots/5-reel/fantasy-fortune
+https://www.ozoon.eu/casino/slots/5-reel/fast-sexy
+https://www.ozoon.eu/casino/slots/5-reel/fiery-sevens
+https://www.ozoon.eu/casino/slots/5-reel/fiery-sevens-exclusive
+https://www.ozoon.eu/casino/slots/5-reel/final-rose
+https://www.ozoon.eu/casino/slots/5-reel/fire-lightning
+https://www.ozoon.eu/casino/slots/5-reel/firestorm-7
+https://www.ozoon.eu/casino/slots/5-reel/fireworks-game-changer
+https://www.ozoon.eu/casino/slots/5-reel/fishin-bear
+https://www.ozoon.eu/casino/slots/5-reel/forbidden-slot
+https://www.ozoon.eu/casino/slots/5-reel/fortune-festival
+https://www.ozoon.eu/casino/slots/5-reel/fortune-finery
+https://www.ozoon.eu/casino/slots/5-reel/fortune-five
+https://www.ozoon.eu/casino/slots/5-reel/fortune-keepers
+https://www.ozoon.eu/casino/slots/5-reel/fortune-rabbit
+https://www.ozoon.eu/casino/slots/5-reel/forty-fruity-million
+https://www.ozoon.eu/casino/slots/5-reel/four-celestial-creatures
+https://www.ozoon.eu/casino/slots/5-reel/four-lucky-clover
+https://www.ozoon.eu/casino/slots/5-reel/four-lucky-diamonds
+https://www.ozoon.eu/casino/slots/5-reel/freaks-of-folklore
+https://www.ozoon.eu/casino/slots/5-reel/freezing-classics
+https://www.ozoon.eu/casino/slots/5-reel/front-runner-odds-on
+https://www.ozoon.eu/casino/slots/5-reel/fruit-fortune
+https://www.ozoon.eu/casino/slots/5-reel/fruit-heaven-hold-and-win
+https://www.ozoon.eu/casino/slots/5-reel/fruit-million
+https://www.ozoon.eu/casino/slots/5-reel/fruit-mojo
+https://www.ozoon.eu/casino/slots/5-reel/fruit-splash
+https://www.ozoon.eu/casino/slots/5-reel/fruitbat-crazy
+https://www.ozoon.eu/casino/slots/5-reel/fruity-candy
+https://www.ozoon.eu/casino/slots/5-reel/fruity-spins
+https://www.ozoon.eu/casino/slots/5-reel/galapagos-islands
+https://www.ozoon.eu/casino/slots/5-reel/galaxy-diamonds
+https://www.ozoon.eu/casino/slots/5-reel/gemini-joker
+https://www.ozoon.eu/casino/slots/5-reel/gems-gala-spin-and-lock
+https://www.ozoon.eu/casino/slots/5-reel/gemza
+https://www.ozoon.eu/casino/slots/5-reel/genie-s-riches
+https://www.ozoon.eu/casino/slots/5-reel/genies-3-wishes
+https://www.ozoon.eu/casino/slots/5-reel/genies-gifts
+https://www.ozoon.eu/casino/slots/5-reel/gifts-from-santa
+https://www.ozoon.eu/casino/slots/5-reel/global-cup-soccer
+https://www.ozoon.eu/casino/slots/5-reel/goals-super-wins
+https://www.ozoon.eu/casino/slots/5-reel/goblins-gold
+https://www.ozoon.eu/casino/slots/5-reel/god-of-wealth-hold-and-win
+https://www.ozoon.eu/casino/slots/5-reel/gold-canyon
+https://www.ozoon.eu/casino/slots/5-reel/gold-express-hold-and-win
+https://www.ozoon.eu/casino/slots/5-reel/gold-heist
+https://www.ozoon.eu/casino/slots/5-reel/gold-hunters
+https://www.ozoon.eu/casino/slots/5-reel/gold-magnate
+https://www.ozoon.eu/casino/slots/5-reel/gold-of-minos
+https://www.ozoon.eu/casino/slots/5-reel/gold-panther-maxways
+https://www.ozoon.eu/casino/slots/5-reel/gold-rush
+https://www.ozoon.eu/casino/slots/5-reel/gold-rush-johnny-cash
+https://www.ozoon.eu/casino/slots/5-reel/golden-dragon-inferno
+https://www.ozoon.eu/casino/slots/5-reel/golden-endzone
+https://www.ozoon.eu/casino/slots/5-reel/golden-gorilla
+https://www.ozoon.eu/casino/slots/5-reel/golden-johnn-rush
+https://www.ozoon.eu/casino/slots/5-reel/golden-pride
+https://www.ozoon.eu/casino/slots/5-reel/golden-savanna-hot-drop-jackpots
+https://www.ozoon.eu/casino/slots/5-reel/goodfishes
+https://www.ozoon.eu/casino/slots/5-reel/gorilla-riches
+https://www.ozoon.eu/casino/slots/5-reel/grab-more-gold
+https://www.ozoon.eu/casino/slots/5-reel/grab-the-gold
+https://www.ozoon.eu/casino/slots/5-reel/great-panda
+https://www.ozoon.eu/casino/slots/5-reel/green-chilli
+https://www.ozoon.eu/casino/slots/5-reel/green-chilli-2
+https://www.ozoon.eu/casino/slots/5-reel/gridiron-glory
+https://www.ozoon.eu/casino/slots/5-reel/hail-caesar
+https://www.ozoon.eu/casino/slots/5-reel/hand-of-midas-2
+https://www.ozoon.eu/casino/slots/5-reel/happy-4th-of-july
+https://www.ozoon.eu/casino/slots/5-reel/hat-trick-hero
+https://www.ozoon.eu/casino/slots/5-reel/hear-me-roar
+https://www.ozoon.eu/casino/slots/5-reel/heart-of-cleopatra
+https://www.ozoon.eu/casino/slots/5-reel/heist-bank-rush
+https://www.ozoon.eu/casino/slots/5-reel/heist-stakes
+https://www.ozoon.eu/casino/slots/5-reel/hello-easter
+https://www.ozoon.eu/casino/slots/5-reel/heroes
+https://www.ozoon.eu/casino/slots/5-reel/heroic-spins
+https://www.ozoon.eu/casino/slots/5-reel/hit-the-route
+https://www.ozoon.eu/casino/slots/5-reel/hobos-hoard
+https://www.ozoon.eu/casino/slots/5-reel/honey-bee
+https://www.ozoon.eu/casino/slots/5-reel/hoop-kings
+https://www.ozoon.eu/casino/slots/5-reel/hot-lucky-7-s
+https://www.ozoon.eu/casino/slots/5-reel/hot-to-burn-multiplier
+https://www.ozoon.eu/casino/slots/5-reel/hottest-666
+https://www.ozoon.eu/casino/slots/5-reel/incan-rich
+https://www.ozoon.eu/casino/slots/5-reel/instant-inferno
+https://www.ozoon.eu/casino/slots/5-reel/jackpot-hunter
+https://www.ozoon.eu/casino/slots/5-reel/jesters-riches
+https://www.ozoon.eu/casino/slots/5-reel/jingle-jackpots
+https://www.ozoon.eu/casino/slots/5-reel/joker-queen
+https://www.ozoon.eu/casino/slots/5-reel/joker-s-jewels
+https://www.ozoon.eu/casino/slots/5-reel/joker-s-jewels-wild
+https://www.ozoon.eu/casino/slots/5-reel/joker-s-super-wins
+https://www.ozoon.eu/casino/slots/5-reel/joker-s-treasure
+https://www.ozoon.eu/casino/slots/5-reel/jungle-stripes
+https://www.ozoon.eu/casino/slots/5-reel/klondike-gold
+https://www.ozoon.eu/casino/slots/5-reel/koi-garden
+https://www.ozoon.eu/casino/slots/5-reel/kung-food-panda
+https://www.ozoon.eu/casino/slots/5-reel/lady-s-magic-charms
+https://www.ozoon.eu/casino/slots/5-reel/lady-wolf-moon
+https://www.ozoon.eu/casino/slots/5-reel/larrys-lucky-tavern
+https://www.ozoon.eu/casino/slots/5-reel/lava-gold
+https://www.ozoon.eu/casino/slots/5-reel/lawless-ladies-return-hot-drop-jackpots
+https://www.ozoon.eu/casino/slots/5-reel/le-bossu-richesse-royale
+https://www.ozoon.eu/casino/slots/5-reel/leonardos-loot
+https://www.ozoon.eu/casino/slots/5-reel/leprechaun-s-golden-trail-hdjp
+https://www.ozoon.eu/casino/slots/5-reel/liberty-wild
+https://www.ozoon.eu/casino/slots/5-reel/lion-gems-hold-and-win
+https://www.ozoon.eu/casino/slots/5-reel/lions-lair
+https://www.ozoon.eu/casino/slots/5-reel/lions-roar
+https://www.ozoon.eu/casino/slots/5-reel/little-farm
+https://www.ozoon.eu/casino/slots/5-reel/lobster-bob-s-sea-food-and-win-it
+https://www.ozoon.eu/casino/slots/5-reel/lost-secret-atlantis
+https://www.ozoon.eu/casino/slots/5-reel/love-money
+https://www.ozoon.eu/casino/slots/5-reel/lucky-clover-lady
+https://www.ozoon.eu/casino/slots/5-reel/lucky-comanche
+https://www.ozoon.eu/casino/slots/5-reel/lucky-crew
+https://www.ozoon.eu/casino/slots/5-reel/lucky-dragon-boat
+https://www.ozoon.eu/casino/slots/5-reel/lucky-dragon-multidice-x
+https://www.ozoon.eu/casino/slots/5-reel/lucky-lady-emerald
+https://www.ozoon.eu/casino/slots/5-reel/lucky-oasis
+https://www.ozoon.eu/casino/slots/5-reel/lust-and-fortune
+https://www.ozoon.eu/casino/slots/5-reel/luxe-555
+https://www.ozoon.eu/casino/slots/5-reel/luxor-gold-hold-and-win
+https://www.ozoon.eu/casino/slots/5-reel/mackereels
+https://www.ozoon.eu/casino/slots/5-reel/magic-apple-2-hold-and-win
+https://www.ozoon.eu/casino/slots/5-reel/mahjong-way-2
+https://www.ozoon.eu/casino/slots/5-reel/majestic-beasts
+https://www.ozoon.eu/casino/slots/5-reel/majestic-mermaid
+https://www.ozoon.eu/casino/slots/5-reel/maneki-88-fortunes
+https://www.ozoon.eu/casino/slots/5-reel/maneki-88-gold
+https://www.ozoon.eu/casino/slots/5-reel/mayan-magic-gold
+https://www.ozoon.eu/casino/slots/5-reel/mechanical-clover
+https://www.ozoon.eu/casino/slots/5-reel/medusa-s-stone
+https://www.ozoon.eu/casino/slots/5-reel/merlins-book-of-spells
+https://www.ozoon.eu/casino/slots/5-reel/mice-magic
+https://www.ozoon.eu/casino/slots/5-reel/miceketeers-all-for-cheese
+https://www.ozoon.eu/casino/slots/5-reel/miceketeers-the-cheese-guardian
+https://www.ozoon.eu/casino/slots/5-reel/midas-fortune
+https://www.ozoon.eu/casino/slots/5-reel/mighty-aphrodite
+https://www.ozoon.eu/casino/slots/5-reel/misfit-toyland
+https://www.ozoon.eu/casino/slots/5-reel/miss-cherry-fruits
+https://www.ozoon.eu/casino/slots/5-reel/mob-heist
+https://www.ozoon.eu/casino/slots/5-reel/monster-hunt
+https://www.ozoon.eu/casino/slots/5-reel/monster-manor
+https://www.ozoon.eu/casino/slots/5-reel/moon-sisters
+https://www.ozoon.eu/casino/slots/5-reel/moulin-reels
+https://www.ozoon.eu/casino/slots/5-reel/mr-macau
+https://www.ozoon.eu/casino/slots/5-reel/mr-vegas-2-big-money-tower
+https://www.ozoon.eu/casino/slots/5-reel/muertos-mariachi
+https://www.ozoon.eu/casino/slots/5-reel/multiplier-man
+https://www.ozoon.eu/casino/slots/5-reel/mummy-s-gold
+https://www.ozoon.eu/casino/slots/5-reel/mystic-hive
+https://www.ozoon.eu/casino/slots/5-reel/mystic-wilds
+https://www.ozoon.eu/casino/slots/5-reel/mythic-wolf
+https://www.ozoon.eu/casino/slots/5-reel/oasis-dreams-hot-drop-jackpots
+https://www.ozoon.eu/casino/slots/5-reel/ocean-treasure
+https://www.ozoon.eu/casino/slots/5-reel/oktobeerfest
+https://www.ozoon.eu/casino/slots/5-reel/olympian-gods
+https://www.ozoon.eu/casino/slots/5-reel/olympus
+https://www.ozoon.eu/casino/slots/5-reel/oof-the-goldmine-planet
+https://www.ozoon.eu/casino/slots/5-reel/opera-of-the-masks
+https://www.ozoon.eu/casino/slots/5-reel/outta-world
+https://www.ozoon.eu/casino/slots/5-reel/pearl-pursuit
+https://www.ozoon.eu/casino/slots/5-reel/pearl-pursuit-hot-drop-jackpots
+https://www.ozoon.eu/casino/slots/5-reel/pho-sho
+https://www.ozoon.eu/casino/slots/5-reel/pinata-wildz
+https://www.ozoon.eu/casino/slots/5-reel/pirates-pick
+https://www.ozoon.eu/casino/slots/5-reel/pistols-roses
+https://www.ozoon.eu/casino/slots/5-reel/play-with-cleo
+https://www.ozoon.eu/casino/slots/5-reel/plucky-lucky
+https://www.ozoon.eu/casino/slots/5-reel/polar-heatwave
+https://www.ozoon.eu/casino/slots/5-reel/power-of-olympus
+https://www.ozoon.eu/casino/slots/5-reel/power-of-rome
+https://www.ozoon.eu/casino/slots/5-reel/precious-treasures
+https://www.ozoon.eu/casino/slots/5-reel/primal-hunt
+https://www.ozoon.eu/casino/slots/5-reel/primal-wilderness
+https://www.ozoon.eu/casino/slots/5-reel/prosperity-pot-88
+https://www.ozoon.eu/casino/slots/5-reel/queen-of-the-sun-hold-and-win
+https://www.ozoon.eu/casino/slots/5-reel/quest-to-the-west
+https://www.ozoon.eu/casino/slots/5-reel/ra-s-expansion
+https://www.ozoon.eu/casino/slots/5-reel/rabbit-s-riches
+https://www.ozoon.eu/casino/slots/5-reel/rags-to-witches
+https://www.ozoon.eu/casino/slots/5-reel/rail-riches
+https://www.ozoon.eu/casino/slots/5-reel/rays-of-ra
+https://www.ozoon.eu/casino/slots/5-reel/realm-of-gods-hot-drop-jackpot
+https://www.ozoon.eu/casino/slots/5-reel/realm-of-the-gods
+https://www.ozoon.eu/casino/slots/5-reel/realm-riches
+https://www.ozoon.eu/casino/slots/5-reel/red-white-bleu
+https://www.ozoon.eu/casino/slots/5-reel/reel-circus
+https://www.ozoon.eu/casino/slots/5-reel/reel-fighters
+https://www.ozoon.eu/casino/slots/5-reel/reel-fortune
+https://www.ozoon.eu/casino/slots/5-reel/reel-party-platinum
+https://www.ozoon.eu/casino/slots/5-reel/reels-of-wealth
+https://www.ozoon.eu/casino/slots/5-reel/reign-gnomes
+https://www.ozoon.eu/casino/slots/5-reel/release-the-bison
+https://www.ozoon.eu/casino/slots/5-reel/return-to-paris
+https://www.ozoon.eu/casino/slots/5-reel/rio-gems
+https://www.ozoon.eu/casino/slots/5-reel/ripe-rewards
+https://www.ozoon.eu/casino/slots/5-reel/rise-of-triton
+https://www.ozoon.eu/casino/slots/5-reel/rise-poseidon
+https://www.ozoon.eu/casino/slots/5-reel/road-2-riches
+https://www.ozoon.eu/casino/slots/5-reel/robin-hood
+https://www.ozoon.eu/casino/slots/5-reel/royal-bets
+https://www.ozoon.eu/casino/slots/5-reel/royal-high-road
+https://www.ozoon.eu/casino/slots/5-reel/royal-tumble
+https://www.ozoon.eu/casino/slots/5-reel/ruby-treasures
+https://www.ozoon.eu/casino/slots/5-reel/rumpel-thrill-spins
+https://www.ozoon.eu/casino/slots/5-reel/safar-stampede
+https://www.ozoon.eu/casino/slots/5-reel/safari-sam-2
+https://www.ozoon.eu/casino/slots/5-reel/safari-stampede
+https://www.ozoon.eu/casino/slots/5-reel/samurai-code
+https://www.ozoon.eu/casino/slots/5-reel/samurais-path
+https://www.ozoon.eu/casino/slots/5-reel/santa-s-vacation
+https://www.ozoon.eu/casino/slots/5-reel/santa-s-ways
+https://www.ozoon.eu/casino/slots/5-reel/savage-buffalo-spirit
+https://www.ozoon.eu/casino/slots/5-reel/savanna-king
+https://www.ozoon.eu/casino/slots/5-reel/savannah-treasures
+https://www.ozoon.eu/casino/slots/5-reel/scarab-temple
+https://www.ozoon.eu/casino/slots/5-reel/scary-rich
+https://www.ozoon.eu/casino/slots/5-reel/scary-rich-2
+https://www.ozoon.eu/casino/slots/5-reel/scary-rich-3
+https://www.ozoon.eu/casino/slots/5-reel/screaming-chillis
+https://www.ozoon.eu/casino/slots/5-reel/secret-bar-multidice-x
+https://www.ozoon.eu/casino/slots/5-reel/secret-book-of-amun-ra
+https://www.ozoon.eu/casino/slots/5-reel/secrets-of-a-geisha
+https://www.ozoon.eu/casino/slots/5-reel/secrets-of-cleopatra
+https://www.ozoon.eu/casino/slots/5-reel/sevens-and-bars
+https://www.ozoon.eu/casino/slots/5-reel/sherwood-coins-hold-and-win
+https://www.ozoon.eu/casino/slots/5-reel/shinobi-moon
+https://www.ozoon.eu/casino/slots/5-reel/silver-unicorn
+https://www.ozoon.eu/casino/slots/5-reel/smoking-gun
+https://www.ozoon.eu/casino/slots/5-reel/snow-king
+https://www.ozoon.eu/casino/slots/5-reel/snow-wonder
+https://www.ozoon.eu/casino/slots/5-reel/so-80s
+https://www.ozoon.eu/casino/slots/5-reel/space-cows-to-the-moo-n
+https://www.ozoon.eu/casino/slots/5-reel/space-sam-walk-and-win
+https://www.ozoon.eu/casino/slots/5-reel/space-traders
+https://www.ozoon.eu/casino/slots/5-reel/spin-and-spell
+https://www.ozoon.eu/casino/slots/5-reel/spinnerix-and-winnerix
+https://www.ozoon.eu/casino/slots/5-reel/spring-tails
+https://www.ozoon.eu/casino/slots/5-reel/stampede
+https://www.ozoon.eu/casino/slots/5-reel/stampede-gold
+https://www.ozoon.eu/casino/slots/5-reel/stay-frosty
+https://www.ozoon.eu/casino/slots/5-reel/streetball-star
+https://www.ozoon.eu/casino/slots/5-reel/submarine-riches
+https://www.ozoon.eu/casino/slots/5-reel/sun-of-egypt-2
+https://www.ozoon.eu/casino/slots/5-reel/sun-of-egypt-3-hold-and-win
+https://www.ozoon.eu/casino/slots/5-reel/sun-of-egypt-4
+https://www.ozoon.eu/casino/slots/5-reel/sunken-treasure
+https://www.ozoon.eu/casino/slots/5-reel/sunlight-princess-hold-win
+https://www.ozoon.eu/casino/slots/5-reel/super-bar-x-game-changer
+https://www.ozoon.eu/casino/slots/5-reel/super-goal-beers
+https://www.ozoon.eu/casino/slots/5-reel/super-goals-reels
+https://www.ozoon.eu/casino/slots/5-reel/super-golden-dragon-inferno
+https://www.ozoon.eu/casino/slots/5-reel/super-graphics-game-changer
+https://www.ozoon.eu/casino/slots/5-reel/super-graphics-upside-down
+https://www.ozoon.eu/casino/slots/5-reel/super-marble-hold-and-win
+https://www.ozoon.eu/casino/slots/5-reel/super-sweets
+https://www.ozoon.eu/casino/slots/5-reel/super-wilds
+https://www.ozoon.eu/casino/slots/5-reel/surf-paradise
+https://www.ozoon.eu/casino/slots/5-reel/surprising-7
+https://www.ozoon.eu/casino/slots/5-reel/swinging-sweethearts
+https://www.ozoon.eu/casino/slots/5-reel/take-olympus
+https://www.ozoon.eu/casino/slots/5-reel/take-santa-s-shop
+https://www.ozoon.eu/casino/slots/5-reel/take-the-bank
+https://www.ozoon.eu/casino/slots/5-reel/take-the-kingdom
+https://www.ozoon.eu/casino/slots/5-reel/temple-of-athena
+https://www.ozoon.eu/casino/slots/5-reel/temple-of-clusters
+https://www.ozoon.eu/casino/slots/5-reel/temple-of-luxorr
+https://www.ozoon.eu/casino/slots/5-reel/thai-blossoms
+https://www.ozoon.eu/casino/slots/5-reel/the-bank-heist
+https://www.ozoon.eu/casino/slots/5-reel/the-big-heist
+https://www.ozoon.eu/casino/slots/5-reel/the-chillies
+https://www.ozoon.eu/casino/slots/5-reel/the-dog-house-megaways
+https://www.ozoon.eu/casino/slots/5-reel/the-mighty-toro
+https://www.ozoon.eu/casino/slots/5-reel/the-slotfather-book-of-wins
+https://www.ozoon.eu/casino/slots/5-reel/the-wicked-witches
+https://www.ozoon.eu/casino/slots/5-reel/thunder-clash
+https://www.ozoon.eu/casino/slots/5-reel/thunder-of-olympus-hold-and-win
+https://www.ozoon.eu/casino/slots/5-reel/thunderbird
+https://www.ozoon.eu/casino/slots/5-reel/thunderbird-spirit
+https://www.ozoon.eu/casino/slots/5-reel/tiger-gems
+https://www.ozoon.eu/casino/slots/5-reel/tiger-kings
+https://www.ozoon.eu/casino/slots/5-reel/tigers-gold
+https://www.ozoon.eu/casino/slots/5-reel/tiki-towers
+https://www.ozoon.eu/casino/slots/5-reel/time-is-money
+https://www.ozoon.eu/casino/slots/5-reel/top-tenner
+https://www.ozoon.eu/casino/slots/5-reel/treasures-god
+https://www.ozoon.eu/casino/slots/5-reel/triple-juicy-drops
+https://www.ozoon.eu/casino/slots/5-reel/triple-lucky-8-s
+https://www.ozoon.eu/casino/slots/5-reel/tycoon-towers
+https://www.ozoon.eu/casino/slots/5-reel/tycoons-billionaire-bucks
+https://www.ozoon.eu/casino/slots/5-reel/valhalla-vikings
+https://www.ozoon.eu/casino/slots/5-reel/victory
+https://www.ozoon.eu/casino/slots/5-reel/viking-reels
+https://www.ozoon.eu/casino/slots/5-reel/viking-voyage
+https://www.ozoon.eu/casino/slots/5-reel/vikings
+https://www.ozoon.eu/casino/slots/5-reel/vikings-victory
+https://www.ozoon.eu/casino/slots/5-reel/vintage-vegas
+https://www.ozoon.eu/casino/slots/5-reel/wbc-ring-of-riches
+https://www.ozoon.eu/casino/slots/5-reel/whale-o-winnings
+https://www.ozoon.eu/casino/slots/5-reel/wild-cash
+https://www.ozoon.eu/casino/slots/5-reel/wild-cash-dice
+https://www.ozoon.eu/casino/slots/5-reel/wild-cash-x9990
+https://www.ozoon.eu/casino/slots/5-reel/wild-diamond-miner
+https://www.ozoon.eu/casino/slots/5-reel/wild-drops
+https://www.ozoon.eu/casino/slots/5-reel/wild-heart
+https://www.ozoon.eu/casino/slots/5-reel/wild-tiger
+https://www.ozoon.eu/casino/slots/5-reel/wild-wanted
+https://www.ozoon.eu/casino/slots/5-reel/wild-wild-spin
+https://www.ozoon.eu/casino/slots/5-reel/wilderness-wolves
+https://www.ozoon.eu/casino/slots/5-reel/wildies
+https://www.ozoon.eu/casino/slots/5-reel/wilds-of-fortune
+https://www.ozoon.eu/casino/slots/5-reel/winds-of-wealth
+https://www.ozoon.eu/casino/slots/5-reel/winning-vegas
+https://www.ozoon.eu/casino/slots/5-reel/winter-wonders
+https://www.ozoon.eu/casino/slots/5-reel/wish-granted
+https://www.ozoon.eu/casino/slots/5-reel/witches-of-salem
+https://www.ozoon.eu/casino/slots/5-reel/wolf-land-hold-and-win
+https://www.ozoon.eu/casino/slots/5-reel/wolf-moon-rising
+https://www.ozoon.eu/casino/slots/5-reel/wolf-wild
+https://www.ozoon.eu/casino/slots/5-reel/woodlanders
+https://www.ozoon.eu/casino/slots/5-reel/world-cup-football
+https://www.ozoon.eu/casino/slots/5-reel/wrath-of-medusa
+https://www.ozoon.eu/casino/slots/5-reel/wrath-of-zeus
+https://www.ozoon.eu/casino/slots/5-reel/yak-yeti-roll
+https://www.ozoon.eu/casino/slots/5-reel/year-of-the-rooster
+https://www.ozoon.eu/casino/slots/5-reel/yin-yang-twins
+https://www.ozoon.eu/casino/slots/5-reel/zombie-fc
+https://www.ozoon.eu/casino/slots/5-reel/zombie-invasion
+https://www.ozoon.eu/casino/slots/5-reel/zombie-world
+https://www.ozoon.eu/casino/slots/6-reel/6-jokers
+https://www.ozoon.eu/casino/slots/6-reel/alien-fruits-2
+https://www.ozoon.eu/casino/slots/6-reel/aztec-powernudge
+https://www.ozoon.eu/casino/slots/6-reel/bakery-bonanza
+https://www.ozoon.eu/casino/slots/6-reel/barnyard-megahays-megaways
+https://www.ozoon.eu/casino/slots/6-reel/blood-eternal
+https://www.ozoon.eu/casino/slots/6-reel/bone-bonanza
+https://www.ozoon.eu/casino/slots/6-reel/book-of-cats
+https://www.ozoon.eu/casino/slots/6-reel/book-of-cats-megaways
+https://www.ozoon.eu/casino/slots/6-reel/boom-boom-gold
+https://www.ozoon.eu/casino/slots/6-reel/buffalo-king-megaways
+https://www.ozoon.eu/casino/slots/6-reel/buffalo-king-untamed-megaways
+https://www.ozoon.eu/casino/slots/6-reel/butterfly-blossom
+https://www.ozoon.eu/casino/slots/6-reel/caishen-deluxe-maxways
+https://www.ozoon.eu/casino/slots/6-reel/caishen-wins
+https://www.ozoon.eu/casino/slots/6-reel/candy-blitz-bombs
+https://www.ozoon.eu/casino/slots/6-reel/candy-boom
+https://www.ozoon.eu/casino/slots/6-reel/candy-carnival
+https://www.ozoon.eu/casino/slots/6-reel/catch-22
+https://www.ozoon.eu/casino/slots/6-reel/clash-of-the-giants
+https://www.ozoon.eu/casino/slots/6-reel/destination-atlantis
+https://www.ozoon.eu/casino/slots/6-reel/duck-hunt-bonanza
+https://www.ozoon.eu/casino/slots/6-reel/egypt-s-book-of-mystery
+https://www.ozoon.eu/casino/slots/6-reel/eye-of-gold
+https://www.ozoon.eu/casino/slots/6-reel/fairytale-fortunes-queen-of-hearts
+https://www.ozoon.eu/casino/slots/6-reel/fruits-mania
+https://www.ozoon.eu/casino/slots/6-reel/fuzang-dragon
+https://www.ozoon.eu/casino/slots/6-reel/galaxy-guardian
+https://www.ozoon.eu/casino/slots/6-reel/gates-of-olympus-1000
+https://www.ozoon.eu/casino/slots/6-reel/gemmza-kingdom
+https://www.ozoon.eu/casino/slots/6-reel/gorgon-s-stash
+https://www.ozoon.eu/casino/slots/6-reel/halloween-bonanza
+https://www.ozoon.eu/casino/slots/6-reel/hawaiian-tiki
+https://www.ozoon.eu/casino/slots/6-reel/holly-jolly-bonanza
+https://www.ozoon.eu/casino/slots/6-reel/jam-bonanza
+https://www.ozoon.eu/casino/slots/6-reel/kensei-blades
+https://www.ozoon.eu/casino/slots/6-reel/king-of-africa
+https://www.ozoon.eu/casino/slots/6-reel/lady-fortune
+https://www.ozoon.eu/casino/slots/6-reel/lady-wolf-moon-megaways
+https://www.ozoon.eu/casino/slots/6-reel/legend-of-cleopatra-megaways
+https://www.ozoon.eu/casino/slots/6-reel/legend-of-perseus
+https://www.ozoon.eu/casino/slots/6-reel/let-it-spin
+https://www.ozoon.eu/casino/slots/6-reel/lucky-8-merge-up
+https://www.ozoon.eu/casino/slots/6-reel/lucky-farm-bonanza
+https://www.ozoon.eu/casino/slots/6-reel/magic-shop
+https://www.ozoon.eu/casino/slots/6-reel/merge-up
+https://www.ozoon.eu/casino/slots/6-reel/might-of-freya-megaways
+https://www.ozoon.eu/casino/slots/6-reel/moji-mania
+https://www.ozoon.eu/casino/slots/6-reel/money-stacks
+https://www.ozoon.eu/casino/slots/6-reel/pirate-island
+https://www.ozoon.eu/casino/slots/6-reel/raider-janes-crypt-of-fortune
+https://www.ozoon.eu/casino/slots/6-reel/revenge-of-loki-megaways
+https://www.ozoon.eu/casino/slots/6-reel/rockstar-world-tour
+https://www.ozoon.eu/casino/slots/6-reel/savage-buffalo-spirit-megaways
+https://www.ozoon.eu/casino/slots/6-reel/smoking-pistols
+https://www.ozoon.eu/casino/slots/6-reel/stampede-bonanza
+https://www.ozoon.eu/casino/slots/6-reel/starlight-princess
+https://www.ozoon.eu/casino/slots/6-reel/sweet-bonanza-1000
+https://www.ozoon.eu/casino/slots/6-reel/sweet-rush-megaways
+https://www.ozoon.eu/casino/slots/6-reel/texas-gold-rush
+https://www.ozoon.eu/casino/slots/6-reel/tiger-dance
+https://www.ozoon.eu/casino/slots/6-reel/tramp-day
+https://www.ozoon.eu/casino/slots/6-reel/treasures-of-fire
+https://www.ozoon.eu/casino/slots/6-reel/trinity-reels
+https://www.ozoon.eu/casino/slots/6-reel/wild-coaster
+https://www.ozoon.eu/casino/slots/6-reel/wild-war-3
+https://www.ozoon.eu/casino/slots/6-reel/wild-west-trueways
+https://www.ozoon.eu/casino/slots/6-reel/wildshot
+https://www.ozoon.eu/casino/slots/6-reel/win-win-fish-prawn-crab
+https://www.ozoon.eu/casino/slots/7-reel/boogie-boom
+https://www.ozoon.eu/casino/slots/7-reel/crocodile-hunt
+https://www.ozoon.eu/casino/slots/7-reel/dublin-your-dough-rainbow-clusters
+https://www.ozoon.eu/casino/slots/7-reel/fruity-treats
+https://www.ozoon.eu/casino/slots/7-reel/gangsterz
+https://www.ozoon.eu/casino/slots/7-reel/jingle-jewels
+https://www.ozoon.eu/casino/slots/7-reel/pop-zen
+https://www.ozoon.eu/casino/slots/7-reel/potion-spells
+https://www.ozoon.eu/casino/slots/7-reel/spinfinity-man
+https://www.ozoon.eu/casino/slots/7-reel/sugarpop-2-double-dipped
+https://www.ozoon.eu/casino/slots/7-reel/sweet-kingdom
+https://www.ozoon.eu/casino/slots/all-slots
+https://www.ozoon.eu/casino/slots/best-online-slots-beginners
+https://www.ozoon.eu/casino/slots/bonus-buy
+https://www.ozoon.eu/casino/slots/hold-and-win
+https://www.ozoon.eu/casino/slots/jackpot-games
+https://www.ozoon.eu/casino/slots/other/gemmed
+https://www.ozoon.eu/casino/slots/progressive-jackpot/achilles
+https://www.ozoon.eu/casino/slots/progressive-jackpot/aladdins-wishes
+https://www.ozoon.eu/casino/slots/progressive-jackpot/ares
+https://www.ozoon.eu/casino/slots/progressive-jackpot/caesars-empire
+https://www.ozoon.eu/casino/slots/progressive-jackpot/caesars-victory
+https://www.ozoon.eu/casino/slots/progressive-jackpot/cash-money-mermaids
+https://www.ozoon.eu/casino/slots/progressive-jackpot/cleopatras-gold
+https://www.ozoon.eu/casino/slots/progressive-jackpot/crystal-waters
+https://www.ozoon.eu/casino/slots/progressive-jackpot/diamond-dozen
+https://www.ozoon.eu/casino/slots/progressive-jackpot/dirty-martini
+https://www.ozoon.eu/casino/slots/progressive-jackpot/dragons
+https://www.ozoon.eu/casino/slots/progressive-jackpot/fruit-frenzy
+https://www.ozoon.eu/casino/slots/progressive-jackpot/funky-monkey
+https://www.ozoon.eu/casino/slots/progressive-jackpot/goldbeard
+https://www.ozoon.eu/casino/slots/progressive-jackpot/green-light
+https://www.ozoon.eu/casino/slots/progressive-jackpot/hearts-desire
+https://www.ozoon.eu/casino/slots/progressive-jackpot/hillbillies
+https://www.ozoon.eu/casino/slots/progressive-jackpot/indiana-jane
+https://www.ozoon.eu/casino/slots/progressive-jackpot/jackpot-pinatas
+https://www.ozoon.eu/casino/slots/progressive-jackpot/mermaid-queen
+https://www.ozoon.eu/casino/slots/progressive-jackpot/mister-money
+https://www.ozoon.eu/casino/slots/progressive-jackpot/paradise-dreams
+https://www.ozoon.eu/casino/slots/progressive-jackpot/penguin-power
+https://www.ozoon.eu/casino/slots/progressive-jackpot/rain-dance
+https://www.ozoon.eu/casino/slots/progressive-jackpot/red-sands
+https://www.ozoon.eu/casino/slots/progressive-jackpot/reel-blood
+https://www.ozoon.eu/casino/slots/progressive-jackpot/reels-and-wheels
+https://www.ozoon.eu/casino/slots/progressive-jackpot/ronin
+https://www.ozoon.eu/casino/slots/progressive-jackpot/shopping-spree
+https://www.ozoon.eu/casino/slots/progressive-jackpot/sleighin-it
+https://www.ozoon.eu/casino/slots/progressive-jackpot/tiger-treasures
+https://www.ozoon.eu/casino/slots/progressive-jackpot/witches-and-wizards
+https://www.ozoon.eu/casino/slots/progressive-jackpot/wolf-saga
+https://www.ozoon.eu/casino/slots/slots
+https://www.ozoon.eu/casino/specialty-games
+https://www.ozoon.eu/casino/specialty/bingo/amazonia-bingo
+https://www.ozoon.eu/casino/specialty/bingo/beach-bums
+https://www.ozoon.eu/casino/specialty/bingo/bingo-cataratas
+https://www.ozoon.eu/casino/specialty/bingo/bingo-goal
+https://www.ozoon.eu/casino/specialty/bingo/bingo-ribeirinhos
+https://www.ozoon.eu/casino/specialty/bingo/go-go-bingo
+https://www.ozoon.eu/casino/specialty/bingo/penguin-payday
+https://www.ozoon.eu/casino/specialty/bingo/pesca-bingo
+https://www.ozoon.eu/casino/specialty/bingo/pirates-pillage
+https://www.ozoon.eu/casino/specialty/bingo/tribo-bingo
+https://www.ozoon.eu/casino/specialty/keno/keno-draw
+https://www.ozoon.eu/casino/specialty/other/3-kings-scratch
+https://www.ozoon.eu/casino/specialty/other/aviamasters
+https://www.ozoon.eu/casino/specialty/other/aztec-warrior-scratchcard
+https://www.ozoon.eu/casino/specialty/other/basketball-instant-win
+https://www.ozoon.eu/casino/specialty/other/capymania-green
+https://www.ozoon.eu/casino/specialty/other/capymania-orange
+https://www.ozoon.eu/casino/specialty/other/capymania-yellow
+https://www.ozoon.eu/casino/specialty/other/cast-cash
+https://www.ozoon.eu/casino/specialty/other/dragon-s-crash
+https://www.ozoon.eu/casino/specialty/other/fishing-club
+https://www.ozoon.eu/casino/specialty/other/gold-alpaca
+https://www.ozoon.eu/casino/specialty/other/gunslingers-gold
+https://www.ozoon.eu/casino/specialty/other/ice-scratch-bronze
+https://www.ozoon.eu/casino/specialty/other/ice-scratch-gold
+https://www.ozoon.eu/casino/specialty/other/ice-scratch-silver
+https://www.ozoon.eu/casino/specialty/other/jogo-do-bicho
+https://www.ozoon.eu/casino/specialty/other/leprechaun-frenzy-scratchcard
+https://www.ozoon.eu/casino/specialty/other/play-with-cleo-scratchcard
+https://www.ozoon.eu/casino/specialty/other/prosperous-blooms-scratchcard
+https://www.ozoon.eu/casino/specialty/other/rise-of-the-titans-scratchcard
+https://www.ozoon.eu/casino/specialty/other/saiyan-warriors-scratchcard
+https://www.ozoon.eu/casino/specialty/other/sea-treasures-scratchcard
+https://www.ozoon.eu/casino/specialty/other/silver-alpaca
+https://www.ozoon.eu/casino/specialty/other/the-bank-heist-scratchcard
+https://www.ozoon.eu/casino/specialty/other/tiki-treasure
+https://www.ozoon.eu/casino/table-games
+https://www.ozoon.eu/casino/table-games/blackjack-games/21-burn-blackjack
+https://www.ozoon.eu/casino/table-games/blackjack-games/22-blackjack
+https://www.ozoon.eu/casino/table-games/blackjack-games/blackjack-perfect-pair-21-3
+https://www.ozoon.eu/casino/table-games/blackjack-games/classic-blackjack-brng
+https://www.ozoon.eu/casino/table-games/blackjack-games/dragon-blackjack-guarantee-multiplier
+https://www.ozoon.eu/casino/table-games/blackjack-games/european-blackjack
+https://www.ozoon.eu/casino/table-games/blackjack-games/pirate-21
+https://www.ozoon.eu/casino/table-games/blackjack-games/the-new-blackjack-pandora
+https://www.ozoon.eu/casino/table-games/blackjack-games/tri-card-poker
+https://www.ozoon.eu/casino/table-games/card-game/andar-bahar
+https://www.ozoon.eu/casino/table-games/card-game/baccarat
+https://www.ozoon.eu/casino/table-games/card-game/classic-baccarat
+https://www.ozoon.eu/casino/table-games/card-game/oasis-poker
+https://www.ozoon.eu/casino/table-games/card-game/pontoon-21
+https://www.ozoon.eu/casino/table-games/card-game/red-dog
+https://www.ozoon.eu/casino/table-games/card-game/super-7-blackjack
+https://www.ozoon.eu/casino/table-games/card-game/teen-patti
+https://www.ozoon.eu/casino/table-games/card-game/teen-patti-rapid
+https://www.ozoon.eu/casino/table-games/card-game/three-card-rummy
+https://www.ozoon.eu/casino/table-games/card-game/top-card-trumps
+https://www.ozoon.eu/casino/table-games/dice-game/_craps
+https://www.ozoon.eu/casino/table-games/dice-game/craps
+https://www.ozoon.eu/casino/table-games/dice-game/roll-dice
+https://www.ozoon.eu/casino/table-games/poker/caribbean-holdem
+https://www.ozoon.eu/casino/table-games/poker/caribbean-stud-poker
+https://www.ozoon.eu/casino/table-games/poker/classic-let-em-ride
+https://www.ozoon.eu/casino/table-games/poker/classic-tri-card-poker
+https://www.ozoon.eu/casino/table-games/poker/let-em-ride
+https://www.ozoon.eu/casino/table-games/poker/pai-gow-poker
+https://www.ozoon.eu/casino/table-games/roulette/american-roulette
+https://www.ozoon.eu/casino/table-games/roulette/classic-american-roulette
+https://www.ozoon.eu/casino/table-games/roulette/classic-european-roulette
+https://www.ozoon.eu/casino/table-games/roulette/double-dragon-roulette
+https://www.ozoon.eu/casino/table-games/roulette/dragon-roulette
+https://www.ozoon.eu/casino/table-games/roulette/european-roulette
+https://www.ozoon.eu/casino/table-games/roulette/zoom-roulette
+https://www.ozoon.eu/casino/video-poker/1-hand/bonus-deuces-wild-1-hand
+https://www.ozoon.eu/casino/video-poker/1-hand/double-double-bonus-poker-1-hand
+https://www.ozoon.eu/casino/video-poker/1-hand/jacks-or-better-1-hand
+https://www.ozoon.eu/casino/video-poker/1-hand/joker-poker-1-hand
+https://www.ozoon.eu/casino/video-poker/10-hands/jacks-or-better-10-hands
+https://www.ozoon.eu/casino/video-poker/10-hands/joker-poker-10-hands
+https://www.ozoon.eu/casino/video-poker/3-hands/jacks-or-better-3-hands
+https://www.ozoon.eu/casino/video-poker/3-hands/joker-poker-3-hands
+https://www.ozoon.eu/casino/video-poker/other/tens-or-better-multi-hand
+https://www.ozoon.eu/contents/archat
+https://www.ozoon.eu/contents/browser-not-supported
+https://www.ozoon.eu/contents/chatbox-psat
+https://www.ozoon.eu/contents/unsubscribe
+https://www.ozoon.eu/contents/upgrade-browser
+https://www.ozoon.eu/contents/usms
+https://www.ozoon.eu/craps-dice
+https://www.ozoon.eu/crash-games
+https://www.ozoon.eu/divisional-round-preview-green-bay-vs-dallas-pittsburgh-vs-kansas-city
+https://www.ozoon.eu/drew-brees-favoured-most-passing-yards-2017-18-nfl-season
+https://www.ozoon.eu/elite-picks
+https://www.ozoon.eu/esports-betting-bet-on-fortnite-dota-2-lol-csgo
+https://www.ozoon.eu/euro-2020
+https://www.ozoon.eu/forms-and-agreements
+https://www.ozoon.eu/golf-us-open-betting-odds
+https://www.ozoon.eu/help
+https://www.ozoon.eu/help/bonuses-faq/can-i-forfeit-a-bonus
+https://www.ozoon.eu/help/bonuses-faq/claim-bonus
+https://www.ozoon.eu/help/bonuses-faq/do-my-bonuses-expire
+https://www.ozoon.eu/help/bonuses-faq/refer-a-friend-faq
+https://www.ozoon.eu/help/bonuses-faq/social-media-contest-terms-and-conditions
+https://www.ozoon.eu/help/bonuses-faq/what-games-can-i-play-with-my-bonuses
+https://www.ozoon.eu/help/bonuses-faq/what-is-rollover
+https://www.ozoon.eu/help/bonuses-faq/why-hasnt-my-deposit-bonus-been-issued-yet
+https://www.ozoon.eu/help/casino-faq/bonus-terms-and-conditions
+https://www.ozoon.eu/help/casino-faq/casino-bonus
+https://www.ozoon.eu/help/casino-faq/casino-game-odds-determined-ozoon
+https://www.ozoon.eu/help/casino-faq/claim-casino-bonus
+https://www.ozoon.eu/help/casino-faq/find-your-favourite-casino-game
+https://www.ozoon.eu/help/casino-faq/how-many-times-can-i-redeem-a-casino-bonus
+https://www.ozoon.eu/help/casino-faq/lost-connection-playing-casino-game
+https://www.ozoon.eu/help/casino-faq/what-is-a-free-spin
+https://www.ozoon.eu/help/casino-faq/what-is-a-progressive-jackpot
+https://www.ozoon.eu/help/common-faq/athletics-betting-rules
+https://www.ozoon.eu/help/common-faq/australian-betting-rules
+https://www.ozoon.eu/help/common-faq/badminton-betting-rules
+https://www.ozoon.eu/help/common-faq/badminton-live-betting-rules
+https://www.ozoon.eu/help/common-faq/bank-transaction-agreement
+https://www.ozoon.eu/help/common-faq/basketball-betting-rules
+https://www.ozoon.eu/help/common-faq/basketball-live-betting-rules
+https://www.ozoon.eu/help/common-faq/boxing-mma-betting-rules
+https://www.ozoon.eu/help/common-faq/credit-cards-transaction-processing-agreement
+https://www.ozoon.eu/help/common-faq/cricket-betting-rules
+https://www.ozoon.eu/help/common-faq/cricket-live-betting-rules
+https://www.ozoon.eu/help/common-faq/cycling-betting-rules
+https://www.ozoon.eu/help/common-faq/darts-betting-rules
+https://www.ozoon.eu/help/common-faq/disabled-account-re-enabled
+https://www.ozoon.eu/help/common-faq/disabling-enabling-account
+https://www.ozoon.eu/help/common-faq/esports-betting-rules
+https://www.ozoon.eu/help/common-faq/find-your-way-around-ozoon-live
+https://www.ozoon.eu/help/common-faq/football-betting-rules
+https://www.ozoon.eu/help/common-faq/football-live-betting-rules
+https://www.ozoon.eu/help/common-faq/gaelic-games-betting-rules
+https://www.ozoon.eu/help/common-faq/golf-betting-rules
+https://www.ozoon.eu/help/common-faq/golf-live-betting-rules
+https://www.ozoon.eu/help/common-faq/handball-live-betting-rules
+https://www.ozoon.eu/help/common-faq/hockey-betting-rules
+https://www.ozoon.eu/help/common-faq/hockey-live-betting-rules
+https://www.ozoon.eu/help/common-faq/how-do-i-contact-customer-service
+https://www.ozoon.eu/help/common-faq/how-do-i-request-a-withdrawal
+https://www.ozoon.eu/help/common-faq/how-do-i-validate-my-phone-number
+https://www.ozoon.eu/help/common-faq/mlb-home-run-derby-live-betting-rules
+https://www.ozoon.eu/help/common-faq/motor-sports-betting-rules
+https://www.ozoon.eu/help/common-faq/nba-draft-live-betting-rules
+https://www.ozoon.eu/help/common-faq/nfl-draft-live-betting-rules
+https://www.ozoon.eu/help/common-faq/nhl-draft-live-betting-rules
+https://www.ozoon.eu/help/common-faq/restricted-regions
+https://www.ozoon.eu/help/common-faq/rugby-betting-rules
+https://www.ozoon.eu/help/common-faq/single-bet-clone_1
+https://www.ozoon.eu/help/common-faq/snooker-betting-rules
+https://www.ozoon.eu/help/common-faq/soccer-betting-rules
+https://www.ozoon.eu/help/common-faq/soccer-live-betting-rules
+https://www.ozoon.eu/help/common-faq/system-error-message-sportsbook
+https://www.ozoon.eu/help/common-faq/table-tennis-betting-rules
+https://www.ozoon.eu/help/common-faq/tennis-betting-rules
+https://www.ozoon.eu/help/common-faq/tennis-live-betting-rules
+https://www.ozoon.eu/help/common-faq/track-odds-payment
+https://www.ozoon.eu/help/common-faq/volleyball-betting-rules
+https://www.ozoon.eu/help/common-faq/volleyball-live-betting-rules
+https://www.ozoon.eu/help/common-faq/water-polo-betting-rules
+https://www.ozoon.eu/help/common-faq/water-polo-live-betting-rules
+https://www.ozoon.eu/help/common-faq/what-is-tether
+https://www.ozoon.eu/help/common-faq/where-is-my-cashback-bonus
+https://www.ozoon.eu/help/common-faq/why-is-my-account-disabled
+https://www.ozoon.eu/help/common-faq/winter-sports-betting-rules
+https://www.ozoon.eu/help/cryptocurrency-faq/advantages-to-bitcoinsv
+https://www.ozoon.eu/help/cryptocurrency-faq/are-cryptocurrencies-secure
+https://www.ozoon.eu/help/cryptocurrency-faq/benefit-of-crypto-currency-ozoon
+https://www.ozoon.eu/help/cryptocurrency-faq/can-i-cancel-my-cryptocurrency-withdrawal
+https://www.ozoon.eu/help/cryptocurrency-faq/can-i-lose-money-if-cryptocurrency-fluctuates
+https://www.ozoon.eu/help/cryptocurrency-faq/cryptocurrency-deposit-withdrawal-limits
+https://www.ozoon.eu/help/cryptocurrency-faq/how-do-i-change-my-cryptocurrency-to-cad
+https://www.ozoon.eu/help/cryptocurrency-faq/how-do-i-withdraw-with-a-cryptocurrency
+https://www.ozoon.eu/help/cryptocurrency-faq/how-to-deposit-cryptocurrency
+https://www.ozoon.eu/help/cryptocurrency-faq/i-sent-my-cryptocurrency-to-the-wrong-wallet
+https://www.ozoon.eu/help/cryptocurrency-faq/what-are-the-transaction-fees
+https://www.ozoon.eu/help/cryptocurrency-faq/what-is-ethereum
+https://www.ozoon.eu/help/cryptocurrency-faq/what-is-litecoin
+https://www.ozoon.eu/help/cryptocurrency-faq/what-is-network-congestion
+https://www.ozoon.eu/help/cryptocurrency-faq/when-will-my-funds-be-available
+https://www.ozoon.eu/help/cryptocurrency-faq/why-do-i-need-digital-wallet
+https://www.ozoon.eu/help/financial-faq/can-i-cancel-my-withdrawal
+https://www.ozoon.eu/help/financial-faq/can-i-use-another-persons-credit-card
+https://www.ozoon.eu/help/financial-faq/do-you-report-my-winnings-to-government-taxation-authorities
+https://www.ozoon.eu/help/financial-faq/how-do-i-make-a-deposit
+https://www.ozoon.eu/help/financial-faq/how-to-deposit-by-interac-e-transfer
+https://www.ozoon.eu/help/financial-faq/how-to-make-a-deposit-by-direct-bank-transfer-ol
+https://www.ozoon.eu/help/financial-faq/how-to-request-a-cheque-by-courier-withdrawal
+https://www.ozoon.eu/help/financial-faq/how-to-withdraw-by-interac-e-transfer
+https://www.ozoon.eu/help/financial-faq/make-a-withdrawal-by-direct-bank-transfer
+https://www.ozoon.eu/help/financial-faq/what-are-my-different-balances
+https://www.ozoon.eu/help/financial-faq/what-are-the-deposit-fees
+https://www.ozoon.eu/help/financial-faq/what-are-the-deposit-limits
+https://www.ozoon.eu/help/financial-faq/what-are-the-withdrawal-fees
+https://www.ozoon.eu/help/financial-faq/what-deposit-methods-are-available
+https://www.ozoon.eu/help/financial-faq/what-happens-if-my-information-doesnt-validate
+https://www.ozoon.eu/help/financial-faq/what-is-mastercard-secrurecode
+https://www.ozoon.eu/help/financial-faq/what-is-verified-by-visa
+https://www.ozoon.eu/help/financial-faq/what-will-appear-on-my-credit-card-statement
+https://www.ozoon.eu/help/financial-faq/when-will-i-receive-my-withdrawal
+https://www.ozoon.eu/help/financial-faq/why-did-my-deposit-fail
+https://www.ozoon.eu/help/financial-faq/why-do-you-require-my-id-to-make-a-deposit
+https://www.ozoon.eu/help/general-faq/change-password
+https://www.ozoon.eu/help/general-faq/creating-an-account
+https://www.ozoon.eu/help/general-faq/forgot-my-password
+https://www.ozoon.eu/help/general-faq/forgot-registered-email
+https://www.ozoon.eu/help/general-faq/how-do-i-re-enable-my-account
+https://www.ozoon.eu/help/general-faq/how-does-the-transaction-statement-work
+https://www.ozoon.eu/help/general-faq/how-to-clear-your-cache
+https://www.ozoon.eu/help/general-faq/how-to-identify-spam
+https://www.ozoon.eu/help/general-faq/is-ozoon-secure
+https://www.ozoon.eu/help/general-faq/ozoon-doesnt-look-right
+https://www.ozoon.eu/help/general-faq/the-ozoon-guarantee
+https://www.ozoon.eu/help/general-faq/turn-off-browser-autofill
+https://www.ozoon.eu/help/general-faq/updating-profile
+https://www.ozoon.eu/help/general-faq/where-more-information-about-ozoon-rewards
+https://www.ozoon.eu/help/general-faq/why-cant-i-sign-in
+https://www.ozoon.eu/help/general-faq/why-do-i-receive-a-security-alert
+https://www.ozoon.eu/help/horses-faq/boxed-wagers
+https://www.ozoon.eu/help/horses-faq/coupled-entries
+https://www.ozoon.eu/help/horses-faq/daily-double-betting
+https://www.ozoon.eu/help/horses-faq/exacta-betting
+https://www.ozoon.eu/help/horses-faq/finding-wager-types
+https://www.ozoon.eu/help/horses-faq/horse-bet-slip
+https://www.ozoon.eu/help/horses-faq/horse-betting-rules
+https://www.ozoon.eu/help/horses-faq/ml-odds
+https://www.ozoon.eu/help/horses-faq/quinella-betting
+https://www.ozoon.eu/help/horses-faq/racebook-futures
+https://www.ozoon.eu/help/horses-faq/scratch-rules
+https://www.ozoon.eu/help/horses-faq/stake-withdrawal-limits
+https://www.ozoon.eu/help/horses-faq/superfecta-betting
+https://www.ozoon.eu/help/horses-faq/trifecta-betting
+https://www.ozoon.eu/help/horses-faq/what-pick-3
+https://www.ozoon.eu/help/horses-faq/wheeled-bets
+https://www.ozoon.eu/help/horses-faq/win-place-show
+https://www.ozoon.eu/help/live-dealer-faq/are-live-dealers-available-all-languages
+https://www.ozoon.eu/help/live-dealer-faq/can-i-change-my-live-dealer-screen-name
+https://www.ozoon.eu/help/live-dealer-faq/can-i-chat-live-dealer-table
+https://www.ozoon.eu/help/live-dealer-faq/can-i-chat-other-players-table
+https://www.ozoon.eu/help/live-dealer-faq/can-i-tip-live-dealer
+https://www.ozoon.eu/help/live-dealer-faq/can-live-dealer-see-me
+https://www.ozoon.eu/help/live-dealer-faq/how-do-i-turn-off-sound-live-game
+https://www.ozoon.eu/help/live-dealer-faq/what-back-betting
+https://www.ozoon.eu/help/live-dealer-faq/what-if-all-blackjack-seats-are-full
+https://www.ozoon.eu/help/live-dealer-faq/what-if-i-have-question-or-need-assistance-during-game
+https://www.ozoon.eu/help/live-dealer-faq/what-insurance-bet
+https://www.ozoon.eu/help/live-dealer-faq/what-is-super-777-progressive-jackpot-in-blackjack
+https://www.ozoon.eu/help/live-dealer-faq/what-live-casino-games-are-available
+https://www.ozoon.eu/help/live-dealer-faq/what-pairs-side-bet
+https://www.ozoon.eu/help/live-dealer-faq/what-rummy-side-bet
+https://www.ozoon.eu/help/live-dealer-faq/what-tip-bet
+https://www.ozoon.eu/help/poker-faq/game-limits
+https://www.ozoon.eu/help/poker-faq/hand-rankings
+https://www.ozoon.eu/help/poker-faq/hi-lo
+https://www.ozoon.eu/help/poker-faq/how-change-dns
+https://www.ozoon.eu/help/poker-faq/how-do-i-start-playing-poker
+https://www.ozoon.eu/help/poker-faq/poker-download-requirements
+https://www.ozoon.eu/help/poker-faq/poker-etiquette
+https://www.ozoon.eu/help/poker-faq/poker-glossary
+https://www.ozoon.eu/help/poker-faq/protection-poker
+https://www.ozoon.eu/help/poker-faq/rules-omaha-high-low
+https://www.ozoon.eu/help/poker-faq/rules-omaha-rules
+https://www.ozoon.eu/help/poker-faq/rules-texas-holdem-ol
+https://www.ozoon.eu/help/poker-faq/tournament-cancellation-policy
+https://www.ozoon.eu/help/poker-faq/troubleshooting-poker-technical-issues
+https://www.ozoon.eu/help/sports-faq/american-odds
+https://www.ozoon.eu/help/sports-faq/betting-limits
+https://www.ozoon.eu/help/sports-faq/buying-points
+https://www.ozoon.eu/help/sports-faq/decimal-odds
+https://www.ozoon.eu/help/sports-faq/fractional-odds
+https://www.ozoon.eu/help/sports-faq/full-sports-glossary
+https://www.ozoon.eu/help/sports-faq/futures
+https://www.ozoon.eu/help/sports-faq/game-segments
+https://www.ozoon.eu/help/sports-faq/general-betting-rules
+https://www.ozoon.eu/help/sports-faq/how-do-i-make-a-quick-pick-bet-in-prop-builder
+https://www.ozoon.eu/help/sports-faq/how-do-i-use-the-player-props-prop-builder-tool
+https://www.ozoon.eu/help/sports-faq/how-does-the-cash-out-feature-work
+https://www.ozoon.eu/help/sports-faq/how-to-play-virtual-sports
+https://www.ozoon.eu/help/sports-faq/live-betting-rules
+https://www.ozoon.eu/help/sports-faq/moneylines
+https://www.ozoon.eu/help/sports-faq/nfl-betting-guide
+https://www.ozoon.eu/help/sports-faq/odds-posting-schedule
+https://www.ozoon.eu/help/sports-faq/parlay-betting-ozn
+https://www.ozoon.eu/help/sports-faq/point-spread
+https://www.ozoon.eu/help/sports-faq/props-ozn
+https://www.ozoon.eu/help/sports-faq/round-robin-betting
+https://www.ozoon.eu/help/sports-faq/single-bet
+https://www.ozoon.eu/help/sports-faq/sports-bet-slip
+https://www.ozoon.eu/help/sports-faq/sports-specific-betting-rules
+https://www.ozoon.eu/help/sports-faq/sports-specific-live-betting-rules
+https://www.ozoon.eu/help/sports-faq/teaser-betting
+https://www.ozoon.eu/help/sports-faq/totals-over-under
+https://www.ozoon.eu/help/sports-faq/virtual-sports-betting-rules
+https://www.ozoon.eu/horse-betting-limits
+https://www.ozoon.eu/hot-drop
+https://www.ozoon.eu/how-withdrawal-determined
+https://www.ozoon.eu/keno
+https://www.ozoon.eu/kentucky-derby
+https://www.ozoon.eu/limit-holdem
+https://www.ozoon.eu/live-dealer
+https://www.ozoon.eu/mtt
+https://www.ozoon.eu/mystery
+https://www.ozoon.eu/no-limit
+https://www.ozoon.eu/poker
+https://www.ozoon.eu/poker/anonymous-tables-btx
+https://www.ozoon.eu/poker/cash-games-btx
+https://www.ozoon.eu/poker/download-poker
+https://www.ozoon.eu/poker/get-started/disconnection-protection
+https://www.ozoon.eu/poker/get-started/house-rules
+https://www.ozoon.eu/poker/how-to-play-poker/bluffing
+https://www.ozoon.eu/poker/how-to-play-poker/cash-games-btx
+https://www.ozoon.eu/poker/how-to-play-poker/etiquette
+https://www.ozoon.eu/poker/how-to-play-poker/game-selection
+https://www.ozoon.eu/poker/how-to-play-poker/guaranteed-btx
+https://www.ozoon.eu/poker/how-to-play-poker/hands
+https://www.ozoon.eu/poker/how-to-play-poker/how-play-actions
+https://www.ozoon.eu/poker/how-to-play-poker/observing
+https://www.ozoon.eu/poker/how-to-play-poker/omaha-btx
+https://www.ozoon.eu/poker/how-to-play-poker/omaha-hi-lo-btx
+https://www.ozoon.eu/poker/how-to-play-poker/position
+https://www.ozoon.eu/poker/how-to-play-poker/texas-holdem-btx
+https://www.ozoon.eu/poker/mobile-poker-btx
+https://www.ozoon.eu/poker/omaha-btx
+https://www.ozoon.eu/poker/omaha-hi-lo-btx
+https://www.ozoon.eu/poker/ozoon-poker-tournaments-overview
+https://www.ozoon.eu/poker/rules-how
+https://www.ozoon.eu/poker/series-events-btx
+https://www.ozoon.eu/poker/special-features/quick-seat-btx
+https://www.ozoon.eu/poker/texas-holdem-btx
+https://www.ozoon.eu/poker/tournaments
+https://www.ozoon.eu/poker/tournaments/100k-high-roller-tournament-btx
+https://www.ozoon.eu/poker/tournaments/guaranteed-btx
+https://www.ozoon.eu/poker/tournaments/guaranteed/200k-poker-tournament-btx
+https://www.ozoon.eu/poker/tournaments/knockout-tournaments-btx
+https://www.ozoon.eu/poker/tournaments/series-events/black-diamond-poker-open-tournaments-btx
+https://www.ozoon.eu/poker/tournaments/series-events/golden-spade-poker-open-btx
+https://www.ozoon.eu/poker/tournaments/series-events/super-millions-poker-open-btx
+https://www.ozoon.eu/poker/tournaments/sit-and-go-ol
+https://www.ozoon.eu/poker/tournaments/sit-and-go-tournaments
+https://www.ozoon.eu/poker/zone-poker-btx
+https://www.ozoon.eu/promotions
+https://www.ozoon.eu/promotions-test
+https://www.ozoon.eu/protection
+https://www.ozoon.eu/real-money-blackjack-guide
+https://www.ozoon.eu/sit-and-go-btx
+https://www.ozoon.eu/special-features
+https://www.ozoon.eu/specialty-games-old2
+https://www.ozoon.eu/sports
+https://www.ozoon.eu/sports/baseball
+https://www.ozoon.eu/sports/basketball
+https://www.ozoon.eu/sports/football
+https://www.ozoon.eu/sports/golf
+https://www.ozoon.eu/sports/live
+https://www.ozoon.eu/sports/soccer
+https://www.ozoon.eu/sports/tennis
+https://www.ozoon.eu/strategy
+https://www.ozoon.eu/table-games-old
+https://www.ozoon.eu/tc-general
+https://www.ozoon.eu/tournaments
+https://www.ozoon.eu/tournaments/100k-high-roller-tournament-btx
+https://www.ozoon.eu/tournaments/guaranteed-btx
+https://www.ozoon.eu/tournaments/guaranteed/200k-poker-tournament-btx
+https://www.ozoon.eu/tournaments/knockout-tournaments-btx
+https://www.ozoon.eu/tournaments/series-events/black-diamond-poker-open-tournaments-btx
+https://www.ozoon.eu/tournaments/series-events/golden-spade-poker-open-btx
+https://www.ozoon.eu/tournaments/series-events/super-millions-poker-open-btx
+https://www.ozoon.eu/tournaments/sit-and-go-ol
+https://www.ozoon.eu/tournaments/sit-and-go-tournaments
+https://www.ozoon.eu/video-poker
+https://www.ozoon.eu/ways-pays
+https://www.ozoon.eu/what-if-there-human-misdeal-or-technical-issue-during-game-0
+https://www.ozoon.eu/what-pick-4
+https://www.ozoon.eu/what-withdrawal-methods-are-available
+https://www.ozoon.eu/why-cant-i-see-live-dealer
+[0m
+Sitemap walk yields a few non-content paths: `/contents/archat`, `/contents/usms`, `/contents/unsubscribe`. Fetching these two read-only for embedded app/API references.
+[0m$ [0mcd /tmp/opencode && sleep 1 && curl -s --max-time 30 -A "Mozilla/5.0" https://www.ozoon.eu/contents/archat -o archat.html -w "archat HTTP %{http_code} bytes=%{size_download}\n"; sleep 1; curl -s --max-time 30 -A "Mozilla/5.0" https://www.ozoon.eu/contents/usms -o usms.html -w "usms HTTP %{http_code} bytes=%{size_download}\n"; sleep 1; curl -s --max-time 30 -A "Mozilla/5.0" https://www.ozoon.eu/contents/unsubscribe -o unsubscribe.html -w "unsubscribe HTTP %{http_code} bytes=%{size_download}\n"
+archat HTTP 200 bytes=22714
+usms HTTP 200 bytes=22971
+unsubscribe HTTP 200 bytes=22516
+[0m
+[0m$ [0mcd /tmp/opencode && for f in archat usms unsubscribe; do echo "=== $f ==="; grep -oiE '(api|url|href|fetch|src|service)[^>]{0,80}' $f.html 2>/dev/null | grep -oiE 'https?://[^"'"'"' <>]*' | sort -u | head -10; grep -oE '(/api/v[0-9]+/[a-zA-Z0-9_/-]+)' $f.html | sort -u | head -10; done
+=== archat ===
+https://nchat.bodog.eu/iframe/iframe.html?lin=false&ftv=false&ftd=flase&df=fal
+https://www.bodog.eu
+/api/v1/logout
+/api/v1/signup
+=== usms ===
+/api/v1/logout
+/api/v1/signup
+=== unsubscribe ===
+/api/v1/logout
+/api/v1/signup
+[0m
+[0m$ [0mcd /tmp/opencode && grep -oiE 'nchat[^"'"'"' ]*|iframe[^"'"'"' ]*|chat[^"'"'"' ]{0,40}' archat.html | sort -u | head -20; echo "=== bodog domains ==="; grep -oE 'https?://[a-z0-9.-]*bodog[a-z0-9.-]*' archat.html | sort -u
+Chat
+Chat.min.js
+chat
+chat-bodog.eu/
+chat.alv.js.display.options
+chat.alv.js.iframe.params
+chat.alv.js.iframe.uri
+chat.alv.js.library.uri
+chat.bodog.eu/netagent/client/unified/includ
+chat.bodog.eu/netagent/client/unified/portal
+chat.enabled
+chat.js.detection.uri
+chat.js.settings.uri
+chat.nv.js.bot
+chat.nv.js.bot.iframe.params
+chat.nv.js.bot.iframe.uri
+chat.nv.js.display.options
+chat.nv.js.iframe.params
+chat.nv.js.iframe.uri
+chat.nv.js.iframe.vip_params
+=== bodog domains ===
+https://livechat.bodog.eu
+https://nchat.bodog.eu
+https://nchat2.bodog.eu
+https://prod.chat-bodog.eu
+https://www.bodog.eu
+[0m
+[0m$ [0mcd /tmp/opencode && for p in specialty-games-old2 table-games-old elite-picks crash-games hot-drop mystery; do sleep 1; curl -s -o /dev/null --max-time 20 -A "Mozilla/5.0" -w "$p -> HTTP %{http_code} bytes=%{size_download}\n" "https://www.ozoon.eu/$p"; done
+specialty-games-old2 -> HTTP 308 bytes=23
+table-games-old -> HTTP 308 bytes=38
+elite-picks -> HTTP 308 bytes=78
+crash-games -> HTTP 308 bytes=35
+hot-drop -> HTTP 308 bytes=25
+mystery -> HTTP 404 bytes=126395
+[0m
+[0m$ [0mcd /tmp/opencode && for p in specialty-games-old2 table-games-old; do sleep 1; curl -s -L -o /dev/null --max-time 20 -A "Mozilla/5.0" -w "$p -> HTTP %{http_code} bytes=%{size_download} final=%{url_effective}\n" "https://www.ozoon.eu/$p"; done
+specialty-games-old2 -> HTTP 200 bytes=837777 final=https://www.ozoon.eu/casino/specialty-games
+table-games-old -> HTTP 200 bytes=740124 final=https://www.ozoon.eu/casino/table-games
+[0m
+Breadth pass done. Writing the structured cycle output.
+
+[STEP 1 — DELTA]
+- [NEW] services.ozoon.eu SSR shell re-fetch (743KB, HTTP 200): `services/b2b/api/v1` appears only as `jackpotApiBase: 'https://games.glovefrog.plus/services/b2b/api/v1'` in the `bovada.lv` brand block — same third-party glovefrog family already flagged off-scope; no new in-scope `/services/` prefixes; `/content/manifest.json` → 404 empty.
+- [NEW] www.ozoon.eu sitemap re-walk (~230 locs): `/contents/archat` embeds Bodog live-chat iframe refs (`livechat.bodog.eu`, `nchat.bodog.eu`, `nchat2.bodog.eu`, `prod.chat-bodog.eu`); `/contents/usms`, `/contents/unsubscribe` trivial content with only `/api/v1/logout|signup`; `specialty-games-old2` and `table-games-old` → 308→200 redirect to current casino pages.
+- NO_DELTA on scoped critical surface: no new anonymously-testable scoped asset.
+
+[STEP 2 — PRIORITIZE]
+[PRIO] services.ozoon.eu/services/*/v1/profiles/{uuid}/...,6.95,attack_surface:9+business_value:9+tech_exposure:6+gate_ease:3+cloud_surface:5+freshness:6
+[PRIO] services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify,5.75,attack_surface:8+business_value:9+tech_exposure:7+gate_ease:2+cloud_surface:4+freshness:7
+[PRIO] www.ozoon.eu/api/v1/signup,4.95,attack_surface:7+business_value:7+tech_exposure:4+gate_ease:8+cloud_surface:3+freshness:6
+
+[STEP 3 — HYPOTHESES]
+[HYP] BOLA on profile-keyed UUID endpoints — session identity may not be bound to path UUID
+class: IDOR
+asset: https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...
+confidence: 65
+reasoning: SDK bundles confirm 5 services key resources by UUID path; bogus-UUID probe returns structured 401 errorCode:"unauthorized" (auth pre-check precedes resource lookup), clean differential baseline; backend GoBet/Beatrix profile-centric UUID-key architecture; split-horizon backend (services.services.ozoon.eu NXDOMAIN) forces all traffic through public gateway. Reconfirmed this cycle: SSR shell exposes no additional anonymous surface, nothing displaces this vector.
+evidence_needed: Authorized A accessing /profiles/{B-UUID}/... returns B's data while ownPID returns A's data.
+verify_steps: PREREQ: authorization. POST signup A → sid+ownPID; GET /services/wallet-gateway/v1/profiles/{ownPID-A}/balances with A sid; control {bogus-uuid} (recorded 401); authorized B GET /profiles/{ownPID-B}/... with A sid; non-401/404 foreign data = BOLA.
+impact: Critical — cross-user PII/financial read (wallets, transactions, messages, verification state); ATO enabler.
+testability: AUTH_HELPED
+[HYP] Mock-2FA verification header may be honored in production — client-controlled 2FA/KYC gate bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{ownPID}/verifications/verify
+confidence: 55
+reasoning: Production SDK sends X-MOCK-2FA-VERIFICATION:true; config exposes two_factor_authenticator.allow-permanent-skip:["true"]; isMockProviderEnabled:false is client-side contrary evidence only; server-side honoring untested; 401 baseline shape confirmed.
+evidence_needed: With own session, POST verify with mock header succeeds while identical request without it is rejected.
+verify_steps: PREREQ: authorization. POST signup → sid+ownPID; POST .../verifications/verify + X-MOCK-2FA-VERIFICATION:true,{"verificationType":"PHONE"} → record; control without header; success+vetoWith rejection = confirmed.
+impact: Critical — bypass SMS/PIN/2FA/KYC on withdraw/deposit/bonus on real-money platform.
+testability: AUTH_HELPED
+[HYP] Mass assignment on signup — server may persist unmapped privilege/territory/balance fields
+class: BUSLOGIC
+asset: https://www.ozoon.eu/api/v1/signup
+confidence: 58
+reasoning: Captcha-free signup with client-controlled attributes/address sub-objects (confirmed); static referral token; affiliate.check-referring-site.enabled:["false"]; profileupdateform whitelist flat (update DTO only, not signup payload); WAF staged on GET signup.
+evidence_needed: Injected keys (attributes.role/vip_level, address.country) persist in whoami/profile or cause privileged side effects.
+verify_steps: PREREQ: authorization. Minimal control signup → set-cookie+whoami; signup with injected attributes.role/admin, vip_level/5, restricted-territory country; compare persisted fields.
+impact: Medium-High — territory softblock bypass, referral fraud; privilege elevation if persisted.
+testability: AUTH_HELPED
+
+[STEP 4 — SELF-CRITIQUE]
+FINAL (kept): BOLA 65 (baseline clean, highest-value, SDK-confirmed surface ×5), mass-assignment 58 (confirmed client-controlled sub-objects, separate signup DTO), mock-2FA 55 (strongest single-gate vector, SDK+config tandem).
+[PARKED] bodog chat/config surfaces (livechat/nchat/prod.chat-bodog.eu, this-cycle archat refs): chat-widget class, no Ozoon API logic, ownership unconfirmed — consistent with prior chat.ozoon.eu REJECT; would not clear 40 even with deeper probing.
+Dropped implicitly: glovefrog `services/b2b/api/v1` (off-scope third-party, repeats prior REJECT), `/contents/*` and old-page aliases (content/redirect, no logic).
+
+[STEP 5 — NEXT ACTION]
+[NEXT] HUMAN: Request program authorization (bugs.olivermaicher.eu) to create one throwaway account on www.ozoon.eu — the single unlock for all three FINAL vectors. If granted, fire exactly: POST https://www.ozoon.eu/api/v1/signup {"email":"<throwaway>@<valid-domain>","password":"Test1234!","country":"CA","language":"en","attributes":{},"address":{"country":"CA","addressLine":"123 Test St","postalCode":"K1A 0A6"}} → capture sid+ownPID, then baseline GET https://services.ozoon.eu/services/wallet-gateway/v1/profiles/{ownPID}/balances (expected 200 vs recorded 401 errorCode:"unauthorized"). This cycle's passive breadth (SSR shell re-fetch, sitemap re-walk, contents/* pages, /content/manifest.json) confirmed no new anonymously-testable scoped surface.
+
+[STEP 6 — LEARNING]
+[LEARN] REJECTED OTHER @ services.ozoon.eu SSR: `services/b2b/api/v1` is jackpotApiBase to games.glovefrog.plus (bovada.lv brand block) — third-party, off-scope, same glovefrog family as prior.
+[LEARN] REJECTED OTHER @ www.ozoon.eu/contents/archat: embeds Bodog live-chat iframe endpoints (livechat/nchat/nchat2/prod.chat-bodog.eu); chat-widget class, no Ozoon API logic, ownership unconfirmed.
+[LEARN] REJECTED OTHER @ www.ozoon.eu sitemap: specialty-games-old2/table-games-old → 308→200 redirect to current casino pages; no legacy app wiring; contents/{usms,unsubscribe} trivial.
+[LEARN] ACCEPTED IDOR @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: Reconfirmed — no newly-probed anonymous surface displaces the SDK-confirmed BOLA vector; binding still unresolved; AUTH_HELPED.
+[LEARN] ACCEPTED AUTH @ services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify: mock-2FA + allow-permanent-skip remains the single critical gate-bypass candidate; AUTH_HELPED.
+[LEARN] ACCEPTED BUSLOGIC @ www.ozoon.eu/api/v1/signup: captcha-free signup still the sole gateway to authenticated testing; AUTH_HELPED.
+
+[STEP 7 — RISK]
+[RISK] ozoon-sportsbook-casino: 81/100 (unchanged). No amplificatory delta this cycle — SSR/sitemap/contents walk returned only REJECTED-class and off-scope confirmations. All three critical vectors (BOLA 65, mass-assignment 58, mock-2FA 55) remain AUTH_HELPED and unprobed; account creation still restricted pending program authorization. Net-risk curve flat; +1 on first authenticated BOLA/bypass confirmation, −2 if mock header/injected fields are stripped server-side.

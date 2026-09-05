@@ -81,3 +81,9 @@
 - 2026-09-05 ACCEPTED MISCONFIG @ services.ozoon.eu/services/site-config/v1/countries/{CC}/profileupdateform: per-country profile-update whitelist is flat; CA=CAD+XBT, US=USD; update DTO strict but signup DTO separate.
 - 2026-09-05 ACCEPTED MISCONFIG @ services.ozoon.eu/services/site-config/v1/countries/{CC}/profileupdateform: unknown country → structured 404 leaking internal exception `io.crazy88.beatrix.siteconfig.exception.CountryNotFoundException` (GoBet/Beatrix backend fingerprint)
 - 2026-09-05 ACCEPTED MISCONFIG @ www.ozoon.eu/api/v1: GET /api/v1/login and /api/v1/whoami → Spring Boot Whitelabel 404 JSON (no method guard, 404 not 405); signup GET → WAF "Request Rejected" (support_id 6279731412718049849) → WAF staged on mutating signup path only
+- 2026-09-05 REJECTED OTHER @ services.ozoon.eu SSR: `services/b2b/api/v1` is jackpotApiBase to games.glovefrog.plus (bovada.lv brand block) — third-party, off-scope, same glovefrog family as prior.
+- 2026-09-05 REJECTED OTHER @ www.ozoon.eu/contents/archat: embeds Bodog live-chat iframe endpoints (livechat/nchat/nchat2/prod.chat-bodog.eu); chat-widget class, no Ozoon API logic, ownership unconfirmed.
+- 2026-09-05 REJECTED OTHER @ www.ozoon.eu sitemap: specialty-games-old2/table-games-old → 308→200 redirect to current casino pages; no legacy app wiring; contents/{usms,unsubscribe} trivial.
+- 2026-09-05 ACCEPTED IDOR @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: Reconfirmed — no newly-probed anonymous surface displaces the SDK-confirmed BOLA vector; binding still unresolved; AUTH_HELPED.
+- 2026-09-05 ACCEPTED AUTH @ services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify: mock-2FA + allow-permanent-skip remains the single critical gate-bypass candidate; AUTH_HELPED.
+- 2026-09-05 ACCEPTED BUSLOGIC @ www.ozoon.eu/api/v1/signup: captcha-free signup still the sole gateway to authenticated testing; AUTH_HELPED.

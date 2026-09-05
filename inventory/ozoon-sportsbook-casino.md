@@ -192,3 +192,14 @@ www.ozoon.com
 - CHANGED Zero authenticated probes executed against core platform (`ozoon.eu`/`services.ozoon.eu`) across all probe rounds; all probes target only `www.ozoon.com` marketing edge
 - CHANGED Production SSR flag `isMockProviderEnabled:false` (client MockProvider chunk) is mild contrary evidence for mock-2FA path → confidence 60→55
 - CHANGED Three FINAL hypotheses refined with AUTH_HELPED test paths: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all require authenticated session via signup gateway
+
+## 2026-09-05 21:47:51 UTC
+- NEW Inventory file (ozoon-sportsbook-casino.md) lists only `ozoon.com`/`www.ozoon.com` (marketing edge); `ozoon.eu` (core gambling platform: sportsbook/casino/poker) and `services.ozoon.eu` (backend API) 
+- NEW Direct core-API probes executed this cycle: `GET https://services.ozoon.eu/` → 743KB Next.js SSR shell; `servicesBaseUrl=https://services.services.ozoon.eu` (internal-only, NXDOMAIN publicly = split-h
+- NEW Structured auth-gate discriminator confirmed: `GET /services/wallet-gateway/v1/profiles/{bogus-uuid}/balances` → `401 {"errorCode":"unauthorized"}` — auth pre-check precedes resource lookup; anonymous
+- NEW `www.ozoon.eu/api/v1`: GET `/api/v1/login` and `/api/v1/whoami` → Spring Boot Whitelabel 404 JSON (no method guard, 404 not 405); signup GET → WAF "Request Rejected" (support_id 6279731412718049849) →
+- NEW `/services/site-config/v1/countries/{CC}/profileupdateform`: unknown country → structured 404 leaking internal exception `io.crazy88.beatrix.siteconfig.exception.CountryNotFoundException` (GoBet/Beatr
+- NEW `/services/site-config/v1/countries/CA/profileupdateform` returns CAD + XBT (XBT unpublished) with mandatory province/postal code; US=USD — update DTO strict but signup DTO separate
+- CHANGED Zero authenticated probes executed against core platform (`ozoon.eu`/`services.ozoon.eu`) across all 18+ probe rounds; all probes target only `www.ozoon.com` marketing edge
+- CHANGED Production SSR flag `isMockProviderEnabled:false` (client MockProvider chunk) is mild contrary evidence for mock-2FA path → confidence 60→55
+- CHANGED Three FINAL hypotheses refined with AUTH_HELPED test paths: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all require authenticated session via signup gateway
