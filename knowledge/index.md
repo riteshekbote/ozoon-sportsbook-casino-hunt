@@ -63,3 +63,6 @@
 - 2026-09-05 ACCEPTED BUSLOGIC @ www.ozoon.eu/api/v1/signup: captcha-free signup, client-controlled attributes/address, static referral token; gateway probe.
 - 2026-09-05 REJECTED SECRET @ www.ozoon.com:3306 / [LEARN] REJECTED SECRET @ oZoon/hyper, oZoon/mas-film / [LEARN] REJECTED OTHER @ oZoon/secure-query-string: unchanged shared-proxy/learning-repo artifacts.
 - 2026-09-05 ACCEPTED SSRF @ www.ozoon.com: PWS/wnacloud edge plausible SSRF param class; passive GET only; deprioritized.
+- 2026-09-05 ACCEPTED IDOR @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: Confirmed UUID-path BOLA surface across 5 services; binding unresolved; AUTH_HELPED testing required.
+- 2026-09-05 ACCEPTED AUTH @ services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify: Mock-2FA header in production SDK + allow-permanent-skip config; critical if honored.
+- 2026-09-05 ACCEPTED SSRF @ www.ozoon.com: PWS/wnacloud edge is high-value SSRF target class; warrants parameter enumeration (deprioritized vs core platform).

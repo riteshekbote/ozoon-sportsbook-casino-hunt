@@ -618,3 +618,56 @@ testability: AUTH_HELPED
 [LEARN] REJECTED SECRET @ www.ozoon.com:3306 / [LEARN] REJECTED SECRET @ oZoon/hyper, oZoon/mas-film / [LEARN] REJECTED OTHER @ oZoon/secure-query-string: unchanged shared-proxy/learning-repo artifacts.
 [LEARN] ACCEPTED SSRF @ www.ozoon.com: PWS/wnacloud edge plausible SSRF param class; passive GET only; deprioritized.
 [RISK] ozoon-sportsbook-casino: 81/100 (was 82). First direct core-API probes executed: Spring Boot stack confirmed behind BFF, structured 401 auth-gate discriminator recorded, internal-only split-horizon backend hostname found (not reachable). Mock-2FA dampened to 55; BOLA 65 and mass-assignment 60 unchanged. All three critical vectors remain hypothesis-grade — zero authenticated probes, account creation restricted. Hold at 81; adjust only on live differential evidence.
+## 2026-09-05 08:42:46 UTC [target] (model bigpickle)
+[PRIO] services.ozoon.eu/services/*/v1/profiles/{uuid}/...,6.95,attack_surface:9+business_value:9+tech_exposure:6+gate_ease:3+cloud_surface:5+freshness:6
+[PRIO] services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify,7.05,attack_surface:7+business_value:10+tech_exposure:7+gate_ease:3+cloud_surface:5+freshness:8
+[PRIO] www.ozoon.eu/api/v1/signup,6.90,attack_surface:8+business_value:9+tech_exposure:6+gate_ease:3+cloud_surface:5+freshness:8
+[PRIO] www.ozoon.com/?{url|view|page|callback}=,5.95,attack_surface:5+business_value:6+tech_exposure:5+gate_ease:9+cloud_surface:8+freshness:3
+[HYP] BOLA on profile-keyed UUID endpoints — session identity may not be bound to path UUID
+class: IDOR
+asset: https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...
+confidence: 65
+reasoning: SDK bundles confirm 5 services key resources by UUID path; bogus UUID probe shows structured 401 errorCode:"unauthorized" (auth pre-check precedes resource lookup), so bind-testing is a clean ownPID 200 / foreign 200=BOLA / foreign 401-404=bound differential. Split-horizon backend (services.services.ozoon.eu NXDOMAIN) means all traffic must traverse this public gateway — no bypass host found.
+evidence_needed: Authorized A accessing /profiles/{B-UUID}/... returns B's data while ownPID returns A's data.
+verify_steps: 1. POST signup for A → sid + ownPID. 2. GET .../wallet-gateway/v1/profiles/{ownPID-A}/balances with A sid (200). 3. Control: same with {bogus-uuid} (recorded 401 baseline). 4. Authorized B: GET /profiles/{ownPID-B}/... with A session. 5. Non-401/404 foreign data = BOLA. (PREREQ: authorization for two throwaway accounts.)
+impact: Critical — cross-user PII/financial read (wallets, transactions, messages, verification state); ATO enabler.
+testability: AUTH_HELPED
+[HYP] Mock-2FA verification header may be honored in production — client-controlled 2FA/KYC gate bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{ownPID}/verifications/verify
+confidence: 55
+reasoning: Production SDK sends X-MOCK-2FA-VERIFICATION:true; config exposes two_factor_authenticator.allow-permanent-skip:["true"]. SSR isMockProviderEnabled:false is client-side, mild contrary evidence only; server-side honoring still untested. 401 baseline shape confirmed.
+evidence_needed: With own session, POST verify with mock header succeeds while identical request without it is rejected.
+verify_steps: PREREQ: authorization. 1. POST signup → sid + ownPID. 2. POST .../verifications/verify + X-MOCK-2FA-VERIFICATION:true, {"verificationType":"PHONE"} → record. 3. Control: same without header. 4. Step-2 success + step-3 rejection = confirmed.
+impact: Critical — bypass SMS/PIN/2FA/KYC on withdraw/deposit/bonus on real-money platform.
+testability: AUTH_HELPED
+[HYP] Mass assignment on signup — server may persist unmapped privilege/territory/balance fields
+class: BUSLOGIC
+asset: https://www.ozoon.eu/api/v1/signup
+confidence: 60
+reasoning: Captcha-free signup with client-controlled attributes/address; CA profileupdateform (re-verified 200 this cycle) whitelist is the server-side baseline; static referral token; affiliate.check-referring-site.enabled:["false"]. Unknown-key persistence unverified.
+evidence_needed: Injected keys (attributes.role/vip_level, address.country) persist in whoami/profile or cause privileged side effects.
+verify_steps: PREREQ: authorization. 1. Minimal control signup → set-cookie + whoami. 2. Signup with injected attributes.role/admin, vip_level/5, restricted-territory country. 3. Compare persisted fields.
+impact: Medium-High — territory softblock bypass, referral fraud; privilege elevation if persisted.
+testability: AUTH_HELPED
+[FINAL] BOLA UUID — 65 — broadest surface, clean 401 baseline discriminator recorded; AUTH_HELPED.
+[FINAL] Mass-assignment signup — 60 — captcha-free + client-controlled attrs; AUTH_HELPED.
+[FINAL] Mock-2FA bypass — 55 (was 60) — highest money-gate value; isMockProviderEnabled:false dampened; AUTH_HELPED.
+[PARKED] PWS/wnacloud SSRF param enumeration — no collab callback server available, no observable evidence path for passive GET.
+[PARKED] chat.ozoon.eu — third-party chat widget on Arrays CDN; no Ozoon API logic.
+[PARKED] games.glovefrog.plus — jackpot third-party; ownership unconfirmed → out-of-scope.
+[PARKED] services.services.ozoon.eu — split-horizon/internal-only (public NXDOMAIN), not reachable.
+[NEXT] HUMAN: Request program authorization (bugs.olivermaicher.eu) to create one throwaway account on www.ozoon.eu. If granted, fire exactly: POST https://www.ozoon.eu/api/v1/signup `{"email":"<throwaway>@<valid-domain>","password":"Test1234!","country":"CA","language":"en","attributes":{},"address":{"country":"CA","addressLine":"123 Test St","postalCode":"K1A 0A6"}}` → capture sid + ownPID, then baseline GET https://services.ozoon.eu/services/wallet-gateway/v1/profiles/{ownPID}/balances (expected 200 vs recorded 401 errorCode:unauthorized) to unlock the BOLA/2FA/mass-assignment differential. Fallback while unauthorized: passive GET of the www.ozoon.eu JS chunk defining the signup request shape/headers.
+[LEARN] ACCEPTED IDOR @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: Confirmed UUID-path BOLA surface across 5 services; binding unresolved; AUTH_HELPED testing required.
+[LEARN] ACCEPTED AUTH @ services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify: Mock-2FA header in production SDK + allow-permanent-skip config; critical if honored.
+[LEARN] ACCEPTED BUSLOGIC @ www.ozoon.eu/api/v1/signup: Captcha-free signup with client-controlled attributes/address; static referral token unverified. Gateway probe to unlock authenticated testing.
+[LEARN] ACCEPTED MISCONFIG @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: structured 401 errorCode:"unauthorized" for valid-route bogus UUID = auth pre-check precedes resource lookup; anonymous differential baseline.
+[LEARN] ACCEPTED MISCONFIG @ chat.ozoon.eu: live in-scope subdomain (CNAME ozoon.eu.glb.network); widget-only, no Ozoon API logic.
+[LEARN] ACCEPTED SSRF @ www.ozoon.com: PWS/wnacloud edge is high-value SSRF target class; warrants parameter enumeration (deprioritized vs core platform).
+[LEARN] REJECTED SECRET @ www.ozoon.com:3306: identical port-closed/EOF pattern across hosts = shared proxy artifact, not MySQL.
+[LEARN] REJECTED SECRET @ oZoon/hyper, oZoon/mas-film: creds in learning/demo repos, not confirmed deployed.
+[LEARN] REJECTED OTHER @ oZoon/secure-query-string: SQLi patterns in learning repos, not confirmed deployed.
+[LEARN] REJECTED OTHER @ services.services.ozoon.eu: internal-only backend hostname in servicesBaseUrl; NXDOMAIN publicly = split-horizon, not externally reachable.
+[LEARN] REJECTED OTHER @ services.ozoon.eu: /services/*/v{2,3}/api-docs and /actuator* → gateway 404; no anonymous schema/actuator leak.
+[LEARN] REJECTED OTHER @ games.glovefrog.plus: jackpotApiBase third-party; Ozoon ownership unconfirmed; off-scope until verified.
+[RISK] ozoon-sportsbook-casino: 81/100 (was 82). All three critical vectors remain hypothesis-grade — zero authenticated probes executed, account creation restricted. First direct core-API probes executed this cycle: Spring Boot stack confirmed behind BFF, structured 401 auth-gate discriminator recorded, internal-only split-horizon backend hostname found (not reachable). Mock-2FA dampened to 55 on isMockProviderEnabled:false contrary evidence. BOLA 65 and mass-assignment 60 unchanged. Hold at 81; adjust only on live differential evidence (+1 bypass/BOLA confirmed, −2 if header/params stripped server-side).

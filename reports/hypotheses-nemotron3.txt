@@ -1,4 +1,4 @@
-## 2026-09-05 04:44:13 UTC [target] (model nemotron3)
+## 2026-09-05 08:43:38 UTC [target] (model nemotron3)
 [NEW] Inventory file (ozoon-sportsbook-casino.md) lists only `ozoon.com`/`www.ozoon.com` but knowledge base + all model leads confirm `ozoon.eu` (core gambling platform) and `services.ozoon.eu` (backend API) are in-scope per scope.yml "All infrastructure, brands, services and gaming platforms operated by Ozoon" — both absent from inventory
 [CHANGED] Zero authenticated probes executed against core platform (`ozoon.eu`/`services.ozoon.eu`) across all 18 probe rounds; all probes target only `www.ozoon.com` marketing edge
 [CHANGED] Three FINAL hypotheses refined with AUTH_HELPED test paths: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all require authenticated session via signup gateway
