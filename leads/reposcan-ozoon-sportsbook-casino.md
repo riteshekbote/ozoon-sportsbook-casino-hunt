@@ -141,3 +141,5 @@ reasoning: Both repos have error_reporting(E_ALL) + display_errors=on. Leaks PHP
 impact: Low-Medium — Information disclosure aiding further attacks (file paths, DB structure, PHP version).
 verify_steps: 1. Trigger errors on any ozoon PHP endpoints 2. Check for PHP error messages in HTTP responses
 TARGET_ORG not configured for ozoon-sportsbook-casino; skipping public-org deep scan.
+## REPOSCAN 2026-09-05 23:28:46 UTC
+TARGET_ORG not configured for ozoon-sportsbook-casino; skipping public-org deep scan.
