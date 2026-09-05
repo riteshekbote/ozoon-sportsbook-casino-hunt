@@ -38,3 +38,28 @@
 - 2026-09-05 REJECTED SECRET @ oZoon/hyper, oZoon/mas-film: Hardcoded MySQL credentials in learning/demo repos; not confirmed deployed.
 - 2026-09-05 REJECTED OTHER @ oZoon/secure-query-string: SQLi patterns in learning repos; not confirmed deployed.
 - 2026-09-05 ACCEPTED SSRF @ www.ozoon.com: PWS/wnacloud edge is high-value SSRF target class; warrants parameter enumeration (deprioritized vs core platform)
+- 2026-09-05 ACCEPTED AUTH @ services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify: mock-2FA header + allow-permanent-skip config form a single critical gate-bypass vector; requires authorized session.
+- 2026-09-05 ACCEPTED IDOR @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: BOLA surface across 5 services confirmed via SDK bundles; session↔UUID binding unresolved; gated on authorized session.
+- 2026-09-05 ACCEPTED BUSLOGIC @ www.ozoon.eu/api/v1/signup: captcha-free signup with client-controlled attributes/address; static referral token; gateway to all authenticated testing.
+- 2026-09-05 ACCEPTED SSRF @ www.ozoon.com: PWS/wnacloud shared edge is plausible SSRF param class; passive GET only; deprioritized vs core platform.
+- 2026-09-05 REJECTED SECRET @ www.ozoon.com:3306: identical port-closed/EOF pattern across hosts = shared proxy artifact, not MySQL.
+- 2026-09-05 REJECTED SECRET @ oZoon/hyper, oZoon/mas-film: creds in learning/demo repos, not confirmed deployed.
+- 2026-09-05 REJECTED OTHER @ oZoon/secure-query-string: SQLi patterns in learning repos, not confirmed deployed.
+- 2026-09-05 ACCEPTED AUTH @ services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify: mock-2FA header + allow-permanent-skip config form a single critical gate-bypass vector; requires authorized session.
+- 2026-09-05 ACCEPTED IDOR @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: BOLA surface across 5 services confirmed via SDK bundles; session↔UUID binding unresolved; gated on authorized session.
+- 2026-09-05 ACCEPTED BUSLOGIC @ www.ozoon.eu/api/v1/signup: captcha-free signup with client-controlled attributes/address; static referral token; gateway to all authenticated testing.
+- 2026-09-05 ACCEPTED SSRF @ www.ozoon.com: PWS/wnacloud shared edge is plausible SSRF param class; passive GET only; deprioritized vs core platform.
+- 2026-09-05 REJECTED SECRET @ www.ozoon.com:3306: identical port-closed/EOF pattern across hosts = shared proxy artifact, not MySQL.
+- 2026-09-05 REJECTED SECRET @ oZoon/hyper, oZoon/mas-film: creds in learning/demo repos, not confirmed deployed.
+- 2026-09-05 REJECTED OTHER @ oZoon/secure-query-string: SQLi patterns in learning repos, not confirmed deployed.
+- 2026-09-05 REJECTED OTHER @ oZoon/secure-query-string: SQLi patterns in learning repos, not confirmed deployed.
+- 2026-09-05 REJECTED OTHER @ services.services.ozoon.eu: internal-only backend hostname in servicesBaseUrl; NXDOMAIN publicly = split-horizon, not externally reachable.
+- 2026-09-05 ACCEPTED MISCONFIG @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: structured 401 errorCode:"unauthorized" for valid-route bogus UUID = auth pre-check precedes resource lookup; anonymous differential baseline.
+- 2026-09-05 REJECTED OTHER @ services.ozoon.eu: /services/*/v{2,3}/api-docs and /actuator* → gateway 404; no anonymous schema/actuator leak.
+- 2026-09-05 ACCEPTED MISCONFIG @ chat.ozoon.eu: live in-scope subdomain (CNAME ozoon.eu.glb.network); widget-only, no Ozoon API logic.
+- 2026-09-05 REJECTED OTHER @ games.glovefrog.plus: jackpotApiBase third-party; Ozoon ownership unconfirmed; off-scope until verified.
+- 2026-09-05 ACCEPTED AUTH @ services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify: mock-2FA header + allow-permanent-skip = critical gate-bypass vector; requires authorized session; SSR isMockProviderEnabled:false is client-side, does not resolve it.
+- 2026-09-05 ACCEPTED IDOR @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: BOLA surface across 5 services; binding unresolved; AUTH_HELPED.
+- 2026-09-05 ACCEPTED BUSLOGIC @ www.ozoon.eu/api/v1/signup: captcha-free signup, client-controlled attributes/address, static referral token; gateway probe.
+- 2026-09-05 REJECTED SECRET @ www.ozoon.com:3306 / [LEARN] REJECTED SECRET @ oZoon/hyper, oZoon/mas-film / [LEARN] REJECTED OTHER @ oZoon/secure-query-string: unchanged shared-proxy/learning-repo artifacts.
+- 2026-09-05 ACCEPTED SSRF @ www.ozoon.com: PWS/wnacloud edge plausible SSRF param class; passive GET only; deprioritized.

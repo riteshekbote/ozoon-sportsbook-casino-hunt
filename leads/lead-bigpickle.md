@@ -362,3 +362,259 @@ testability: AUTH_HELPED
 [LEARN] REJECTED OTHER @ oZoon/secure-query-string: SQLi patterns in learning repos, not confirmed deployed.
 [RISK] ozoon-sportsbook-casino: 82/100. Confirmed critical-class surface on real-money platform (BOLA UUID 65, mock-2FA 60, mass-assignment 60), all evidence validated via public SDK/config bundles. Risk remains hypothesis-grade: zero authenticated probes executed and account creation is restricted, so realized impact is unproven. Holding at 82 pending authorization; adjust only on live differential evidence (+1 bypass/BOLA confirmed, −2 if header/params are stripped server-side).
 ## 2026-09-05 00:16:26 UTC [target] (model bigpickle)
+## 2026-09-05 04:46:24 UTC [target] (model bigpickle)
+[NEW] `ozoon.eu` and `services.ozoon.eu` confirmed as core gambling platform + backend API but **still absent from inventory file** (only `ozoon.com`/`www.ozoon.com` listed)
+[NEW] Three FINAL hypotheses refined with AUTH_HELPED test paths: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all require authenticated session
+[CHANGED] Zero authenticated probes executed against core platform (`ozoon.eu`/`services.ozoon.eu`); all 18 probe rounds to date target only `www.ozoon.com` marketing edge
+[CHANGED] Bigpickle risk elevated to 80 (from 78); nemotron3 at 78 — divergence on next action (bigpickle: active signup POST vs nemotron3: passive GET profileupdateform)
+[NEW] Bigpickle PRIO scores confirm `services.ozoon.eu` UUID endpoints (9.5) and `player-verification` (8.5) as highest-value targets, both gate_ease 6-7 (AUTH_HELPED)
+[PRIO] services.ozoon.eu/services/*/v1/profiles/{uuid}/...,9.5,attack_surface=10|business_value=10|tech_exposure=8|gate_ease=7|cloud_surface=6|freshness=9
+[PRIO] services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify,8.5,attack_surface=8|business_value=9|tech_exposure=7|gate_ease=6|cloud_surface=6|freshness=8
+[PRIO] www.ozoon.eu/api/v1/signup,7.5,attack_surface=7|business_value=8|tech_exposure=6|gate_ease=8|cloud_surface=5|freshness=7
+[PRIO] ozoon.eu,9.10,attack_surface=10|business_value=10|tech_exposure=9|gate_ease=10|cloud_surface=6|freshness=9
+[HYP] BOLA on Profile-Keyed UUID Endpoints
+class: IDOR
+asset: https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...
+confidence: 65
+reasoning: Public SDK/config confirms 5 services (wallet-gateway, transaction-group, referral, player-verification, player-messages) address sensitive resources by UUID path with session cookie (sid). Live 401 on unauthenticated probes to random/VIP UUIDs proves auth-gating exists but binding unresolved. If sid not bound to path UUID, swapping UUID yields cross-tenant data.
+evidence_needed: With valid own session (sid + ownPID), GET /services/wallet-gateway/v1/profiles/{ownPID}/balances returns 200; swap PID for another UUID → 200 with foreign data = BOLA confirmed vs 401/403 = bound
+verify_steps: 1. POST https://www.ozoon.eu/api/v1/signup (captcha-free) → register throwaway account. 2. Login → capture sid cookie + ownPID from response. 3. GET /services/referral/v1/profiles/{ownPID} → baseline 200. 4. GET same with consecutive/random UUIDs → compare. 5. Repeat on /wallet-gateway/balances, /transaction-group/transactions, /player-messages/messages. 6. Test write: PUT /services/profile/v1/profiles/{other-id}
+impact: Critical — cross-tenant PII (names, DOB, emails, messages), financial transaction history, wallet balances, referral data; write variants → account modification
+testability: AUTH_HELPED
+[HYP] Registration/Referral Mass Assignment — Captcha-Free Signup
+class: BUSLOGIC
+asset: https://www.ozoon.eu/api/v1/signup
+confidence: 60
+reasoning: reCAPTCHA v3 enforced ONLY on `login` action; `signup` and `signup_from_invitation` are captcha-free per public config. Static referral token `refSiteToken` (32-hex) with `affiliate.check-referring-site.enabled:["false"]` → referral/site field unverified. Signup accepts client-controlled `attributes` and `address` sub-objects. Profile update form schema (`/services/site-config/v1/countries/US|CA/profileupdateform`) returns whitelisted fields: email, phone, addressLine, postalCode, language, timeZone, oddsFormat, subscriptionChannels — baseline for mass-assignment comparison.
+evidence_needed: On self-created account, POST signup adding extra keys (attributes.role, vip_level, is_verified, balance, currency override) → observe persistence vs rejection over control signup; test referral token impersonation via static refSiteToken
+verify_steps: 1. Register control via POST /api/v1/signup (no captcha). 2. Register test adding role/vip/balance fields — compare response/body. 3. Invitation signup POST with static refSiteToken + unverified referral email. 4. Test country override to restricted territory (softblock bypass).
+impact: Medium-High — referral bonus fraud, territory/regulatory softblock bypass, possible privilege elevation on mass-assigned role/vip
+testability: AUTH_HELPED
+[HYP] Mock-2FA Header Honored → Verification Bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify
+confidence: 55
+reasoning: Production SDK sends client-controlled `X-MOCK-2FA-VERIFICATION` header on verification endpoint. Config exposes MFA ops map (validatePhone:CONFIRMATION_CODE:SMS, withdraw:CONFIRMATION_CODE:SMS, enable2fa:PIN_CODE) and `two_factor_authenticator.allow-permanent-skip:["true"]`. If honored, client claims SMS/PIN/phone verification complete without actual verification.
+evidence_needed: With own session, POST /verifications/verify with `X-MOCK-2FA-VERIFICATION:true` vs absent → mocked acceptance (200) vs rejection (401/400)
+verify_steps: 1. Register + login throwaway account (from HYP1/HYP2). 2. POST /services/player-verification/v1/profiles/{ownPID}/verifications/verify with header `X-MOCK-2FA-VERIFICATION:true` + minimal body. 3. Observe response. 4. Repeat without header as control. Self-created throwaway only.
+impact: Critical if honored — bypass 2FA/SMS/PIN/KYC gates on withdraw/deposit/bonus (money security control bypass)
+testability: AUTH_HELPED
+[PARKED] PWS Edge SSRF to Cloud Metadata (www.ozoon.com): confidence 55 but marketing edge only; no URL-accepting parameters identified in latest passive probes; lower business value than core platform vectors; keep for breadth but deprioritize
+[PARKED] 2FA/KYC Bypass via X-MOCK-2FA-VERIFICATION Header (nemotron3 @ 48): superseded by bigpickle's refined hypothesis @ 55 with config evidence (allow-permanent-skip)
+[FINAL] 1. BOLA on Profile-Keyed UUID Endpoints (65) — services.ozoon.eu — AUTH_HELPED
+[FINAL] 2. Registration/Referral Mass Assignment (60) — www.ozoon.eu/api/v1/signup — AUTH_HELPED
+[FINAL] 3. Mock-2FA Header Honored → Verification Bypass (55) — services.ozoon.eu — AUTH_HELPED
+[NEXT] PROBE: POST https://www.ozoon.eu/api/v1/signup — register throwaway account (captcha-free per config) to capture session cookie (sid) and ownPID for authenticated BOLA/2FA/mass-assignment testing. Body: minimal required fields from profileupdateform schema (email, password, username, firstName, lastName, phone, dateOfBirth, address:{countryCode:"CA"}, attributes:{currency:"CAD"})
+[LEARN] ACCEPTED IDOR @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: Confirmed UUID-path BOLA surface across 5 services; binding unresolved; AUTH_HELPED testing required
+[LEARN] ACCEPTED AUTH @ services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify: Mock-2FA header in production SDK + allow-permanent-skip config; critical if honored
+[LEARN] ACCEPTED BUSLOGIC @ www.ozoon.eu/api/v1/signup: Captcha-free signup with client-controlled attributes/address; static referral token unverified. Gateway probe to unlock authenticated testing.
+[LEARN] REJECTED SECRET @ www.ozoon.com:3306: Port 3306 response likely shared proxy EOF pattern; no auth testing without service confirmation.
+[LEARN] REJECTED SECRET @ oZoon/hyper, oZoon/mas-film: Hardcoded MySQL credentials in learning/demo repos; not confirmed deployed.
+[LEARN] REJECTED OTHER @ oZoon/secure-query-string: SQLi patterns in learning repos; not confirmed deployed.
+[LEARN] ACCEPTED SSRF @ www.ozoon.com: PWS/wnacloud edge is high-value SSRF target class; warrants parameter enumeration (deprioritized vs core platform)
+[RISK] ozoon-sportsbook-casino: 80 — Core gambling platform (ozoon.eu) with micro-frontend API (services.ozoon.eu) fully mapped via public SDK/config. Three critical vectors with clear AUTH_HELPED test paths: (1) BOLA on UUID-keyed profile endpoints across 5 services (confidence 65), (2) Registration/referral mass assignment on captcha-free signup with unverified static referral token (confidence 60), (3) 2FA/KYC bypass via client-controlled X-MOCK-2FA-VERIFICATION header honored by allow-permanent-skip config (confidence 55). Zero authenticated probes executed; all prior probes target only www.ozoon.com marketing edge. Real-money gaming with crypto/Interac payments, F5 ASM WAF, reCAPTCHA v3 (login-only), 2FA present but backend binding correctness and mock-header handling unverified. High business value + high attack surface + low gate ease (public registration, public API config) = elevated risk.
+testability: PASSIVE
+[CHANGED] No new recon executed this cycle; KB is pure consolidation of prior findings. All three FINAL hypotheses remain AUTH_HELPED and unprobed.
+[CHANGED] KB now flags the signup gateway as `account_creation:restricted` (BOLA LEARN tail) — POST /api/v1/signup is a mutating create on a live real-money platform requiring explicit program authorization, not merely execution.
+[PRIO] https://services.ozoon.eu/services/player-verification/v1/profiles/{ownPID}/verifications/verify,7.05,attack_surface:7+business_value:10+tech_exposure:7+gate_ease:3+cloud_surface:5+freshness:8
+[PRIO] https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...,6.95,attack_surface:9+business_value:9+tech_exposure:6+gate_ease:3+cloud_surface:5+freshness:6
+[PRIO] https://www.ozoon.eu/api/v1/signup,6.90,attack_surface:8+business_value:9+tech_exposure:6+gate_ease:3+cloud_surface:5+freshness:8
+[PRIO] https://www.ozoon.com/?{url|view|page|callback}=,5.95,attack_surface:5+business_value:6+tech_exposure:5+gate_ease:9+cloud_surface:8+freshness:3
+[HYP] Mock-2FA verification header may be honored in production — client-controlled 2FA/KYC gate bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{ownPID}/verifications/verify
+confidence: 60
+reasoning: Production SDK sends `X-MOCK-2FA-VERIFICATION:true` on the verify endpoint; production config exposes `two_factor_authenticator.allow-permanent-skip:["true"]`. Live unauthenticated probe returned 401 (expected); header honoring in production is unverified.
+evidence_needed: Authorized actor: POST verify with mock header returns success while the identical request without it is rejected — proving the mock path is honored in production.
+verify_steps: PREREQ: program authorization for throwaway-account creation. 1. POST https://www.ozoon.eu/api/v1/signup (synthetic email/password) → capture sid + ownPID. 2. POST .../verifications/verify with `X-MOCK-2FA-VERIFICATION:true` and body {"verificationType":"PHONE"} → record status/body. 3. Control: same POST without header → record. 4. Step 2 success + step 3 rejection = bypass confirmed.
+impact: Critical — bypass of SMS/PIN/2FA/KYC gates on withdraw, deposit, bonus claim on real-money crypto+Interac platform.
+testability: AUTH_HELPED
+[HYP] BOLA on profile-keyed UUID endpoints — session identity may not be bound to path UUID
+class: IDOR
+asset: https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...
+confidence: 65
+reasoning: SDK bundles confirm 5 services (wallet-gateway, transaction-group, referral, player-verification, player-messages) key resources by profile UUID in URL path. Unauthenticated probes returned 401 (correct); session→UUID binding is untested.
+evidence_needed: Authorized actor A accessing /profiles/{B-UUID}/... and receiving B's data while A's own UUID returns A's data = BOLA confirmed.
+verify_steps: PREREQ: two authorized throwaway accounts (A, B). 1. Capture ownPID for both. 2. With A's session: GET .../wallet-gateway/v1/profiles/{B-ownPID}/wallets. 3. GET .../player-messages/v1/profiles/{B-ownPID}/messages. 4. Control: same endpoints with A's ownPID. 5. Foreign UUID returning non-404 data = BOLA confirmed.
+impact: Critical — cross-user PII/financial data read across wallets, transactions, messages, verification state; ATO chain enabler.
+testability: AUTH_HELPED
+[HYP] Mass assignment on signup — server may persist unmapped privilege/territory/balance fields
+class: BUSLOGIC
+asset: https://www.ozoon.eu/api/v1/signup
+confidence: 60
+reasoning: Signup accepts client-controlled `attributes` and `address` sub-objects and is captcha-free per config (reCAPTCHA only on `login`). CA profileupdateform maps server-side-validated fields. Whether unknown keys in attributes/address are stripped or persisted is unverified; referral token is static and `affiliate.check-referring-site.enabled:["false"]`.
+evidence_needed: POST signup with injected keys (attributes.role/vip_level, address.country override) → whoami/profile shows injected fields persisted or privileged side effects.
+verify_steps: PREREQ: program authorization. 1. POST signup minimal control body → record set-cookie + whoami/profile. 2. POST signup with injected `attributes.role/admin`, `attributes.vip_level/5`, restricted-territory `address.country`. 3. whoami/profile on both → compare persisted fields. 4. Persisted injection = confirmed.
+impact: Medium-High — territory softblock bypass, referral bonus fraud; privilege elevation if role/vip_level/balance persisted.
+testability: AUTH_HELPED
+[PARKED] SSRF PWS/wnacloud param enumeration: passive and policy-compliant but deprioritized, and no collab callback server exists in this environment to observe outbound hits → no observable evidence path.
+[PARKED] Territory softblock / ZIP-code client-side / referral email: subsumed by mass-assignment hypothesis; single-endpoint, low/medium impact.
+[FINAL] Mock-2FA bypass — confidence 60 — highest money-gate value; AUTH_HELPED.
+[FINAL] BOLA UUID endpoints — confidence 65 — broadest data surface; AUTH_HELPED.
+[FINAL] Mass assignment signup — confidence 60 — gateway + privilege/territory impact; AUTH_HELPED.
+[NEXT] HUMAN: Obtain explicit program authorization (bugs.olivermaicher.eu) to create two throwaway accounts (synthetic emails) on ozoon.eu, unlocking the AUTH_HELPED chain. If granted: PROBE POST https://www.ozoon.eu/api/v1/signup body `{"email":"<throwaway>@<valid-domain>","password":"Test1234!","country":"CA","language":"en","attributes":{},"address":{"country":"CA","addressLine":"123 Test St","postalCode":"K1A 0A6"}}` → capture sid + ownPID for BOLA/2FA/mass-assignment differential tests. Until authorized: no live probes; read-only GET param enumeration on www.ozoon.com remains the only policy-compliant option.
+[LEARN] ACCEPTED AUTH @ services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify: mock-2FA header + allow-permanent-skip config form a single critical gate-bypass vector; requires authorized session.
+[LEARN] ACCEPTED IDOR @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: BOLA surface across 5 services confirmed via SDK bundles; session↔UUID binding unresolved; gated on authorized session.
+[LEARN] ACCEPTED BUSLOGIC @ www.ozoon.eu/api/v1/signup: captcha-free signup with client-controlled attributes/address; static referral token; gateway to all authenticated testing.
+[LEARN] ACCEPTED SSRF @ www.ozoon.com: PWS/wnacloud shared edge is plausible SSRF param class; passive GET only; deprioritized vs core platform.
+[LEARN] REJECTED SECRET @ www.ozoon.com:3306: identical port-closed/EOF pattern across hosts = shared proxy artifact, not MySQL.
+[LEARN] REJECTED SECRET @ oZoon/hyper, oZoon/mas-film: creds in learning/demo repos, not confirmed deployed.
+[LEARN] REJECTED OTHER @ oZoon/secure-query-string: SQLi patterns in learning repos, not confirmed deployed.
+[RISK] ozoon-sportsbook-casino: 82/100. Confirmed critical-class surface on real-money platform (BOLA UUID 65, mock-2FA 60, mass-assignment 60), all evidence validated via public SDK/config bundles. Risk remains hypothesis-grade: zero authenticated probes executed and account creation is restricted, so realized impact is unproven. Holding at 82 pending authorization; adjust only on live differential evidence (+1 bypass/BOLA confirmed, −2 if header/params are stripped server-side).
+[NEW] `ozoon.eu` and `services.ozoon.eu` confirmed as core gambling platform + backend API but **still absent from inventory file** (only `ozoon.com`/`www.ozoon.com` listed)
+[NEW] Three FINAL hypotheses refined with AUTH_HELPED test paths: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all require authenticated session
+[CHANGED] Zero authenticated probes executed against core platform (`ozoon.eu`/`services.ozoon.eu`); all 18 probe rounds to date target only `www.ozoon.com` marketing edge
+[CHANGED] Bigpickle risk elevated to 80 (from 78); nemotron3 at 78 — divergence on next action (bigpickle: active signup POST vs nemotron3: passive GET profileupdateform)
+[NEW] Bigpickle PRIO scores confirm `services.ozoon.eu` UUID endpoints (9.5) and `player-verification` (8.5) as highest-value targets, both gate_ease 6-7 (AUTH_HELPED)
+[PRIO] services.ozoon.eu/services/*/v1/profiles/{uuid}/...,9.5,attack_surface=10|business_value=10|tech_exposure=8|gate_ease=7|cloud_surface=6|freshness=9
+[PRIO] services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify,8.5,attack_surface=8|business_value=9|tech_exposure=7|gate_ease=6|cloud_surface=6|freshness=8
+[PRIO] www.ozoon.eu/api/v1/signup,7.5,attack_surface=7|business_value=8|tech_exposure=6|gate_ease=8|cloud_surface=5|freshness=7
+[PRIO] ozoon.eu,9.10,attack_surface=10|business_value=10|tech_exposure=9|gate_ease=10|cloud_surface=6|freshness=9
+[HYP] BOLA on Profile-Keyed UUID Endpoints
+class: IDOR
+asset: https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...
+confidence: 65
+reasoning: Public SDK/config confirms 5 services (wallet-gateway, transaction-group, referral, player-verification, player-messages) address sensitive resources by UUID path with session cookie (sid). Live 401 on unauthenticated probes to random/VIP UUIDs proves auth-gating exists but binding unresolved. If sid not bound to path UUID, swapping UUID yields cross-tenant data.
+evidence_needed: With valid own session (sid + ownPID), GET /services/wallet-gateway/v1/profiles/{ownPID}/balances returns 200; swap PID for another UUID → 200 with foreign data = BOLA confirmed vs 401/403 = bound
+verify_steps: 1. POST https://www.ozoon.eu/api/v1/signup (captcha-free) → register throwaway account. 2. Login → capture sid cookie + ownPID from response. 3. GET /services/referral/v1/profiles/{ownPID} → baseline 200. 4. GET same with consecutive/random UUIDs → compare. 5. Repeat on /wallet-gateway/balances, /transaction-group/transactions, /player-messages/messages. 6. Test write: PUT /services/profile/v1/profiles/{other-id}
+impact: Critical — cross-tenant PII (names, DOB, emails, messages), financial transaction history, wallet balances, referral data; write variants → account modification
+testability: AUTH_HELPED
+[HYP] Registration/Referral Mass Assignment — Captcha-Free Signup
+class: BUSLOGIC
+asset: https://www.ozoon.eu/api/v1/signup
+confidence: 60
+reasoning: reCAPTCHA v3 enforced ONLY on `login` action; `signup` and `signup_from_invitation` are captcha-free per public config. Static referral token `refSiteToken` (32-hex) with `affiliate.check-referring-site.enabled:["false"]` → referral/site field unverified. Signup accepts client-controlled `attributes` and `address` sub-objects. Profile update form schema (`/services/site-config/v1/countries/US|CA/profileupdateform`) returns whitelisted fields: email, phone, addressLine, postalCode, language, timeZone, oddsFormat, subscriptionChannels — baseline for mass-assignment comparison.
+evidence_needed: On self-created account, POST signup adding extra keys (attributes.role, vip_level, is_verified, balance, currency override) → observe persistence vs rejection over control signup; test referral token impersonation via static refSiteToken
+verify_steps: 1. Register control via POST /api/v1/signup (no captcha). 2. Register test adding role/vip/balance fields — compare response/body. 3. Invitation signup POST with static refSiteToken + unverified referral email. 4. Test country override to restricted territory (softblock bypass).
+impact: Medium-High — referral bonus fraud, territory/regulatory softblock bypass, possible privilege elevation on mass-assigned role/vip
+testability: AUTH_HELPED
+[HYP] Mock-2FA Header Honored → Verification Bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify
+confidence: 55
+reasoning: Production SDK sends client-controlled `X-MOCK-2FA-VERIFICATION` header on verification endpoint. Config exposes MFA ops map (validatePhone:CONFIRMATION_CODE:SMS, withdraw:CONFIRMATION_CODE:SMS, enable2fa:PIN_CODE) and `two_factor_authenticator.allow-permanent-skip:["true"]`. If honored, client claims SMS/PIN/phone verification complete without actual verification.
+evidence_needed: With own session, POST /verifications/verify with `X-MOCK-2FA-VERIFICATION:true` vs absent → mocked acceptance (200) vs rejection (401/400)
+verify_steps: 1. Register + login throwaway account (from HYP1/HYP2). 2. POST /services/player-verification/v1/profiles/{ownPID}/verifications/verify with header `X-MOCK-2FA-VERIFICATION:true` + minimal body. 3. Observe response. 4. Repeat without header as control. Self-created throwaway only.
+impact: Critical if honored — bypass 2FA/SMS/PIN/KYC gates on withdraw/deposit/bonus (money security control bypass)
+testability: AUTH_HELPED
+[PARKED] PWS Edge SSRF to Cloud Metadata (www.ozoon.com): confidence 55 but marketing edge only; no URL-accepting parameters identified in latest passive probes; lower business value than core platform vectors; keep for breadth but deprioritize
+[PARKED] 2FA/KYC Bypass via X-MOCK-2FA-VERIFICATION Header (nemotron3 @ 48): superseded by bigpickle's refined hypothesis @ 55 with config evidence (allow-permanent-skip)
+[FINAL] 1. BOLA on Profile-Keyed UUID Endpoints (65) — services.ozoon.eu — AUTH_HELPED
+[FINAL] 2. Registration/Referral Mass Assignment (60) — www.ozoon.eu/api/v1/signup — AUTH_HELPED
+[FINAL] 3. Mock-2FA Header Honored → Verification Bypass (55) — services.ozoon.eu — AUTH_HELPED
+[NEXT] PROBE: POST https://www.ozoon.eu/api/v1/signup — register throwaway account (captcha-free per config) to capture session cookie (sid) and ownPID for authenticated BOLA/2FA/mass-assignment testing. Body: minimal required fields from profileupdateform schema (email, password, username, firstName, lastName, phone, dateOfBirth, address:{countryCode:"CA"}, attributes:{currency:"CAD"})
+[LEARN] ACCEPTED IDOR @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: Confirmed UUID-path BOLA surface across 5 services; binding unresolved; AUTH_HELPED testing required
+[LEARN] ACCEPTED AUTH @ services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify: Mock-2FA header in production SDK + allow-permanent-skip config; critical if honored
+[LEARN] ACCEPTED BUSLOGIC @ www.ozoon.eu/api/v1/signup: Captcha-free signup with client-controlled attributes/address; static referral token unverified. Gateway probe to unlock authenticated testing.
+[LEARN] REJECTED SECRET @ www.ozoon.com:3306: Port 3306 response likely shared proxy EOF pattern; no auth testing without service confirmation.
+[LEARN] REJECTED SECRET @ oZoon/hyper, oZoon/mas-film: Hardcoded MySQL credentials in learning/demo repos; not confirmed deployed.
+[LEARN] REJECTED OTHER @ oZoon/secure-query-string: SQLi patterns in learning repos; not confirmed deployed.
+[LEARN] ACCEPTED SSRF @ www.ozoon.com: PWS/wnacloud edge is high-value SSRF target class; warrants parameter enumeration (deprioritized vs core platform)
+[RISK] ozoon-sportsbook-casino: 80 — Core gambling platform (ozoon.eu) with micro-frontend API (services.ozoon.eu) fully mapped via public SDK/config. Three critical vectors with clear AUTH_HELPED test paths: (1) BOLA on UUID-keyed profile endpoints across 5 services (confidence 65), (2) Registration/referral mass assignment on captcha-free signup with unverified static referral token (confidence 60), (3) 2FA/KYC bypass via client-controlled X-MOCK-2FA-VERIFICATION header honored by allow-permanent-skip config (confidence 55). Zero authenticated probes executed; all prior probes target only www.ozoon.com marketing edge. Real-money gaming with crypto/Interac payments, F5 ASM WAF, reCAPTCHA v3 (login-only), 2FA present but backend binding correctness and mock-header handling unverified. High business value + high attack surface + low gate ease (public registration, public API config) = elevated risk.
+testability: PASSIVE
+[CHANGED] No new recon executed this cycle; KB is pure consolidation of prior findings. All three FINAL hypotheses remain AUTH_HELPED and unprobed.
+[CHANGED] KB now flags the signup gateway as `account_creation:restricted` (BOLA LEARN tail) — POST /api/v1/signup is a mutating create on a live real-money platform requiring explicit program authorization, not merely execution.
+[PRIO] https://services.ozoon.eu/services/player-verification/v1/profiles/{ownPID}/verifications/verify,7.05,attack_surface:7+business_value:10+tech_exposure:7+gate_ease:3+cloud_surface:5+freshness:8
+[PRIO] https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...,6.95,attack_surface:9+business_value:9+tech_exposure:6+gate_ease:3+cloud_surface:5+freshness:6
+[PRIO] https://www.ozoon.eu/api/v1/signup,6.90,attack_surface:8+business_value:9+tech_exposure:6+gate_ease:3+cloud_surface:5+freshness:8
+[PRIO] https://www.ozoon.com/?{url|view|page|callback}=,5.95,attack_surface:5+business_value:6+tech_exposure:5+gate_ease:9+cloud_surface:8+freshness:3
+[HYP] Mock-2FA verification header may be honored in production — client-controlled 2FA/KYC gate bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{ownPID}/verifications/verify
+confidence: 60
+reasoning: Production SDK sends `X-MOCK-2FA-VERIFICATION:true` on the verify endpoint; production config exposes `two_factor_authenticator.allow-permanent-skip:["true"]`. Live unauthenticated probe returned 401 (expected); header honoring in production is unverified.
+evidence_needed: Authorized actor: POST verify with mock header returns success while the identical request without it is rejected — proving the mock path is honored in production.
+verify_steps: PREREQ: program authorization for throwaway-account creation. 1. POST https://www.ozoon.eu/api/v1/signup (synthetic email/password) → capture sid + ownPID. 2. POST .../verifications/verify with `X-MOCK-2FA-VERIFICATION:true` and body {"verificationType":"PHONE"} → record status/body. 3. Control: same POST without header → record. 4. Step 2 success + step 3 rejection = bypass confirmed.
+impact: Critical — bypass of SMS/PIN/2FA/KYC gates on withdraw, deposit, bonus claim on real-money crypto+Interac platform.
+testability: AUTH_HELPED
+[HYP] BOLA on profile-keyed UUID endpoints — session identity may not be bound to path UUID
+class: IDOR
+asset: https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...
+confidence: 65
+reasoning: SDK bundles confirm 5 services (wallet-gateway, transaction-group, referral, player-verification, player-messages) key resources by profile UUID in URL path. Unauthenticated probes returned 401 (correct); session→UUID binding is untested.
+evidence_needed: Authorized actor A accessing /profiles/{B-UUID}/... and receiving B's data while A's own UUID returns A's data = BOLA confirmed.
+verify_steps: PREREQ: two authorized throwaway accounts (A, B). 1. Capture ownPID for both. 2. With A's session: GET .../wallet-gateway/v1/profiles/{B-ownPID}/wallets. 3. GET .../player-messages/v1/profiles/{B-ownPID}/messages. 4. Control: same endpoints with A's ownPID. 5. Foreign UUID returning non-404 data = BOLA confirmed.
+impact: Critical — cross-user PII/financial data read across wallets, transactions, messages, verification state; ATO chain enabler.
+testability: AUTH_HELPED
+[HYP] Mass assignment on signup — server may persist unmapped privilege/territory/balance fields
+class: BUSLOGIC
+asset: https://www.ozoon.eu/api/v1/signup
+confidence: 60
+reasoning: Signup accepts client-controlled `attributes` and `address` sub-objects and is captcha-free per config (reCAPTCHA only on `login`). CA profileupdateform maps server-side-validated fields. Whether unknown keys in attributes/address are stripped or persisted is unverified; referral token is static and `affiliate.check-referring-site.enabled:["false"]`.
+evidence_needed: POST signup with injected keys (attributes.role/vip_level, address.country override) → whoami/profile shows injected fields persisted or privileged side effects.
+verify_steps: PREREQ: program authorization. 1. POST signup minimal control body → record set-cookie + whoami/profile. 2. POST signup with injected `attributes.role/admin`, `attributes.vip_level/5`, restricted-territory `address.country`. 3. whoami/profile on both → compare persisted fields. 4. Persisted injection = confirmed.
+impact: Medium-High — territory softblock bypass, referral bonus fraud; privilege elevation if role/vip_level/balance persisted.
+testability: AUTH_HELPED
+[PARKED] SSRF PWS/wnacloud param enumeration: passive and policy-compliant but deprioritized, and no collab callback server exists in this environment to observe outbound hits → no observable evidence path.
+[PARKED] Territory softblock / ZIP-code client-side / referral email: subsumed by mass-assignment hypothesis; single-endpoint, low/medium impact.
+[FINAL] Mock-2FA bypass — confidence 60 — highest money-gate value; AUTH_HELPED.
+[FINAL] BOLA UUID endpoints — confidence 65 — broadest data surface; AUTH_HELPED.
+[FINAL] Mass assignment signup — confidence 60 — gateway + privilege/territory impact; AUTH_HELPED.
+[NEXT] HUMAN: Obtain explicit program authorization (bugs.olivermaicher.eu) to create two throwaway accounts (synthetic emails) on ozoon.eu, unlocking the AUTH_HELPED chain. If granted: PROBE POST https://www.ozoon.eu/api/v1/signup body `{"email":"<throwaway>@<valid-domain>","password":"Test1234!","country":"CA","language":"en","attributes":{},"address":{"country":"CA","addressLine":"123 Test St","postalCode":"K1A 0A6"}}` → capture sid + ownPID for BOLA/2FA/mass-assignment differential tests. Until authorized: no live probes; read-only GET param enumeration on www.ozoon.com remains the only policy-compliant option.
+[LEARN] ACCEPTED AUTH @ services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify: mock-2FA header + allow-permanent-skip config form a single critical gate-bypass vector; requires authorized session.
+[LEARN] ACCEPTED IDOR @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: BOLA surface across 5 services confirmed via SDK bundles; session↔UUID binding unresolved; gated on authorized session.
+[LEARN] ACCEPTED BUSLOGIC @ www.ozoon.eu/api/v1/signup: captcha-free signup with client-controlled attributes/address; static referral token; gateway to all authenticated testing.
+[LEARN] ACCEPTED SSRF @ www.ozoon.com: PWS/wnacloud shared edge is plausible SSRF param class; passive GET only; deprioritized vs core platform.
+[LEARN] REJECTED SECRET @ www.ozoon.com:3306: identical port-closed/EOF pattern across hosts = shared proxy artifact, not MySQL.
+[LEARN] REJECTED SECRET @ oZoon/hyper, oZoon/mas-film: creds in learning/demo repos, not confirmed deployed.
+[LEARN] REJECTED OTHER @ oZoon/secure-query-string: SQLi patterns in learning repos, not confirmed deployed.
+[RISK] ozoon-sportsbook-casino: 82/100. Confirmed critical-class surface on real-money platform (BOLA UUID 65, mock-2FA 60, mass-assignment 60), all evidence validated via public SDK/config bundles. Risk remains hypothesis-grade: zero authenticated probes executed and account creation is restricted, so realized impact is unproven. Holding at 82 pending authorization; adjust only on live differential evidence (+1 bypass/BOLA confirmed, −2 if header/params are stripped server-side).
+[LEARN] REJECTED OTHER @ oZoon/secure-query-string: SQLi patterns in learning repos, not confirmed deployed.
+[RISK] ozoon-sportsbook-casino: 82/100. Confirmed critical-class surface on real-money platform (BOLA UUID 65, mock-2FA 60, mass-assignment 60), all evidence validated via public SDK/config bundles. Risk remains hypothesis-grade: zero authenticated probes executed and account creation is restricted, so realized impact is unproven. Holding at 82 pending authorization; adjust only on live differential evidence (+1 bypass/BOLA confirmed, −2 if header/params are stripped server-side).
+[NEW] `ozoon.eu` — actual gambling platform (sportsbook/casino/poker), NOT in inventory. Discovered via web search; ozoon.com is marketing-only.
+[NEW] `services.ozoon.eu` — backend service domain found in HTML `<link rel="preconnect">` hints 
+[RISK] ozoon-sportsbook-casino: 82/100. Confirmed critical-class surface on real-money platform (BOLA UUID 65, mock-2FA 60, mass-assignment 60), all evidence validated via public SDK/config bundles. Risk remains hypothesis-grade: zero authenticated probes executed and account creation is restricted, so realized impact is unproven. Holding at 82 pending authorization; adjust only on live differential evidence (+1 bypass/BOLA confirmed, −2 if header/params are stripped server-side).
+[NEW] First direct probes of the public core-API host: `GET https://services.ozoon.eu/` → 743KB Next.js SSR shell; extracts `servicesBaseUrl=https://services.services.ozoon.eu` (internal-only hostname, public NXDOMAIN = split-horizon), `isMockProviderEnabled:false`, `chat.ozoon.eu`, and third-party `jackpotApiBase=games.glovefrog.plus/services/b2b/api/v1`.
+[NEW] Structured auth-gate discriminator: `GET /services/wallet-gateway/v1/profiles/{bogus-uuid}/balances` → `401 {"message":"Authentication required for requested route","errorCode":"unauthorized"}` — auth pre-check fires before resource lookup; clean anonymous baseline for BOLA differential.
+[NEW] `GET /api-docs` → Spring Boot Whitelabel JSON 404 ⇒ backend = Spring Boot microservices behind the BFF; no actuator/swagger leak on `/openapi.json`, `/v3/api-docs`, `/actuator/health`, `/services/*/v{2,3}/api-docs` (all gateway 404).
+[CHANGED] Production SSR flag `isMockProviderEnabled:false` (client MockProvider chunk) is mild contrary evidence for the mock-2FA path → confidence 60→55.
+[PRIO] https://services.ozoon.eu/services/player-verification/v1/profiles/{ownPID}/verifications/verify,7.05,attack_surface:7+business_value:10+tech_exposure:7+gate_ease:3+cloud_surface:5+freshness:8
+[PRIO] https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...,6.95,attack_surface:9+business_value:9+tech_exposure:6+gate_ease:3+cloud_surface:5+freshness:6
+[PRIO] https://www.ozoon.eu/api/v1/signup,6.90,attack_surface:8+business_value:9+tech_exposure:6+gate_ease:3+cloud_surface:5+freshness:8
+[PRIO] https://www.ozoon.com/?{url|view|page|callback}=,5.95,attack_surface:5+business_value:6+tech_exposure:5+gate_ease:9+cloud_surface:8+freshness:3
+[HYP] BOLA on profile-keyed UUID endpoints — session identity may not be bound to path UUID
+class: IDOR
+asset: https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...
+confidence: 65
+reasoning: SDK bundles confirm 5 services key resources by UUID path; new probe shows bogus UUID → structured 401 `errorCode:"unauthorized"` (auth precedes resource lookup), so bind-testing is a clean ownPID 200 / foreign 200=BOLA / foreign 401-404=bound differential. Split-horizon backend (services.services.ozoon.eu NXDOMAIN) means all traffic must traverse this public gateway — no bypass host found.
+evidence_needed: Authorized A accessing /profiles/{B-UUID}/... returns B's data while ownPID returns A's data.
+verify_steps: 1. POST signup for A → sid + ownPID. 2. GET .../wallet-gateway/v1/profiles/{ownPID-A}/balances with A sid (200). 3. Control: same with {bogus-uuid} (recorded 401 baseline). 4. Authorized B: GET /profiles/{ownPID-B}/... with A session. 5. Non-401/404 foreign data = BOLA. (PREREQ: authorization for two throwaway accounts.)
+impact: Critical — cross-user PII/financial read (wallets, transactions, messages, verification state); ATO enabler.
+testability: AUTH_HELPED
+[HYP] Mock-2FA verification header may be honored in production — client-controlled 2FA/KYC gate bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{ownPID}/verifications/verify
+confidence: 55
+reasoning: Production SDK sends `X-MOCK-2FA-VERIFICATION:true`; config exposes `two_factor_authenticator.allow-permanent-skip:["true"]`. New SSR `isMockProviderEnabled:false` is client-side, mild contrary evidence only; server-side honoring still untested. 401 baseline shape confirmed.
+evidence_needed: With own session, POST verify with mock header succeeds while identical request without it is rejected.
+verify_steps: PREREQ: authorization. 1. POST signup → sid + ownPID. 2. POST .../verifications/verify + `X-MOCK-2FA-VERIFICATION:true`, {"verificationType":"PHONE"} → record. 3. Control: same without header. 4. Step-2 success + step-3 rejection = confirmed.
+impact: Critical — bypass SMS/PIN/2FA/KYC on withdraw/deposit/bonus on real-money platform.
+testability: AUTH_HELPED
+[HYP] Mass assignment on signup — server may persist unmapped privilege/territory/balance fields
+class: BUSLOGIC
+asset: https://www.ozoon.eu/api/v1/signup
+confidence: 60
+reasoning: Captcha-free signup with client-controlled `attributes`/`address`; CA profileupdateform (re-verified 200 this cycle) whitelist is the server-side baseline; static referral token; `affiliate.check-referring-site.enabled:["false"]`. Unknown-key persistence unverified.
+evidence_needed: Injected keys (attributes.role/vip_level, address.country) persist in whoami/profile or cause privileged side effects.
+verify_steps: PREREQ: authorization. 1. Minimal control signup → set-cookie + whoami. 2. Signup with injected `attributes.role/admin`, `vip_level/5`, restricted-territory country. 3. Compare persisted fields.
+impact: Medium-High — territory softblock bypass, referral fraud; privilege elevation if persisted.
+testability: AUTH_HELPED
+[PARKED] services.services.ozoon.eu: split-horizon/internal-only (public NXDOMAIN), not reachable/exploitable; monitor for DNS rotation.
+[PARKED] PWS/wnacloud SSRF param enumeration: no collab callback server here — no observable evidence path.
+[PARKED] chat.ozoon.eu: third-party chat widget on Arrays CDN; no Ozoon API logic.
+[PARKED] games.glovefrog.plus: jackpot third-party; ownership unconfirmed → out-of-scope.
+[FINAL] BOLA UUID — 65 — broadest surface; AUTH_HELPED (discriminator baseline now recorded).
+[FINAL] Mass-assignment signup — 60 — gateway + privilege/territory; AUTH_HELPED.
+[FINAL] Mock-2FA bypass — 55 (was 60) — highest money-gate value; AUTH_HELPED.
+[NEXT] HUMAN: Request program authorization (bugs.olivermaicher.eu) to create one throwaway account on www.ozoon.eu. If granted, fire exactly: POST https://www.ozoon.eu/api/v1/signup `{"email":"<throwaway>@<valid-domain>","password":"Test1234!","country":"CA","language":"en","attributes":{},"address":{"country":"CA","addressLine":"123 Test St","postalCode":"K1A 0A6"}}` → capture sid + ownPID, then baseline GET https://services.ozoon.eu/services/wallet-gateway/v1/profiles/{ownPID}/balances (expected 200 vs recorded 401 `errorCode:unauthorized`) to unlock the BOLA/2FA/mass-assignment differential. Fallback while unauthorized: passive GET of the www.ozoon.eu JS chunk defining the signup request shape/headers.
+[LEARN] REJECTED OTHER @ services.services.ozoon.eu: internal-only backend hostname in servicesBaseUrl; NXDOMAIN publicly = split-horizon, not externally reachable.
+[LEARN] ACCEPTED MISCONFIG @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: structured 401 errorCode:"unauthorized" for valid-route bogus UUID = auth pre-check precedes resource lookup; anonymous differential baseline.
+[LEARN] REJECTED OTHER @ services.ozoon.eu: /services/*/v{2,3}/api-docs and /actuator* → gateway 404; no anonymous schema/actuator leak.
+[LEARN] ACCEPTED MISCONFIG @ chat.ozoon.eu: live in-scope subdomain (CNAME ozoon.eu.glb.network); widget-only, no Ozoon API logic.
+[LEARN] REJECTED OTHER @ games.glovefrog.plus: jackpotApiBase third-party; Ozoon ownership unconfirmed; off-scope until verified.
+[LEARN] ACCEPTED AUTH @ services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify: mock-2FA header + allow-permanent-skip = critical gate-bypass vector; requires authorized session; SSR isMockProviderEnabled:false is client-side, does not resolve it.
+[LEARN] ACCEPTED IDOR @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: BOLA surface across 5 services; binding unresolved; AUTH_HELPED.
+[LEARN] ACCEPTED BUSLOGIC @ www.ozoon.eu/api/v1/signup: captcha-free signup, client-controlled attributes/address, static referral token; gateway probe.
+[LEARN] REJECTED SECRET @ www.ozoon.com:3306 / [LEARN] REJECTED SECRET @ oZoon/hyper, oZoon/mas-film / [LEARN] REJECTED OTHER @ oZoon/secure-query-string: unchanged shared-proxy/learning-repo artifacts.
+[LEARN] ACCEPTED SSRF @ www.ozoon.com: PWS/wnacloud edge plausible SSRF param class; passive GET only; deprioritized.
+[RISK] ozoon-sportsbook-casino: 81/100 (was 82). First direct core-API probes executed: Spring Boot stack confirmed behind BFF, structured 401 auth-gate discriminator recorded, internal-only split-horizon backend hostname found (not reachable). Mock-2FA dampened to 55; BOLA 65 and mass-assignment 60 unchanged. All three critical vectors remain hypothesis-grade — zero authenticated probes, account creation restricted. Hold at 81; adjust only on live differential evidence.
