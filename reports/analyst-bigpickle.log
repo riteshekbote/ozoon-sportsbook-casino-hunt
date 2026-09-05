@@ -6050,3 +6050,408 @@ Dropped implicitly: glovefrog `services/b2b/api/v1` (off-scope third-party, repe
 
 [STEP 7 — RISK]
 [RISK] ozoon-sportsbook-casino: 81/100 (unchanged). No amplificatory delta this cycle — SSR/sitemap/contents walk returned only REJECTED-class and off-scope confirmations. All three critical vectors (BOLA 65, mass-assignment 58, mock-2FA 55) remain AUTH_HELPED and unprobed; account creation still restricted pending program authorization. Net-risk curve flat; +1 on first authenticated BOLA/bypass confirmation, −2 if mock header/injected fields are stripped server-side.
+===== ANALYST bigpickle 2026-09-05 23:48:13 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mcurl -s -m 15 -o /dev/null -w "www.ozoon.eu root: %{http_code}\n" https://www.ozoon.eu/ ; sleep 1.2; curl -s -m 15 https://www.ozoon.eu/sitemap_index.xml | head -c 2000
+www.ozoon.eu root: 200
+<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+    <sitemap>
+    <loc>https://www.ozoon.eu/sitemap.xml</loc>
+	</sitemap>
+
+</sitemapindex>
+[0m
+[0m$ [0msleep 1.2; curl -s -m 20 https://www.ozoon.eu/sitemap.xml -o /tmp/opencode/sitemap.xml; wc -l /tmp/opencode/sitemap.xml; grep -oE 'https://[^<]+' /tmp/opencode/sitemap.xml | grep -viE 'sports|casino|casino-app|promotions|/help/|/about|/responsible|contents/|test' | head -60
+0 /tmp/opencode/sitemap.xml
+https://www.ozoon.eu/poker/tournaments/series-events/super-millions-poker-open-btx
+https://www.ozoon.eu/poker/tournaments/series-events/super-millions-poker-open-btx"/>
+https://www.ozoon.eu/tournaments/series-events/super-millions-poker-open-btx"/>
+https://www.ozoon.eu/tournaments/series-events/super-millions-poker-open-btx
+https://www.ozoon.eu/poker/tournaments/series-events/super-millions-poker-open-btx"/>
+https://www.ozoon.eu/tournaments/series-events/super-millions-poker-open-btx"/>
+https://www.ozoon.eu/strategy
+https://www.ozoon.eu/strategy"/>
+https://www.ozoon.eu/poker/anonymous-tables-btx
+https://www.ozoon.eu/poker/anonymous-tables-btx"/>
+https://www.ozoon.eu/forms-and-agreements
+https://www.ozoon.eu/forms-and-agreements"/>
+https://www.ozoon.eu/poker/download-poker
+https://www.ozoon.eu/poker/download-poker"/>
+https://www.ozoon.eu/poker/tournaments/series-events/golden-spade-poker-open-btx
+https://www.ozoon.eu/poker/tournaments/series-events/golden-spade-poker-open-btx"/>
+https://www.ozoon.eu/tournaments/series-events/golden-spade-poker-open-btx"/>
+https://www.ozoon.eu/tournaments/series-events/golden-spade-poker-open-btx
+https://www.ozoon.eu/poker/tournaments/series-events/golden-spade-poker-open-btx"/>
+https://www.ozoon.eu/tournaments/series-events/golden-spade-poker-open-btx"/>
+https://www.ozoon.eu/poker/tournaments/guaranteed/200k-poker-tournament-btx
+https://www.ozoon.eu/poker/tournaments/guaranteed/200k-poker-tournament-btx"/>
+https://www.ozoon.eu/tournaments/guaranteed/200k-poker-tournament-btx"/>
+https://www.ozoon.eu/tournaments/guaranteed/200k-poker-tournament-btx
+https://www.ozoon.eu/poker/tournaments/guaranteed/200k-poker-tournament-btx"/>
+https://www.ozoon.eu/tournaments/guaranteed/200k-poker-tournament-btx"/>
+https://www.ozoon.eu/bonus-terms-conditions
+https://www.ozoon.eu/bonus-terms-conditions"/>
+https://www.ozoon.eu/kentucky-derby
+https://www.ozoon.eu/kentucky-derby"/>
+https://www.ozoon.eu/94-club
+https://www.ozoon.eu/94-club"/>
+https://www.ozoon.eu/poker/mobile-poker-btx
+https://www.ozoon.eu/poker/mobile-poker-btx"/>
+https://www.ozoon.eu/poker/tournaments/100k-high-roller-tournament-btx
+https://www.ozoon.eu/poker/tournaments/100k-high-roller-tournament-btx"/>
+https://www.ozoon.eu/tournaments/100k-high-roller-tournament-btx"/>
+https://www.ozoon.eu/tournaments/100k-high-roller-tournament-btx
+https://www.ozoon.eu/poker/tournaments/100k-high-roller-tournament-btx"/>
+https://www.ozoon.eu/tournaments/100k-high-roller-tournament-btx"/>
+https://www.ozoon.eu/poker/tournaments/series-events/black-diamond-poker-open-tournaments-btx
+https://www.ozoon.eu/poker/tournaments/series-events/black-diamond-poker-open-tournaments-btx"/>
+https://www.ozoon.eu/tournaments/series-events/black-diamond-poker-open-tournaments-btx"/>
+https://www.ozoon.eu/tournaments/series-events/black-diamond-poker-open-tournaments-btx
+https://www.ozoon.eu/poker/tournaments/series-events/black-diamond-poker-open-tournaments-btx"/>
+https://www.ozoon.eu/tournaments/series-events/black-diamond-poker-open-tournaments-btx"/>
+https://www.ozoon.eu/poker
+https://www.ozoon.eu/poker"/>
+https://www.ozoon.eu/poker/tournaments/sit-and-go-tournaments
+https://www.ozoon.eu/poker/tournaments/sit-and-go-tournaments"/>
+https://www.ozoon.eu/tournaments/sit-and-go-tournaments"/>
+https://www.ozoon.eu/tournaments/sit-and-go-tournaments
+https://www.ozoon.eu/poker/tournaments/sit-and-go-tournaments"/>
+https://www.ozoon.eu/tournaments/sit-and-go-tournaments"/>
+https://www.ozoon.eu/help
+https://www.ozoon.eu/help"/>
+https://www.ozoon.eu/special-features
+https://www.ozoon.eu/special-features"/>
+https://www.ozoon.eu/articles
+https://www.ozoon.eu/articles"/>
+[0m
+[0m$ [0mgrep -oE 'https://[^<"]+' /tmp/opencode/sitemap.xml | sort -u > /tmp/opencode/sitemap_urls.txt; wc -l /tmp/opencode/sitemap_urls.txt; echo "--- query params ---"; grep -E '\?' /tmp/opencode/sitemap_urls.txt | head -20; echo "--- api/wallet/login/account/bonus/deposit/withdraw ---"; grep -iE 'api|wallet|login|account|bonus|deposit|withdraw|token|id=' /tmp/opencode/sitemap_urls.txt | head -20
+1268 /tmp/opencode/sitemap_urls.txt
+--- query params ---
+--- api/wallet/login/account/bonus/deposit/withdraw ---
+https://www.ozoon.eu/articles/casino-rewards-bonus-btx
+https://www.ozoon.eu/articles/online-slots-bonus-features-btx
+https://www.ozoon.eu/articles/salary-cap-surge-reshaping-nhl-betting
+https://www.ozoon.eu/betting-offers/crypto-welcome-bonus
+https://www.ozoon.eu/betting-offers/hdjp-welcome-bonus
+https://www.ozoon.eu/betting-offers/mlb-welcome-bonus
+https://www.ozoon.eu/betting-offers/multichannel-welcome-bonus
+https://www.ozoon.eu/betting-offers/nba-welcome-bonus
+https://www.ozoon.eu/betting-offers/nfl-welcome-bonus
+https://www.ozoon.eu/betting-offers/nhl-welcome-bonus
+https://www.ozoon.eu/betting-offers/slots-welcome-bonus
+https://www.ozoon.eu/bonus-terms-conditions
+https://www.ozoon.eu/casino/slots/3-reel/clover-charm-hit-the-bonus
+https://www.ozoon.eu/casino/slots/bonus-buy
+https://www.ozoon.eu/casino/table-games/card-game/teen-patti-rapid
+https://www.ozoon.eu/casino/video-poker/1-hand/bonus-deuces-wild-1-hand
+https://www.ozoon.eu/casino/video-poker/1-hand/double-double-bonus-poker-1-hand
+https://www.ozoon.eu/help/bonuses-faq/can-i-forfeit-a-bonus
+https://www.ozoon.eu/help/bonuses-faq/claim-bonus
+https://www.ozoon.eu/help/bonuses-faq/do-my-bonuses-expire
+[0m
+[0m$ [0mfor h in api affiliate cashier payout vault backoffice admin poker sports casino m mail status health cdn dashboard internal staging dev; do printf "%s -> " "$h.ozoon.eu"; getent hosts "$h.ozoon.eu" | awk '{print $1}' | tr '\n' ' '; echo; sleep 0.4; done
+api.ozoon.eu -> 
+affiliate.ozoon.eu -> 
+cashier.ozoon.eu -> 
+payout.ozoon.eu -> 
+vault.ozoon.eu -> 
+backoffice.ozoon.eu -> 
+admin.ozoon.eu -> 
+poker.ozoon.eu -> 185.156.184.201 
+sports.ozoon.eu -> 185.156.184.201 
+casino.ozoon.eu -> 185.156.184.201 
+m.ozoon.eu -> 185.156.184.201 
+mail.ozoon.eu -> 
+status.ozoon.eu -> 
+health.ozoon.eu -> 
+cdn.ozoon.eu -> 
+dashboard.ozoon.eu -> 
+internal.ozoon.eu -> 
+staging.ozoon.eu -> 
+dev.ozoon.eu ->
+[0m
+[0m$ [0mfor h in sports casino poker m; do echo "=== $h.ozoon.eu ==="; curl -s -m 20 -o /tmp/opencode/$h.html -w "root http:%{http_code} size:%{size_download} server:%{header_json:not??}\n" https://$h.ozoon.eu/ 2>/dev/null; grep -oE 'servicesBaseUrl[^,]{0,60}' /tmp/opencode/$h.html | head -2; grep -oE '<title>[^<]*</title>' /tmp/opencode/$h.html | head -1; sleep 1.2; done
+=== sports.ozoon.eu ===
+root http:400 size:168 server:
+<title>Bad Request - The request hostname sports.ozoon.eu is invalid</title>
+=== casino.ozoon.eu ===
+root http:400 size:168 server:
+<title>Bad Request - The request hostname casino.ozoon.eu is invalid</title>
+=== poker.ozoon.eu ===
+root http:400 size:167 server:
+<title>Bad Request - The request hostname poker.ozoon.eu is invalid</title>
+=== m.ozoon.eu ===
+root http:400 size:163 server:
+<title>Bad Request - The request hostname m.ozoon.eu is invalid</title>
+[0m
+[0m$ [0mecho "=== direct-origin www.ozoon.eu ==="; curl -s -m 20 --resolve www.ozoon.eu:443:185.156.184.201 -D - -o /dev/null https://www.ozoon.eu/ 2>/dev/null | grep -iE '^HTTP|server:|via:|x-powered|x-cache|cert' ; sleep 1.2; echo "=== TLS cert SAN ==="; echo | timeout 10 openssl s_client -connect www.ozoon.eu:443 -servername www.ozoon.eu 2>/dev/null | openssl x509 -noout -text 2>/dev/null | grep -A1 'Subject Alternative'
+=== direct-origin www.ozoon.eu ===
+HTTP/1.1 200 OK
+=== TLS cert SAN ===
+            X509v3 Subject Alternative Name: 
+                DNS:www.ozoon.eu, DNS:ozoon.eu
+[0m
+[0m$ [0mecho "=== NORMAL www.ozoon.eu headers ==="; curl -s -m 20 -D - -o /dev/null https://www.ozoon.eu/ | grep -iE '^HTTP|server:|via:|x-powered|set-cookie' ; sleep 1.2; echo "=== DIRECT origin www.ozoon.eu headers ==="; curl -s -m 20 --resolve www.ozoon.eu:443:185.156.184.201 -D - -o /dev/null https://www.ozoon.eu/ | grep -iE '^HTTP|server:|via:|x-powered|set-cookie'
+=== NORMAL www.ozoon.eu headers ===
+HTTP/2 200 
+set-cookie: LANG=en; Path=/; Expires=Sun, 05 Sep 2027 15:59:18 GMT; Max-Age=31536000; Domain=.ozoon.eu; SameSite=lax
+set-cookie: VISITED=true;domain=.ozoon.eu;expires=Tue, 02 Sep 2036 23:44:44 GMT;path=/;Secure;SameSite=Lax
+set-cookie: Device-Type=Desktop|false;expires=Tue, 02 Sep 2036 23:44:44 GMT;path=/;Domain=.ozoon.eu;Secure;SameSite=Lax
+set-cookie: variant=v:0|lgn:0|dt:d|os:ns|cntry:US|cur:USD|jn:0|rt:o|pb:0;expires=Tue, 02 Sep 2036 23:44:44 GMT;path=/;Domain=.ozoon.eu;Secure;SameSite=Lax
+set-cookie: AB=control;Secure;SameSite=Lax
+set-cookie: TS0181f769=014b5d5d07e20b5102817df3dcebe3d7b43e27d286b26697d0e949f3596cf5490e24a42ce0b87c3077336b0aa0747c3f068bc882a97755a44187dcb3fc326b1f8ef2af5bb1; Path=/
+set-cookie: TS0124c473=014b5d5d073af71b8a8fc736ddbef3a078dc54ada7b26697d0e949f3596cf5490e24a42ce0f4961ce4eb346d3b55dd88df0dff19c3bbf7930045be6f8bce8c7b1094d97a93b9cc4768d99848c10d0f26bd0caf9d04528422fee8f948b06beea797ddcb451de9e40146b87b594cb6c23149cc4c6af9; path=/; domain=.ozoon.eu
+via: 1.1 VM-JFK-017LL140:5 (W), 0.0 PSmgbsdBOS1dp72:1 (W)
+=== DIRECT origin www.ozoon.eu headers ===
+HTTP/1.1 200 OK
+set-cookie: LANG=en; Path=/; Expires=Sun, 05 Sep 2027 23:45:38 GMT; Max-Age=31536000; Domain=.ozoon.eu; SameSite=lax
+Set-Cookie: VISITED=true;domain=.ozoon.eu;expires=Tue, 02 Sep 2036 23:45:39 GMT;path=/;Secure;SameSite=Lax
+Set-Cookie: Device-Type=Desktop|false;expires=Tue, 02 Sep 2036 23:45:39 GMT;path=/;Domain=.ozoon.eu;Secure;SameSite=Lax
+Set-Cookie: variant=v:0|lgn:0|dt:d|os:ns|cntry:US|cur:USD|jn:0|rt:o|pb:0;expires=Tue, 02 Sep 2036 23:45:39 GMT;path=/;Domain=.ozoon.eu;Secure;SameSite=Lax
+Set-Cookie: AB=variant;Secure;SameSite=Lax
+Set-Cookie: TS0181f769=014b5d5d070e8926b9eb359cbb0b1b393a982c23716e7baacb3b24a71ec326c0e770847c40642bf8f8a6ab9d3daf62caba0b73cc8b796450ed499963f42a1ebecc2edf43a9; Path=/
+Set-Cookie: TS0124c473=014b5d5d07052d33e3439e3c0e81d72d26bff3fee46e7baacb3b24a71ec326c0e770847c40c4a2bc8ede510d2296bb6af45137dd010143781e280a888b2c503290c4437738317d3ed35d62eb8119dfeceaa850a85c09ec4350d3e7b4be44a73546c725e97c4479ea2e601c41e3d11735064bf9e23f; path=/; domain=.ozoon.eu
+[0m
+[0m$ [0msleep 1.2; curl -s -m 25 https://services.ozoon.eu/ -o /tmp/opencode/services_shell.html; echo "size: $(wc -c < /tmp/opencode/services_shell.html)"; grep -oE '/services/[a-zA-Z0-9_.-]+/v[0-9]+/[a-zA-Z0-9_./-]*' /tmp/opencode/services_shell.html | sort -u | head -40
+size: 743244
+[0m
+[0m$ [0mgrep -oE 'servicesBaseUrl[^,;]{0,80}' /tmp/opencode/services_shell.html | head -3; echo "---services---"; grep -oE '"services/[a-z-]+"' /tmp/opencode/services_shell.html | sort -u | head; echo "---chunk urls---"; grep -oE '/_next/static/chunks/[^"]+\.js' /tmp/opencode/services_shell.html | sort -u | head -30
+servicesBaseUrl\":\"https://services.services.ozoon.eu\"}]
+servicesBaseUrl\":\"https://services.services.ozoon.eu\"}
+---services---
+---chunk urls---
+/_next/static/chunks/11fe6e6a-590193d3d15a7880.js
+/_next/static/chunks/2141-14f94e35472d6958.js
+/_next/static/chunks/2537-fb787c784c78c6e9.js
+/_next/static/chunks/316-202176dc384770ed.js
+/_next/static/chunks/3347-6e6451a6fdf158dd.js
+/_next/static/chunks/3670.bb34b8b2f1e2edf7.js
+/_next/static/chunks/4130-a94e4c8128b09299.js
+/_next/static/chunks/552.7f8cd18aa6ef92ba.js
+/_next/static/chunks/5652-f31836bf0684efa9.js
+/_next/static/chunks/6122.f8e8e4654a3a2cb2.js
+/_next/static/chunks/634-2b994a236bd4cdc9.js
+/_next/static/chunks/6384.42935790c8727109.js
+/_next/static/chunks/6795-a4bab33128deed8d.js
+/_next/static/chunks/8403-89012971de097bc5.js
+/_next/static/chunks/8820-79c46a1ea6dd1630.js
+/_next/static/chunks/9137-e89770f1af3235a9.js
+/_next/static/chunks/9768-4e8df107ce91128a.js
+/_next/static/chunks/9921-c10a1d8386fd20ad.js
+/_next/static/chunks/app/%5Blocale%5D/dynamic-layouts/%5BlayoutSegment%5D/%5Bchannel%5D/%5B%5B...slug%5D%5D/page-cea9a963ac863289.js
+/_next/static/chunks/app/%5Blocale%5D/error-9b0c0735ef363468.js
+/_next/static/chunks/app/%5Blocale%5D/layout-df512a1a581be543.js
+/_next/static/chunks/app/global-error-5f16bc48e248ee22.js
+/_next/static/chunks/cookies-next-167cc51bfac6f5a4.js
+/_next/static/chunks/main-app-1214d6de195f6881.js
+/_next/static/chunks/pantheon-modules-54ad3b04423ff20f.js
+/_next/static/chunks/polyfills-42372ed130431b0a.js
+/_next/static/chunks/webpack-793180ece7aa5ea6.js
+/_next/static/chunks/wretch-52a53eab64b2ce48.js
+[0m
+[0m$ [0mbase=https://services.ozoon.eu; sleep 1.2; curl -s -m 20 "$base/_next/static/chunks/app/%5Blocale%5D/layout-df512a1a581be543.js" -o /tmp/opencode/layout.js; echo "layout: $(wc -c < /tmp/opencode/layout.js)"; grep -oE '(services/[a-z-]+|/v[0-9]+/[a-zA-Z0-9_/{}.$.-]+)' /tmp/opencode/layout.js | sort -u | head -50
+layout: 0
+[0m
+[0m$ [0mbase=https://services.ozoon.eu; for c in "app/%5Blocale%5D/layout-df512a1a581be543.js" "webpack-793180ece7aa5ea6.js"; do echo "=== $c ==="; curl -s -m 20 -o /tmp/opencode/c.js -w "http:%{http_code} size:%{size_download}\n" "$base/_next/static/chunks/$c"; head -c 200 /tmp/opencode/c.js; echo; sleep 1.2; done
+=== app/%5Blocale%5D/layout-df512a1a581be543.js ===
+http:404 size:0
+
+=== webpack-793180ece7aa5ea6.js ===
+http:404 size:0
+[0m
+[0m$ [0mc="layout-df512a1a581be543.js"; curl -s -m 25 -o /tmp/opencode/layout.js -w "www layout http:%{http_code} size:%{size_download}\n" "https://www.ozoon.eu/_next/static/chunks/app/%5Blocale%5D/$c"; wc -c /tmp/opencode/layout.js
+www layout http:200 size:59271
+59271 /tmp/opencode/layout.js
+[0m
+[0m$ [0mgrep -oE '(services/[a-z-]+)|(/v[0-9]+/[A-Za-z0-9_/${}.-]+)|(https?://[a-zA-Z0-9.-]+)' /tmp/opencode/layout.js | sort -u | head -60
+/v2/nav/A/description/.
+http://foo.bar
+https://dummy.origin
+https://www.googletagmanager.com
+services/deviceprotect
+services/v
+[0m
+[0m$ [0mgrep -oE '.{80}deviceprotect.{120}' /tmp/opencode/layout.js | head -3; echo "==="; grep -oE '.{60}v2/nav.{100}' /tmp/opencode/layout.js | head -3; echo "==="; grep -oE '.{40}services/v.{100}' /tmp/opencode/layout.js | head -3
+>{let e=(0,o.getSessionId)();if(!e)return console.warn("Tried to call /services/deviceprotect/ with no sessionId"),"DENIED";try{return await f("/services/deviceprotect/device-tracking/".concat(e))}catch(t){let e=t
+t.fetchDeviceReference(),n=(0,o.getSessionId)();if(!n)return;await b("/services/deviceprotect/devices/".concat(n),r)}catch(t){throw Error(null!==(i=null===(s=e.data)||void 0===s?void 0:s.error)&&void 0!==i?i:t ins
+===
+ts/(event/coupon/|config/site|event/markets/featured/|event/v2/nav/A/description/.*?azSorting=true.*)|casino/casino-lobby-services/v1/(jackpots|vig/(lobbystatus|seats
+===
+*?azSorting=true.*)|casino/casino-lobby-services/v1/(jackpots|vig/(lobbystatus|seatstatus)))"),include:/\/(services|api)\//},j=e=>!((null==e?void 0:e.
+[0m
+[0m$ [0mS=https://services.ozoon.eu; sleep 1.2; echo "== device-tracking (bogus sid) =="; curl -s -m 20 -w "\nhttp:%{http_code}\n" "$S/services/deviceprotect/device-tracking/00000000-0000-0000-0000-000000000000"; sleep 1.2; echo "== devices (bogus sid) =="; curl -s -m 20 -w "\nhttp:%{http_code}\n" "$S/services/deviceprotect/devices/00000000-0000-0000-0000-000000000000"
+== device-tracking (bogus sid) ==
+{"timestamp":"2026-09-05T23:46:25.632Z","status":401,"message":"Authentication required for requested route","error":"Unauthorized","errorCode":"unauthorized"}
+http:401
+== devices (bogus sid) ==
+{"timestamp":"2026-09-05T23:46:27.343Z","status":401,"message":"Authentication required for requested route","error":"Unauthorized","errorCode":"unauthorized"}
+http:401
+[0m
+[0m$ [0mS=https://services.ozoon.eu; sleep 1.2; echo "== casino-lobby jackpots =="; curl -s -m 20 -w "\nhttp:%{http_code}\n" "$S/casino/casino-lobby-services/v1/jackpots"; sleep 1.2; echo "== casino-lobby vig/lobbystatus =="; curl -s -m 20 -w "\nhttp:%{http_code}\n" "$S/casino/casino-lobby-services/v1/vig/lobbystatus"
+...output truncated...
+
+Full output saved to: /home/runner/.local/share/opencode/tool-output/tool_073f771b6001H20qzSzXDAqY5c
+
+http:200
+[0m
+[0m$ [0mwc -c /home/runner/.local/share/opencode/tool-output/tool_073f771b6001H20qzSzXDAqY5c; grep -oE '"http:[0-9]+"' /home/runner/.local/share/opencode/tool-output/tool_073f771b6001H20qzSzXDAqY5c; grep -oE '"jackpotAmount":[0-9.]+' /home/runner/.local/share/opencode/tool-output/tool_073f771b6001H20qzSzXDAqY5c | head -5; grep -oE '"title":"[^"]{0,40}"' /home/runner/.local/share/opencode/tool-output/tool_073f771b6001H20qzSzXDAqY5c | head -8
+436308 /home/runner/.local/share/opencode/tool-output/tool_073f771b6001H20qzSzXDAqY5c
+[0m
+[0m→ [0mRead /home/runner/.local/share/opencode/tool-output/tool_073f771b6001H20qzSzXDAqY5c[90m [limit=3][0m
+[0m
+[0m$ [0msleep 1.2; curl -s -m 20 -w "\nhttp:%{http_code} size:%{size_download}\n" -o /tmp/opencode/jack_w.html "https://www.ozoon.eu/casino/casino-lobby-services/v1/jackpots"; head -c 300 /tmp/opencode/jack_w.html; echo; sleep 1.2; curl -s -m 20 -w "\nhttp:%{http_code} size:%{size_download}\n" -o /tmp/opencode/vig_w.html "https://www.ozoon.eu/casino/casino-lobby-services/v1/vig/lobbystatus"; head -c 300 /tmp/opencode/vig_w.html
+http:200 size:224101
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/><link rel="preload" as="script" fetchPriority="low" href="/assets/_next/static/chunks/webpack-793180ece7aa5ea6.js"/><script src="/assets
+
+http:200 size:224184
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/><link rel="preload" as="script" fetchPriority="low" href="/assets/_next/static/chunks/webpack-793180ece7aa5ea6.js"/><script src="/assets
+[0m
+[0m$ [0mS=https://services.ozoon.eu; sleep 1.2; curl -s -m 20 -w "\nhttp:%{http_code} size:%{size_download}\n" -o /tmp/opencode/j1.json "$S/services/casino/casino-lobby-services/v1/jackpots"; head -c 300 /tmp/opencode/j1.json; echo; sleep 1.2; curl -s -m 20 -w "\nhttp:%{http_code} size:%{size_download}\n" -o /tmp/opencode/j2.json "$S/services/casino-lobby-services/v1/jackpots"; head -c 300 /tmp/opencode/j2.json
+http:400 size:0
+
+
+http:404 size:110
+{"timestamp":"2026-09-05T23:46:58.636+0000","status":404,"error":"Not Found","message":"No message available"}
+[0m
+[0m$ [0mgrep -oE '.{0,60}(event/coupon|config/site|markets/featured|v2/nav/A).{0,80}' /tmp/opencode/layout.js | head -6
+(22186),S=r(5310);let E={exclude:RegExp("/services/(sports/(event/coupon/|config/site|event/markets/featured/|event/v2/nav/A/description/.*?azSorting=tr
+[0m
+[0m$ [0mS=https://services.ozoon.eu; sleep 1.2; curl -s -m 20 -w "\nhttp:%{http_code} size:%{size_download}\n" -o /tmp/opencode/sp1.json "$S/services/sports/config/site"; head -c 200 /tmp/opencode/sp1.json; echo; sleep 1.2; curl -s -m 20 -w "\nhttp:%{http_code} size:%{size_download}\n" -o /tmp/opencode/sp2.json "$S/services/sports/event/v2/nav/A/description/?azSorting=true"; head -c 200 /tmp/opencode/sp2.json
+http:200 size:43341
+{"popular_market_types":{"MMA":[{"periodId":"12128","marketTypeId":"120789"},{"periodId":"12122","marketTypeId":"120789"},{"periodId":"12122","marketTypeId":"120777"},{"periodId":"12122","marketTypeId
+
+http:404 size:2
+{}
+[0m
+[0m$ [0mgrep -oE 'https?://[a-zA-Z0-9._/-]+' /tmp/opencode/sp1.json | sort -u | head -30; echo "--- keys/urls ---"; grep -oE '"[a-zA-Z_]{3,25}":\s*"(https?://[^"]+|/[a-zA-Z0-9_./-]+)"' /tmp/opencode/sp1.json | head -20; echo "--- provider/game/enabled flags ---"; grep -oE '"([a-zA-Z]+(Provider|Api|Url|Enabled|Host|Endpoint|Key|Timeout|Base)[a-zA-Z]*)":\s*"?[^,"}]{0,60}' /tmp/opencode/sp1.json | sort -u | head -30
+https://ip.troya.xyz/inplay-widgets
+https://troya.xyz
+https://troya.xyz/betbuilder
+--- keys/urls ---
+"sportsPath":"/sports"
+"playerPropsWidgetLiveUrl":"https://ip.troya.xyz/inplay-widgets"
+"playerPropsWidgetUrl":"https://troya.xyz"
+"playerPropsIframeUrl":"https://troya.xyz/betbuilder"
+--- provider/game/enabled flags ---
+"betslipCombinedOddsEnabled":true
+"betslipTabsEnabled":true
+"cashoutEnabled":true
+"filtersEnabled":true
+"firstBetEnabled":true
+"isHorsesMaintenanceEnabled":"
+"isMaintenanceEnabled":false
+"isSportsMaintenanceEnabled":false
+"marketTypeFiltersBySportsPortalEnabled":false
+"parlayCashoutEnabled":true
+"playerPropsBetBuilderEnabled":"true
+"playerPropsBrandKey":"40
+"playerPropsEventWidgetEnabled":"true
+"playerPropsIframeUrl":"https://troya.xyz/betbuilder
+"playerPropsLeagueWidgetEnabled":"true
+"playerPropsPublicKey":"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAu+i+p71PpFczmBRF
+"playerPropsWidgetLiveUrl":"https://ip.troya.xyz/inplay-widgets
+"playerPropsWidgetLiveUrlEnabled":false
+"playerPropsWidgetUrl":"https://troya.xyz
+"quickslipEnabled":true
+"seoContentEnabled":true
+"sportacusEnabledPaths":[]
+"swipableMarketsEnabled":true
+[0m
+[0m$ [0mS=https://services.ozoon.eu; sleep 1.2; curl -s -m 20 -w "\nhttp:%{http_code} size:%{size_download}\n" -o /tmp/opencode/feat.json "$S/services/sports/event/markets/featured/"; head -c 200 /tmp/opencode/feat.json; echo; sleep 1.3; curl -s -m 20 -w "\nhttp:%{http_code} size:%{size_download}\n" -o /tmp/opencode/coupon.json "$S/services/sports/event/coupon/item/120789"; head -c 200 /tmp/opencode/coupon.json
+http:404 size:98
+{"timestamp":1788652047714,"status":404,"error":"Not Found","path":"/api/event/markets/featured/"}
+
+http:400 size:0
+[0m
+[0m$ [0mgrep -oE '"[a-zA-Z0-9_]+":' /tmp/opencode/sp1.json | sort -u | wc -l; echo "--- brand/env-ish keys ---"; grep -oE '"(brand|environment|env|environmentName|tenant|operator|backend|internal|jdbc|password|secret|token|database)[a-zA-Z0-9_]*":\s*"[^"]{0,50}' /tmp/opencode/sp1.json | head; echo "--- playerPropsBrandKey value ---"; grep -oE '"playerPropsBrandKey":"[^"]{0,40}' /tmp/opencode/sp1.json; echo "--- azSorting nav on www? ---"; grep -oE '"(nav|navigation)":' /tmp/opencode/sp1.json | head -3
+124
+--- brand/env-ish keys ---
+--- playerPropsBrandKey value ---
+"playerPropsBrandKey":"40
+--- azSorting nav on www? ---
+[0m
+[0m$ [0mpython3 -c "
+import json
+d=json.load(open('/tmp/opencode/sp1.json'))
+def walk(o,p=''):
+    for k,v in o.items() if isinstance(o,dict) else []:
+        np=p+'.'+k
+        if isinstance(v,(dict,list)): walk(v,np)
+        else: print(np,'=',repr(v)[:120])
+walk(d)
+" 2>/dev/null | grep -iE 'brand|key|url|host|env|token|secret|api' | head -20
+.player_props_leagues_mapping.174.name = 'Turkey - Super Lig'
+.player_props_leagues_mapping.141.name = 'Ice Hockey - NHL'
+.main_config.playerPropsPublicKey = 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAu+i+p71PpFczmBRFLKKH K23r/WT5qj5vm7sJrfI2KwAvsJW2Xq3UNVs3As1qIPnZkRR/BKD85T
+.main_config.playerPropsBrandKey = '40'
+.main_config.playerPropsWidgetLiveUrl = 'https://ip.troya.xyz/inplay-widgets'
+.main_config.playerPropsWidgetUrl = 'https://troya.xyz'
+.main_config.playerPropsIframeUrl = 'https://troya.xyz/betbuilder'
+.main_config.playerPropsWidgetLiveUrlEnabled = False
+[0m
+[0m$ [0mgrep -oE '"/services/[a-z0-9_-]+/' /tmp/opencode/layout.js | sort -u; echo "---domains---"; grep -oE 'https://[a-z0-9.-]+' /tmp/opencode/layout.js | sort -u | grep -vE 'googletagmanager|foo|dummy' | head
+"/services/deviceprotect/
+---domains---
+[0m
+STEP 1 — DELTA
+- NEW `GET /services/sports/config/site` → 200, 43KB anonymous JSON (124 keys) — sports service is publicly readable alongside site-config; rebuts blanket-401 baseline.
+- NEW `services/deviceprotect/{device-tracking,devices}/{sessionId}` in SDK → 401 anonymously (auth-gated; sessionId-keyed, not profile-UUID like the BOLA set).
+- NEW `{sports,casino,poker,m}.ozoon.eu` resolve to origin `185.156.184.201` but 400 "hostname invalid" (single-vhost, cert SAN only www.ozoon.eu/ozoon.eu); direct-origin fetch of www returns same TS/Akamai bot cookies → same infra, no WAF bypass.
+- CHANGED `/casino/casino-lobby-services/v1/{jackpots,vig/lobbystatus}` → 200 SPA catch-all shell on both hosts; `/services/casino/casino-lobby-services/...` → 400 (WAF), `/services/casino-lobby-services/...` → 404 Spring — no anonymous casino-lobby data.
+
+STEP 2 — PRIORITIZE
+- [PRIO] services.ozoon.eu/services/*/v1/profiles/{uuid}/...,6.95,attack_surface:9+business_value:9+tech_exposure:6+gate_ease:3+cloud_surface:5+freshness:6
+- [PRIO] services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify,5.75,attack_surface:8+business_value:9+tech_exposure:7+gate_ease:2+cloud_surface:4+freshness:7
+- [PRIO] www.ozoon.eu/api/v1/signup,4.95,attack_surface:7+business_value:7+tech_exposure:4+gate_ease:8+cloud_surface:3+freshness:6
+
+STEP 3 — HYPOTHESES (unchanged leaders, re-confirmed this cycle)
+[HYP] BOLA on profile-keyed UUID endpoints — session identity may not be bound to path UUID
+class: IDOR
+asset: https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...
+confidence: 65
+reasoning: SDK confirms 5 services key resources by profile UUID; bogus-UUID probe → structured 401 errorCode:"unauthorized" (auth pre-check precedes lookup); deviceprotect now extends the surface (sessionId-keyed, also 401 anonymously); sports/site-config services prove anonymous read exists class-wide.
+evidence_needed: Authorized A reading /profiles/{B-UUID}/... returns B's data; ownPID returns A's.
+verify_steps: PREREQ: authorization. POST signup A → sid+ownPID; GET /services/wallet-gateway/v1/profiles/{ownPID-A}/balances; control {bogus-uuid} (recorded 401); authorized B + A sid cross-read.
+impact: Critical — cross-user wallet/transaction/PII read, ATO enabler.
+testability: AUTH_HELPED
+[HYP] Mock-2FA verification header may be honored in production — 2FA/KYC gate bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{ownPID}/verifications/verify
+confidence: 55
+reasoning: Prod SDK sends X-MOCK-2FA-VERIFICATION:true; config allow-permanent-skip:["true"]; isMockProviderEnabled:false is client-side only; 401 baseline shape re-confirmed.
+evidence_needed: POST verify with mock header succeeds, identical request without is rejected.
+verify_steps: PREREQ: authorization. signup → sid+ownPID; POST verify +X-MOCK-2FA-VERIFICATION:true {"verificationType":"PHONE"}; control without header; success+reject = confirmed.
+impact: Critical — bypass SMS/PIN/2FA/KYC on real-money withdraw/deposit.
+testability: AUTH_HELPED
+[HYP] Mass assignment on signup — server may persist unmapped privilege/territory/balance fields
+class: BUSLOGIC
+asset: https://www.ozoon.eu/api/v1/signup
+confidence: 58
+reasoning: Captcha-free signup, client-controlled attributes/address sub-objects; static refSiteToken; profileupdateform whitelist flat but update-DTO only; WAF on GET-signup only (mutating POST is the real gate enforcer).
+evidence_needed: Injected attributes.role/vip_level, address.country persist in whoami/profile or cause privileged side effects.
+verify_steps: PREREQ: authorization. Control signup → set-cookie+whoami; signup with injected keys; compare persisted fields.
+impact: Medium-High — territory softblock bypass, referral fraud; privilege elevation if persisted.
+testability: AUTH_HELPED
+
+STEP 4 — SELF-CRITIQUE
+- [PARKED] sports config/site anonymous leak: public-by-design config feed; brandKey literal "40", RSA public key, only third-party widget URLs (troya.xyz) — no privates; would not clear 40 with deeper probing.
+- [PARKED] `/services/sports/event/markets/featured/` path field leaking internal `/api` prefix: descriptive-error class, REJECTED.
+- [FINAL] BOLA 65, mass-assignment 58, mock-2FA 55 (unchanged, all AUTH_HELPED).
+
+STEP 5 — NEXT ACTION
+[NEXT] HUMAN: Request program authorization (bugs.olivermaicher.eu) to create one throwaway account. If granted, fire exactly: POST https://www.ozoon.eu/api/v1/signup {"email":"<throwaway>@<valid-domain>","password":"Test1234!","country":"CA","language":"en","attributes":{},"address":{"country":"CA","addressLine":"123 Test St","postalCode":"K1A 0A6"}} → capture sid+ownPID, then GET https://services.ozoon.eu/services/wallet-gateway/v1/profiles/{ownPID}/balances (expected 200 vs recorded 401). No new anonymously-testable vector displaced the top-3 this cycle.
+
+STEP 6 — LEARNING
+- [LEARN] ACCEPTED MISCONFIG @ services.ozoon.eu/services/sports/config/site: anonymous 200 JSON config feed (124 keys, playerProps public RSA key + brandKey "40", troya.xyz widget URLs); /services/sports/* is public read surface; also SRV-internal path leak in 404 ("/api/event/markets/featured") is descriptive-error only.
+- [LEARN] REJECTED OTHER @ {sports,casino,poker,m}.ozoon.eu: A-record 185.156.184.201 but vhost 400 "hostname invalid"; cert SAN limited to www.ozoon.eu/ozoon.eu — alias DNS noise, no WAF-origin split.
+- [LEARN] REJECTED OTHER @ services.ozoon.eu services/deviceprotect/*: sessionId-keyed auth-gated (401 anonymous) — extends but does not alter the BOLA surface shape.
+- [LEARN] ACCEPTED IDOR @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: unaffected by this cycle's breadth; no new anonymous displacement; AUTH_HELPED.
+- [LEARN] ACCEPTED AUTH @ services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify: unchanged; AUTH_HELPED.
+- [LEARN] ACCEPTED BUSLOGIC @ www.ozoon.eu/api/v1/signup: unchanged; AUTH_HELPED.
+
+STEP 7 — RISK
+[RISK] ozoon-sportsbook-casino: 81/100 (flat). New anonymous sports-config + alias-host probes produced only public-config/REJECTED-class findings; direct-origin carries identical bot protection (no WAF bypass). All three critical vectors (BOLA 65, mock-2FA 55, mass-assignment 58) remain AUTH_HELPED and unprobed; account creation restricted pending authorization. +1 on first authenticated BOLA/bypass confirmation, −2 if mock header/injected fields stripped server-side.

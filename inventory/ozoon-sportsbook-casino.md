@@ -203,3 +203,5 @@ www.ozoon.com
 - CHANGED Zero authenticated probes executed against core platform (`ozoon.eu`/`services.ozoon.eu`) across all 18+ probe rounds; all probes target only `www.ozoon.com` marketing edge
 - CHANGED Production SSR flag `isMockProviderEnabled:false` (client MockProvider chunk) is mild contrary evidence for mock-2FA path → confidence 60→55
 - CHANGED Three FINAL hypotheses refined with AUTH_HELPED test paths: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all require authenticated session via signup gateway
+
+## 2026-09-05 23:48:13 UTC

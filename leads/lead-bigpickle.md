@@ -987,3 +987,33 @@ testability: AUTH_HELPED
 [LEARN] ACCEPTED AUTH @ services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify: mock-2FA + allow-permanent-skip remains the single critical gate-bypass candidate; AUTH_HELPED.
 [LEARN] ACCEPTED BUSLOGIC @ www.ozoon.eu/api/v1/signup: captcha-free signup still the sole gateway to authenticated testing; AUTH_HELPED.
 [RISK] ozoon-sportsbook-casino: 81/100 (unchanged). No amplificatory delta this cycle — SSR/sitemap/contents walk returned only REJECTED-class and off-scope confirmations. All three critical vectors (BOLA 65, mass-assignment 58, mock-2FA 55) remain AUTH_HELPED and unprobed; account creation still restricted pending program authorization. Net-risk curve flat; +1 on first authenticated BOLA/bypass confirmation, −2 if mock header/injected fields are stripped server-side.
+## 2026-09-05 23:48:03 UTC [target] (model bigpickle)
+[HYP] BOLA on profile-keyed UUID endpoints — session identity may not be bound to path UUID
+class: IDOR
+asset: https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...
+confidence: 65
+reasoning: SDK confirms 5 services key resources by profile UUID; bogus-UUID probe → structured 401 errorCode:"unauthorized" (auth pre-check precedes lookup); deviceprotect now extends the surface (sessionId-keyed, also 401 anonymously); sports/site-config services prove anonymous read exists class-wide.
+evidence_needed: Authorized A reading /profiles/{B-UUID}/... returns B's data; ownPID returns A's.
+verify_steps: PREREQ: authorization. POST signup A → sid+ownPID; GET /services/wallet-gateway/v1/profiles/{ownPID-A}/balances; control {bogus-uuid} (recorded 401); authorized B + A sid cross-read.
+impact: Critical — cross-user wallet/transaction/PII read, ATO enabler.
+testability: AUTH_HELPED
+[HYP] Mock-2FA verification header may be honored in production — 2FA/KYC gate bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{ownPID}/verifications/verify
+confidence: 55
+reasoning: Prod SDK sends X-MOCK-2FA-VERIFICATION:true; config allow-permanent-skip:["true"]; isMockProviderEnabled:false is client-side only; 401 baseline shape re-confirmed.
+evidence_needed: POST verify with mock header succeeds, identical request without is rejected.
+verify_steps: PREREQ: authorization. signup → sid+ownPID; POST verify +X-MOCK-2FA-VERIFICATION:true {"verificationType":"PHONE"}; control without header; success+reject = confirmed.
+impact: Critical — bypass SMS/PIN/2FA/KYC on real-money withdraw/deposit.
+testability: AUTH_HELPED
+[HYP] Mass assignment on signup — server may persist unmapped privilege/territory/balance fields
+class: BUSLOGIC
+asset: https://www.ozoon.eu/api/v1/signup
+confidence: 58
+reasoning: Captcha-free signup, client-controlled attributes/address sub-objects; static refSiteToken; profileupdateform whitelist flat but update-DTO only; WAF on GET-signup only (mutating POST is the real gate enforcer).
+evidence_needed: Injected attributes.role/vip_level, address.country persist in whoami/profile or cause privileged side effects.
+verify_steps: PREREQ: authorization. Control signup → set-cookie+whoami; signup with injected keys; compare persisted fields.
+impact: Medium-High — territory softblock bypass, referral fraud; privilege elevation if persisted.
+testability: AUTH_HELPED
+[NEXT] HUMAN: Request program authorization (bugs.olivermaicher.eu) to create one throwaway account. If granted, fire exactly: POST https://www.ozoon.eu/api/v1/signup {"email":"<throwaway>@<valid-domain>","password":"Test1234!","country":"CA","language":"en","attributes":{},"address":{"country":"CA","addressLine":"123 Test St","postalCode":"K1A 0A6"}} → capture sid+ownPID, then GET https://services.ozoon.eu/services/wallet-gateway/v1/profiles/{ownPID}/balances (expected 200 vs recorded 401). No new anonymously-testable vector displaced the top-3 this cycle.
+[RISK] ozoon-sportsbook-casino: 81/100 (flat). New anonymous sports-config + alias-host probes produced only public-config/REJECTED-class findings; direct-origin carries identical bot protection (no WAF bypass). All three critical vectors (BOLA 65, mock-2FA 55, mass-assignment 58) remain AUTH_HELPED and unprobed; account creation restricted pending authorization. +1 on first authenticated BOLA/bypass confirmation, −2 if mock header/injected fields stripped server-side.
