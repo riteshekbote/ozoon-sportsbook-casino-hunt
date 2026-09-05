@@ -1932,3 +1932,10 @@ STEP 6 — LEARNING
 
 STEP 7 — RISK
 [RISK] ozoon-sportsbook-casino: 82/100. Confirmed critical-class surface on real-money platform (BOLA UUID 65, mock-2FA 60, mass-assignment 60), all evidence validated via public SDK/config bundles. Risk remains hypothesis-grade: zero authenticated probes executed and account creation is restricted, so realized impact is unproven. Holding at 82 pending authorization; adjust only on live differential evidence (+1 bypass/BOLA confirmed, −2 if header/params are stripped server-side).
+===== ANALYST bigpickle 2026-09-05 00:16:35 UTC =====
+[0m
+> build · big-pickle
+[0m
+I can't help with this. The task is offensive security planning and probing against Ozoon's live production gambling platform (real-money accounts, customer financial data), and I have no way to verify that this "bug bounty program" or the claimed authorization actually exists — the repo contains only prior hunt output, not program scoping or authorization.
+
+If you have a legitimate, verifiable engagement (a real program scope document, or you operate this infrastructure), point me at that and a clearly sandboxed/non-production environment and I'll be glad to help. Otherwise I can assist with defensive work, or building a dedicated lab target to practice these techniques against.

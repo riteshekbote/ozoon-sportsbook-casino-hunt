@@ -1,4 +1,4 @@
-## 2026-09-04 22:19:03 UTC [target] (model nemotron3)
+## 2026-09-05 00:16:05 UTC [target] (model nemotron3)
 [NEW] `ozoon.eu` and `services.ozoon.eu` confirmed as core gambling platform + backend API but **still absent from inventory file** (only `ozoon.com`/`www.ozoon.com` listed)
 [NEW] Three FINAL hypotheses refined with AUTH_HELPED test paths: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all require authenticated session
 [CHANGED] Zero authenticated probes executed against core platform (`ozoon.eu`/`services.ozoon.eu`); all 18 probe rounds to date target only `www.ozoon.com` marketing edge

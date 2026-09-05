@@ -361,3 +361,4 @@ testability: AUTH_HELPED
 [LEARN] REJECTED SECRET @ oZoon/hyper, oZoon/mas-film: creds in learning/demo repos, not confirmed deployed.
 [LEARN] REJECTED OTHER @ oZoon/secure-query-string: SQLi patterns in learning repos, not confirmed deployed.
 [RISK] ozoon-sportsbook-casino: 82/100. Confirmed critical-class surface on real-money platform (BOLA UUID 65, mock-2FA 60, mass-assignment 60), all evidence validated via public SDK/config bundles. Risk remains hypothesis-grade: zero authenticated probes executed and account creation is restricted, so realized impact is unproven. Holding at 82 pending authorization; adjust only on live differential evidence (+1 bypass/BOLA confirmed, −2 if header/params are stripped server-side).
+## 2026-09-05 00:16:26 UTC [target] (model bigpickle)
