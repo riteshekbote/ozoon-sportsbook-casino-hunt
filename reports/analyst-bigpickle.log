@@ -7430,3 +7430,79 @@ What would you like me to assist you with regarding this security assessment? Fo
 - Something else
 
 Please let me know what specific help you need.
+===== ANALYST bigpickle 2026-09-06 20:52:21 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m✱ [0mGlob "**/scope.yml"[90m 1 match[0m
+[0m✱ [0mGlob "**/*.md"[90m 45 matches[0m
+[0m→ [0mRead triage/run-2026-09-06-20-29.md
+[0m→ [0mRead scope.yml
+[0m→ [0mRead inventory/ozoon-sportsbook-casino.md
+[0m→ [0mRead leads/lead-bigpickle.md
+[0m→ [0mRead reports/hypotheses.md
+[0m→ [0mRead probe-results.md
+[0m
+[0m$ [0mfor u in "https://services.ozoon.eu/" "https://www.ozoon.eu/" "https://chat.ozoon.eu/"; do curl -sk -o /dev/null -m 15 -w "%{http_code} %{remote_ip} %{size_download}B %{content_type}\n" "$u"; sleep 1; done
+200 69.10.145.17 743195B text/html; charset=utf-8
+200 157.185.158.193 749264B text/html; charset=utf-8
+404 158.51.123.27 0B
+[0m
+STEP 1 — DELTA
+- [CHANGED] Drift re-check (3 read-only GETs, 1rps): `services.ozoon.eu` → 200, 743KB SSR shell (byte-identical to prior capture, IP 69.10.145.17) and `www.ozoon.eu` → 200 749KB — no surface displacement; `chat.ozoon.eu/` root → 404, consistent with widget-only (REJECTED class).
+- [CHANGED] Inventory file still lists only `ozoon.com`/`www.ozoon.com`; `ozoon.eu` + `services.ozoon.eu` confirmed in-scope per scope.yml but absent — documentation drift, not a security delta.
+- NO_DELTA on findings: anonymous surface remains fully mapped and empty of new criticals; all three FINAL vectors unchanged, AUTH_HELPED, unprobed.
+
+STEP 2 — PRIORITIZE
+- [PRIO] services.ozoon.eu/services/*/v1/profiles/{uuid}/...,8.75,attack_surface:10+business_value:10+tech_exposure:8+gate_ease:7+cloud_surface:6+freshness:9
+- [PRIO] services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify,7.60,attack_surface:8+business_value:9+tech_exposure:7+gate_ease:6+cloud_surface:6+freshness:8
+- [PRIO] www.ozoon.eu/api/v1/signup,7.05,attack_surface:7+business_value:8+tech_exposure:6+gate_ease:8+cloud_surface:5+freshness:7
+
+STEP 3 — HYPOTHESES
+[HYP] BOLA on profile-keyed UUID endpoints — session identity may not be bound to path UUID
+class: IDOR
+asset: https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...
+confidence: 65
+reasoning: SDK bundles confirm 5 services (wallet-gateway, transaction-group, referral, player-verification, player-messages) key sensitive resources by profile UUID in path; recorded anonymous 401 {"errorCode":"unauthorized"} = auth pre-check precedes resource lookup; session→path-UUID binding untested; drift re-check confirms no new anonymous surface displaces this vector.
+evidence_needed: Authorized A reads /profiles/{B-UUID}/... returning B's non-404 data while A's own UUID returns A's data.
+verify_steps: PREREQ auth. Two throwaways A+B → sid+ownPID each. With A's sid: GET /services/wallet-gateway/v1/profiles/{B-ownPID}/wallets and /player-messages/v1/profiles/{B-ownPID}/messages; control with {A-ownPID}. Foreign UUID → 200 = BOLA, else 401/403 = bound.
+impact: Critical — cross-user wallet/transaction/PII across 5 services; ATO enabler.
+testability: AUTH_HELPED
+[HYP] Mock-2FA verification header honored in production — client-controlled 2FA/KYC gate bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{ownPID}/verifications/verify
+confidence: 55
+reasoning: Production SDK sends X-MOCK-2FA-VERIFICATION:true on verify; config has two_factor_authenticator.allow-permanent-skip:["true"]; isMockProviderEnabled:false is client-side only; 401 anonymous baseline re-recorded; header honoring requires a session.
+evidence_needed: POST verify +X-MOCK-2FA-VERIFICATION:true succeeds while byte-identical request without header rejects.
+verify_steps: PREREQ auth. signup → sid+ownPID; POST .../verifications/verify {"verificationType":"PHONE"} with header true then control without; compare status/body.
+impact: Critical — bypass SMS/PIN/2FA/KYC on deposit/withdraw/bonus money flows.
+testability: AUTH_HELPED
+[HYP] Mass assignment on signup — server may persist unmapped privilege/territory fields
+class: BUSLOGIC
+asset: https://www.ozoon.eu/api/v1/signup
+confidence: 58
+reasoning: Captcha-free signup (reCAPTCHA login-only); client-controlled attributes/address sub-objects; static refSiteToken unverified; per-country profileupdateform DTO strict but separate from signup DTO; WAF staged on GET-signup only.
+evidence_needed: Injected attributes.role/vip_level or restricted-territory address.country persist in whoami/profile vs control account.
+verify_steps: PREREQ auth. Control signup → whoami baseline; second signup with attributes.role="admin", vip_level, address.country=restricted; compare persisted whoami.
+impact: Medium-High — territory softblock bypass, referral fraud; privilege elevation if persisted.
+testability: AUTH_HELPED
+
+STEP 4 — SELF-CRITIQUE
+- [FINAL] BOLA UUID (65): absorbed all anonymous breadth; binding untested; cleanest evid. Rank 1.
+- [FINAL] Mock-2FA (55): single gate-bypass vector; SSR flag is weak contra only. Rank 2.
+- [FINAL] Mass-assignment (58): separate DTO rationale holds; gateway probe producing sid. Rank 3.
+- [PARKED] SSRF @ www.ozoon.com (55): param enumeration on wnacloud shared edge shows 200 with no observed outbound-collab hit; deprioritized vs core platform; revisit only if authorization stalls.
+- [DROPPED] Shared-runtime token leak (<40 after bundle inspection, PASSIVE-only): no application state in window.__SHARED_RUNTIME__.
+
+STEP 5 — NEXT ACTION
+[NEXT] HUMAN: Request program authorization at bugs.olivermaicher.eu to create TWO throwaway accounts on www.ozoon.eu (strictly restricted mutating create, synthetic emails, zero writes to existing data). If granted, pre-flight one passive RAG (current account-page SDK bundle → pin exact signup-DTO keys + X-MOCK-2FA-VERIFICATION casing), then fire exactly: POST https://www.ozoon.eu/api/v1/signup {"email":"<throwaway>@<valid-domain>","password":"Test1234!","country":"CA","language":"en","attributes":{},"address":{"country":"CA","addressLine":"123 Test St","postalCode":"K1A 0A6"}} → capture sid+ownPID; then GET /services/wallet-gateway/v1/profiles/{ownPID}/balances (expect 200 vs recorded 401) and POST .../player-verification/v1/profiles/{ownPID}/verifications/verify with/without X-MOCK-2FA-VERIFICATION; third control signup with injected attributes for mass-assignment differential.
+
+STEP 6 — LEARNING
+- [LEARN] ACCEPTED IDOR @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: Reconfirmed — drift re-check adds no surface that displaces the SDK-confirmed BOLA vector; binding unresolved; AUTH_HELPED.
+- [LEARN] ACCEPTED AUTH @ services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify: mock-2FA header + allow-permanent-skip remains the one critical gate-bypass candidate; AUTH_HELPED.
+- [LEARN] ACCEPTED BUSLOGIC @ www.ozoon.eu/api/v1/signup: captcha-free signup still the sole gateway to authenticated testing; AUTH_HELPED.
+- [LEARN] REJECTED OTHER @ services.ozoon.eu: 2026-09-06 drift re-check → 200, 743KB SSR shell (byte-identical), chat.ozoon.eu root 404 (widget-only) — no surface change, no new finding.
+- [LEARN] REJECTED SECRET @ www.ozoon.com:3306 / oZoon/hyper, oZoon/mas-film; REJECTED OTHER @ oZoon/secure-query-string, services.services.ozoon.eu, /v{2,3}/api-docs+/actuator, glovefrog, wicket-keeper: unchanged shared-proxy/learning-repo/split-horizon/third-party artifacts.
+
+STEP 7 — RISK
+[RISK] ozoon-sportsbook-casino: 81/100 (flat). Drift re-check confirms no new anonymous surface; all breadth returns REJECTED-class no-leak. Three critical vectors (BOLA 65, mass-assign 58, mock-2FA 55) remain AUTH_HELPED and unprobed behind the restricted signup; risk moves only on first authorized differential (+1 on BOLA/bypass confirmation; −2 if mock header/injected fields are stripped server-side). Inventory documentation drift is non-security.
