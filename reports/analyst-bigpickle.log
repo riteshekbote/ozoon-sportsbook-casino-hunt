@@ -6541,3 +6541,402 @@ STEP 6 — LEARNING
 
 STEP 7 — RISK
 - [RISK] ozoon-sportsbook-casino: 81/100 (flat). This cycle produced only REJECTED-class recon negatives (GraphQL/OIDC/JWKS), adding no anonymous surface and no amplification. All three critical vectors (BOLA 65, mock-2FA 55, mass-assignment 58) remain AUTH_HELPED and unprobed behind the signup gate, which is still restricted pending program authorization. Net-risk curve flat; +1 on first authenticated BOLA/bypass confirmation, −2 if mock header/injected fields are stripped server-side.
+===== ANALYST bigpickle 2026-09-06 08:50:52 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mmkdir -p /tmp/opencode/ozoon && curl -sS -o /tmp/opencode/ozoon/ssr.html -w "HTTP %{http_code} size=%{size_download} url=%{url_effective}\n" --max-time 40 -H "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36" https://services.ozoon.eu/
+HTTP 200 size=743250 url=https://services.ozoon.eu/
+[0m
+[0m$ [0mrg -o '_next/static[^"]*' /tmp/opencode/ozoon/ssr.html | sort -u | head -80
+/bin/bash: line 1: rg: command not found
+[0m
+[0m✗ [0mGrep "_next/static/[A-Za-z0-9\-/_.]+" failed[90m in /tmp/opencode/ozoon/ssr.html[0m
+[91m[1mError: [0mRipgrep JSON record exceeded 65536 bytes
+[0m
+[0m$ [0mgrep -oE '_next/static/[A-Za-z0-9\-/_.]+' /tmp/opencode/ozoon/ssr.html | sort -u | head -100
+grep: Invalid range end
+[0m
+[0m$ [0mgrep -oE '_next/static/[_a-zA-Z0-9./-]+' /tmp/opencode/ozoon/ssr.html | sort -u | head -120
+_next/static/chunks/11fe6e6a-590193d3d15a7880.js
+_next/static/chunks/2141-14f94e35472d6958.js
+_next/static/chunks/2537-fb787c784c78c6e9.js
+_next/static/chunks/316-202176dc384770ed.js
+_next/static/chunks/3347-6e6451a6fdf158dd.js
+_next/static/chunks/3670.bb34b8b2f1e2edf7.js
+_next/static/chunks/4130-a94e4c8128b09299.js
+_next/static/chunks/552.7f8cd18aa6ef92ba.js
+_next/static/chunks/5652-f31836bf0684efa9.js
+_next/static/chunks/6122.f8e8e4654a3a2cb2.js
+_next/static/chunks/634-2b994a236bd4cdc9.js
+_next/static/chunks/6384.42935790c8727109.js
+_next/static/chunks/6795-a4bab33128deed8d.js
+_next/static/chunks/8403-89012971de097bc5.js
+_next/static/chunks/8820-79c46a1ea6dd1630.js
+_next/static/chunks/9137-e89770f1af3235a9.js
+_next/static/chunks/9768-4e8df107ce91128a.js
+_next/static/chunks/9921-c10a1d8386fd20ad.js
+_next/static/chunks/app/
+_next/static/chunks/app/global-error-5f16bc48e248ee22.js
+_next/static/chunks/cookies-next-167cc51bfac6f5a4.js
+_next/static/chunks/main-app-1214d6de195f6881.js
+_next/static/chunks/pantheon-modules-54ad3b04423ff20f.js
+_next/static/chunks/polyfills-42372ed130431b0a.js
+_next/static/chunks/webpack-793180ece7aa5ea6.js
+_next/static/chunks/wretch-52a53eab64b2ce48.js
+_next/static/css/fonts/geist/geistBold.woff2
+_next/static/css/fonts/geist/geistMedium.woff2
+_next/static/css/fonts/geist/geistRegular.woff2
+_next/static/css/fonts/geist/geistSemiBold.woff2
+_next/static/css/fonts/leagueGothic/leagueGothicRegular.woff2
+_next/static/css/fonts/oswald/oswaldMedium.woff2
+_next/static/css/polimnia-e95b64746f4b3243.css
+_next/static/images/w1200/q75/cms/BDG/
+_next/static/images/w1200/q75/cms/BDG/5
+_next/static/images/w1200/q75/cms/BDG/8LzwfQrHS0mhw3JNZ1w2Tw/JurassicKingdoms-400x304.webp
+_next/static/images/w1200/q75/cms/BDG/8dZEy9jYTD6xYnY5JipOJg/Royal
+_next/static/images/w1200/q75/cms/BDG/BI2ZytWpSQyHIqD6sCTp3A/King
+_next/static/images/w1200/q75/cms/BDG/GfA9LUwMRJmHBQ6I
+_next/static/images/w1200/q75/cms/BDG/KYsqtWJsQomkVnAMWKAiCA/Hot
+_next/static/images/w1200/q75/cms/BDG/LOHYaiSdqTP7G6qYSrIw/HitTheGold-400x304.webp
+_next/static/images/w1200/q75/cms/BDG/NR8LtG8SxCJDUsY7FMJbg/Coin
+_next/static/images/w1200/q75/cms/BDG/Ttkrwc0kSuK17JhnJGD8
+_next/static/images/w1200/q75/cms/BDG/UowbPt9ZTh6fbNrXFX9MyA/Power_Sun_400x304.webp
+_next/static/images/w1200/q75/cms/BDG/WvQFCnOyTaCv3DEpiECRHA/Ten-Times-Wins-400x304.webp
+_next/static/images/w1200/q75/cms/BDG/Z3sWs2lSY2RmXXPxwDB5w/3-hot-chillis-card.webp
+_next/static/images/w1200/q75/cms/BDG/ZwBAainT82LkMcCb6FWYg/777Deluxe-HDJP-400x304.webp
+_next/static/images/w1200/q75/cms/BDG/lspymniQi6D4ewQA6uyVA/MagicApple-400x304.webp
+_next/static/images/w1200/q75/cms/BDG/m6mg0Q3nQW2GuU5iuQQDhQ/Le
+_next/static/images/w1200/q75/cms/BDG/oAz10xNeREK0NiAxT40SJQ/Aztec
+_next/static/images/w1200/q75/cms/BDG/ozKE8KVSVK13yZApuYbPA/cleo-400x304.webp
+_next/static/images/w1200/q75/cms/BDG/qd3Ru9i6Sr
+_next/static/images/w1200/q75/cms/BDG/ylEhSqo8T9OJXzswwW7ozw/400x304_game-card_Mythic-Wolf-Extreme.webp
+_next/static/images/w1920/q75/cms/BDG/
+_next/static/images/w1920/q75/cms/BDG/5
+_next/static/images/w1920/q75/cms/BDG/8LzwfQrHS0mhw3JNZ1w2Tw/JurassicKingdoms-400x304.webp
+_next/static/images/w1920/q75/cms/BDG/8dZEy9jYTD6xYnY5JipOJg/Royal
+_next/static/images/w1920/q75/cms/BDG/BI2ZytWpSQyHIqD6sCTp3A/King
+_next/static/images/w1920/q75/cms/BDG/GfA9LUwMRJmHBQ6I
+_next/static/images/w1920/q75/cms/BDG/KYsqtWJsQomkVnAMWKAiCA/Hot
+_next/static/images/w1920/q75/cms/BDG/LOHYaiSdqTP7G6qYSrIw/HitTheGold-400x304.webp
+_next/static/images/w1920/q75/cms/BDG/NR8LtG8SxCJDUsY7FMJbg/Coin
+_next/static/images/w1920/q75/cms/BDG/Ttkrwc0kSuK17JhnJGD8
+_next/static/images/w1920/q75/cms/BDG/UowbPt9ZTh6fbNrXFX9MyA/Power_Sun_400x304.webp
+_next/static/images/w1920/q75/cms/BDG/WvQFCnOyTaCv3DEpiECRHA/Ten-Times-Wins-400x304.webp
+_next/static/images/w1920/q75/cms/BDG/Z3sWs2lSY2RmXXPxwDB5w/3-hot-chillis-card.webp
+_next/static/images/w1920/q75/cms/BDG/ZwBAainT82LkMcCb6FWYg/777Deluxe-HDJP-400x304.webp
+_next/static/images/w1920/q75/cms/BDG/lspymniQi6D4ewQA6uyVA/MagicApple-400x304.webp
+_next/static/images/w1920/q75/cms/BDG/m6mg0Q3nQW2GuU5iuQQDhQ/Le
+_next/static/images/w1920/q75/cms/BDG/oAz10xNeREK0NiAxT40SJQ/Aztec
+_next/static/images/w1920/q75/cms/BDG/ozKE8KVSVK13yZApuYbPA/cleo-400x304.webp
+_next/static/images/w1920/q75/cms/BDG/qd3Ru9i6Sr
+_next/static/images/w1920/q75/cms/BDG/ylEhSqo8T9OJXzswwW7ozw/400x304_game-card_Mythic-Wolf-Extreme.webp
+_next/static/images/w200/q75/cms/BDG/
+_next/static/images/w200/q75/cms/BDG/5
+_next/static/images/w200/q75/cms/BDG/8LzwfQrHS0mhw3JNZ1w2Tw/JurassicKingdoms-400x304.webp
+_next/static/images/w200/q75/cms/BDG/8dZEy9jYTD6xYnY5JipOJg/Royal
+_next/static/images/w200/q75/cms/BDG/BI2ZytWpSQyHIqD6sCTp3A/King
+_next/static/images/w200/q75/cms/BDG/GfA9LUwMRJmHBQ6I
+_next/static/images/w200/q75/cms/BDG/KYsqtWJsQomkVnAMWKAiCA/Hot
+_next/static/images/w200/q75/cms/BDG/LOHYaiSdqTP7G6qYSrIw/HitTheGold-400x304.webp
+_next/static/images/w200/q75/cms/BDG/NR8LtG8SxCJDUsY7FMJbg/Coin
+_next/static/images/w200/q75/cms/BDG/Ttkrwc0kSuK17JhnJGD8
+_next/static/images/w200/q75/cms/BDG/UowbPt9ZTh6fbNrXFX9MyA/Power_Sun_400x304.webp
+_next/static/images/w200/q75/cms/BDG/WvQFCnOyTaCv3DEpiECRHA/Ten-Times-Wins-400x304.webp
+_next/static/images/w200/q75/cms/BDG/Z3sWs2lSY2RmXXPxwDB5w/3-hot-chillis-card.webp
+_next/static/images/w200/q75/cms/BDG/ZwBAainT82LkMcCb6FWYg/777Deluxe-HDJP-400x304.webp
+_next/static/images/w200/q75/cms/BDG/lspymniQi6D4ewQA6uyVA/MagicApple-400x304.webp
+_next/static/images/w200/q75/cms/BDG/m6mg0Q3nQW2GuU5iuQQDhQ/Le
+_next/static/images/w200/q75/cms/BDG/oAz10xNeREK0NiAxT40SJQ/Aztec
+_next/static/images/w200/q75/cms/BDG/ozKE8KVSVK13yZApuYbPA/cleo-400x304.webp
+_next/static/images/w200/q75/cms/BDG/qd3Ru9i6Sr
+_next/static/images/w200/q75/cms/BDG/ylEhSqo8T9OJXzswwW7ozw/400x304_game-card_Mythic-Wolf-Extreme.webp
+_next/static/images/w2048/q75/cms/BDG/
+_next/static/images/w2048/q75/cms/BDG/5
+_next/static/images/w2048/q75/cms/BDG/8LzwfQrHS0mhw3JNZ1w2Tw/JurassicKingdoms-400x304.webp
+_next/static/images/w2048/q75/cms/BDG/8dZEy9jYTD6xYnY5JipOJg/Royal
+_next/static/images/w2048/q75/cms/BDG/BI2ZytWpSQyHIqD6sCTp3A/King
+_next/static/images/w2048/q75/cms/BDG/GfA9LUwMRJmHBQ6I
+_next/static/images/w2048/q75/cms/BDG/KYsqtWJsQomkVnAMWKAiCA/Hot
+_next/static/images/w2048/q75/cms/BDG/LOHYaiSdqTP7G6qYSrIw/HitTheGold-400x304.webp
+_next/static/images/w2048/q75/cms/BDG/NR8LtG8SxCJDUsY7FMJbg/Coin
+_next/static/images/w2048/q75/cms/BDG/Ttkrwc0kSuK17JhnJGD8
+_next/static/images/w2048/q75/cms/BDG/UowbPt9ZTh6fbNrXFX9MyA/Power_Sun_400x304.webp
+_next/static/images/w2048/q75/cms/BDG/WvQFCnOyTaCv3DEpiECRHA/Ten-Times-Wins-400x304.webp
+_next/static/images/w2048/q75/cms/BDG/Z3sWs2lSY2RmXXPxwDB5w/3-hot-chillis-card.webp
+_next/static/images/w2048/q75/cms/BDG/ZwBAainT82LkMcCb6FWYg/777Deluxe-HDJP-400x304.webp
+_next/static/images/w2048/q75/cms/BDG/lspymniQi6D4ewQA6uyVA/MagicApple-400x304.webp
+_next/static/images/w2048/q75/cms/BDG/m6mg0Q3nQW2GuU5iuQQDhQ/Le
+_next/static/images/w2048/q75/cms/BDG/oAz10xNeREK0NiAxT40SJQ/Aztec
+_next/static/images/w2048/q75/cms/BDG/ozKE8KVSVK13yZApuYbPA/cleo-400x304.webp
+_next/static/images/w2048/q75/cms/BDG/qd3Ru9i6Sr
+_next/static/images/w2048/q75/cms/BDG/ylEhSqo8T9OJXzswwW7ozw/400x304_game-card_Mythic-Wolf-Extreme.webp
+_next/static/images/w256/q75/cms/BDG/
+_next/static/images/w256/q75/cms/BDG/5
+_next/static/images/w256/q75/cms/BDG/8LzwfQrHS0mhw3JNZ1w2Tw/JurassicKingdoms-400x304.webp
+_next/static/images/w256/q75/cms/BDG/8dZEy9jYTD6xYnY5JipOJg/Royal
+_next/static/images/w256/q75/cms/BDG/BI2ZytWpSQyHIqD6sCTp3A/King
+_next/static/images/w256/q75/cms/BDG/GfA9LUwMRJmHBQ6I
+_next/static/images/w256/q75/cms/BDG/KYsqtWJsQomkVnAMWKAiCA/Hot
+[0m
+[0m$ [0mgrep -oE '_next/static/[a-zA-Z0-9]{10,}/[A-Za-z0-9_./-]+' /tmp/opencode/ozoon/ssr.html | sort -u | head -40; echo "---"; grep -oE 'buildId[^,]{0,80}' /tmp/opencode/ozoon/ssr.html | head -3
+---
+[0m
+[0m$ [0mgrep -oE '_next/static/chunks/app/[^"]+' /tmp/opencode/ozoon/ssr.html | sort -u; echo "---CHUNKS-DIR-OTHER---"; grep -oE '_next/static/[^"]+' /tmp/opencode/ozoon/ssr.html | grep -vE '_next/static/(chunks|css|images|media)' | sort -u | head -30
+_next/static/chunks/app/%5Blocale%5D/dynamic-layouts/%5BlayoutSegment%5D/%5Bchannel%5D/%5B%5B...slug%5D%5D/page-cea9a963ac863289.js
+_next/static/chunks/app/%5Blocale%5D/error-9b0c0735ef363468.js
+_next/static/chunks/app/%5Blocale%5D/layout-df512a1a581be543.js
+_next/static/chunks/app/global-error-5f16bc48e248ee22.js
+---CHUNKS-DIR-OTHER---
+_next/static/js/elastic-apm-rum.umd-5.16.0.min.js
+[0m
+[0m$ [0mcurl -sS -o /tmp/opencode/ozoon/page.js -w "HTTP %{http_code} size=%{size_download}\n" --max-time 40 -H "User-Agent: Mozilla/5.0" "https://services.ozoon.eu/_next/static/chunks/app/%5Blocale%5D/dynamic-layouts/%5BlayoutSegment%5D/%5Bchannel%5D/%5B%5B...slug%5D%5D/page-cea9a963ac863289.js"; sleep 1; curl -sS -o /tmp/opencode/ozoon/layout.js -w "HTTP %{http_code} size=%{size_download}\n" --max-time 40 -H "User-Agent: Mozilla/5.0" "https://services.ozoon.eu/_next/static/chunks/app/%5Blocale%5D/layout-df512a1a581be543.js"
+HTTP 404 size=0
+HTTP 404 size=0
+[0m
+[0m$ [0mgrep -oE '<script[^>]*src="[^"]+"' /tmp/opencode/ozoon/ssr.html | head; echo "---LINK-ASYNC---"; grep -oE '<link[^>]*as="script"[^>]*href="[^"]+"' /tmp/opencode/ozoon/ssr.html | grep -oE 'href="[^"]+"' | head -40
+<script src="/assets/_next/static/chunks/11fe6e6a-590193d3d15a7880.js"
+<script src="/assets/_next/static/chunks/2141-14f94e35472d6958.js"
+<script src="/assets/_next/static/chunks/main-app-1214d6de195f6881.js"
+<script src="/assets/_next/static/chunks/app/global-error-5f16bc48e248ee22.js"
+<script src="/assets/_next/static/chunks/pantheon-modules-54ad3b04423ff20f.js"
+<script src="/assets/_next/static/chunks/cookies-next-167cc51bfac6f5a4.js"
+<script src="/assets/_next/static/chunks/wretch-52a53eab64b2ce48.js"
+<script src="/assets/_next/static/chunks/6795-a4bab33128deed8d.js"
+<script src="/assets/_next/static/chunks/4130-a94e4c8128b09299.js"
+<script src="/assets/_next/static/chunks/316-202176dc384770ed.js"
+---LINK-ASYNC---
+href="/assets/_next/static/chunks/webpack-793180ece7aa5ea6.js"
+href="/sports/content/runtime/sports_vendor.7812451c.js"
+[0m
+[0m$ [0mfor c in main-app-1214d6de195f6881.js 11fe6e6a-590193d3d15a7880.js 2141-14f94e35472d6958.js; do curl -sS -o /tmp/opencode/ozoon/$c -w "$c HTTP %{http_code} size=%{size_download}\n" --max-time 40 -H "User-Agent: Mozilla/5.0" "https://services.ozoon.eu/assets/_next/static/chunks/$c"; sleep 1; done
+main-app-1214d6de195f6881.js HTTP 404 size=0
+11fe6e6a-590193d3d15a7880.js HTTP 404 size=0
+2141-14f94e35472d6958.js HTTP 404 size=0
+[0m
+[0m$ [0mgrep -oE 'https?://[a-zA-Z0-9./_-]+' /tmp/opencode/ozoon/ssr.html | grep -vE 'google|facebook|gstatic|azureedge|imgix|font|cms/|wipro|crisp' | sort -u | head -30
+http://11.cdn.bit2host.eu/assetsbg/images/ozoon/Social-Icons/gold__Facebook.png
+http://11.cdn.bit2host.eu/assetsbg/images/ozoon/Social-Icons/gold__Instagram.png
+http://11.cdn.bit2host.eu/assetsbg/images/ozoon/Social-Icons/gold__Telegram.png
+http://11.cdn.bit2host.eu/assetsbg/images/ozoon/Social-Icons/gold__TikTok.png
+http://11.cdn.bit2host.eu/assetsbg/images/ozoon/Social-Icons/gold__X.png
+http://11.cdn.bit2host.eu/assetsbg/images/ozoon/Social-Icons/gold__YouTube.png
+http://services.ozoon.euhttp
+http://services.ozoon.euhttps
+http://www.gamblersanonymous.org/ga/index.php
+http://www.w3.org/2000/svg
+https://api.wicket-keeper.com
+https://chat.ozoon.eu/webChat.html
+https://discord.gg/OzoonCA
+https://games.glovefrog.plus/services/b2b/api/v1
+https://sealimg.certcga.com/
+https://services.ozoon.eu/
+https://services.services.ozoon.eu
+https://services.services.ozoon.eu/assets/apps/cross-messaging-app/receiver.html
+https://static.hotjar.com/c/hotjar-
+https://t.me/OzoonCA
+https://www.instagram.com/ozoon_ca/
+https://www.ozoon.eu/help/bonuses-faq/gifts
+https://www.tiktok.com/
+https://www.vegas-bets.com/
+https://www.youtube.com/watch
+https://x.com/Ozoon_CA
+[0m
+[0m$ [0mcurl -sS -o /tmp/opencode/ozoon/main-app.js -w "HTTP %{http_code} size=%{size_download}\n" --max-time 40 -H "User-Agent: Mozilla/5.0" "https://11.cdn.bit2host.eu/assets/_next/static/chunks/main-app-1214d6de195f6881.js"; sleep 1; curl -sS -o /tmp/opencode/ozoon/21.js -w "HTTP %{http_code} size=%{size_download}\n" --max-time 40 -H "User-Agent: Mozilla/5.0" "https://11.cdn.bit2host.eu/assets/_next/static/chunks/2141-14f94e35472d6958.js"; sleep 1; curl -sS -o /tmp/opencode/ozoon/11.js -w "HTTP %{http_code} size=%{size_download}\n" --max-time 40 -H "User-Agent: Mozilla/5.0" "https://11.cdn.bit2host.eu/assets/_next/static/chunks/11fe6e6a-590193d3d15a7880.js"
+HTTP 404 size=169
+HTTP 404 size=169
+HTTP 404 size=169
+[0m
+[0m$ [0mcurl -sS -o /tmp/opencode/ozoon/main-app.js -w "ab HTTP %{http_code} size=%{size_download}\n" --max-time 40 -H "User-Agent: Mozilla/5.0" "https://11.cdn.bit2host.eu/assetsbg/_next/static/chunks/main-app-1214d6de195f6881.js"; sleep 1; curl -sS -o /tmp/opencode/ozoon/body404.txt -w "raw HTTP %{http_code} size=%{size_download}\n" --max-time 40 -H "User-Agent: Mozilla/5.0" "https://11.cdn.bit2host.eu/assets/_next/static/chunks/main-app-1214d6de195f6881.js"; cat /tmp/opencode/ozoon/body404.txt
+ab HTTP 404 size=169
+raw HTTP 404 size=169
+<html>
+<head><title>404 Not Found</title></head>
+<body bgcolor="white">
+<center><h1>404 Not Found</h1></center>
+<hr><center>nginx/1.12.2</center>
+</body>
+</html>
+[0m
+[0m$ [0mcurl -sS -o /tmp/opencode/ozoon/sports_vendor.js -w "sports HTTP %{http_code} size=%{size_download}\n" --max-time 40 -H "User-Agent: Mozilla/5.0" "https://services.ozoon.eu/sports/content/runtime/sports_vendor.7812451c.js"; sleep 1; curl -sS -o /tmp/opencode/ozoon/dl.txt -w "dl HTTP %{http_code} size=%{size_download}\n" --max-time 30 -H "User-Agent: Mozilla/5.0" "https://11.cdn.bit2host.eu/assetsbg/_next/static/chunks/"; sleep 1; curl -sS -o /tmp/opencode/ozoon/dl2.txt -w "dl2 HTTP %{http_code} size=%{size_download}\n" --max-time 30 -H "User-Agent: Mozilla/5.0" "https://11.cdn.bit2host.eu/assets/_next/static/chunks/"; cat /tmp/opencode/ozoon/dl.txt; echo ===; cat /tmp/opencode/ozoon/dl2.txt
+sports HTTP 200 size=227208
+dl HTTP 404 size=169
+dl2 HTTP 404 size=169
+<html>
+<head><title>404 Not Found</title></head>
+<body bgcolor="white">
+<center><h1>404 Not Found</h1></center>
+<hr><center>nginx/1.12.2</center>
+</body>
+</html>
+===
+<html>
+<head><title>404 Not Found</title></head>
+<body bgcolor="white">
+<center><h1>404 Not Found</h1></center>
+<hr><center>nginx/1.12.2</center>
+</body>
+</html>
+[0m
+[0m$ [0mgrep -oE '[a-zA-Z0-9/_.,-]{3,60}' /tmp/opencode/ozoon/sports_vendor.js | grep -iE 'api|graphql|socket|endpoint|baseurl|play\.|\.eu|\.com' | sort -u | head -60
+,i.Component
+.combine
+.componentDidMount
+.componentWillUnmount
+a.componentDidMount
+e.compareDocumentPosition
+e.componentDidMount
+e.componentDidUpdate
+i.componentDidMount
+i.componentDidUpdate
+i.componentWillMount
+i.componentWillReceiveProps
+i.componentWillUpdate
+l,t.combine
+l.componentDidCatch
+n.compare
+n.componentWillUnmount
+r.componentDidCatch
+t.componentWillReceiveProps
+this.componentDidCatch
+[0m
+[0m$ [0mgrep -oE '"[^"]{4,90}"' /tmp/opencode/ozoon/sports_vendor.js | grep -iE 'wss?://|\.ozoon|services|api|graphql' | sort -u | head -40
+(no output)
+[0m
+[0m$ [0mgrep -oE 'sourceMappingURL=[^ ]+' /tmp/opencode/ozoon/sports_vendor.js | head; grep -c 'sourceMappingURL' /tmp/opencode/ozoon/sports_vendor.js; curl -sS -o /dev/null -w "map HTTP %{http_code} size=%{size_download}\n" --max-time 30 -H "User-Agent: Mozilla/5.0" "https://services.ozoon.eu/sports/content/runtime/sports_vendor.7812451c.js.map"
+0
+map HTTP 307 size=181519
+[0m
+[0m$ [0mcurl -sS -D /tmp/opencode/ozoon/map.hdr -o /tmp/opencode/ozoon/map.redirect -w "HTTP %{http_code} size=%{size_download} final=%{url_effective}\n" --max-time 40 -H "User-Agent: Mozilla/5.0" "https://services.ozoon.eu/sports/content/runtime/sports_vendor.7812451c.js.map"; head -20 /tmp/opencode/ozoon/map.hdr
+HTTP 307 size=181013 final=https://services.ozoon.eu/sports/content/runtime/sports_vendor.7812451c.js.map
+HTTP/2 307 
+location: /sports
+content-type: text/html; charset=utf-8
+date: Sun, 06 Sep 2026 08:46:19 GMT
+age: 0
+strict-transport-security: max-age=63072000
+[0m
+[0m$ [0mcurl -sS -o /tmp/opencode/ozoon/eu.html -w "HTTP %{http_code} size=%{size_download}\n" --max-time 40 -H "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/126.0 Safari/537.36" "https://www.ozoon.eu/"; grep -oE 'src="[^"]+\.js"' /tmp/opencode/ozoon/eu.html | sort -u | head -40
+HTTP 200 size=749208
+src="/assets/_next/static/chunks/11fe6e6a-590193d3d15a7880.js"
+src="/assets/_next/static/chunks/2141-14f94e35472d6958.js"
+src="/assets/_next/static/chunks/2537-fb787c784c78c6e9.js"
+src="/assets/_next/static/chunks/316-202176dc384770ed.js"
+src="/assets/_next/static/chunks/3347-6e6451a6fdf158dd.js"
+src="/assets/_next/static/chunks/4130-a94e4c8128b09299.js"
+src="/assets/_next/static/chunks/5652-f31836bf0684efa9.js"
+src="/assets/_next/static/chunks/634-2b994a236bd4cdc9.js"
+src="/assets/_next/static/chunks/6795-a4bab33128deed8d.js"
+src="/assets/_next/static/chunks/8403-89012971de097bc5.js"
+src="/assets/_next/static/chunks/8820-79c46a1ea6dd1630.js"
+src="/assets/_next/static/chunks/9137-e89770f1af3235a9.js"
+src="/assets/_next/static/chunks/9768-4e8df107ce91128a.js"
+src="/assets/_next/static/chunks/9921-c10a1d8386fd20ad.js"
+src="/assets/_next/static/chunks/app/%5Blocale%5D/dynamic-layouts/%5BlayoutSegment%5D/%5Bchannel%5D/%5B%5B...slug%5D%5D/page-cea9a963ac863289.js"
+src="/assets/_next/static/chunks/app/%5Blocale%5D/error-9b0c0735ef363468.js"
+src="/assets/_next/static/chunks/app/%5Blocale%5D/layout-df512a1a581be543.js"
+src="/assets/_next/static/chunks/app/global-error-5f16bc48e248ee22.js"
+src="/assets/_next/static/chunks/cookies-next-167cc51bfac6f5a4.js"
+src="/assets/_next/static/chunks/main-app-1214d6de195f6881.js"
+src="/assets/_next/static/chunks/pantheon-modules-54ad3b04423ff20f.js"
+src="/assets/_next/static/chunks/polyfills-42372ed130431b0a.js"
+src="/assets/_next/static/chunks/webpack-793180ece7aa5ea6.js"
+src="/assets/_next/static/chunks/wretch-52a53eab64b2ce48.js"
+[0m
+[0m$ [0mcurl -sS -o /tmp/opencode/ozoon/eu-main.js -w "main HTTP %{http_code} size=%{size_download}\n" --max-time 40 -H "User-Agent: Mozilla/5.0" "https://www.ozoon.eu/assets/_next/static/chunks/main-app-1214d6de195f6881.js"; sleep 1; curl -sS -o /tmp/opencode/ozoon/eu-11.js -w "c11 HTTP %{http_code} size=%{size_download}\n" --max-time 40 -H "User-Agent: Mozilla/5.0" "https://www.ozoon.eu/assets/_next/static/chunks/11fe6e6a-590193d3d15a7880.js"; sleep 1; curl -sS -o /tmp/opencode/ozoon/eu-2141.js -w "c2141 HTTP %{http_code} size=%{size_download}\n" --max-time 40 -H "User-Agent: Mozilla/5.0" "https://www.ozoon.eu/assets/_next/static/chunks/2141-14f94e35472d6958.js"
+main HTTP 200 size=527
+c11 HTTP 200 size=167148
+c2141 HTTP 200 size=200883
+[0m
+[0m$ [0mgrep -oE 'X-MOCK-2FA-VERIFICATION' /tmp/opencode/ozoon/eu-11.js /tmp/opencode/ozoon/eu-2141.js; echo "--mockcount--"; grep -c 'MOCK-2FA\|allow-permanent-skip' /tmp/opencode/ozoon/eu-11.js /tmp/opencode/ozoon/eu-2141.js; echo "--verifypaths--"; grep -oE 'profiles/[^"]*|/services/[a-z-]+/v1/[^"]*|verifications/[a-z]+' /tmp/opencode/ozoon/eu-11.js | sort -u | head -40
+--mockcount--
+/tmp/opencode/ozoon/eu-11.js:0
+/tmp/opencode/ozoon/eu-2141.js:0
+--verifypaths--
+[0m
+[0m$ [0mcurl -sS -o /tmp/opencode/ozoon/eu-page.js -w "page HTTP %{http_code} size=%{size_download}\n" --max-time 40 -H "User-Agent: Mozilla/5.0" "https://www.ozoon.eu/assets/_next/static/chunks/app/%5Blocale%5D/dynamic-layouts/%5BlayoutSegment%5D/%5Bchannel%5D/%5B%5B...slug%5D%5D/page-cea9a963ac863289.js"; sleep 1; curl -sS -o /tmp/opencode/ozoon/eu-layout.js -w "layout HTTP %{http_code} size=%{size_download}\n" --max-time 40 -H "User-Agent: Mozilla/5.0" "https://www.ozoon.eu/assets/_next/static/chunks/app/%5Blocale%5D/layout-df512a1a581be543.js"
+page HTTP 200 size=196
+layout HTTP 200 size=59271
+[0m
+[0m$ [0mgrep -oE 'verif[a-z-]*|mocks|MOCK' /tmp/opencode/ozoon/eu-page.js /tmp/opencode/ozoon/eu-layout.js | sort -u | head; echo "--layout-path-refs--"; grep -oE '"[^"]*services[^"]*"' /tmp/opencode/ozoon/eu-layout.js | sort -u | head -20; echo "--page-content--"; cat /tmp/opencode/ozoon/eu-page.js
+/tmp/opencode/ozoon/eu-layout.js:verification
+--layout-path-refs--
+")):n,o)},F=e=>{let{crossMessagingIframeEnabled:t,originalFetch:r,servicesBaseUrl:n}=e,s=[],i=C();s.push(i),s.push(O({servicesBaseUrl:n})),t&&s.push(R());let a=_({originalFetch:r});s.push(a),(0,o.HZ)(s)},H=()=>{let{crossMessagingIframeEnabled:e,servicesBaseUrl:t}=(0,i.useSiteConfig)();return(0,a.useEffect)(()=>{let r=window.fetch,o=[C()];t&&o.push(D({servicesBaseUrl:t})),e&&o.push(k({crossMessagingIframeEnabled:e})),o.push(N({originalFetch:r}));let i=x(o),a=new v(r.bind(window));return F({crossMessagingIframeEnabled:e,originalFetch:r,servicesBaseUrl:t}),window.fetch=async(e,t)=>{let o=t?(0,n.getCustomFetchParams)(t):{};e instanceof Request&&(o=(0,n.getCustomFetchParams)(e)||{});let l={...t,...o};if(e instanceof Request&&"
+"),n};var m=r(85608);let v=async(e,t)=>(e.useSiteDomain&&(e.url=new URL(new m.URLTemplate(e.url.href).toRelative(),window.location.origin)),t(e)),g=()=>{let{crossMessagingIframeEnabled:e,servicesBaseUrl:t}=(0,s.useSiteConfig)();return(0,i.useEffect)(()=>{let r=e?(0,o.z)(window.fetch):window.fetch;n.servicesFetcher.isInitialized()||n.servicesFetcher.init({baseUrl:t,fetchFn:r,interceptors:[h,v]})},[e,t]),null}},31421:(e,t,r)=>{"
+");try{await n.servicesFetcher.post(r,t,{headers:o,sessionRequirement:!0})}catch(e){throw Error("
+")})}let a=e=>{let{servicesBaseUrl:t}=e,r=(0,s.useRef)(null),a=(0,s.useRef)(null);function l(){if(null!==r.current)return r.current;let e=new o.CrossMessaging;return r.current=e,e}return(0,s.useEffect)(()=>{window.crossMessaging={getStatus:l().getStatus.bind(l()),request:l().request.bind(l())}},[]),(0,s.useEffect)(()=>{var e;(null===(e=a.current)||void 0===e?void 0:e.contentWindow)&&"
+",distributedTracingOrigins:[n.servicesBaseUrl],environment:e,flushInterval:100,logLevel:"
+",r),document.body.appendChild(t)},f=async e=>n.servicesFetcher.get(e,{sessionRequirement:!0}).data().then(e=>e.status,()=>"
+".concat(e).concat(n));try{return r(n,o).then(e=>e).catch(e=>{throw e})}catch(e){return Promise.reject(e)}}},O=function(){let{servicesBaseUrl:e}=arguments.length>0&&void 0!==arguments[0]?arguments[0]:{servicesBaseUrl:"
+"/services/(sports/(event/coupon/|config/site|event/markets/featured/|event/v2/nav/A/description/.*?azSorting=true.*)|casino/casino-lobby-services/v1/(jackpots|vig/(lobbystatus|seatstatus)))"
+"/services/deviceprotect/device-tracking/"
+"/services/deviceprotect/devices/"
+"Tried to call /services/deviceprotect/ with no sessionId"
+"],delete r.headers.accept,r},N=function(){let{originalFetch:e}=arguments.length>0&&void 0!==arguments[0]?arguments[0]:{};return t=>(t,r)=>new Promise(n=>{e(t,r).then(e=>n(e)).catch(e=>n(new Response(JSON.stringify({error:e.body}),{headers:new Headers(e.headers),status:e.status,statusText:e.message})))})},_=function(){let{originalFetch:e}=arguments.length>0&&void 0!==arguments[0]?arguments[0]:{};return t=>(t,r)=>e(t,r)},D=function(){let{servicesBaseUrl:e}=arguments.length>0&&void 0!==arguments[0]?arguments[0]:{servicesBaseUrl:"
+"servicesBaseUrl is required"
+--page-content--
+(self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[6555],{},_=>{var e=e=>_(_.s=e);_.O(0,[5518,1622,6795,4130,316,8403,9768,9137,634,8820,2537,3347,470,2141,7358],()=>e(13347)),_N_E=_.O()}]);
+[0m
+[0m$ [0mgrep -oE '"(/services/[a-z-]+/v[0-9]+/[^"]*)"' /tmp/opencode/ozoon/eu-11.js /tmp/opencode/ozoon/eu-2141.js /tmp/opencode/ozoon/eu-layout.js | sort -u | head -80; echo "--token--"; grep -oE 'X-[A-Z][A-Z0-9-]*' /tmp/opencode/ozoon/eu-11.js | sort -u | head -30
+--token--
+[0m
+[0m$ [0mgrep -oE '[a-z-]+/(v1|v2)/[a-z0-9/{}$._-]+' /tmp/opencode/ozoon/eu-11.js /tmp/opencode/ozoon/eu-2141.js /tmp/opencode/ozoon/eu-layout.js | sort -u | head -100
+/tmp/opencode/ozoon/eu-layout.js:event/v2/nav/
+[0m
+## 2026-09-06 CYCLE — output
+
+STEP 1 — DELTA
+- [NEW] `www.ozoon.eu` and `services.ozoon.eu` SSR shells share one current webpack build (`main-app-1214d6de195f6881.js`); both reference `/assets/_next/static/chunks/*` — `www.ozoon.eu` serves them (200), `services.ozoon.eu` origin + CDN `11.cdn.bit2host.eu` (nginx/1.12.2, serves only `/assetsbg/` images) return 404 for identical paths. Asset-namespace split, no content leak.
+- [NEW] Current layout chunk `layout-df512a1a581be543.js` embeds the `servicesFetcher` session-requirement exemption regex — the program's own anonymous-allowed whitelist: `/services/(sports/(event/coupon/|config/site|event/markets/featured/|event/v2/nav/A/description/.*?azSorting=true.*)|casino/casino-lobby-services/v1/(jackpots|vig/(lobbystatus|seatstatus)))`. All profile/verification routes are client-side session-gated (`sessionRequirement:!0`).
+- [NEW] Same chunk embeds deviceprotect interceptor: `/services/deviceprotect/device-tracking/` + `/services/deviceprotect/devices/`, client error `"Tried to call /services/deviceprotect/ with no sessionId"` — sessionId-gated, matches recorded 401 baseline.
+- [CHANGED] `/sports/content/runtime/sports_vendor.*.js` directly fetchable (200, 227KB React vendor only); unknown `/sports/*` → 307→`/sports` SPA fallback; `*.js.map` not served (also 307→`/sports`). No source-map exposure.
+
+STEP 2 — PRIORITIZE
+- [PRIO] services.ozoon.eu profile-keyed BOLA surface, 6.6 (=.25·7+.25·10+.15·6+.15·3+.10·7+.10·3)
+- [PRIO] www.ozoon.eu /api/v1/signup gateway, 6.5 (=.25·6+.25·10+.15·5+.15·4+.10·6+.10·5)
+- [PRIO] services.ozoon.eu player-verification verify, 6.5 (=.25·6+.25·10+.15·6+.15·3+.10·6+.10·5)
+
+STEP 3 — HYPOTHESES
+[HYP] BOLA on profile-keyed UUID endpoints — session identity may not be bound to path UUID
+class: IDOR
+asset: https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...
+confidence: 65
+reasoning: Whitelist regex proves profiles/*/v1 routes are NOT in the anonymous set → server auth pre-check (recorded structured 401 errorCode:"unauthorized") precedes resource lookup; 5 services key resources by profile UUID; anonymous read class proven on sports/casino whitelist only.
+evidence_needed: Authorized A reads /profiles/{B-UUID}/... → non-401 B data; ownPID returns A's own.
+verify_steps: PREREQ authorization. POST /api/v1/signup → sid+ownPID; GET /services/wallet-gateway/v1/profiles/{ownPID}/balances vs {bogus-uuid} (recorded 401); then A-sid cross-read of B-PID → foreign data = BOLA.
+impact: Critical — cross-user wallet/transaction/PII across 5 services; ATO enabler.
+testability: AUTH_HELPED
+[HYP] Mass assignment on signup — server may persist unmapped privilege/territory fields
+class: BUSLOGIC
+asset: https://www.ozoon.eu/api/v1/signup
+confidence: 58
+reasoning: Captcha-free (reCAPTCHA login-only), client-controlled attributes/address sub-objects, static refSiteToken; per-country profileupdateform DTO flat (CA=CAD+XBT) but separate from signup DTO; WAF staged on GET-signup only.
+evidence_needed: Injected attributes.role/vip_level or address.country persist in whoami/profile or cause privileged side effect.
+verify_steps: PREREQ authorization. Control signup → set-cookie+whoami baseline; second signup with attributes.role/“admin”, vip_level, restricted-territory country; compare persisted whoami.
+impact: Medium-High — territory softblock bypass, referral fraud; privilege elevation if persisted.
+testability: AUTH_HELPED
+[HYP] Mock-2FA verification header honored in production — 2FA/KYC gate bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{ownPID}/verifications/verify
+confidence: 55
+reasoning: Prod SDK sends X-MOCK-2FA-VERIFICATION:true; allow-permanent-skip:["true"]; isMockProviderEnabled:false is client-side only; 401 baseline shape re-confirmed; current bundle shows verification routes deliberately session-gated (server is the sole decider).
+evidence_needed: POST verify +header succeeds while identical no-header request rejects.
+verify_steps: PREREQ authorization. signup → sid+ownPID; POST .../verifications/verify +X-MOCK-2FA-VERIFICATION:true {"verificationType":"PHONE"}; control without header.
+impact: Critical — bypass SMS/PIN/2FA/KYC on real-money deposit/withdraw.
+testability: AUTH_HELPED
+
+STEP 4 — SELF-CRITIQUE
+- [PARKED] services.ozoon.eu/bit2host CDN `/assets/_next/*` 404 asymmetry: collateral of build/asset-origin split, no extractable content, no exploit — dropped.
+- [PARKED] Bundle anonymous-whitelist regex: config-level surface map only; server (401) is the proven gate — informational, not a finding.
+- [FINAL] BOLA /profiles/{uuid} (65) > Mass-assignment signup (58) > Mock-2FA verify (55). No new anonymous probe displaced any; all remain AUTH_HELPED.
+
+STEP 5 — NEXT ACTION
+[NEXT] HUMAN: Request program authorization at bugs.olivermaicher.eu to create one throwaway account (clearly restricted mutating create). When granted, pre-flight one PASSIVE RAG: re-pull the current account-page SDK bundle from `www.ozoon.eu` to pin exact signup-DTO keys and re-confirm `X-MOCK-2FA-VERIFICATION` casing, then fire exactly: `POST https://www.ozoon.eu/api/v1/signup {"email":"<throwaway>@<valid-domain>","password":"Test1234!","country":"CA","language":"en","attributes":{},"address":{"country":"CA","addressLine":"123 Test St","postalCode":"K1A 0A6"}}` → capture sid+ownPID, then `GET https://services.ozoon.eu/services/wallet-gateway/v1/profiles/{ownPID}/balances` (expect 200 vs recorded 401).
+
+STEP 6 — LEARNING
+- [LEARN] REJECTED OTHER @ services.ozoon.eu + 11.cdn.bit2host.eu: SSR-referenced `/assets/_next/static/chunks/*` 404 (origin+CDN) while www.ozoon.eu serves identical build — asset-namespace split, no data leak.
+- [LEARN] REJECTED OTHER @ services.ozoon.eu /sports/*: vendor bundle 200 + unknown-path 307→/sports (SPA fallback), no *.js.map — no source-map/config exposure.
+- [LEARN] ACCEPTED OTHER @ www.ozoon.eu current layout chunk: servicesFetcher embeds anonymous-allowed whitelist regex (sports event/coupon|config/site|markets/featured|v2/nav + casino jackpots|vig seatstatus) and sets sessionRequirement:true on everything else — confirms server-side gate is authoritative; deviceprotect stays sessionId-gated.
+
+STEP 7 — RISK
+[RISK] ozoon-sportsbook-casino: 81/100 (flat). Fresh current-build bundle walk produced only config-level facts and REJECTED-class positives; the anonymous whitelist regex re-confirms nothing profile/verification-adjacent is reachable unauthenticated. All three critical vectors (BOLA 65, mass-assign 58, mock-2FA 55) remain AUTH_HELPED and unprobed behind the restricted signup. +1 on first authenticated BOLA/bypass confirmation; −2 if mock header/injected fields stripped server-side.
