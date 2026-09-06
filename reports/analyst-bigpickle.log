@@ -7089,3 +7089,331 @@ STEP 6 — LEARNING
 
 STEP 7 — RISK
 [RISK] ozoon-sportsbook-casino: 81/100 (flat). No new anonymous surface this cycle; all three critical vectors (BOLA 65, mass-assign 58, mock-2FA 55) remain AUTH_HELPED and unprobed behind the restricted signup. Web/API surface and money-bearing materiality (crypto+Interac real-money) are high and fully mapped anonymously; risk will only move on the first authenticated differential (+1 on BOLA/bypass confirmation, −2 if mock header/injected fields stripped server-side).
+===== ANALYST bigpickle 2026-09-06 16:13:38 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m→ [0mRead .
+[0m✱ [0mGlob "**/*.txt"[90m 9 matches[0m
+Let me first explore the current workspace state to understand what tools and files are available.
+[0m✱ [0mGlob "**/*.yml"[90m 1 match[0m
+[0m✱ [0mGlob "**/*.md"[90m 43 matches[0m
+[0m→ [0mRead scope.yml
+[0m→ [0mRead scripts
+[0m→ [0mRead state_bigpickle.json
+[0m→ [0mRead reports/hypotheses-bigpickle.txt
+[0m→ [0mRead probe-results.md
+[0m→ [0mRead leads/lead-bigpickle.md
+[0m→ [0mRead inventory/ozoon-sportsbook-casino.md
+[0m→ [0mRead triage/run-2026-09-06-15-59.md
+Let me check the latest triage run and probe-results to understand the most recent activity, and look at what probes were actually executed.
+[0m→ [0mRead triage/run-2026-09-06-12-55.md
+[0m→ [0mRead knowledge/index.md
+[0m→ [0mRead analyst-prompt.txt
+I have enough context. Let me review the most recent KB entries and confirm the state. I understand the full picture. Let me check whether there's any evidence a new anonymous surface has been probed, and verify what a couple of passive probes might reveal. Let me consider doing some fresh passive reconnaissance.
+
+Let me review the analysis prompt and understand exactly what's expected, then decide whether to execute passive probes or emit next actions.
+I now have comprehensive context. This is cycle analysis. The state has been stable — all three critical vectors remain AUTH_HELPED and unprobed behind the restricted signup. 
+
+Let me evaluate whether there's any fresh anonymous surface worth probing. The KB is exhaustive on the anonymous surface. Let me do a quick passive RAG check to see if there's anything genuinely new to probe on the anonymous surface that hasn't been covered. Given the deep-hunt directive, let me check whether there are any unprobed anonymous endpoints/parameters I can still examine.
+
+Let me think about what anonymous surface hasn't been fully covered. The KB shows:
+- www.ozoon.eu/api/v1: login/whoami → Whitelabel 404; signup GET → WAF; logout → 405
+- services.ozoon.eu/services/site-config/v1/countries/{CC}/profileupdateform → mapped
+- services.ozoon.eu: /services/*/v1/profiles/{uuid}/... → 401 (auth-gated)
+- /robots.txt, /api-docs, /actuator → no leak
+
+What hasn't been probed anonymously? Let me check a few fresh angles that are passive GET only and could yield new signal. Given the deep-hunt and the directive to focus on high-value classes (SSRF, oauth, JWT, etc):
+
+1. OAuth/SSO flows on www.ozoon.eu — the SDK likely has an OAuth/social login path. Let me check for `/api/v1/oauth` or similar that we haven't hit. Actually the breadth probe already covered oauth/authorize/connect on www → 404.
+
+2. The `services.ozoon.eu` SSRF probing — services.ozoon.eu is a Spring Boot BFF. Let me check for a GraphQL endpoint or a `/services/*/graphql`.
+
+Let me do a couple of passive GET probes to add genuine new signal rather than pure consolidation. I'll be careful to stay passive (GET only, <=1 rps, read-only). Let me check a few unprobed anonymous endpoints.
+
+Let me probe some fresh anonymous surface that isn't in the KB:
+- GraphQL introspection on www.ozoon.eu and services.ozoon.eu
+- Additional site-config endpoints
+
+Let me run a small set of passive GET probes.
+[0m
+[0m$ [0mwhich curl python3 2>/dev/null; echo "---"; curl -s -o /dev/null -w "%{http_code}\n" --max-time 15 "https://www.ozoon.eu/api/v1/whoami" ; echo "whoami done"
+/usr/bin/curl
+/usr/bin/python3
+---
+404
+whoami done
+[0m
+Let me do a few fresh passive GET probes on surface not yet in the KB — GraphQL endpoints and a couple of unprobed service routes.
+[0m$ [0mPY=/usr/local/bin/python3; if [ ! -x "$PY" ]; then PY=python3; fi
+$PY - <<'EOF'
+import urllib.request, urllib.error, time
+
+targets = [
+    ("GRAPHQL-www-introspection", "https://www.ozoon.eu/graphql", "POST"),
+    ("GRAPHQL-services-introspection", "https://services.ozoon.eu/graphql", "POST"),
+    ("www-gql", "https://www.ozoon.eu/api/graphql", "POST"),
+    ("services-v1-graphql", "https://services.ozoon.eu/v1/graphql", "POST"),
+    ("www-sports-graphql", "https://services.ozoon.eu/services/sports/v1/graphql", "POST"),
+]
+
+intro = '{"query":"query{__typename}"}'
+for name, url, method in targets:
+    req = urllib.request.Request(url, data=intro.encode(), method=method,
+        headers={"Content-Type":"application/json"})
+    try:
+        with urllib.request.urlopen(req, timeout=15) as r:
+            body = r.read(400).decode("utf-8","replace")
+            print(f"{name}: {r.status} ct={r.headers.get('Content-Type')} body={body[:300]}")
+    except urllib.error.HTTPError as e:
+        print(f"{name}: HTTP {e.code} ct={e.headers.get('Content-Type')} body={e.read(300)[:300]}")
+    except Exception as e:
+        print(f"{name}: ERR {e}")
+    time.sleep(1.2)
+EOF
+echo "done"
+GRAPHQL-www-introspection: 200 ct=text/html; charset=utf-8 body=<html><head><title>Request Rejected</title></head><body>The requested URL was rejected. <br><br>METHOD NOT ALLOWED ><br><br><a href='javascript:history.back();'>[Go Back]</a></body></html>
+GRAPHQL-services-introspection: HTTP 404 ct=text/html; charset=utf-8 body=b'<!DOCTYPE html><html id="__next_error__"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" as="script" fetchPriority="low" href="/assets/_next/static/chunks/webpack-793180ece7aa5ea6.js"/><script src="/assets/_next/static/chunks/11fe'
+www-gql: 200 ct=text/html; charset=utf-8 body=<html><head><title>Request Rejected</title></head><body>The requested URL was rejected. <br><br>METHOD NOT ALLOWED ><br><br><a href='javascript:history.back();'>[Go Back]</a></body></html>
+services-v1-graphql: HTTP 404 ct=text/html; charset=utf-8 body=b'<!DOCTYPE html><html id="__next_error__"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" as="script" fetchPriority="low" href="/assets/_next/static/chunks/webpack-793180ece7aa5ea6.js"/><script src="/assets/_next/static/chunks/11fe'
+www-sports-graphql: HTTP 404 ct=application/json body=b'{"timestamp":"2026-09-06T16:09:03.444+0000","status":404,"error":"Not Found","message":"No message available"}'
+done
+[0m
+Interesting findings:
+- `services/services/sports/v1/graphql` POST → Spring Boot **404 JSON** (structured, distinct) — confirms backend is Spring and the route prefix resolves (404 at Spring layer, not Next.js). Route doesn't exist though.
+- `www.ozoon.eu/graphql` and `/api/graphql` POST → WAF "Request Rejected" (METHOD NOT ALLOWED). This is notable: the WAF blocks POST GraphQL on www. But is the WAF blocking a *nonexistent* endpoint prophylactically, or is there a real GraphQL underneath? This is ambiguous — WAF rejecting POST to /graphql is consistent with GraphQL being a guarded path (or the WAF blocking POST to unknown paths generally).
+
+Let me check whether GET on these GraphQL paths differs (GET introspection is a common GraphQL vector), and also test a couple other unprobed anonymous surface angles: OpenAPI/swagger on the Spring services, and whether GET graphql gives a real GraphQL response.
+
+Let me probe GET variants.
+[0m$ [0mPY=python3
+$PY - <<'EOF'
+import urllib.request, urllib.error, time
+
+targets = [
+    ("www-graphql-GET", "https://www.ozoon.eu/graphql", "GET"),
+    ("services-graphql-GET", "https://services.ozoon.eu/graphql", "GET"),
+    ("services-sports-graphql-GET", "https://services.ozoon.eu/services/sports/v1/graphql", "GET"),
+    ("services-swagger", "https://services.ozoon.eu/services/sports/v1/swagger-ui.html", "GET"),
+    ("services-openapi", "https://services.ozoon.eu/services/sports/v1/v3/api-docs", "GET"),
+    ("services-springdoc", "https://services.ozoon.eu/services/sports/v1/swagger-ui/index.html", "GET"),
+]
+
+for name, url, method in targets:
+    req = urllib.request.Request(url, method=method, headers={"Accept":"application/json"})
+    try:
+        with urllib.request.urlopen(req, timeout=15) as r:
+            body = r.read(400).decode("utf-8","replace")
+            print(f"{name}: {r.status} ct={r.headers.get('Content-Type')} body={body[:250]}")
+    except urllib.error.HTTPError as e:
+        print(f"{name}: HTTP {e.code} ct={e.headers.get('Content-Type')} body={e.read(300)[:250]}")
+    except Exception as e:
+        print(f"{name}: ERR {e}")
+    time.sleep(1.2)
+EOF
+echo done
+www-graphql-GET: HTTP 404 ct=text/html; charset=utf-8 body=b'<!DOCTYPE html><html id="__next_error__"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" as="script" fetchPriority="low" href="/assets/_next/static/chunks/webpack-793180ece7aa5ea6.'
+services-graphql-GET: HTTP 404 ct=text/html; charset=utf-8 body=b'<!DOCTYPE html><html id="__next_error__"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" as="script" fetchPriority="low" href="/assets/_next/static/chunks/webpack-793180ece7aa5ea6.'
+services-sports-graphql-GET: HTTP 404 ct=application/json body=b'{"timestamp":"2026-09-06T16:09:20.354+0000","status":404,"error":"Not Found","message":"No message available"}'
+services-swagger: HTTP 404 ct=application/json body=b'{"timestamp":"2026-09-06T16:09:22.164+0000","status":404,"error":"Not Found","message":"No message available"}'
+services-openapi: HTTP 404 ct=application/json body=b'{"timestamp":"2026-09-06T16:09:23.946+0000","status":404,"error":"Not Found","message":"No message available"}'
+services-springdoc: HTTP 404 ct=application/json body=b'{"timestamp":"2026-09-06T16:09:25.700+0000","status":404,"error":"Not Found","message":"No message available"}'
+done
+[0m
+[0m→ [0mRead probe-results.md[90m [offset=100, limit=10][0m
+Confirmed:
+- No GraphQL endpoint on www (GET → Next.js 404; POST → WAF blocking, but GET 404 proves no GraphQL handler registered).
+- No swagger/springdoc/openapi on the sports service → consistent with prior `api-docs` finding (no schema leak).
+
+So the anonymous surface has NOT expanded. All new probes are REJECTED-class (404/no-leak). This confirms: no new critical anonymous finding; all three core vectors remain AUTH_HELPED and unprobed behind the restricted signup.
+
+Let me record these probe results and update the lead file. First let me note the one possibly worth capturing: the WAF "METHOD NOT ALLOWED" on POST /graphql at www.ozoon.eu while GET is a Next.js 404 — that's a WAF-only artifact, GET proves no real GraphQL handler. REJECTED (no route exists).
+
+Let me append the probe results and write the new lead.
+[0m
+[0m← [0mEdit probe-results.md
+Index: /home/runner/work/ozoon-sportsbook-casino-hunt/ozoon-sportsbook-casino-hunt/probe-results.md
+===================================================================
+--- /home/runner/work/ozoon-sportsbook-casino-hunt/ozoon-sportsbook-casino-hunt/probe-results.md
++++ /home/runner/work/ozoon-sportsbook-casino-hunt/ozoon-sportsbook-casino-hunt/probe-results.md
+@@ -104,4 +104,18 @@
+ 
+ 
+ ## 2026-09-06 12:54:16 UTC
+ 
++
++## 2026-09-06 16:09:30 UTC
++POST https://www.ozoon.eu/graphql -> 200 WAF "Request Rejected" (METHOD NOT ALLOWED)
++POST https://www.ozoon.eu/api/graphql -> 200 WAF "Request Rejected" (METHOD NOT ALLOWED)
++GET https://www.ozoon.eu/graphql -> 404 Next.js __next_error__ (proves no GraphQL handler; WAF is POST-path-only)
++POST https://services.ozoon.eu/graphql -> 404 Next.js __next_error__
++GET https://services.ozoon.eu/graphql -> 404 Next.js __next_error__
++POST https://services.ozoon.eu/v1/graphql -> 404 Next.js __next_error__
++POST https://services.ozoon.eu/services/sports/v1/graphql -> 404 Spring Boot JSON {"status":404,...} (route resolves to Spring BFF but no GraphQL)
++GET https://services.ozoon.eu/services/sports/v1/graphql -> 404 Spring Boot JSON
++GET https://services.ozoon.eu/services/sports/v1/swagger-ui.html -> 404 Spring Boot JSON
++GET https://services.ozoon.eu/services/sports/v1/v3/api-docs -> 404 Spring Boot JSON
++GET https://services.ozoon.eu/services/sports/v1/swagger-ui/index.html -> 404 Spring Boot JSON
++
+
+[0m
+[0m→ [0mRead leads/lead-bigpickle.md[90m [offset=344, limit=10][0m
+Now let me write the new lead for this cycle (2026-09-06 16:09 UTC). I'll follow the 8 steps and output structured blocks. Let me append to the bigpickle lead file.
+[0m
+[0m$ [0mwc -l /home/runner/work/ozoon-sportsbook-casino-hunt/ozoon-sportsbook-casino-hunt/leads/lead-bigpickle.md
+1107 /home/runner/work/ozoon-sportsbook-casino-hunt/ozoon-sportsbook-casino-hunt/leads/lead-bigpickle.md
+[0m
+Let me check the end of the lead file to append properly.
+[0m→ [0mRead leads/lead-bigpickle.md[90m [offset=1100][0m
+[0m
+[0m$ [0mcat >> /home/runner/work/ozoon-sportsbook-casino-hunt/ozoon-sportsbook-casino-hunt/leads/lead-bigpickle.md <<'EOF'
+
+## 2026-09-06 16:10:00 UTC [target] (model bigpickle)
+[DELTA] NO_DELTA on anonymous surface: fresh passive breadth (GraphQL + swagger/springdoc/openapi on www + services sports service) all → Next.js 404 / Spring-Boot JSON 404 / WAF METHOD-NOT-ALLOWED; no handler exists. GET graphql proves no GraphQL (WAF POST-block is path-guard only, not evidence of a live endpoint).
+[PRIO] services.ozoon.eu/services/*/v1/profiles/{uuid}/...,9.5,attack_surface:10+business_value:10+tech_exposure:8+gate_ease:7+cloud_surface:6+freshness:9
+[PRIO] services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify,8.5,attack_surface:8+business_value:9+tech_exposure:7+gate_ease:6+cloud_surface:6+freshness:8
+[PRIO] www.ozoon.eu/api/v1/signup,7.5,attack_surface:7+business_value:8+tech_exposure:6+gate_ease:8+cloud_surface:5+freshness:7
+[HYP] BOLA on profile-keyed UUID endpoints — session identity may not be bound to path UUID
+class: IDOR
+asset: https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...
+confidence: 65
+reasoning: Whitelist regex proves profiles/*/v1 routes are NOT in the anonymous set; recorded structured 401 {"errorCode":"unauthorized"} for valid-route bogus UUID = auth pre-check precedes resource lookup; 5 services (wallet-gateway, transaction-group, referral, player-verification, player-messages) key resources by profile UUID. Session→path-UUID binding untested. This cycle's GET-graphql breadth confirms no new anonymous schema surface displaces this vector.
+evidence_needed: Authorized A reads /profiles/{B-UUID}/... returning non-401 B data; ownPID returns A's own data.
+verify_steps: PREREQ authorization. POST /api/v1/signup → sid+ownPID; GET /services/wallet-gateway/v1/profiles/{ownPID}/balances (expect 200) vs {bogus-uuid} (recorded 401); then A-sid cross-read of B-PID → foreign data = BOLA.
+impact: Critical — cross-user wallet/transaction/PII across 5 services; ATO enabler.
+testability: AUTH_HELPED
+[HYP] Mock-2FA verification header honored in production — 2FA/KYC gate bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{ownPID}/verifications/verify
+confidence: 55
+reasoning: Prod SDK sends X-MOCK-2FA-VERIFICATION:true on verify endpoint; config two_factor_authenticator.allow-permanent-skip:["true"]; isMockProviderEnabled:false is client-side only and does not resolve server honoring; 401 baseline shape re-confirmed; verification routes deliberately session-gated (server is sole decider).
+evidence_needed: POST verify +header succeeds while identical no-header request rejects.
+verify_steps: PREREQ authorization. signup → sid+ownPID; POST .../verifications/verify +X-MOCK-2FA-VERIFICATION:true {"verificationType":"PHONE"}; control without header.
+impact: Critical — bypass SMS/PIN/2FA/KYC on real-money deposit/withdraw.
+testability: AUTH_HELPED
+[HYP] Mass assignment on signup — server may persist unmapped privilege/territory fields
+class: BUSLOGIC
+asset: https://www.ozoon.eu/api/v1/signup
+confidence: 58
+reasoning: Captcha-free (reCAPTCHA login-only), client-controlled attributes/address sub-objects, static refSiteToken unverified; per-country profileupdateform DTO flat (CA=CAD+XBT) but separate from signup DTO; WAF staged on GET-signup only. Update-DTO strict does not prove signup-DTO strict.
+evidence_needed: Injected attributes.role/vip_level or address.country persist in whoami/profile or cause privileged side effect.
+verify_steps: PREREQ authorization. Control signup → set-cookie+whoami baseline; second signup with attributes.role/“admin”, vip_level, restricted-territory country; compare persisted whoami.
+impact: Medium-High — territory softblock bypass, referral fraud; privilege elevation if persisted.
+testability: AUTH_HELPED
+[NEXT] HUMAN: Request program authorization at bugs.olivermaicher.eu to create ONE throwaway account on www.ozoon.eu (clearly restricted mutating create, no live customer data, no writes to existing data). If granted, pre-flight one PASSIVE RAG: re-pull the current account-page SDK bundle from `www.ozoon.eu` to pin exact signup-DTO keys and confirm exact casing of `X-MOCK-2FA-VERIFICATION`, then fire exactly: `POST https://www.ozoon.eu/api/v1/signup {"email":"<throwaway>@<valid-domain>","password":"Test1234!","country":"CA","language":"en","attributes":{},"address":{"country":"CA","addressLine":"123 Test St","postalCode":"K1A 0A6"}}` → capture sid+ownPID, then `GET https://services.ozoon.eu/services/wallet-gateway/v1/profiles/{ownPID}/balances` (expect 200 vs recorded 401) and `POST .../player-verification/v1/profiles/{ownPID}/verifications/verify` with/without `X-MOCK-2FA-VERIFICATION` (+injected attributes on a second control account for mass-assignment differential).
+[LEARN] REJECTED OTHER @ www.ozoon.eu + services.ozoon.eu: anonymous GraphQL (POST/GET on /graphql,/api/graphql,/v1/graphql,/services/sports/v1/graphql) and swagger/springdoc/openapi on sports service all → Next.js 404 / Spring JSON 404 / WAF METHOD-NOT-ALLOWED — GET proves no handler; no anonymous GraphQL/schema surface.
+[LEARN] ACCEPTED IDOR @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: Reconfirmed — this cycle's GraphQL/schema breadth adds no new anonymous surface that displaces the SDK-confirmed BOLA vector; binding still unresolved; AUTH_HELPED.
+[LEARN] ACCEPTED AUTH @ services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify: mock-2FA + allow-permanent-skip remains the single critical gate-bypass candidate; AUTH_HELPED.
+[LEARN] ACCEPTED BUSLOGIC @ www.ozoon.eu/api/v1/signup: captcha-free signup still the sole gateway to authenticated testing; AUTH_HELPED.
+[RISK] ozoon-sportsbook-casino: 81/100 (flat). This cycle's fresh anonymous breadth (GraphQL/swagger) returns only REJECTED-class no-leak (404/WAF), re-confirming the anonymous surface is fully mapped and empty of new criticals. All three core vectors (BOLA 65, mass-assign 58, mock-2FA 55) remain AUTH_HELPED and unprobed behind the restricted signup. Money-bearing materiality (crypto+Interac real-money) and high-value surface are established statically. Risk moves only on first authenticated differential (+1 on BOLA/bypass confirmation; −2 if mock header/injected fields stripped server-side).
+EOF
+echo "written"
+written
+[0m
+Now I'll append this cycle's lead. The new anonymous probes (GraphQL/swagger breadth) confirm nothing new — all 404/WAF REJECTED-class. This reinforces the analysis: no new critical anonymous surface. The three core vectors remain the highest-value targets, all AUTH_HELPED.
+
+Let me write the new lead entry.
+Now let me update the hypotheses report file for this cycle, to keep consistent with the other model report files.
+[0m$ [0mcat >> /home/runner/work/ozoon-sportsbook-casino-hunt/ozoon-sportsbook-casino-hunt/reports/hypotheses-bigpickle.txt <<'EOF'
+
+## 2026-09-06 16:10:00 UTC [target] (model bigpickle)
+[DELTA] NO_DELTA on anonymous surface: fresh passive breadth (GraphQL + swagger/springdoc/openapi on www + services sports service) all → Next.js 404 / Spring-Boot JSON 404 / WAF METHOD-NOT-ALLOWED; no handler exists. GET graphql proves no GraphQL (WAF POST-block is path-guard only, not evidence of a live endpoint).
+[PRIO] services.ozoon.eu/services/*/v1/profiles/{uuid}/...,9.5,attack_surface:10+business_value:10+tech_exposure:8+gate_ease:7+cloud_surface:6+freshness:9
+[PRIO] services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify,8.5,attack_surface:8+business_value:9+tech_exposure:7+gate_ease:6+cloud_surface:6+freshness:8
+[PRIO] www.ozoon.eu/api/v1/signup,7.5,attack_surface:7+business_value:8+tech_exposure:6+gate_ease:8+cloud_surface:5+freshness:7
+[HYP] BOLA on profile-keyed UUID endpoints — session identity may not be bound to path UUID
+class: IDOR
+asset: https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...
+confidence: 65
+reasoning: Whitelist regex proves profiles/*/v1 routes are NOT in the anonymous set; recorded structured 401 {"errorCode":"unauthorized"} = auth pre-check precedes resource lookup; 5 services key resources by profile UUID; session→path-UUID binding untested. This cycle's GET-graphql breadth confirms no new anonymous surface displaces this vector.
+evidence_needed: Authorized A reads /profiles/{B-UUID}/... returning non-401 B data; ownPID returns A's own data.
+verify_steps: PREREQ authorization. POST /api/v1/signup → sid+ownPID; GET /services/wallet-gateway/v1/profiles/{ownPID}/balances (expect 200) vs {bogus-uuid} (recorded 401); then A-sid cross-read of B-PID → foreign data = BOLA.
+impact: Critical — cross-user wallet/transaction/PII across 5 services; ATO enabler.
+testability: AUTH_HELPED
+[HYP] Mock-2FA verification header honored in production — 2FA/KYC gate bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{ownPID}/verifications/verify
+confidence: 55
+reasoning: Prod SDK sends X-MOCK-2FA-VERIFICATION:true; config two_factor_authenticator.allow-permanent-skip:["true"]; isMockProviderEnabled:false is client-side only; 401 baseline re-confirmed; verification routes deliberately session-gated.
+evidence_needed: POST verify +header succeeds while identical no-header request rejects.
+verify_steps: PREREQ authorization. signup → sid+ownPID; POST .../verifications/verify +X-MOCK-2FA-VERIFICATION:true {"verificationType":"PHONE"}; control without header.
+impact: Critical — bypass SMS/PIN/2FA/KYC on real-money deposit/withdraw.
+testability: AUTH_HELPED
+[HYP] Mass assignment on signup — server may persist unmapped privilege/territory fields
+class: BUSLOGIC
+asset: https://www.ozoon.eu/api/v1/signup
+confidence: 58
+reasoning: Captcha-free (reCAPTCHA login-only), client-controlled attributes/address sub-objects, static refSiteToken unverified; per-country profileupdateform DTO flat (CA=CAD+XBT) but separate from signup DTO; WAF staged on GET-signup only. Update-DTO strict does not prove signup-DTO strict.
+evidence_needed: Injected attributes.role/vip_level or address.country persist in whoami/profile or cause privileged side effect.
+verify_steps: PREREQ authorization. Control signup → set-cookie+whoami baseline; second signup with attributes.role/“admin”, vip_level, restricted-territory country; compare persisted whoami.
+impact: Medium-High — territory softblock bypass, referral fraud; privilege elevation if persisted.
+testability: AUTH_HELPED
+[NEXT] HUMAN: Request program authorization at bugs.olivermaicher.eu to create ONE throwaway account on www.ozoon.eu (clearly restricted mutating create, no live customer data, no writes to existing data). If granted, pre-flight one PASSIVE RAG: re-pull the current account-page SDK bundle from `www.ozoon.eu` to pin exact signup-DTO keys and confirm exact casing of `X-MOCK-2FA-VERIFICATION`, then fire exactly: `POST https://www.ozoon.eu/api/v1/signup {"email":"<throwaway>@<valid-domain>","password":"Test1234!","country":"CA","language":"en","attributes":{},"address":{"country":"CA","addressLine":"123 Test St","postalCode":"K1A 0A6"}}` → capture sid+ownPID, then `GET https://services.ozoon.eu/services/wallet-gateway/v1/profiles/{ownPID}/balances` (expect 200 vs recorded 401) and `POST .../player-verification/v1/profiles/{ownPID}/verifications/verify` with/without `X-MOCK-2FA-VERIFICATION` (+injected attributes on a second control account for mass-assignment differential).
+[RISK] ozoon-sportsbook-casino: 81/100 (flat). Fresh anonymous breadth (GraphQL/swagger) returns only REJECTED-class no-leak (404/WAF), re-confirming the anonymous surface is fully mapped and empty of new criticals. All three core vectors (BOLA 65, mass-assign 58, mock-2FA 55) remain AUTH_HELPED and unprobed behind the restricted signup. Risk moves only on first authenticated differential (+1 on BOLA/bypass confirmation; −2 if mock header/injected fields stripped server-side).
+EOF
+echo written
+written
+[0m
+I've completed my analysis cycle. Let me present the structured output.
+
+---
+
+**STEP 1 — DELTA**
+- [CHANGED] Fresh anonymous breadth this cycle: POST/GET GraphQL (`/graphql`, `/api/graphql`, `/v1/graphql`, `/services/sports/v1/graphql`) + swagger/springdoc/openapi on www + sports service → Next.js 404 / Spring-Boot JSON 404 / WAF METHOD-NOT-ALLOWED; GET proves no handler exists. No new anonymous surface.
+- NO_DELTA otherwise — three core vectors unchanged, still AUTH_HELPED/unprobed.
+
+**STEP 2 — PRIORITIZE**
+- [PRIO] services.ozoon.eu/services/*/v1/profiles/{uuid}/..., 9.5, attack_surface=10 business_value=10 tech_exposure=8 gate_ease=7 cloud_surface=6 freshness=9
+- [PRIO] services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify, 8.5, attack_surface=8 business_value=9 tech_exposure=7 gate_ease=6 cloud_surface=6 freshness=8
+- [PRIO] www.ozoon.eu/api/v1/signup, 7.5, attack_surface=7 business_value=8 tech_exposure=6 gate_ease=8 cloud_surface=5 freshness=7
+
+**STEP 3 — HYPOTHESES**
+[HYP] BOLA on profile-keyed UUID endpoints — session identity may not be bound to path UUID
+class: IDOR
+asset: https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...
+confidence: 65
+reasoning: Whitelist regex proves profiles/*/v1 NOT in anonymous set; recorded 401 {"errorCode":"unauthorized"} = auth pre-check precedes lookup; 5 services key resources by profile UUID; session→UUID binding untested; this cycle's GraphQL/schema breadth adds no displacing anonymous surface.
+evidence_needed: Authorized A reads /profiles/{B-UUID}/... returning non-401 B data; ownPID returns A's own.
+verify_steps: PREREQ auth. signup→sid+ownPID; GET wallet-gateway balances {ownPID} (expect 200) vs {bogus} (401); A-sid cross-read of B-PID → BOLA.
+impact: Critical — cross-user wallet/transaction/PII across 5 services; ATO enabler.
+testability: AUTH_HELPED
+
+[HYP] Mock-2FA verification header honored in production — 2FA/KYC gate bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{ownPID}/verifications/verify
+confidence: 55
+reasoning: Prod SDK sends X-MOCK-2FA-VERIFICATION:true; allow-permanent-skip:["true"]; isMockProviderEnabled:false is client-side only; verification routes session-gated.
+evidence_needed: POST verify +header succeeds, identical no-header rejects.
+verify_steps: PREREQ auth. signup→sid+ownPID; POST verify +header {"verificationType":"PHONE"}; control without header.
+impact: Critical — bypass SMS/PIN/2FA/KYC on real-money deposit/withdraw.
+testability: AUTH_HELPED
+
+[HYP] Mass assignment on signup — server may persist unmapped privilege/territory fields
+class: BUSLOGIC
+asset: https://www.ozoon.eu/api/v1/signup
+confidence: 58
+reasoning: Captcha-free login-only, client-controlled attributes/address, static refSiteToken; update DTO strict but signup DTO separate; WAF staged on GET-signup only.
+evidence_needed: Injected attributes.role/vip_level or address.country persist in whoami/profile.
+verify_steps: PREREQ auth. control signup→whoami baseline; second signup with role/admin, vip_level, restricted-territory country; compare whoami.
+impact: Medium-High — territory softblock bypass, referral fraud; privilege elevation if persisted.
+testability: AUTH_HELPED
+
+**STEP 4 — SELF-CRITIQUE**
+- [FINAL] BOLA UUID endpoints — 65, clear verify_steps, critical impact. TOP.
+- [FINAL] Mock-2FA header — 55, clear verify_steps, critical if honored. SECOND.
+- [FINAL] Mass assignment signup — 58, clear verify_steps, medium-high. THIRD.
+- [PARKED] GraphQL/swagger endpoints: all 404/WAF — REJECTED-class (no handler/route). No hypothesis.
+
+**STEP 5 — NEXT ACTION**
+- [NEXT] HUMAN: Request program authorization at bugs.olivermaicher.eu to create ONE throwaway account (restricted mutating create, no live customer data, no writes). If granted, pre-flight PASSIVE RAG (re-pull account-page SDK bundle to pin signup-DTO keys + confirm `X-MOCK-2FA-VERIFICATION` casing), then fire exactly `POST https://www.ozoon.eu/api/v1/signup {"email":"<throwaway>@<valid-domain>","password":"Test1234!","country":"CA","language":"en","attributes":{},"address":{"country":"CA","addressLine":"123 Test St","postalCode":"K1A 0A6"}}` → capture sid+ownPID, then `GET https://services.ozoon.eu/services/wallet-gateway/v1/profiles/{ownPID}/balances` (expect 200 vs recorded 401) and `POST .../player-verification/v1/profiles/{ownPID}/verifications/verify` with/without `X-MOCK-2FA-VERIFICATION`.
+
+**STEP 6 — LEARNING**
+- [LEARN] REJECTED OTHER @ www.ozoon.eu + services.ozoon.eu: anonymous GraphQL + swagger/springdoc/openapi breadth all → Next.js/Spring 404 or WAF METHOD-NOT-ALLOWED; GET proves no GraphQL handler; no anonymous GraphQL/schema surface.
+- [LEARN] ACCEPTED IDOR @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: Reconfirmed; no new anonymous surface displaces the BOLA vector; binding unresolved; AUTH_HELPED.
+- [LEARN] ACCEPTED AUTH @ .../player-verification/.../verify: mock-2FA + allow-permanent-skip remains single critical gate-bypass candidate; AUTH_HELPED.
+- [LEARN] ACCEPTED BUSLOGIC @ www.ozoon.eu/api/v1/signup: captcha-free signup remains sole gateway to authenticated testing; AUTH_HELPED.
+
+**STEP 7 — RISK**
+- [RISK] ozoon-sportsbook-casino: 81/100 (flat). Fresh anonymous breadth (GraphQL/swagger) returns only REJECTED-class no-leak, re-confirming the anonymous surface is fully mapped and empty of new criticals. All three core vectors (BOLA 65, mass-assign 58, mock-2FA 55) remain AUTH_HELPED and unprobed behind the restricted signup. Money-bearing materiality and surface are high and static; risk moves only on the first authenticated differential (+1 on BOLA/bypass confirmation; −2 if mock header/injected fields stripped server-side).
+
+Analysis files updated: leads/lead-bigpickle.md, reports/hypotheses-bigpickle.txt, probe-results.md.
