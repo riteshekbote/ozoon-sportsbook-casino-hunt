@@ -1201,3 +1201,4 @@ evidence_needed: Injected attributes.role/vip_level or address.country persist i
 verify_steps: PREREQ auth. control signup→whoami baseline; second signup with role/admin, vip_level, restricted-territory country; compare whoami.
 impact: Medium-High — territory softblock bypass, referral fraud; privilege elevation if persisted.
 testability: AUTH_HELPED
+## 2026-09-06 18:25:47 UTC [target] (model bigpickle)
