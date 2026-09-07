@@ -7614,3 +7614,61 @@ drwxr-xr-x 12 runner runner  4096 Sep  6 22:50 ..
 [93m[1m! [0mpermission requested: external_directory (/tmp/*); auto-rejecting
 [0m✗ [0mcurl -s -o /tmp/login_page.html -D /tmp/login_headers.txt -w "HTTP %{http_code} size=%{size_download}\n" --max-time 25 "https://www.ozoon.eu/login" -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" 2>&1; echo "---headers---"; cat /tmp/login_headers.txt failed
 [91m[1mError: [0mThe user rejected permission to use this specific tool call.
+===== ANALYST bigpickle 2026-09-07 00:51:48 UTC =====
+[0m
+> build · big-pickle
+[0m
+STEP 1 — DELTA
+- NO_DELTA: this cycle executed zero new probes (19th round); KB tail + inventory are pure consolidation of prior findings.
+- [CHANGED] The sole [NEXT] from the 22:50 UTC round (HUMAN authorization request for ONE restricted throwaway signup) remains pending — no probe can move confidence until it is granted.
+
+STEP 2 — PRIORITIZE
+- [PRIO] https://www.ozoon.eu/api/v1/signup — 6.45 — gate-sole-account_creation-authz (a8,b9,t6,g6,c0,f4)
+- [PRIO] https://services.ozoon.eu/services/*/v1/profiles/{uuid}/... — 6.15 — business/BOLA-auth (a8,b10,t7,g2,c0,f3)
+- [PRIO] https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify — 5.50 — auth-gate-bypass-auth (a6,b10,t6,g2,c0,f3)
+
+STEP 3 — HYPOTHESES
+[HYP] BOLA on profile-keyed UUID endpoints — session identity not bound to path UUID
+class: IDOR
+asset: https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...
+confidence: 65
+reasoning: SDK bundles confirm 5 services (wallet-gateway, transaction-group, referral, player-verification, player-messages) key resources by profile UUID in path; recorded anonymous 401 {"errorCode":"unauthorized"} = auth pre-check precedes lookup; anonymous surface re-confirmed saturated (GraphQL/swagger/actuator/oauth all REJECTED no-leak) so nothing displaces this.
+evidence_needed: Authorized A reads /profiles/{B-UUID}/... returning B's non-404 data while ownPID returns A's data.
+verify_steps: PREREQ auth. TWO throwaways A+B → sid+ownPID. With A sid: GET /services/wallet-gateway/v1/profiles/{B-ownPID}/wallets + /player-messages/v1/profiles/{B-ownPID}/messages vs control {A-ownPID}; foreign 200 = BOLA, 401/403 = bound.
+impact: Critical — cross-user wallet/transaction/PII across 5 services; ATO enabler.
+testability: AUTH_HELPED
+
+[HYP] Mass assignment on signup — server may persist unmapped privilege/territory fields
+class: BUSLOGIC
+asset: https://www.ozoon.eu/api/v1/signup
+confidence: 58
+reasoning: Captcha-free signup (reCAPTCHA login-only per public config); client-controlled attributes/address sub-objects; static refSiteToken unverified (affiliate.check-referring-site enabled:false); per-country profileupdateform DTO strict but separate from signup DTO; WAF staged on GET-signup only.
+evidence_needed: Injected attributes.role/vip_level or restricted-territory address.country persist in whoami/profile vs control.
+verify_steps: PREREQ auth. Control signup → whoami baseline; second signup with attributes.role="admin", vip_level, address.country=restricted; compare persisted whoami.
+impact: Medium-High — territory softblock bypass, referral fraud; privilege elevation if persisted.
+testability: AUTH_HELPED
+
+[HYP] Mock-2FA verification header honored in production — client-controlled 2FA/KYC gate bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{ownPID}/verifications/verify
+confidence: 55
+reasoning: Production SDK sends X-MOCK-2FA-VERIFICATION:true; config two_factor_authenticator.allow-permanent-skip:["true"]; isMockProviderEnabled:false is client-side only and does not resolve honoring; 401 anonymous baseline re-recorded; header honoring requires a session.
+evidence_needed: POST verify +header succeeds while byte-identical request without header rejects.
+verify_steps: PREREQ auth. signup → sid+ownPID; POST .../verifications/verify {"verificationType":"PHONE"} with header true then control without; compare status/body.
+impact: Critical — bypass SMS/PIN/2FA/KYC on deposit/withdraw/bonus money flows.
+testability: AUTH_HELPED
+
+STEP 4 — SELF-CRITIQUE
+- [PARKED] SSRF-to-metadata via PWS/wnacloud edge @ www.ozoon.com: passive-GET-only, no resource-bearing param discovered, heavily deprioritized vs core platform; cannot exploit without authorized resource scope.
+- [PARKED] Third-party surfaces @ games.glovefrog.plus jackpotApiBase + api.wicket-keeper.com apmRum: ownership unconfirmed, off-scope until verified — same glovefrog/wicket-keeper family.
+- [PARKED] mock-2FA bypass: retained at 55 (≥40, has verify steps) but noted contrary client-side SSR flag keeps it lowest-ranked FINAL.
+- [FINAL] ranked: BOLA 65 → mass-assign 58 → mock-2FA 55. All AUTH_HELPED; none advances without the signup gate.
+
+STEP 5 — NEXT ACTION
+- [NEXT] HUMAN: Request program authorization at bugs.olivermaicher.eu to create ONE restricted throwaway account on www.ozoon.eu (synthetic email, mutating-create only, zero writes to existing data, no deposits) to unlock PREREQ auth; if granted, pre-flight one passive RAG (current account-page SDK bundle → pin signup-DTO keys + X-MOCK-2FA-VERIFICATION casing), then run the recorded signup → whoami/balances differential chain for BOLA + mass-assign + mock-2FA.
+
+STEP 6 — LEARNING
+- [LEARN] REJECTED OTHER @ www.ozoon.eu/api/v1 + services.ozoon.eu/services: 19th cycle with zero new probes; anonymous surface is saturated and fully mapped — further passive GET breadth (GraphQL, openapi, actuator, oauth, session, countries) returns only REJECTED-class no-leak; the single binding constraint is account_creation:restricted program authorization, not undiscovered surface.
+
+STEP 7 — RISK
+- [RISK] ozoon-sportsbook-casino: 81/100 (flat). Zero new probes; three critical vectors (BOLA 65, mass-assign 58, mock-2FA 55) unchanged and still AUTH_HELPED behind the restricted signup; anonymous surface re-confirmed saturated with no displacing findings; risk moves only on the first authorized differential (+1 on BOLA/bypass confirmation; −2 if mock header or injected fields are stripped server-side).

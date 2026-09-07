@@ -1233,3 +1233,31 @@ testability: AUTH_HELPED
 [NEXT] HUMAN: Request program authorization at bugs.olivermaicher.eu to create TWO throwaway accounts on www.ozoon.eu (strictly restricted mutating create, synthetic emails, zero writes to existing data). If granted, pre-flight one passive RAG (current account-page SDK bundle → pin exact signup-DTO keys + X-MOCK-2FA-VERIFICATION casing), then fire exactly: POST https://www.ozoon.eu/api/v1/signup {"email":"<throwaway>@<valid-domain>","password":"Test1234!","country":"CA","language":"en","attributes":{},"address":{"country":"CA","addressLine":"123 Test St","postalCode":"K1A 0A6"}} → capture sid+ownPID; then GET /services/wallet-gateway/v1/profiles/{ownPID}/balances (expect 200 vs recorded 401) and POST .../player-verification/v1/profiles/{ownPID}/verifications/verify with/without X-MOCK-2FA-VERIFICATION; third control signup with injected attributes for mass-assignment differential.
 [RISK] ozoon-sportsbook-casino: 81/100 (flat). Drift re-check confirms no new anonymous surface; all breadth returns REJECTED-class no-leak. Three critical vectors (BOLA 65, mass-assign 58, mock-2FA 55) remain AUTH_HELPED and unprobed behind the restricted signup; risk moves only on first authorized differential (+1 on BOLA/bypass confirmation; −2 if mock header/injected fields are stripped server-side). Inventory documentation drift is non-security.
 ## 2026-09-06 22:50:40 UTC [target] (model bigpickle)
+## 2026-09-07 00:50:39 UTC [target] (model bigpickle)
+[HYP] BOLA on profile-keyed UUID endpoints — session identity not bound to path UUID
+class: IDOR
+asset: https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...
+confidence: 65
+reasoning: SDK bundles confirm 5 services (wallet-gateway, transaction-group, referral, player-verification, player-messages) key resources by profile UUID in path; recorded anonymous 401 {"errorCode":"unauthorized"} = auth pre-check precedes lookup; anonymous surface re-confirmed saturated (GraphQL/swagger/actuator/oauth all REJECTED no-leak) so nothing displaces this.
+evidence_needed: Authorized A reads /profiles/{B-UUID}/... returning B's non-404 data while ownPID returns A's data.
+verify_steps: PREREQ auth. TWO throwaways A+B → sid+ownPID. With A sid: GET /services/wallet-gateway/v1/profiles/{B-ownPID}/wallets + /player-messages/v1/profiles/{B-ownPID}/messages vs control {A-ownPID}; foreign 200 = BOLA, 401/403 = bound.
+impact: Critical — cross-user wallet/transaction/PII across 5 services; ATO enabler.
+testability: AUTH_HELPED
+[HYP] Mass assignment on signup — server may persist unmapped privilege/territory fields
+class: BUSLOGIC
+asset: https://www.ozoon.eu/api/v1/signup
+confidence: 58
+reasoning: Captcha-free signup (reCAPTCHA login-only per public config); client-controlled attributes/address sub-objects; static refSiteToken unverified (affiliate.check-referring-site enabled:false); per-country profileupdateform DTO strict but separate from signup DTO; WAF staged on GET-signup only.
+evidence_needed: Injected attributes.role/vip_level or restricted-territory address.country persist in whoami/profile vs control.
+verify_steps: PREREQ auth. Control signup → whoami baseline; second signup with attributes.role="admin", vip_level, address.country=restricted; compare persisted whoami.
+impact: Medium-High — territory softblock bypass, referral fraud; privilege elevation if persisted.
+testability: AUTH_HELPED
+[HYP] Mock-2FA verification header honored in production — client-controlled 2FA/KYC gate bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{ownPID}/verifications/verify
+confidence: 55
+reasoning: Production SDK sends X-MOCK-2FA-VERIFICATION:true; config two_factor_authenticator.allow-permanent-skip:["true"]; isMockProviderEnabled:false is client-side only and does not resolve honoring; 401 anonymous baseline re-recorded; header honoring requires a session.
+evidence_needed: POST verify +header succeeds while byte-identical request without header rejects.
+verify_steps: PREREQ auth. signup → sid+ownPID; POST .../verifications/verify {"verificationType":"PHONE"} with header true then control without; compare status/body.
+impact: Critical — bypass SMS/PIN/2FA/KYC on deposit/withdraw/bonus money flows.
+testability: AUTH_HELPED
