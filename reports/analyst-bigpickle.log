@@ -8015,3 +8015,87 @@ testability: AUTH_HELPED
 
 **STEP 7 — RISK**
 [RISK] ozoon-sportsbook-casino: 81/100 (flat). Two critical vectors (BOLA 65, mock-2FA 55) remain AUTH_HELPED and unprobed behind the restricted signup; anonymous surface is exhausted (all breadth REJECTED no-leak, 401 baseline stable). Risk moves only on the first authorized differential — +1 on BOLA/bypass confirmation, −2 if mock header or UUID binding is stripped server-side.
+===== ANALYST bigpickle 2026-09-07 17:54:23 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m✱ [0mGlob "**/*.md"[90m 50 matches[0m
+[0m→ [0mRead triage/run-2026-09-07-15-33.md
+[0m✗ [0mRead triage/run-2026-09-07-12-17.md failed
+[91m[1mError: [0mFile not found: /home/runner/work/ozoon-sportsbook-casino-hunt/ozoon-sportsbook-casino-hunt/triage/run-2026-09-07-12-17.md
+[0m→ [0mRead probe-results.md[90m [limit=120][0m
+[0m→ [0mRead triage/run-2026-09-07-09-56.md
+[0m→ [0mRead leads/lead-bigpickle.md
+[0m
+[0m$ [0mcd /home/runner/work/ozoon-sportsbook-casino-hunt/ozoon-sportsbook-casino-hunt && git log --oneline -5 2>/dev/null; echo "---"; ls triage/ | tail -20
+34d74a4 triage 2026-09-07-15-33
+---
+run-2026-09-05-01-06.md
+run-2026-09-05-05-50.md
+run-2026-09-05-09-57.md
+run-2026-09-05-13-17.md
+run-2026-09-05-16-08.md
+run-2026-09-05-18-22.md
+run-2026-09-05-20-42.md
+run-2026-09-05-22-38.md
+run-2026-09-06-00-13.md
+run-2026-09-06-04-47.md
+run-2026-09-06-09-08.md
+run-2026-09-06-12-55.md
+run-2026-09-06-15-59.md
+run-2026-09-06-18-11.md
+run-2026-09-06-20-29.md
+run-2026-09-06-22-19.md
+run-2026-09-07-00-05.md
+run-2026-09-07-04-50.md
+run-2026-09-07-09-56.md
+run-2026-09-07-15-33.md
+[0m
+[0m→ [0mRead probe-results.md[90m [offset=120][0m
+[0m→ [0mRead reports/hypotheses.md[90m [limit=40][0m
+STEP 1 — DELTA
+- NEW: No new probe data since 12:27 UTC — probe-results.md empty through 12:27:57 (single error line), no authorization grant logged, triage run-2026-09-07-15-33 received zero leads.
+- CHANGED: Anonymous surface remains fully exhausted (all breadth REJECTED no-leak; structured 401 baseline byte-stable); the three critical vectors stay AUTH_HELPED behind `account_creation:restricted` signup.
+
+STEP 2 — PRIORITIZE
+- [PRIO] services.ozoon.eu/services/*/v1/profiles/{uuid}/...,8.75,auth_surface+cloud (unchanged; only route actionable if authorized)
+- [PRIO] services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify,8.25,two_fa_backdoor (unchanged)
+- [PRIO] www.ozoon.eu/api/v1/signup,8.10,gateway (unchanged — single unlock for both above)
+
+STEP 3 — HYPOTHESES (no new; re-confirming survivors only)
+[HYP] BOLA on profile-keyed UUID endpoints — session identity not bound to path UUID
+class: IDOR
+asset: https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...
+confidence: 65
+reasoning: SDK bundles confirm 5 services (wallet-gateway, transaction-group, referral, player-verification, player-messages) key sensitive resources by profile UUID in path; structured anonymous 401 {"errorCode":"unauthorized"} re-verified byte-stable today; auth pre-check precedes resource lookup; session→path-UUID binding never tested; no new anonymous surface displaces this vector.
+evidence_needed: Authorized A reads /profiles/{B-UUID}/... returning B's non-404 data while ownPID returns A's data.
+verify_steps: [AUTH_HELPED] signup throwaways A+B → sid+ownPID each; with A sid GET /services/wallet-gateway/v1/profiles/{B-ownPID}/wallets + /services/player-verification/v1/profiles/{B-ownPID}/verifications; control with {A-ownPID}. Foreign 200 = BOLA, 401/403 = bound.
+impact: Critical — cross-user wallet/transaction/PII across 5 services; ATO enabler.
+testability: AUTH_HELPED
+
+[HYP] Mock-2FA verification header honored — client-controlled 2FA/KYC gate bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{ownPID}/verifications/verify
+confidence: 55
+reasoning: Production SDK sends X-MOCK-2FA-VERIFICATION:true; config two_factor_authenticator.allow-permanent-skip:["true"]; isMockProviderEnabled:false is client-side only and does not resolve server-side honoring; 401 anonymous baseline stable; honoring requires a session.
+evidence_needed: POST verify +header succeeds while byte-identical request without header rejects.
+verify_steps: [AUTH_HELPED] signup → sid+ownPID; POST .../verifications/verify {"verificationType":"PHONE"} with header true then control without; compare status/body.
+impact: Critical — bypass SMS/PIN/2FA/KYC on deposit/withdraw/bonus money flows.
+testability: AUTH_HELPED
+
+STEP 4 — SELF-CRITIQUE
+- [PARKED] Mass assignment on signup: subsumed by BOLA differential once a session exists (whoami/ownPID attribution); lower marginal value, one shared gateway.
+- [PARKED] SSRF @ www.ozoon.com ?url= params: collab GET returned 200 with no observed outbound hit (09-04); passive-only, marketing-edge value, deprioritized vs core platform.
+- [FINAL] BOLA UUID (65) — top vector; single authorized differential confirms.
+- [FINAL] Mock-2FA (55) — second vector; same authorized session prerequisite.
+
+STEP 5 — NEXT ACTION
+- [NEXT] HUMAN: Request program authorization at bugs.olivermaicher.eu to create TWO strictly-restricted throwaway accounts on www.ozoon.eu (synthetic emails, only the two mutating signup POSTs, zero writes to existing data). If granted, fire exactly: POST https://www.ozoon.eu/api/v1/signup {"email":"<A>@<valid-domain>","password":"Test1234!","country":"CA","language":"en","attributes":{},"address":{"country":"CA","addressLine":"123 Test St","postalCode":"K1A 0A6"}} (repeat for B); capture sid+ownPID each; with A's sid GET https://services.ozoon.eu/services/wallet-gateway/v1/profiles/{B-ownPID}/balances + /services/player-verification/v1/profiles/{B-ownPID}/verifications vs control {A-ownPID}; then POST .../player-verification/v1/profiles/{A-ownPID}/verifications/verify with and without X-MOCK-2FA-VERIFICATION:true.
+
+STEP 6 — LEARNING
+- [LEARN] ACCEPTED IDOR @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: Reconfirmed — no new anonymous surface across this cycle's breadth; binding unresolved; AUTH_HELPED.
+- [LEARN] ACCEPTED AUTH @ services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify: mock-2FA + allow-permanent-skip remains the single critical gate-bypass candidate; AUTH_HELPED.
+- [LEARN] ACCEPTED BUSLOGIC @ www.ozoon.eu/api/v1/signup: captcha-free signup still the sole gateway to authenticated testing; AUTH_HELPED.
+
+STEP 7 — RISK
+- [RISK] ozoon-sportsbook-casino: 81/100 (flat). Two critical vectors (BOLA 65, mock-2FA 55) remain AUTH_HELPED and unprobed behind the restricted signup; no anonymous surface is actionable (all breadth REJECTED no-leak, 401 baseline stable). Risk moves only on the first authorized differential — +1 on BOLA/bypass confirmation, −2 if mock header or UUID binding is stripped server-side.
