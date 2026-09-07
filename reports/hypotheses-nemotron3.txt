@@ -1,4 +1,21 @@
-## 2026-09-07 05:56:17 UTC [target] (model nemotron3)
+## 2026-09-07 12:27:45 UTC [target] (model nemotron3)
+[NEW] Inventory file (ozoon-sportsbook-casino.md) still lists ONLY `ozoon.com`/`www.ozoon.com` (marketing edge); `ozoon.eu` (core gambling platform: sportsbook/casino/poker) and `services.ozoon.eu` (backend API) confirmed in-scope per scope.yml ("All infrastructure, brands, services and gaming platforms operated by Ozoon") but absent from inventory
+[CHANGED] Zero authenticated probes executed against core platform (`ozoon.eu`/`services.ozoon.eu`) across 18+ probe rounds; all probes target only `www.ozoon.com` marketing edge
+[NEW] Live confirmation: `services.ozoon.eu` returns 743KB Next.js SSR shell; `servicesBaseUrl=https://services.services.ozoon.eu` (internal-only, NXDOMAIN publicly = split-horizon)
+[NEW] Live confirmation: Structured auth-gate discriminator on 5 services (wallet-gateway, referral, player-verification, transaction-group, player-messages) → `GET /services/*/v1/profiles/{bogus-uuid}/...` → `401 {"errorCode":"unauthorized"}` — auth pre-check precedes resource lookup; anonymous differential baseline recorded
+[NEW] Live confirmation: `www.ozoon.eu/api/v1/login` and `/api/v1/whoami` → Spring Boot Whitelabel 404 JSON (no method guard, 404 not 405); `signup GET` → WAF "Request Rejected" page (support_id present) → WAF staged on mutating signup path only
+[NEW] Live confirmation: `/services/site-config/v1/countries/CA/profileupdateform` returns CAD + XBT (XBT unpublished) with mandatory province/postal code; flat whitelist fields (email,phone,addressLine,postalCode,language,timeZone,oddsFormat,subscriptionChannels) — no role/vip/attributes member
+[NEW] Live confirmation: `/services/site-config/v1/countries/XX/profileupdateform` (unknown) → structured 404 leaking `io.crazy88.beatrix.siteconfig.exception.CountryNotFoundException` (GoBet/Beatrix backend fingerprint)
+[NEW] Live confirmation: `chat.ozoon.eu` live in-scope subdomain (CNAME `ozoon.eu.glb.network`); returns 404, widget-only CSP, no Ozoon API logic
+[NEW] Live confirmation: `/services/*/v{2,3}/api-docs` and `/actuator*` → gateway 404; no anonymous schema/actuator leak
+[NEW] Live confirmation: `games.glovefrog.plus` jackpotApiBase third-party; Ozoon ownership unconfirmed; off-scope until verified
+[PRIO] https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...,9.5,attack_surface=10,business_value=10,tech_exposure=8,gate_ease=6,cloud_surface=8,freshness=9
+[PRIO] https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify,8.5,attack_surface=9,business_value=10,tech_exposure=7,gate_ease=6,cloud_surface=7,freshness=8
+[PRIO] https://www.ozoon.eu/api/v1/signup,7.5,attack_surface=8,business_value=9,tech_exposure=6,gate_ease=7,cloud_surface=6,freshness=9
+[PRIO] https://services.ozoon.eu/services/site-config/v1/countries/{CC}/profileupdateform,5.5,attack_surface=6,business_value=5,tech_exposure=5,gate_ease=10,cloud_surface=4,freshness=8
+[PRIO] https://www.ozoon.eu/api/v1,5.0,attack_surface=5,business_value=6,tech_exposure=5,gate_ease=10,cloud_surface=4,freshness=8
+[PRIO] https://chat.ozoon.eu,2.0,attack_surface=3,business_value=2,tech_exposure=2,gate_ease=10,cloud_surface=3,freshness=6
+[PRIO] https://www.ozoon.com,3.0,attack_surface=4,business_value=3,tech_exposure=4,gate_ease=10,cloud_surface=5,freshness=5
 [HYP] BOLA on Profile-Keyed UUID Endpoints Across 5 Services
 class: IDOR
 asset: https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...
@@ -26,10 +43,13 @@ evidence_needed: With own session, POST /verifications/verify with `X-MOCK-2FA-V
 verify_steps: 1. Register + login throwaway account (from HYP1/HYP2). 2. POST /services/player-verification/v1/profiles/{ownPID}/verifications/verify with header `X-MOCK-2FA-VERIFICATION:true` + minimal body. 3. Observe response. 4. Repeat without header as control. Self-created throwaway only.
 impact: Critical if honored — bypass 2FA/SMS/PIN/KYC gates on withdraw/deposit/bonus (money security control bypass)
 testability: AUTH_HELPED
-[PARKED] PWS Edge SSRF to Cloud Metadata (www.ozoon.com): marketing edge only; no URL-accepting parameters identified in latest passive probes; lower business value than core platform vectors; keep for breadth but deprioritized
-[PARKED] chat.ozoon.eu: third-party chat widget on Arrays CDN; no Ozoon API logic
-[PARKED] games.glovefrog.plus: jackpot third-party; ownership unconfirmed → out-of-scope
-[PARKED] services.services.ozoon.eu: split-horizon/internal-only (public NXDOMAIN), not reachable
+[PARKED] SSRF on PWS/wnacloud Edge (www.ozoon.com): No URL-accepting parameters identified in passive probes; marketing edge only; lower business value than core platform vectors; deprioritized
+[PARKED] chat.ozoon.eu: Third-party chat widget on Arrays CDN; no Ozoon API logic; widget-only CSP
+[PARKED] games.glovefrog.plus: Jackpot third-party; ownership unconfirmed → out-of-scope
+[PARKED] services.services.ozoon.eu: Split-horizon/internal-only (public NXDOMAIN), not reachable
+[PARKED] Hardcoded secrets in GitHub repos (oZoon/hyper, oZoon/mas-film): Learning/demo repos, not confirmed deployed
+[PARKED] SQLi patterns in oZoon/secure-query-string: Learning repos, not confirmed deployed
+[PARKED] Port 3306 MySQL on www.ozoon.com: Identical port-closed/EOF pattern across hosts = shared proxy artifact
 [FINAL] 1. BOLA on Profile-Keyed UUID Endpoints (65) — services.ozoon.eu — AUTH_HELPED
 [FINAL] 2. Registration/Referral Mass Assignment (60) — www.ozoon.eu/api/v1/signup — AUTH_HELPED
 [FINAL] 3. Mock-2FA Header Honored → Verification Bypass (55) — services.ozoon.eu — AUTH_HELPED
@@ -47,11 +67,11 @@ testability: AUTH_HELPED
 [LEARN] REJECTED OTHER @ services.ozoon.eu: /services/*/v{2,3}/api-docs and /actuator* → gateway 404; no anonymous schema/actuator leak
 [LEARN] REJECTED OTHER @ games.glovefrog.plus: jackpotApiBase third-party; Ozoon ownership unconfirmed; off-scope until verified
 [LEARN] ACCEPTED MISCONFIG @ services.ozoon.eu/services/site-config/v1/countries/{CC}/profileupdateform: unknown country → structured 404 leaking internal exception `io.crazy88.beatrix.siteconfig.exception.CountryNotFoundException` (GoBet/Beatrix backend fingerprint)
-[LEARN] ACCEPTED MISCONFIG @ www.ozoon.eu/api/v1: GET /api/v1/login and /api/v1/whoami → Spring Boot Whitelabel 404 JSON (no method guard, 404 not 405); signup GET → WAF "Request Rejected" (support_id 6279731412718049849) → WAF staged on mutating signup path only
+[LEARN] ACCEPTED MISCONFIG @ www.ozoon.eu/api/v1: GET /api/v1/login and /api/v1/whoami → Spring Boot Whitelabel 404 JSON (no method guard, 404 not 405); signup GET → WAF "Request Rejected" → WAF staged on mutating signup path only
 [LEARN] ACCEPTED MISCONFIG @ services.ozoon.eu/services/site-config/v1/countries/{CC}/profileupdateform: per-country profile-update whitelist is flat (email,phone/addressLine/postalCode/language,timeZone/oddsFormat/subscriptionChannels) with no role/vip/attributes country member; CA exposes CAD+XBT (XBT unpublished), US=USD — update DTO is strict but signup DTO separate
 [LEARN] ACCEPTED OTHER @ www.ozoon.eu: homepage SSR JSON references api.wicket-keeper.com as apmRum.url — third-party RUM/APM endpoint, ownership unconfirmed; off-scope pending verification (parallel to glovefrog)
 [LEARN] REJECTED OTHER @ www.ozoon.eu/robots.txt: only sitemap_index.xml + disallow: (all) — known-public-file class, no findings
 [LEARN] REJECTED OTHER @ services.ozoon.eu/services/site-config/v1/countries: bare /countries and unknown-country /countries/XX/profiles are descriptive-error 404 only — no enumeration/restricted-territory leak beyond known codes
-[LEARN] REJECTED OTHER @ www.ozoon.eu/api/v1/logout: GET → structured Spring 405 Method Not Allowed (real POST-only route, exact JSON {"status":405,"error":"Method Not Allowed","message":"Request method 'GET' not supported"}); OPTIONS → 200. Route-existence confirmatory only; 405-on-POST-logout and OPTIONS are REJECTED classes (CSRF-on-logout, OPTIONS). No scoped finding.
+[LEARN] REJECTED OTHER @ www.ozoon.eu/api/v1/logout: GET → structured Spring 405 Method Not Allowed (real POST-only route); OPTIONS → 200. Route-existence confirmatory only; 405-on-POST-logout and OPTIONS are REJECTED classes. No scoped finding.
 [LEARN] REJECTED OTHER @ www.ozoon.eu/api/v1 + services.ozoon.eu/services: passive GET breadth (oauth/authorize/connect/password-forgot/reset/verify-email/session on www; auth/identity/authentication/registration/player on services) all → 404 — no anonymous auth-flow alias/schema leak beyond known login/whoami/signup/logout routes
 [RISK] ozoon-sportsbook-casino: 81/100 — Core gambling platform (ozoon.eu) with micro-frontend API (services.ozoon.eu) fully mapped via public SDK/config. Three critical vectors with clear AUTH_HELPED test paths: (1) BOLA on UUID-keyed profile endpoints across 5 services (confidence 65), (2) Registration/referral mass assignment on captcha-free signup with unverified static referral token (confidence 60), (3) 2FA/KYC bypass via client-controlled X-MOCK-2FA-VERIFICATION header honored by allow-permanent-skip config (confidence 55). Zero authenticated probes executed; all prior probes target only www.ozoon.com marketing edge. Real-money gaming with crypto/Interac payments, F5 ASM WAF, reCAPTCHA v3 (login-only), 2FA present but backend binding correctness and mock-header handling unverified. High business value + high attack surface + low gate ease (public registration, public API config) = elevated risk.

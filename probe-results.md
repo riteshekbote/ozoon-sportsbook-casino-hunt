@@ -123,3 +123,6 @@ https://www.ozoon.com/?{url|view|page|callback -> 200 len=?
 
 ## 2026-09-07 05:56:27 UTC
 
+
+## 2026-09-07 12:27:57 UTC
+https://www.ozoon.com,3.0,attack_surface=4,business_value=3,tech_exposure=4,gate_ease=10,cloud_surface=5,freshness=5 -> ERR label too long

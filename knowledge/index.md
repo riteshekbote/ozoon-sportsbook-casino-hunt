@@ -134,3 +134,6 @@
 - 2026-09-07 ACCEPTED IDOR @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: Reconfirmed — drift check adds no new anonymous surface displacing the SDK-confirmed BOLA vector across 5 services; binding unresolved; AUTH_HELPED.
 - 2026-09-07 ACCEPTED AUTH @ services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify: mock-2FA + allow-permanent-skip remains the single critical gate-bypass candidate; AUTH_HELPED.
 - 2026-09-07 ACCEPTED BUSLOGIC @ www.ozoon.eu/api/v1/signup: captcha-free signup still the sole gateway to authenticated testing; AUTH_HELPED.
+- 2026-09-07 ACCEPTED IDOR @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: Reconfirmed — byte-stable 401 baseline re-verified today; no new anonymous surface; binding unresolved; AUTH_HELPED.
+- 2026-09-07 ACCEPTED MISCONFIG @ www.ozoon.eu/api/v1: GET /api/v1/login and /api/v1/whoami → Spring Boot Whitelabel 404 JSON (no method guard, 404 not 405); signup GET → WAF "Request Rejected" → WAF staged on mutating signup path only
+- 2026-09-07 REJECTED OTHER @ www.ozoon.eu/api/v1/logout: GET → structured Spring 405 Method Not Allowed (real POST-only route); OPTIONS → 200. Route-existence confirmatory only; 405-on-POST-logout and OPTIONS are REJECTED classes. No scoped finding.

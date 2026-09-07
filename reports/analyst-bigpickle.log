@@ -7737,3 +7737,281 @@ Mass-assignment (58) demoted to PARKED — no new evidence of a distinct signup 
 **STEP 7 — RISK**
 
 [RISK] ozoon-sportsbook-casino: 81/100 (flat). Two critical vectors (BOLA 65, mock-2FA 55) remain AUTH_HELPED and unprobed behind the restricted signup; no anonymous surface is actionable (all breadth REJECTED no-leak). Risk moves only on the first authorized differential — +1 on BOLA/bypass confirmation, −2 if mock header or UUID binding is stripped server-side.
+===== ANALYST bigpickle 2026-09-07 12:27:56 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m→ [0mRead .
+[0m
+[0m$ [0mcat /home/runner/work/ozoon-sportsbook-casino-hunt/ozoon-sportsbook-casino-hunt/state_bigpickle.json 2>/dev/null; echo "---SCOPE---"; cat /home/runner/work/ozoon-sportsbook-casino-hunt/ozoon-sportsbook-casino-hunt/scope.yml 2>/dev/null
+{"phase": "POC", "target": "api"}---SCOPE---
+programs:
+  ozoon-sportsbook-casino:
+    name: Ozoon Bug Bounty
+    disclosure_policy: via bugs.olivermaicher.eu (Oliver Maicher private program) - report + PoC + contact + payment
+    assets:
+      - name: "All infrastructure, brands, services and gaming platforms operated by Ozoon"
+        priority: In
+    out_of_scope:
+- "Network level Denial of Service attacks"
+      - "Application Denial of Service by locking user accounts"
+      - "Descriptive error messages or headers (e.g. Stack Traces, banner grabbing)"
+      - "Disclosure of known public files or directories (e.g. robots.txt)"
+      - "Outdated software / library versions"
+      - "OPTIONS / TRACE HTTP method enabled"
+      - "CSRF on logout"
+      - "CSRF on forms that are available to anonymous users"
+      - "Cookies that lack HTTP Only or Secure settings for non-sensitive data"
+      - "Self-XSS and issues exploitable only through Self-XSS"
+      - "Reports resulting from automated scanning utilities without additional details or a POC demonstrating a specific exploit"
+      - "Attacks requiring physical access to a user's device"
+      - "Attacks dependent upon social engineering of employees or vendors"
+      - "Username enumeration based on login or forgot password pages"
+      - "Enforcement policies for brute force, rate limiting, or account lockout"
+      - "SSL/TLS best practices"
+      - "SSL attacks such as BEAST, BREACH, Renegotiation attack"
+      - "Clickjacking, without additional details demonstrating a specific exploit"
+      - "Mail configuration issues including SPF, DKIM, DMARC settings"
+      - "Use of a known-vulnerable library without a description of an exploit specific to our implementation"
+      - "Password and account recovery policies"
+      - "Presence of autocomplete functionality in form fields"
+      - "Publicly accessible login panels"
+      - "Lack of email address verification during account registration or account invitation"
+      - "Lack of email address verification password restore"
+      - "Session control during email/password changes"
+      - "Social engineering, physical attacks, and DoS/DDoS testing (per program notes)"
+      - "Exposure of customer/employee/financial/authentication data during testing (per program notes)"
+    github_orgs:
+      - none-configured
+
+rules:
+  passive_first: false          # deep-hunt agent: active probes allowed when scoped
+  max_requests_per_second: 1    # never hammer live infra
+  no_doom: true                 # no DoS/DDoS, no account-lockout attacks
+  account_creation: restricted  # only on test/sandbox assets, never live customer data
+  no_data_modification: true    # no writes/deletes on live customer data
+  no_pre_disclosure: true       # never disclose before program response
+  poc_required: true            # scanner output alone is REJECTED
+  redact_secrets_in_commits: true
+
+models:
+  - { id: opencode/big-pickle, name: bigpickle }
+  - { id: opencode/nemotron-3-ultra-free, name: nemotron3 }
+  - { id: opencode/longcat-2.0-free, name: longcat }
+  - { id: opencode/ling-3.0-flash-free, name: ling3 }
+  - { id: opencode/laguna-s-2.1-free, name: laguna }
+[0m
+I'll review my current state and context to determine the delta and execute the analysis.
+[0m$ [0mls -la /home/runner/work/ozoon-sportsbook-casino-hunt/ozoon-sportsbook-casino-hunt/leads/ /home/runner/work/ozoon-sportsbook-casino-hunt/ozoon-sportsbook-casino-hunt/inventory/ /home/runner/work/ozoon-sportsbook-casino-hunt/ozoon-sportsbook-casino-hunt/knowledge/ 2>/dev/null
+/home/runner/work/ozoon-sportsbook-casino-hunt/ozoon-sportsbook-casino-hunt/inventory/:
+total 48
+drwxr-xr-x  2 runner runner  4096 Sep  7 12:10 .
+drwxr-xr-x 12 runner runner  4096 Sep  7 12:10 ..
+-rw-r--r--  1 runner runner 37221 Sep  7 12:10 ozoon-sportsbook-casino.md
+
+/home/runner/work/ozoon-sportsbook-casino-hunt/ozoon-sportsbook-casino-hunt/knowledge/:
+total 36
+drwxr-xr-x  2 runner runner  4096 Sep  7 12:10 .
+drwxr-xr-x 12 runner runner  4096 Sep  7 12:10 ..
+-rw-r--r--  1 runner runner 26645 Sep  7 12:10 index.md
+
+/home/runner/work/ozoon-sportsbook-casino-hunt/ozoon-sportsbook-casino-hunt/leads/:
+total 508
+drwxr-xr-x  2 runner runner   4096 Sep  7 12:10 .
+drwxr-xr-x 12 runner runner   4096 Sep  7 12:10 ..
+-rw-r--r--  1 runner runner 191608 Sep  7 12:10 lead-bigpickle.md
+-rw-r--r--  1 runner runner   1428 Sep  7 12:10 lead-laguna.md
+-rw-r--r--  1 runner runner   1400 Sep  7 12:10 lead-ling3.md
+-rw-r--r--  1 runner runner   1456 Sep  7 12:10 lead-longcat.md
+-rw-r--r--  1 runner runner     18 Sep  7 12:10 lead-mimo.md
+-rw-r--r--  1 runner runner 285123 Sep  7 12:10 lead-nemotron3.md
+-rw-r--r--  1 runner runner  12328 Sep  7 12:10 reposcan-ozoon-sportsbook-casino.md
+[0m
+Let me check the current state of my last leads and confirm the surface hasn't changed. The last cycle (2026-09-07 05:56) established: three AUTH_HELPED hypotheses (BOLA 65, mock-2FA 55, mass-assignment parked), all blocked behind the restricted signup gateway. Risk 81/100 flat.
+
+Let me check if there's any newer probe data or state changes since the last cycle.
+[0m$ [0mcd /home/runner/work/ozoon-sportsbook-casino-hunt/ozoon-sportsbook-casino-hunt && git log --oneline -5 2>/dev/null; echo "---"; ls -la reports/ triage/ 2>/dev/null; echo "---probe-results tail---"; tail -30 probe-results.md 2>/dev/null
+d68e402 triage 2026-09-07-09-56
+---
+reports/:
+total 1348
+drwxr-xr-x  2 runner runner   4096 Sep  7 12:10 .
+drwxr-xr-x 12 runner runner   4096 Sep  7 12:10 ..
+-rw-r--r--  1 runner runner 615266 Sep  7 12:10 analyst-bigpickle.log
+-rw-r--r--  1 runner runner   6076 Sep  7 12:10 analyst-laguna.log
+-rw-r--r--  1 runner runner   6048 Sep  7 12:10 analyst-ling3.log
+-rw-r--r--  1 runner runner   6104 Sep  7 12:10 analyst-longcat.log
+-rw-r--r--  1 runner runner 597161 Sep  7 12:10 analyst-nemotron3.log
+-rw-r--r--  1 runner runner   4483 Sep  7 12:10 hypotheses-bigpickle.txt
+-rw-r--r--  1 runner runner     51 Sep  7 12:10 hypotheses-laguna.txt
+-rw-r--r--  1 runner runner     50 Sep  7 12:10 hypotheses-ling3.txt
+-rw-r--r--  1 runner runner     52 Sep  7 12:10 hypotheses-longcat.txt
+-rw-r--r--  1 runner runner  10671 Sep  7 12:10 hypotheses-nemotron3.txt
+-rw-r--r--  1 runner runner  92898 Sep  7 12:10 hypotheses.md
+-rw-r--r--  1 runner runner    898 Sep  7 12:10 valid-bugs.md
+
+triage/:
+total 160
+drwxr-xr-x  2 runner runner  4096 Sep  7 12:10 .
+drwxr-xr-x 12 runner runner  4096 Sep  7 12:10 ..
+-rw-r--r--  1 runner runner     0 Sep  7 12:10 .gitkeep
+-rw-r--r--  1 runner runner   203 Sep  7 12:10 run-2026-09-02-21-52.md
+-rw-r--r--  1 runner runner   224 Sep  7 12:10 run-2026-09-02-23-50.md
+-rw-r--r--  1 runner runner   178 Sep  7 12:10 run-2026-09-03-02-55.md
+-rw-r--r--  1 runner runner   205 Sep  7 12:10 run-2026-09-03-07-48.md
+-rw-r--r--  1 runner runner   155 Sep  7 12:10 run-2026-09-03-12-35.md
+-rw-r--r--  1 runner runner   182 Sep  7 12:10 run-2026-09-03-16-40.md
+-rw-r--r--  1 runner runner   149 Sep  7 12:10 run-2026-09-03-19-27.md
+-rw-r--r--  1 runner runner   178 Sep  7 12:10 run-2026-09-03-21-52.md
+-rw-r--r--  1 runner runner   172 Sep  7 12:10 run-2026-09-03-23-46.md
+-rw-r--r--  1 runner runner   304 Sep  7 12:10 run-2026-09-04-02-55.md
+-rw-r--r--  1 runner runner   822 Sep  7 12:10 run-2026-09-04-07-43.md
+-rw-r--r--  1 runner runner   224 Sep  7 12:10 run-2026-09-04-12-30.md
+-rw-r--r--  1 runner runner   347 Sep  7 12:10 run-2026-09-04-16-35.md
+-rw-r--r--  1 runner runner   248 Sep  7 12:10 run-2026-09-04-19-07.md
+-rw-r--r--  1 runner runner  5887 Sep  7 12:10 run-2026-09-04-21-33.md
+-rw-r--r--  1 runner runner   189 Sep  7 12:10 run-2026-09-04-23-17.md
+-rw-r--r--  1 runner runner   749 Sep  7 12:10 run-2026-09-05-01-06.md
+-rw-r--r--  1 runner runner   171 Sep  7 12:10 run-2026-09-05-05-50.md
+-rw-r--r--  1 runner runner   174 Sep  7 12:10 run-2026-09-05-09-57.md
+-rw-r--r--  1 runner runner   213 Sep  7 12:10 run-2026-09-05-13-17.md
+-rw-r--r--  1 runner runner   220 Sep  7 12:10 run-2026-09-05-16-08.md
+-rw-r--r--  1 runner runner   160 Sep  7 12:10 run-2026-09-05-18-22.md
+-rw-r--r--  1 runner runner   167 Sep  7 12:10 run-2026-09-05-20-42.md
+-rw-r--r--  1 runner runner   205 Sep  7 12:10 run-2026-09-05-22-38.md
+-rw-r--r--  1 runner runner   159 Sep  7 12:10 run-2026-09-06-00-13.md
+-rw-r--r--  1 runner runner   146 Sep  7 12:10 run-2026-09-06-04-47.md
+-rw-r--r--  1 runner runner   189 Sep  7 12:10 run-2026-09-06-09-08.md
+-rw-r--r--  1 runner runner   156 Sep  7 12:10 run-2026-09-06-12-55.md
+-rw-r--r--  1 runner runner   188 Sep  7 12:10 run-2026-09-06-15-59.md
+-rw-r--r--  1 runner runner   146 Sep  7 12:10 run-2026-09-06-18-11.md
+-rw-r--r--  1 runner runner   231 Sep  7 12:10 run-2026-09-06-20-29.md
+-rw-r--r--  1 runner runner 11289 Sep  7 12:10 run-2026-09-06-22-19.md
+-rw-r--r--  1 runner runner   173 Sep  7 12:10 run-2026-09-07-00-05.md
+-rw-r--r--  1 runner runner   214 Sep  7 12:10 run-2026-09-07-04-50.md
+-rw-r--r--  1 runner runner   166 Sep  7 12:10 run-2026-09-07-09-56.md
+---probe-results tail---
+
+## 2026-09-05 23:48:13 UTC
+
+
+## 2026-09-06 04:10:59 UTC
+
+
+## 2026-09-06 08:50:52 UTC
+
+
+## 2026-09-06 12:54:16 UTC
+
+
+## 2026-09-06 16:13:38 UTC
+
+
+## 2026-09-06 18:35:44 UTC
+
+
+## 2026-09-06 20:52:21 UTC
+
+
+## 2026-09-06 22:51:58 UTC
+
+
+## 2026-09-07 00:51:48 UTC
+
+
+## 2026-09-07 05:56:27 UTC
+[0m
+[0m$ [0mcd /home/runner/work/ozoon-sportsbook-casino-hunt/ozoon-sportsbook-casino-hunt && cat triage/run-2026-09-07-09-56.md; echo "===HYP bigpickle tail==="; tail -25 reports/hypotheses-bigpickle.txt
+===== TRIAGE 2026-09-07 09:56:47 UTC =====
+[0m
+> build · mimo-v2.5-free
+[0m
+No leads were provided. Please paste the probe results/leads you want me to validate.
+===HYP bigpickle tail===
+class: IDOR
+asset: https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...
+confidence: 65
+reasoning: SDK bundles confirm 5 services (wallet-gateway, transaction-group, referral, player-verification, player-messages) key sensitive resources by profile UUID in path; structured anonymous 401 {"errorCode":"unauthorized"} re-recorded = auth pre-check precedes resource lookup; session→path-UUID binding untested; drift re-check confirms no new anonymous surface displaces this vector.
+evidence_needed: Authorized A reads /profiles/{B-UUID}/... returning B's non-404 data while ownPID returns A's data.
+verify_steps: [AUTH_HELPED] signup throwaways A+B → sid+ownPID each. With A sid: GET /services/wallet-gateway/v1/profiles/{B-ownPID}/wallets + /player-verification/v1/profiles/{B-ownPID}/verifications; control with {A-ownPID}. Foreign UUID → 200 = BOLA, 401/403 = bound.
+impact: Critical — cross-user wallet/transaction/PII across 5 services; ATO enabler.
+testability: AUTH_HELPED
+[HYP] Mock-2FA verification header honored — client-controlled 2FA/KYC gate bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{ownPID}/verifications/verify
+confidence: 55
+reasoning: Production SDK sends X-MOCK-2FA-VERIFICATION:true; config two_factor_authenticator.allow-permanent-skip:["true"]; isMockProviderEnabled:false is client-side only and does not resolve server honoring; 401 anonymous baseline re-recorded; honoring requires a session.
+evidence_needed: POST verify +header succeeds while byte-identical request without header rejects.
+verify_steps: [AUTH_HELPED] signup → sid+ownPID; POST .../verifications/verify {"verificationType":"PHONE"} with header true then control without; compare status/body.
+impact: Critical — bypass SMS/PIN/2FA/KYC on deposit/withdraw/bonus money flows.
+testability: AUTH_HELPED
+[PARKED] Mass assignment on signup — server may persist unmapped privilege/territory fields: lower marginal value than BOLA/mock-2FA, and its whoami differential is subsumed by the BOLA test once a session exists.
+[FINAL] BOLA (65) — top vector, single authorized differential confirms.
+[FINAL] Mock-2FA (55) — second vector, same authorized session prerequisite.
+[NEXT] HUMAN: Request program authorization at bugs.olivermaicher.eu to create TWO strictly-restricted throwaway accounts on www.ozoon.eu (synthetic emails <throwaway>@<valid-domain>, only the two mutating signup POSTs below, zero writes to existing data). If granted, fire exactly: POST https://www.ozoon.eu/api/v1/signup {"email":"<A>@<valid-domain>","password":"Test1234!","country":"CA","language":"en","attributes":{},"address":{"country":"CA","addressLine":"123 Test St","postalCode":"K1A 0A6"}} (repeat for B); capture sid+ownPID for each; then with A's sid GET https://services.ozoon.eu/services/wallet-gateway/v1/profiles/{B-ownPID}/balances and /services/player-verification/v1/profiles/{B-ownPID}/verifications vs control with {A-ownPID}; then POST https://services.ozoon.eu/services/player-verification/v1/profiles/{A-ownPID}/verifications/verify with and without X-MOCK-2FA-VERIFICATION:true.
+[LEARN] ACCEPTED IDOR @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: Reconfirmed — drift check adds no new anonymous surface displacing the SDK-confirmed BOLA vector across 5 services; binding unresolved; AUTH_HELPED.
+[LEARN] ACCEPTED AUTH @ services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify: mock-2FA + allow-permanent-skip remains the single critical gate-bypass candidate; AUTH_HELPED.
+[LEARN] ACCEPTED BUSLOGIC @ www.ozoon.eu/api/v1/signup: captcha-free signup still the sole gateway to authenticated testing; AUTH_HELPED.
+[RISK] ozoon-sportsbook-casino: 81/100 (flat). Two critical vectors (BOLA 65, mock-2FA 55) remain AUTH_HELPED and unprobed behind the restricted signup; no anonymous surface is actionable (all breadth REJECTED no-leak). Risk moves only on the first authorized differential — +1 on BOLA/bypass confirmation, −2 if mock header or UUID binding is stripped server-side.
+[0m
+The surface has been fully saturated on the anonymous side across 20+ cycles. All three critical vectors (BOLA 65, mock-2FA 55, mass-assignment parked) remain AUTH_HELPED and unprobed behind the restricted signup gateway. Every cycle since ~09-05 has been pure consolidation; no new anonymous surface displaces the SDK-confirmed vectors.
+
+Let me verify no new probe data or anonymous surface has emerged since the last cycle, then emit a disciplined NO_DELTA/consolidation response.
+No new data since the last cycle (05:56 / 09:56 both empty consolidation). The surface is fully saturated on the anonymous side. My previous cycle already correctly identified there is nothing new to probe passively — repeated re-checking only adds noise. I'll emit a disciplined, honest response: NO_DELTA, no fabricated hypotheses, and keep the AUTH_HELPED findings as the only actionable path.
+
+Let me do a quick fresh passive drift check on one previously-confirmed anonymous fingerprint to confirm nothing changed, staying well within the 1rps read-only rule.
+[0m$ [0mcd /tmp/opencode && curl -s -o /dev/null -w "%{http_code} %{url_effective}\n" --max-time 15 "https://services.ozoon.eu/services/wallet-gateway/v1/profiles/00000000-0000-0000-0000-000000000000/balances" 2>&1; sleep 1; curl -s --max-time 15 "https://services.ozoon.eu/services/wallet-gateway/v1/profiles/00000000-0000-0000-0000-000000000000/balances" 2>&1 | head -c 400; echo
+401 https://services.ozoon.eu/services/wallet-gateway/v1/profiles/00000000-0000-0000-0000-000000000000/balances
+{"timestamp":"2026-09-07T12:11:33.071Z","status":401,"message":"Authentication required for requested route","error":"Unauthorized","errorCode":"unauthorized"}
+[0m
+The anonymous 401 baseline is byte-stable. The surface remains exactly as established: auth pre-check precedes resource lookup, no new anonymous surface. Confirmed no delta.
+
+Executing the structured analysis:
+
+---
+**STEP 1 — DELTA**
+NO_DELTA — Anonymous surface stable (wallet-gateway bogus-UUID still returns byte-identical `401 {"errorCode":"unauthorized"}` at 2026-09-07T12:11Z). No new host, route, or behavioral change since 05:56 cycle.
+
+**STEP 2 — PRIORITIZE**
+[PRIO] services.ozoon.eu/services/wallet-gateway/v1/profiles/{uuid}/balances,8.75,auth_surface+cloud (unchanged; only route actionable if authorized)
+[PRIO] services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify,8.25,two_fa_backdoor (unchanged)
+[PRIO] www.ozoon.eu/api/v1/signup,8.10,gateway (unchanged)
+
+**STEP 3 — HYPOTHESES**
+Top assets are all AUTH_HELPED, unchanged from prior cycle. Re-emitting them with identical confidence and evidence paths (no new facts):
+
+[HYP] BOLA on profile-keyed UUID endpoints — session identity not bound to path UUID
+class: IDOR
+asset: https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...
+confidence: 65
+reasoning: SDK bundles confirm 5 services (wallet-gateway, transaction-group, referral, player-verification, player-messages) key resources by profile UUID in path; anonymous 401 {"errorCode":"unauthorized"} re-confirmed byte-stable today; auth pre-check precedes lookup; session→path-UUID binding untested; drift re-check adds no new anonymous surface displacing this vector.
+evidence_needed: Authorized A reads /profiles/{B-UUID}/... returning B's non-404 data while ownPID returns A's data.
+verify_steps: [AUTH_HELPED] signup throwaways A+B → sid+ownPID each; with A sid GET /services/wallet-gateway/v1/profiles/{B-ownPID}/balances and /services/player-verification/v1/profiles/{B-ownPID}/verifications vs control {A-ownPID}; foreign 200 = BOLA, 401/403 = bound.
+impact: Critical — cross-user wallet/transaction/PII across 5 services; ATO enabler.
+testability: AUTH_HELPED
+
+[HYP] Mock-2FA verification header honored — client-controlled 2FA/KYC gate bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{ownPID}/verifications/verify
+confidence: 55
+reasoning: Production SDK sends X-MOCK-2FA-VERIFICATION:true; config two_factor_authenticator.allow-permanent-skip:["true"]; isMockProviderEnabled:false is client-side only; honoring requires a session; 401 anonymous baseline confirmed stable today.
+evidence_needed: POST verify +header succeeds while byte-identical request without header rejects.
+verify_steps: [AUTH_HELPED] signup → sid+ownPID; POST .../verifications/verify {"verificationType":"PHONE"} with header true then control without; compare status/body.
+impact: Critical — bypass SMS/PIN/2FA/KYC on deposit/withdraw/bonus money flows.
+testability: AUTH_HELPED
+
+**STEP 4 — SELF-CRITIQUE**
+[PARKED] Mass assignment on signup — subsumed by BOLA test once a session exists; lower marginal value.
+[FINAL] BOLA (65) — top vector; single authorized differential confirms.
+[FINAL] Mock-2FA (55) — second vector; same authorized session prerequisite.
+
+**STEP 5 — NEXT ACTION**
+[NEXT] HUMAN: Request program authorization at bugs.olivermaicher.eu to create TWO strictly-restricted throwaway accounts on www.ozoon.eu (synthetic emails, only the two mutating signup POSTs, zero writes to existing data). If granted, fire exactly: POST https://www.ozoon.eu/api/v1/signup {"email":"<A>@<valid-domain>","password":"Test1234!","country":"CA","language":"en","attributes":{},"address":{"country":"CA","addressLine":"123 Test St","postalCode":"K1A 0A6"}} (repeat for B); capture sid+ownPID each; with A's sid GET https://services.ozoon.eu/services/wallet-gateway/v1/profiles/{B-ownPID}/balances + /services/player-verification/v1/profiles/{B-ownPID}/verifications vs control {A-ownPID}; then POST https://services.ozoon.eu/services/player-verification/v1/profiles/{A-ownPID}/verifications/verify with and without X-MOCK-2FA-VERIFICATION:true.
+
+**STEP 6 — LEARNING**
+[LEARN] ACCEPTED IDOR @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: Reconfirmed — byte-stable 401 baseline re-verified today; no new anonymous surface; binding unresolved; AUTH_HELPED.
+[LEARN] ACCEPTED AUTH @ services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify: mock-2FA + allow-permanent-skip remains the single critical gate-bypass candidate; AUTH_HELPED.
+[LEARN] ACCEPTED BUSLOGIC @ www.ozoon.eu/api/v1/signup: captcha-free signup still the sole gateway to authenticated testing; AUTH_HELPED.
+
+**STEP 7 — RISK**
+[RISK] ozoon-sportsbook-casino: 81/100 (flat). Two critical vectors (BOLA 65, mock-2FA 55) remain AUTH_HELPED and unprobed behind the restricted signup; anonymous surface is exhausted (all breadth REJECTED no-leak, 401 baseline stable). Risk moves only on the first authorized differential — +1 on BOLA/bypass confirmation, −2 if mock header or UUID binding is stripped server-side.
