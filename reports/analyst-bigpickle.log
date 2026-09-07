@@ -8155,3 +8155,137 @@ STEP 6 — LEARNING:
 
 STEP 7 — RISK:
 - [RISK] ozoon-sportsbook-casino: 81/100 (flat). Two critical vectors (BOLA 65, mock-2FA 55) remain AUTH_HELPED and unprobed behind the restricted signup; anonymous surface exhausted (all breadth REJECTED no-leak, 401 baseline byte-stable). Risk moves only on the first authorized differential — +1 on BOLA/bypass confirmation, −2 if mock header or UUID binding is stripped server-side.
+===== ANALYST bigpickle 2026-09-07 23:49:37 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mcurl -s --max-time 60 "https://services.ozoon.eu/" -o /tmp/opencode/services_ssr.html; wc -c /tmp/opencode/services_ssr.html
+743212 /tmp/opencode/services_ssr.html
+[0m
+[0m$ [0mcurl -s --max-time 40 "https://crt.sh/?q=%25.ozoon.eu&output=json" -o /tmp/opencode/crt_ozoon_eu.json; wc -c /tmp/opencode/crt_ozoon_eu.json
+6023 /tmp/opencode/crt_ozoon_eu.json
+[0m
+[0m→ [0mRead /tmp/opencode/crt_ozoon_eu.json
+[0m✗ [0mGrep "https://[a-z0-9.\-]+\.(ozoon\.eu|ozoon\.com)" failed[90m in /tmp/opencode[0m
+[91m[1mError: [0mRipgrep JSON record exceeded 65536 bytes
+[0m
+[0m$ [0mrg -o "https://[a-zA-Z0-9.\-]+" /tmp/opencode/services_ssr.html | sort | uniq -c | sort -rn | head -40
+/bin/bash: line 1: rg: command not found
+[0m
+[0m$ [0mrg -o 'services/[a-z0-9\-]+/v[0-9]' /tmp/opencode/services_ssr.html | sort | uniq -c | sort -rn | head -40
+/bin/bash: line 1: rg: command not found
+[0m
+CT log shows only `*.ozoon.eu` wildcard + apex — no new subdomain surface. Now extract hostnames and service paths from the fresh SSR shell.
+[0m$ [0mgrep -oE "https://[a-zA-Z0-9.\-]+" /tmp/opencode/services_ssr.html | sort | uniq -c | sort -rn | head -50
+8 https://services.ozoon.eu
+      5 https://fonts.googleapis.com
+      4 https://services.services.ozoon.eu\
+      4 https://policies.google.com
+      3 https://services.services.ozoon.eu
+      3 https://sealimg.certcga.com
+      3 https://chat.ozoon.eu
+      2 https://x.com
+      2 https://www.youtube.com
+      2 https://www.vegas-bets.com
+      2 https://www.tiktok.com
+      2 https://www.instagram.com
+      2 https://www.googletagmanager.com
+      2 https://www.facebook.com
+      2 https://t.me
+      2 https://discord.gg
+      1 https://www.ozoon.eu
+      1 https://static.hotjar.com
+      1 https://games.glovefrog.plus
+      1 https://api.wicket-keeper.com\
+[0m
+[0m$ [0mgrep -oE "services/[a-zA-Z0-9\-]+/v[0-9]" /tmp/opencode/services_ssr.html | sort | uniq -c | sort -rn | head -50
+(no output)
+[0m
+[0m$ [0mgrep -oE '(/services/[a-zA-Z0-9\-\_/{}]+)' /tmp/opencode/services_ssr.html | sort | uniq -c | sort -rn | head -60
+1 /services/b2b/api/v1
+[0m
+[0m$ [0mgrep -oE '"[a-zA-Z]*[Uu]rl":"[^"]{0,120}"' /tmp/opencode/services_ssr.html | sort | uniq -c | sort -rn | head -40
+(no output)
+[0m
+[0m$ [0mgrep -oE '[a-zA-Z]+[Bb]ase[a-zA-Z]*"[^"]{0,60}' /tmp/opencode/services_ssr.html | sort | uniq -c | sort -rn | head -30
+(no output)
+[0m
+[0m$ [0mgrep -oE '(http://|https://)[a-zA-Z0-9.\-]+' /tmp/opencode/services_ssr.html | sed 's/^https\?:\/\///' | grep -vE 'google|facebook|youtube|instagram|tiktok|hotjar|googletagmanager|fonts\.|discord|telegram|t\.me|vegas-bets|x\.com|wicket-keeper|glovefrog|certcga|policies' | sort | uniq -c | sort -rn
+35 services.ozoon.eu
+     16 www.w3.org
+     12 11.cdn.bit2host.eu
+      6 services.ozoon.euhttp
+      4 services.services.ozoon.eu\
+      3 services.services.ozoon.eu
+      3 chat.ozoon.eu
+      2 www.gamblersanonymous.org
+      1 www.ozoon.eu
+      1 services.ozoon.euhttps
+[0m
+[0m$ [0mgrep -oE '.{80}11\.cdn\.bit2host\.eu.{40}' /tmp/opencode/services_ssr.html | head -5
+www.facebook.com/OzoonCA/"> <img alt="Facebook Icon" loading="lazy" src="http://11.cdn.bit2host.eu/assetsbg/images/ozoon/Social-Icons/gold
+.instagram.com/ozoon_ca/"> <img alt="Instagram Icon" loading="lazy" src="http://11.cdn.bit2host.eu/assetsbg/images/ozoon/Social-Icons/gold
+ <a href="https://x.com/Ozoon_CA"> <img alt="X Icon" loading="lazy" src="http://11.cdn.bit2host.eu/assetsbg/images/ozoon/Social-Icons/gold
+be.com/watch?v=CIo1WE50wAY"> <img alt="YouTube Icon" loading="lazy" src="http://11.cdn.bit2host.eu/assetsbg/images/ozoon/Social-Icons/gold
+www.tiktok.com/@ozooncanada"> <img alt="Tiktok Icon" loading="lazy" src="http://11.cdn.bit2host.eu/assetsbg/images/ozoon/Social-Icons/gold
+[0m
+[0m$ [0mgrep -covE 'grafsubscription|websocket|wss://|graphql|/socket' /tmp/opencode/services_ssr.html; grep -oE '"[a-zA-Z]+(/api/|graphql|socket|websocket)[^"]{0,60}"' /tmp/opencode/services_ssr.html | sort -u | head -20
+3783
+[0m
+STEP 1 — DELTA
+- [NEW] CT-log (crt.sh) recon of *.ozoon.eu: wildcard cert + apex only — mirrors the .com wildcard pattern; zero enumerated dedicated subdomains under the .eu namespace.
+- [NEW] Fresh 743KB SSR re-fetch of services.ozoon.eu: only previously-uncatalogued host is `11.cdn.bit2host.eu` (static asset CDN serving social-icon PNGs over plain http); no new `/services/*/v1` paths beyond the 5 known services + b2b jackpot exterior.
+- [CHANGED] No new anonymous API surface; the two probes add breadth that only confirms exhaustion. BOLA (65) and mock-2FA (55) remain the only live vectors, both AUTH_HELPED.
+
+STEP 2 — PRIORITIZE
+- [PRIO] https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...,6.7,0.25a9+0.25b10+0.15t8+0.15g1+0.10c3+0.10f3
+- [PRIO] https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify,6.1,0.25a8+0.25b9+0.15t8+0.15g1+0.10c2+0.10f3
+- [PRIO] https://www.ozoon.eu/api/v1/signup,5.5,0.25a6+0.25b9+0.15t6+0.15g2+0.10c2+0.10f3
+- [PRIO] https://www.ozoon.com (PWS/wnacloud SSRF param class),5.2,0.25a5+0.25b3+0.15t5+0.15g8+0.10c8+0.10f4
+
+STEP 3 — HYPOTHESES
+[HYP] BOLA on profile-keyed UUID endpoints — session identity not bound to path UUID
+class: IDOR
+asset: https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...
+confidence: 65
+reasoning: SDK bundles confirm 5 services (wallet-gateway, transaction-group, referral, player-verification, player-messages) key sensitive resources by profile UUID in path; structured anonymous 401 {"errorCode":"unauthorized"} re-verified byte-stable; auth pre-check precedes resource lookup; session→path-UUID binding never tested; CT+SSR re-check this cycle adds no new anonymous surface displacing this vector.
+evidence_needed: Authorized A reads /profiles/{B-UUID}/... returning B's non-404 data while ownPID returns A's data.
+verify_steps: [AUTH_HELPED] signup throwaways A+B → sid+ownPID each; with A's sid GET /services/wallet-gateway/v1/profiles/{B-ownPID}/balances and /services/player-verification/v1/profiles/{B-ownPID}/verifications vs control {A-ownPID}; foreign 200 = BOLA, 401/403 = bound.
+impact: Critical — cross-user wallet/transaction/PII across 5 services; ATO enabler.
+testability: AUTH_HELPED
+[HYP] Mock-2FA verification header honored — client-controlled 2FA/KYC gate bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{ownPID}/verifications/verify
+confidence: 55
+reasoning: Production SDK sends X-MOCK-2FA-VERIFICATION:true; config two_factor_authenticator.allow-permanent-skip:["true"]; isMockProviderEnabled:false is client-side only and does not resolve server-side honoring; 401 anonymous baseline stable; honoring requires a session.
+evidence_needed: POST verify +header succeeds while byte-identical request without header rejects.
+verify_steps: [AUTH_HELPED] signup → sid+ownPID; POST .../verifications/verify {"verificationType":"PHONE"} with header true then control without; compare status/body.
+impact: Critical — bypass SMS/PIN/2FA/KYC on deposit/withdraw/bonus money flows.
+testability: AUTH_HELPED
+[HYP] PWS/wnacloud edge reflects unchecked param to internal fetch
+class: SSRF
+asset: https://www.ozoon.com (wnacloud shared edge)
+confidence: 40
+reasoning: Edge CNAME to wnacloud.com shared hosting proxy; SSRF-to-metadata class is high-value but no concrete param has ever been identified; pure enumeration class with no demonstrating PROBE yet.
+evidence_needed: GET with url/uri/host param → response containing 169.254.169.254 metadata or internal address content.
+verify_steps: [PASSIVE→] GET https://www.ozoon.com/?url=http://169.254.169.254/latest/meta-data/ + url/uri/target/location variants; any non-edge response = candidate.
+impact: High if honored — cloud metadata creds; but untested.
+testability: PASSIVE (enumeration); CANDIDATE probe is read-only GET
+
+STEP 4 — SELF-CRITIQUE
+- [PARKED] SSRF @ www.ozoon.com: no concrete parameter demonstrated after multiple cycles; pure enumeration class; deprioritized behind the two AUTH_HELPED vectors that actually have evidence.
+- [PARKED] Mass assignment @ /api/v1/signup: subsumed by the BOLA test path once a session exists; lower marginal value.
+- [FINAL] BOLA (65) — top vector; single authorized differential confirms.
+- [FINAL] Mock-2FA (55) — second vector; same authorized session prerequisite.
+
+STEP 5 — NEXT ACTION
+[NEXT] HUMAN: Request program authorization at bugs.olivermaicher.eu to create TWO strictly-restricted throwaway accounts (synthetic emails, only the two mutating signup POSTs, zero writes to existing data). If granted, fire exactly: POST https://www.ozoon.eu/api/v1/signup {"email":"<A>@<valid-domain>","password":"Test1234!","country":"CA","language":"en","attributes":{},"address":{"country":"CA","addressLine":"123 Test St","postalCode":"K1A 0A6"}} (repeat for B); capture sid+ownPID each; with A's sid GET https://services.ozoon.eu/services/wallet-gateway/v1/profiles/{B-ownPID}/balances + /services/player-verification/v1/profiles/{B-ownPID}/verifications vs control {A-ownPID}; then POST https://services.ozoon.eu/services/player-verification/v1/profiles/{A-ownPID}/verifications/verify with and without X-MOCK-2FA-VERIFICATION:true.
+
+STEP 6 — LEARNING
+- [LEARN] REJECTED OTHER @ 11.cdn.bit2host.eu (referenced from services.ozoon.eu SSR): third-party static-asset CDN for social icons over plain http; no Ozoon API logic — trivial asset-ref class, no scoped finding.
+- [LEARN] REJECTED OTHER @ *.ozoon.eu (crt.sh CT): wildcard-only issuance, no enumerated dedicated subdomains; .eu namespace mirrors .com wildcard — no new surface.
+- [LEARN] ACCEPTED IDOR @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: Reconfirmed — CT+SSR drift check adds no new anonymous surface displacing the SDK-confirmed BOLA vector; binding unresolved; AUTH_HELPED.
+- [LEARN] ACCEPTED AUTH @ services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify: mock-2FA + allow-permanent-skip remains the single critical gate-bypass candidate; AUTH_HELPED.
+
+STEP 7 — RISK
+[RISK] ozoon-sportsbook-casino: 81/100 (flat). Two critical vectors (BOLA 65, mock-2FA 55) remain AUTH_HELPED and unprobed behind the restricted signup; anonymous surface now provably exhausted (CT + fresh SSR showed zero new surface). Risk moves only on the first authorized differential — +1 on BOLA/bypass confirmation, −2 if the mock header or UUID binding is stripped server-side.
