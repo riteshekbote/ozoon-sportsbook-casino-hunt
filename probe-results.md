@@ -129,3 +129,6 @@ https://www.ozoon.com,3.0,attack_surface=4,business_value=3,tech_exposure=4,gate
 
 ## 2026-09-07 17:54:23 UTC
 
+
+## 2026-09-07 21:27:50 UTC
+https://www.ozoon.com,3.5,attack_surface=4,business_value=3,tech_exposure=3,gate_ease=9,cloud_surface=3,freshness=5 -> ERR label too long

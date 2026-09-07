@@ -1365,3 +1365,22 @@ evidence_needed: POST verify +header succeeds while byte-identical request witho
 verify_steps: [AUTH_HELPED] signup → sid+ownPID; POST .../verifications/verify {"verificationType":"PHONE"} with header true then control without; compare status/body.
 impact: Critical — bypass SMS/PIN/2FA/KYC on deposit/withdraw/bonus money flows.
 testability: AUTH_HELPED
+## 2026-09-07 21:25:08 UTC [target] (model bigpickle)
+[HYP] BOLA on profile-keyed UUID endpoints — session identity not bound to path UUID
+class: IDOR
+asset: https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...
+confidence: 65
+reasoning: SDK bundles confirm 5 services (wallet-gateway, transaction-group, referral, player-verification, player-messages) key sensitive resources by profile UUID in path; structured anonymous 401 {"errorCode":"unauthorized"} byte-stable across cycles; auth pre-check precedes lookup; session→path-UUID binding never tested; no new anonymous surface displaces this vector.
+evidence_needed: Authorized A reads /profiles/{B-UUID}/... returning B's non-404 data while ownPID returns A's data.
+verify_steps: [AUTH_HELPED] signup throwaways A+B → sid+ownPID each; with A's sid GET /services/wallet-gateway/v1/profiles/{B-ownPID}/balances and /services/player-verification/v1/profiles/{B-ownPID}/verifications vs control {A-ownPID}; foreign 200 = BOLA, 401/403 = bound.
+impact: Critical — cross-user wallet/transaction/PII across 5 services; ATO enabler.
+testability: AUTH_HELPED
+[HYP] Mock-2FA verification header honored — client-controlled 2FA/KYC gate bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{ownPID}/verifications/verify
+confidence: 55
+reasoning: Production SDK sends X-MOCK-2FA-VERIFICATION:true; config two_factor_authenticator.allow-permanent-skip:["true"]; isMockProviderEnabled:false is client-side only and does not resolve server-side honoring; 401 anonymous baseline stable; honoring requires a session.
+evidence_needed: POST verify +header succeeds while byte-identical request without header rejects.
+verify_steps: [AUTH_HELPED] signup → sid+ownPID; POST .../verifications/verify {"verificationType":"PHONE"} with header true then control without; compare status/body.
+impact: Critical — bypass SMS/PIN/2FA/KYC on deposit/withdraw/bonus money flows.
+testability: AUTH_HELPED
