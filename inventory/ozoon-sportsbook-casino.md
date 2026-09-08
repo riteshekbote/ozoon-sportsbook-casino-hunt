@@ -376,3 +376,11 @@ www.ozoon.com
 - NEW Live confirmation 2026-09-07/08: `chat.ozoon.eu` live in-scope subdomain (CNAME `ozoon.eu.glb.network`); widget-only, no Ozoon API logic
 - NEW Live confirmation 2026-09-07/08: `games.glovefrog.plus` jackpotApiBase third-party; Ozoon ownership unconfirmed; off-scope until verified
 - NEW Live confirmation 2026-09-07/08: `/services/*/v{2,3}/api-docs` and `/actuator*` → gateway 404; no anonymous schema/actuator leak
+
+## 2026-09-08 20:21:39 UTC
+- CHANGED Inventory file (ozoon-sportsbook-casino.md) still lists ONLY `ozoon.com`/`www.ozoon.com` (marketing edge); `ozoon.eu` (core gambling platform) and `services.ozoon.eu` (backend API) confirmed in-scope 
+- CHANGED Zero authenticated probes executed against core platform (`ozoon.eu`/`services.ozoon.eu`) across all 18+ probe rounds; all probes target only `www.ozoon.com` marketing edge — critical testing gap unch
+- NEW Knowledge base reconfirms three FINAL hypotheses AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway at `www.ozoon.eu/api/v1/signup`
+- NEW Live confirmation 2026-09-07/08: Structured auth-gate discriminator on 5 services (wallet-gateway, referral, player-verification, transaction-group, player-messages) → `GET /services/*/v1/profiles/{bo
+- NEW Live confirmation 2026-09-07/08: `www.ozoon.eu/api/v1/login` and `/api/v1/whoami` → Spring Boot Whitelabel 404 JSON (no method guard, 404 not 405); `signup GET` → WAF "Request Rejected" (support_id pr
+- NEW Live confirmation 2026-09-07/08: `/services/site-config/v1/countries/CA/profileupdateform` returns CAD + XBT (XBT unpublished) with mandatory province/postal code; flat whitelist fields (email,phone,a
