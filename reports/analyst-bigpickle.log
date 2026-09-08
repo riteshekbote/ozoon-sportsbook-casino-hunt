@@ -8781,3 +8781,174 @@ STEP 7 — RISK
 
 ---
 The analysis is complete. Given the state is saturated and the only unlock is program authorization, I'm confident this is the correct, disciplined output — no fabricated findings, honest NO_DELTA on surface, and a clear escalation.
+===== ANALYST bigpickle 2026-09-08 09:02:55 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m→ [0mRead .
+[0m✱ [0mGlob "**/*.txt"[90m in . · 9 matches[0m
+[0m✱ [0mGlob "**/*.yml"[90m in . · 1 match[0m
+I'll read the key files to understand the current state and plan the next steps.
+[0m→ [0mRead scope.yml
+[0m→ [0mRead analyst-prompt.txt
+[0m→ [0mRead state_bigpickle.json
+[0m→ [0mRead probe-results.md
+[0m→ [0mRead reports/hypotheses-bigpickle.txt
+[0m→ [0mRead reports/hypotheses-nemotron3.txt
+[0m
+[0m$ [0mls -la /home/runner/work/ozoon-sportsbook-casino-hunt/ozoon-sportsbook-casino-hunt/leads/ /home/runner/work/ozoon-sportsbook-casino-hunt/ozoon-sportsbook-casino-hunt/art/ 2>/dev/null; ls -la /home/runner/work/ozoon-sportsbook-casino-hunt/ozoon-sportsbook-casino-hunt/inventory/ /home/runner/work/ozoon-sportsbook-casino-hunt/ozoon-sportsbook-casino-hunt/knowledge/ 2>/dev/null
+/home/runner/work/ozoon-sportsbook-casino-hunt/ozoon-sportsbook-casino-hunt/leads/:
+total 592
+drwxr-xr-x  2 runner runner   4096 Sep  8 08:55 .
+drwxr-xr-x 12 runner runner   4096 Sep  8 08:55 ..
+-rw-r--r--  1 runner runner 210040 Sep  8 08:55 lead-bigpickle.md
+-rw-r--r--  1 runner runner   1683 Sep  8 08:55 lead-laguna.md
+-rw-r--r--  1 runner runner   1650 Sep  8 08:55 lead-ling3.md
+-rw-r--r--  1 runner runner   1716 Sep  8 08:55 lead-longcat.md
+-rw-r--r--  1 runner runner     18 Sep  8 08:55 lead-mimo.md
+-rw-r--r--  1 runner runner 351683 Sep  8 08:55 lead-nemotron3.md
+-rw-r--r--  1 runner runner  13060 Sep  8 08:55 reposcan-ozoon-sportsbook-casino.md
+/home/runner/work/ozoon-sportsbook-casino-hunt/ozoon-sportsbook-casino-hunt/inventory/:
+total 52
+drwxr-xr-x  2 runner runner  4096 Sep  8 08:55 .
+drwxr-xr-x 12 runner runner  4096 Sep  8 08:55 ..
+-rw-r--r--  1 runner runner 44707 Sep  8 08:55 ozoon-sportsbook-casino.md
+
+/home/runner/work/ozoon-sportsbook-casino-hunt/ozoon-sportsbook-casino-hunt/knowledge/:
+total 40
+drwxr-xr-x  2 runner runner  4096 Sep  8 08:55 .
+drwxr-xr-x 12 runner runner  4096 Sep  8 08:55 ..
+-rw-r--r--  1 runner runner 31348 Sep  8 08:55 index.md
+[0m
+[0m→ [0mRead leads/lead-laguna.md
+[0m→ [0mRead leads/lead-longcat.md
+[0m→ [0mRead leads/lead-ling3.md
+Now let me check DNS tooling and run a small set of genuinely-new passive probes (subdomain-takeover verification is an explicit deep-hunt class that has not been tested; breadth directive favors untried ozoon.eu subdomains).
+[0m
+[0m$ [0mwhich dig host nslookup python3 curl 2>/dev/null; echo "---"; python3 -c "import dns.resolver; print('dnspython ok')" 2>/dev/null || echo "no dnspython"
+/usr/bin/dig
+/usr/bin/host
+/usr/bin/nslookup
+/usr/bin/python3
+/usr/bin/curl
+---
+no dnspython
+[0m
+[0m$ [0mRND="omt-$(date +%s%N | md5sum | cut -c1-8)"; echo "wildcard token=$RND.$RND.ozoon.eu"; dig +short "$RND.$RND.ozoon.eu" A; echo "rc=$?"; dig +short ozoon.eu A; dig +short www.ozoon.eu A; dig +short services.ozoon.eu A
+wildcard token=omt-1fcddad4.omt-1fcddad4.ozoon.eu
+rc=0
+157.185.158.193
+www.ozoon.eu.wcdnga.com.
+157.185.163.46
+ozoon.eu.glb.network.
+158.51.123.27
+[0m
+No wildcard on `ozoon.eu` (random token → NXDOMAIN), so subdomain sweeps are trustworthy. Now sweeping candidate names and checking the takeover-relevant CNAME chains.
+[0m$ [0mecho "== chat.ozoon.eu =="; dig +short chat.ozoon.eu CNAME; dig +short chat.ozoon.eu A; echo "== target ozoon.eu.glb.network =="; dig +short ozoon.eu.glb.network A; dig +short ozoon.eu.glb.network NS; echo "== bare zone =="; dig +short chat.ozoon.eu NS
+== chat.ozoon.eu ==
+ozoon.eu.glb.network.
+ozoon.eu.glb.network.
+158.51.123.27
+== target ozoon.eu.glb.network ==
+158.51.123.27
+ns1.cdnetdns.net.
+ns2.cdnetdns.net.
+== bare zone ==
+ozoon.eu.glb.network.
+ns1.cdnetdns.net.
+ns2.cdnetdns.net.
+[0m
+[0m$ [0mfor h in admin api auth cdn dev staging test uat portal mail app casino sportsbook poker vip wallet payments kyc verification jira git beta intranet staff partner game games web static assets img; do r=$(dig +short "$h.ozoon.eu" A | head -1); c=$(dig +short "$h.ozoon.eu" CNAME | head -1); if [ -n "$r" ] || [ -n "$c" ]; then echo "$h.ozoon.eu -> CNAME=${c:-none} A=${r:-none}"; fi; done; echo "---done---"
+casino.ozoon.eu -> CNAME=none A=185.156.184.201
+poker.ozoon.eu -> CNAME=none A=185.156.184.201
+games.ozoon.eu -> CNAME=ozoon.eu.glb.network. A=ozoon.eu.glb.network.
+static.ozoon.eu -> CNAME=static.ozoon.eu.wnacloud.com. A=static.ozoon.eu.wnacloud.com.
+---done---
+[0m
+Two genuinely new hosts resolved (`casino.ozoon.eu`, `poker.ozoon.eu`) plus `static.ozoon.eu`/`games.ozoon.eu`. Probing them read-only at ≤1 rps.
+[0m$ [0msleep 1; echo "== casino.ozoon.eu =="; curl -sS -o /dev/null -w "HTTP %{http_code} | final=%{url_effective} | size=%{size_download}\n" --max-time 15 https://casino.ozoon.eu/ ; echo "== poker.ozoon.eu =="; curl -sS -o /dev/null -w "HTTP %{http_code} | final=%{url_effective} | size=%{size_download}\n" --max-time 15 https://poker.ozoon.eu/
+== casino.ozoon.eu ==
+HTTP 400 | final=https://casino.ozoon.eu/ | size=168
+== poker.ozoon.eu ==
+HTTP 400 | final=https://poker.ozoon.eu/ | size=167
+[0m
+[0m$ [0msleep 1; echo "== casino.headers =="; curl -sSI --max-time 15 https://casino.ozoon.eu/ ; echo "== casino.body =="; curl -sS --max-time 15 https://casino.ozoon.eu/
+== casino.headers ==
+HTTP/1.0 400 Bad Request
+Server: BigIP
+Connection: close
+Content-Length: 168
+Strict-Transport-Security: max-age=63072000; includeSubDomains
+
+== casino.body ==
+<html><head><title>Bad Request - The request hostname casino.ozoon.eu is invalid</title></head><body>The requested hostname is invalid and not recognised.</body></html>
+[0m
+`casino/poker.ozoon.eu` → F5 BigIP edge rejecting the hostname as invalid. Checking whether this edge serves other Ozoon vhosts (takeover vs dead-vhost) and completing the sweep.
+[0m$ [0mecho "== main www.ozoon.eu on shared F5? Host:www.ozoon.eu @ 185.156.184.201 =="; curl -sS -o /dev/null -w "HTTP %{http_code} size=%{size_download}\n" --max-time 15 --resolve www.ozoon.eu:443:185.156.184.201 https://www.ozoon.eu/ ; echo "rc=$?"
+== main www.ozoon.eu on shared F5? Host:www.ozoon.eu @ 185.156.184.201 ==
+HTTP 200 size=749133
+rc=0
+[0m
+[0m$ [0mfor h in mobile api1 api2 backoffice admin-portal docs swagger openapi config s2 i18n locale deploy release old new rr dns vpn tunnel proxy sock gateway connect oauth sso id saml keycloak okta; do r=$(dig +short "$h.ozoon.eu" A | head -1); c=$(dig +short "$h.ozoon.eu" CNAME | head -1); if [ -n "$r" ] || [ -n "$c" ]; then echo "$h.ozoon.eu -> CNAME=${c:-none} A=${r:-none}"; fi; done; echo "---done---"
+---done---
+[0m
+All probes read-only and ≤1 rps. Findings complete — the F5 at `185.156.184.201` serves the main app on `Host: www.ozoon.eu` (HTTP 200, 749KB SSR shell), so `casino/poker.ozoon.eu` are Ozoon-owned-edge dead vhosts, not a takeover.
+
+---
+
+STEP 1 — DELTA
+- NEW `casino.ozoon.eu` & `poker.ozoon.eu` resolve → `185.156.184.201` (F5 BigIP). Presented vhost → HTTP 400 "request hostname ... is invalid". Same edge serves `www.ozoon.eu` SSR when Host-header pinned (200, 749133B) → Ozoon-owned edge, dead/retired vhost DNS, NOT a takeover.
+- NEW `static.ozoon.eu` → CNAME `static.ozoon.eu.wnacloud.com` (wnacloud/CDN family, matches `www.ozoon.com`); `games.ozoon.eu` → CNAME `ozoon.eu.glb.network` (matches services/chat family).
+- NEW `ozoon.eu` has no wildcard DNS (random-label → NXDOMAIN); 40+ candidate names (admin/api/auth/jira/dev/staging/uat/portal/mail/payments/kyc/backoffice/sso) all NXDOMAIN → subdomain landscape bounded, no hidden admin/staging surface.
+- CHANGED This cycle ran live read-only DNS + GET probes after 8+ cycles of zero new surface; closest new item is the dead-vhost artifact above (info-level).
+
+STEP 2 — PRIORITIZE
+- [PRIO] https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...,7.65,attack_surface=9,business_value=9,tech_exposure=7,gate_ease=6,cloud_surface=6,freshness=6
+- [PRIO] https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify,7.60,attack_surface=8,business_value=10,tech_exposure=8,gate_ease=6,cloud_surface=5,freshness=5
+- [PRIO] https://www.ozoon.eu/api/v1/signup,6.75,attack_surface=7,business_value=8,tech_exposure=7,gate_ease=7,cloud_surface=4,freshness=5
+- [PRIO] https://casino.ozoon.eu (dead vhost on Ozoon F5),3.45,attack_surface=2,business_value=1,tech_exposure=2,gate_ease=8,cloud_surface=3,freshness=9
+
+STEP 3 — HYPOTHESES
+[HYP] BOLA on profile-keyed UUID endpoints — session identity not bound to path UUID
+class: IDOR
+asset: https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...
+confidence: 65
+reasoning: SDK bundles confirm 5 services (wallet-gateway, transaction-group, referral, player-verification, player-messages) key sensitive resources by UUID path; anonymous structured 401 {"errorCode":"unauthorized"} byte-stable across cycles; auth pre-check precedes resource lookup; session→path-UUID binding never tested; DNS/subdomain breadth this cycle adds only dead-vhost artifact, no anonymous surface displacing this.
+evidence_needed: With A's session, GET /profiles/{B-ownPID}/... returns B's non-404 data while ownPID returns A's data.
+verify_steps: [AUTH_HELPED] signup A+B (2 throwaways) → sid+ownPID each; A's sid GET /services/wallet-gateway/v1/profiles/{B-ownPID}/balances + /services/player-verification/v1/profiles/{B-ownPID}/verifications vs control {A-ownPID}; foreign 200 = BOLA, 401/403 = bound.
+impact: Critical — cross-user wallet/transaction/PII across 5 services; ATO enabler.
+testability: AUTH_HELPED
+[HYP] Registration/referral mass assignment via captcha-free signup
+class: BUSLOGIC
+asset: https://www.ozoon.eu/api/v1/signup
+confidence: 60
+reasoning: reCAPTCHA v3 enforced on `login` only; signup captcha-free; static 32-hex refSiteToken with affiliate.check-referring-site.enabled:["false"]; signup DTO accepts client-controlled attributes/address sub-objects (update DTO is strict, signup DTO separate).
+evidence_needed: POST signup adding role/vip/balance/currency keys persists vs control; static referral token honored for unverified email.
+verify_steps: [AUTH_HELPED] signup control then signup +extra attributes/role/vip/balance; compare persisted/echoed fields; then signup_from_invitation with static refSiteToken.
+impact: Medium-High — referral fraud, softblock bypass, privilege elevation if role/vip honored.
+testability: AUTH_HELPED
+[HYP] Mock-2FA verification header honored — client-controlled 2FA/KYC gate bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{ownPID}/verifications/verify
+confidence: 55
+reasoning: Production SDK sends X-MOCK-2FA-VERIFICATION:true; config two_factor_authenticator.allow-permanent-skip:["true"]; isMockProviderEnabled:false is client-side only, does not resolve server-side honoring; 401 anonymous baseline stable.
+evidence_needed: POST verify +header succeeds while byte-identical request without header rejects.
+verify_steps: [AUTH_HELPED] signup → sid+ownPID; POST .../verifications/verify {"verificationType":"PHONE"} with header true then control without; compare status/body.
+impact: Critical — bypass SMS/PIN/2FA/KYC on deposit/withdraw/bonus money flows.
+testability: AUTH_HELPED
+
+STEP 4 — SELF-CRITIQUE
+- [PARKED] SSRF @ www.ozoon.com: no URL-accepting parameter ever identified (url/fetch/callback/view probes → homepage reflection); enumeration class without demonstrating probe, 40.
+- [PARKED] casino.ozoon.eu / poker.ozoon.eu dead vhosts: edge verified Ozoon-owned (Host-pin → 200 SSR); response is descriptive 400 = REJECTED-class; no takeover, no content. Breadth data point only.
+- [FINAL] 1. BOLA (65) 2. Mass-assignment (60) 3. Mock-2FA (55) — unchanged, all AUTH_HELPED.
+
+STEP 5 — NEXT ACTION
+[NEXT] HUMAN: Re-request program authorization at bugs.olivermaicher.eu for TWO strictly-restricted throwaway accounts on www.ozoon.eu (synthetic emails; only the two signup POSTs; zero writes to existing data). If granted, fire exactly: POST https://www.ozoon.eu/api/v1/signup {"email":"<A>@<valid-domain>","password":"Test1234!","country":"CA","language":"en","attributes":{},"address":{"country":"CA","addressLine":"123 Test St","postalCode":"K1A 0A6"}} (repeat for B); capture sid+ownPID each; with A's sid GET https://services.ozoon.eu/services/wallet-gateway/v1/profiles/{B-ownPID}/balances + /services/player-verification/v1/profiles/{B-ownPID}/verifications vs control {A-ownPID} (foreign 200 = BOLA); then POST https://services.ozoon.eu/services/player-verification/v1/profiles/{A-ownPID}/verifications/verify {"verificationType":"PHONE"} with X-MOCK-2FA-VERIFICATION:true then without (mocked 200 vs 400/401 = bypass).
+
+STEP 6 — LEARNING
+- [LEARN] ACCEPTED MISCONFIG @ casino.ozoon.eu / poker.ozoon.eu: DNS → Ozoon F5 edge (185.156.184.201, BigIP); vhost unconfigured → 400 "hostname invalid"; edge verified Ozoon-owned via Host-pin to www.ozoon.eu (200, 749KB). Retired/dead DNS artifact; not a takeover, not a scoped finding.
+- [LEARN] ACCEPTED MISCONFIG @ static.ozoon.eu / games.ozoon.eu: CNAMEs extend known edge families (wnacloud CDN / glb.network); no standalone app surface.
+- [LEARN] REJECTED OTHER @ ozoon.eu subdomain sweep: no wildcard DNS; 40+ names including admin/api/auth/dev/staging/backoffice/sso all NXDOMAIN → subdomain landscape bounded.
+
+STEP 7 — RISK
+[RISK] ozoon-sportsbook-casino: 81/100 (flat). This cycle adds only dead-vhost DNS breadth (no risk change). The two critical vectors (BOLA 65, mock-2FA 55) plus mass-assignment (60) remain AUTH_HELPED behind the restricted signup; anonymous surface provably exhausted (DNS drift + vhost checks added nothing actionable). Risk moves only on the first authorized differential — +1 on BOLA/header-bypass confirmation, −2 if UUID binding or mock header is stripped server-side.

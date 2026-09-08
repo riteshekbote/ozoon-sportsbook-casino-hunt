@@ -1433,3 +1433,33 @@ evidence_needed: POST verify +header succeeds while byte-identical request witho
 verify_steps: [AUTH_HELPED] signup → sid+ownPID; POST .../verifications/verify {"verificationType":"PHONE"} with header true then control without; compare status/body.
 impact: Critical — bypass SMS/PIN/2FA/KYC on deposit/withdraw/bonus money flows.
 testability: AUTH_HELPED
+## 2026-09-08 08:59:46 UTC [target] (model bigpickle)
+[HYP] BOLA on profile-keyed UUID endpoints — session identity not bound to path UUID
+class: IDOR
+asset: https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...
+confidence: 65
+reasoning: SDK bundles confirm 5 services (wallet-gateway, transaction-group, referral, player-verification, player-messages) key sensitive resources by UUID path; anonymous structured 401 {"errorCode":"unauthorized"} byte-stable across cycles; auth pre-check precedes resource lookup; session→path-UUID binding never tested; DNS/subdomain breadth this cycle adds only dead-vhost artifact, no anonymous surface displacing this.
+evidence_needed: With A's session, GET /profiles/{B-ownPID}/... returns B's non-404 data while ownPID returns A's data.
+verify_steps: [AUTH_HELPED] signup A+B (2 throwaways) → sid+ownPID each; A's sid GET /services/wallet-gateway/v1/profiles/{B-ownPID}/balances + /services/player-verification/v1/profiles/{B-ownPID}/verifications vs control {A-ownPID}; foreign 200 = BOLA, 401/403 = bound.
+impact: Critical — cross-user wallet/transaction/PII across 5 services; ATO enabler.
+testability: AUTH_HELPED
+[HYP] Registration/referral mass assignment via captcha-free signup
+class: BUSLOGIC
+asset: https://www.ozoon.eu/api/v1/signup
+confidence: 60
+reasoning: reCAPTCHA v3 enforced on `login` only; signup captcha-free; static 32-hex refSiteToken with affiliate.check-referring-site.enabled:["false"]; signup DTO accepts client-controlled attributes/address sub-objects (update DTO is strict, signup DTO separate).
+evidence_needed: POST signup adding role/vip/balance/currency keys persists vs control; static referral token honored for unverified email.
+verify_steps: [AUTH_HELPED] signup control then signup +extra attributes/role/vip/balance; compare persisted/echoed fields; then signup_from_invitation with static refSiteToken.
+impact: Medium-High — referral fraud, softblock bypass, privilege elevation if role/vip honored.
+testability: AUTH_HELPED
+[HYP] Mock-2FA verification header honored — client-controlled 2FA/KYC gate bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{ownPID}/verifications/verify
+confidence: 55
+reasoning: Production SDK sends X-MOCK-2FA-VERIFICATION:true; config two_factor_authenticator.allow-permanent-skip:["true"]; isMockProviderEnabled:false is client-side only, does not resolve server-side honoring; 401 anonymous baseline stable.
+evidence_needed: POST verify +header succeeds while byte-identical request without header rejects.
+verify_steps: [AUTH_HELPED] signup → sid+ownPID; POST .../verifications/verify {"verificationType":"PHONE"} with header true then control without; compare status/body.
+impact: Critical — bypass SMS/PIN/2FA/KYC on deposit/withdraw/bonus money flows.
+testability: AUTH_HELPED
+[NEXT] HUMAN: Re-request program authorization at bugs.olivermaicher.eu for TWO strictly-restricted throwaway accounts on www.ozoon.eu (synthetic emails; only the two signup POSTs; zero writes to existing data). If granted, fire exactly: POST https://www.ozoon.eu/api/v1/signup {"email":"<A>@<valid-domain>","password":"Test1234!","country":"CA","language":"en","attributes":{},"address":{"country":"CA","addressLine":"123 Test St","postalCode":"K1A 0A6"}} (repeat for B); capture sid+ownPID each; with A's sid GET https://services.ozoon.eu/services/wallet-gateway/v1/profiles/{B-ownPID}/balances + /services/player-verification/v1/profiles/{B-ownPID}/verifications vs control {A-ownPID} (foreign 200 = BOLA); then POST https://services.ozoon.eu/services/player-verification/v1/profiles/{A-ownPID}/verifications/verify {"verificationType":"PHONE"} with X-MOCK-2FA-VERIFICATION:true then without (mocked 200 vs 400/401 = bypass).
+[RISK] ozoon-sportsbook-casino: 81/100 (flat). This cycle adds only dead-vhost DNS breadth (no risk change). The two critical vectors (BOLA 65, mock-2FA 55) plus mass-assignment (60) remain AUTH_HELPED behind the restricted signup; anonymous surface provably exhausted (DNS drift + vhost checks added nothing actionable). Risk moves only on the first authorized differential — +1 on BOLA/header-bypass confirmation, −2 if UUID binding or mock header is stripped server-side.
