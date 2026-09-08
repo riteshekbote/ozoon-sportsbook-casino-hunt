@@ -9035,3 +9035,140 @@ Wrote file successfully.
 [✓] Write output to analyst-out.txt
 [0m
 Analysis complete. Output written to `analyst-out.txt`. Key shift: SSRF probe returned 200 on metadata IP — upgraded from candidate to active probe (confidence 40→70). Risk 81→83. Next probe targets the SSRF response body for cloud metadata confirmation.
+===== ANALYST bigpickle 2026-09-08 17:50:23 UTC =====
+[0m
+> build · big-pickle
+[0m
+Let me first check the current inventory and any workspace files to understand the full picture.
+[0m✱ [0mGlob "**/*.txt"[90m 9 matches[0m
+[0m✱ [0mGlob "**/*.json"[90m 6 matches[0m
+[0m✱ [0mGlob "**/*.md"[90m 56 matches[0m
+[0m→ [0mRead inventory/ozoon-sportsbook-casino.md
+[0m→ [0mRead triage/run-2026-09-08-14-07.md
+[0m→ [0mRead knowledge/index.md
+[0m→ [0mRead probe-results.md
+[0m→ [0mRead state_bigpickle.json
+[0m→ [0mRead analyst-out.txt
+[0m→ [0mRead reports/hypotheses-bigpickle.txt
+Let me read the current state files and the latest analyst output to understand the most recent analysis.
+Now let me run a couple of low-rate passive drift checks on the core API surface to establish delta freshness for this cycle.
+[0m
+[0m$ [0mecho "--- 1: wallet-gateway 401 baseline ---"
+curl -sS -o /tmp/opencode/wg.txt -w "HTTP %{http_code} len=%{size_download} time=%{time_total}s\n" --max-time 20 "https://services.ozoon.eu/services/wallet-gateway/v1/profiles/00000000-0000-0000-0000-000000000000/balances" 2>&1
+sleep 2
+echo "--- 2: whoami Whitelabel ---"
+curl -sS -o /tmp/opencode/whoami.txt -w "HTTP %{http_code} len=%{size_download} time=%{time_total}s\n" --max-time 20 "https://www.ozoon.eu/api/v1/whoami" 2>&1
+sleep 2
+echo "--- 3: profileupdateform CA ---"
+curl -sS -o /tmp/opencode/puf.txt -w "HTTP %{http_code} len=%{size_download} time=%{time_total}s\n" --max-time 20 "https://services.ozoon.eu/services/site-config/v1/countries/CA/profileupdateform" 2>&1
+sleep 2
+echo "--- 4: player-verification bogus sid ---"
+curl -sS -o /tmp/opencode/pv.txt -w "HTTP %{http_code} len=%{size_download} time=%{time_total}s\n" --max-time 20 "https://services.ozoon.eu/services/player-verification/v1/profiles/00000000-0000-0000-0000-000000000000/verifications" 2>&1
+--- 1: wallet-gateway 401 baseline ---
+HTTP 401 len=159 time=0.678095s
+--- 2: whoami Whitelabel ---
+HTTP 404 len=110 time=0.741484s
+--- 3: profileupdateform CA ---
+HTTP 200 len=784 time=0.864593s
+--- 4: player-verification bogus sid ---
+HTTP 404 len=110 time=0.565018s
+[0m
+[0m→ [0mRead /tmp/opencode/wg.txt
+[0m→ [0mRead /tmp/opencode/whoami.txt
+[0m→ [0mRead /tmp/opencode/puf.txt
+[0m→ [0mRead /tmp/opencode/pv.txt
+Drift detected on the player-verification path (404 vs previously expected 401). Let me inspect the response bodies.
+player-verification route now returns Spring 404 (route-level) vs wallet-gateway's 401 (auth-gate) — a genuine drift. Let me discriminate the verify endpoint via passive GET/HEAD.
+[0m
+[0m$ [0mecho "--- verify endpoint GET (Route-exists vs no-route discriminator) ---"
+curl -sS -o /tmp/opencode/verify.txt -w "HTTP %{http_code} len=%{size_download} time=%{time_total}s\n" --max-time 20 "https://services.ozoon.eu/services/player-verification/v1/profiles/00000000-0000-0000-0000-000000000000/verifications/verify" 2>&1
+sleep 2
+echo "--- verify endpoint HEAD ---"
+curl -sSI -o /tmp/opencode/verifyh.txt -w "HTTP %{http_code} len=%{size_download} time=%{time_total}s\n" --max-time 20 "https://services.ozoon.eu/services/player-verification/v1/profiles/00000000-0000-0000-0000-000000000000/verifications/verify" 2>&1
+--- verify endpoint GET (Route-exists vs no-route discriminator) ---
+HTTP 401 len=159 time=0.563898s
+--- verify endpoint HEAD ---
+HTTP 401 len=0 time=0.601473s
+[0m
+Additional discriminating check across remaining BOLA services to validate the "5 services" claim:
+[0m$ [0mecho "--- transaction-group ---"
+curl -sS -o /tmp/opencode/tg.txt -w "HTTP %{http_code} len=%{size_download} time=%{time_total}s\n" --max-time 20 "https://services.ozoon.eu/services/transaction-group/v1/profiles/00000000-0000-0000-0000-000000000000/groups" 2>&1
+sleep 2
+echo "--- referral ---"
+curl -sS -o /tmp/opencode/rf.txt -w "HTTP %{http_code} len=%{size_download} time=%{time_total}s\n" --max-time 20 "https://services.ozoon.eu/services/referral/v1/profiles/00000000-0000-0000-0000-000000000000/referrals" 2>&1
+sleep 2
+echo "--- wallet-gateway alternate verb (POST on balances via GET) ---"
+curl -sS -o /tmp/opencode/wg2.txt -w "HTTP %{http_code} len=%{size_download} time=%{time_total}s\n" --max-time 20 "https://services.ozoon.eu/services/wallet-gateway/v1/profiles/00000000-0000-0000-0000-000000000000/balances?currency=CAD" 2>&1
+sleep 2
+echo "--- whoami POST-only discriminator check via GET on balance-actions (commonly POST) ---"
+curl -sS -o /tmp/opencode/ba.txt -w "HTTP %{http_code} len=%{size_download} time=%{time_total}s\n" --max-time 20 "https://services.ozoon.eu/services/wallet-gateway/v1/profiles/00000000-0000-0000-0000-000000000000/balance-actions" 2>&1
+--- transaction-group ---
+HTTP 404 len=110 time=0.631888s
+--- referral ---
+HTTP 404 len=110 time=0.572766s
+--- wallet-gateway alternate verb (POST on balances via GET) ---
+HTTP 401 len=159 time=0.612434s
+--- whoami POST-only discriminator check via GET on balance-actions (commonly POST) ---
+HTTP 404 len=110 time=0.562406s
+[0m
+# 8-STEP ANALYSIS — OZOON (bigpickle) — 2026-09-08
+
+## STEP 1 — DELTA
+- [CHANGED] `player-verification` `/profiles/{uuid}/verifications` (collection) now → Spring Whitelabel 404; only `/profiles/{uuid}/verifications/verify` → structured 401. KB's "5 services 401" claim is route-narrower than stated.
+- [CHANGED] `transaction-group` `/profiles/{uuid}/groups` and `referral` `/profiles/{uuid}/referrals` → Spring Whitelabel 404, NOT 401, on my guessed subpaths — only `wallet-gateway` `/balances` (401) and `player-verification` `/verifications/verify` (401) reproduce the auth-gate live this cycle.
+- [NEW] 401 body serializes `"timestamp":"2026-09-08T17:31:25.807Z"` (Z/ms) vs Whitelabel 404 `"…28.549+0000"` — structured 401 originates at gateway/BFF auth filter running pre-route, distinct component from Spring backend handler.
+- [CHANGED] `site-config` CA `profileupdateform` re-confirmed live: `currencies_published:["CAD"]` hides XBT via published-flag (real, low-severity data point).
+- NO_DELTA: whoami/logout Whitelabel 404s, signup WAF staging, `chat.ozoon.eu`, `/api-docs`+`/actuator*` 404s, `www.ozoon.com` SSRF edge (200 despite metadata param).
+
+## STEP 2 — PRIORITIZE
+- [PRIO] services.ozoon.eu/services/wallet-gateway/v1/profiles/{uuid}/balances,7.0,prio=0.25·8+0.25·9+0.15·7+0.15·3+0.10·5+0.10·5 (money surface, 401-live confirmed, gate=auth)
+- [PRIO] services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify,6.1,prio (mock-2FA gate bypass; verify route 401-live confirmed this cycle)
+- [PRIO] www.ozoon.eu/api/v1/signup,5.9,prio (mass-assignment + sole gateway to all authenticated testing)
+- [PRIO] www.ozoon.com (wnacloud edge),4.6,prio (SSRF class, gate=10, no demonstrating probe after repeated attempts)
+
+## STEP 3 — HYPOTHESES
+[HYP] BOLA on profile-keyed UUID endpoints — session not bound to path UUID
+class: IDOR
+asset: https://services.ozoon.eu/services/wallet-gateway/v1/profiles/{uuid}/balances (+ player-verification /verifications/verify)
+confidence: 65
+reasoning: wallet-gateway/balances and player-verification/verifications/verify return byte-shape-stable structured 401 this cycle (auth pre-check, Z-serializer, gateway filter); auth-gate precedes resource lookup; session→path-UUID binding never tested; transaction-group/referral subpaths 404 on my guessed paths so 5-service breadth is now SDK-bundle-grade, not anonymous-verified.
+evidence_needed: With A's session, /profiles/{B-ownPID}/balances returns B's non-404 data while own PID returns A's data.
+verify_steps: [AUTH_HELPED] signup A+B → sid+ownPID each; with A's sid GET /services/wallet-gateway/v1/profiles/{B-ownPID}/balances and /services/player-verification/v1/profiles/{B-ownPID}/verifications/verify vs control {A-ownPID}; foreign 200/401-boundary differential = BOLA, 403 = bound.
+impact: Critical — cross-user balance/transaction/PII; ATO enabler.
+testability: AUTH_HELPED
+
+[HYP] Mock-2FA verification header honored — client-controlled 2FA/KYC gate bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{ownPID}/verifications/verify
+confidence: 55
+reasoning: verify subroute confirmed live + auth-gated (GET→401) this cycle; production SDK ships X-MOCK-2FA-VERIFICATION:true; two_factor_authenticator.allow-permanent-skip:["true"]; isMockProviderEnabled:false is client-side only, cannot resolve server-side honoring.
+evidence_needed: POST verify +header succeeds while byte-identical request without header rejects.
+verify_steps: [AUTH_HELPED] signup → sid+ownPID; POST /services/player-verification/v1/profiles/{ownPID}/verifications/verify {"verificationType":"PHONE"} with header then control without; compare status/body.
+impact: Critical — bypass SMS/PIN/2FA/KYC on deposit/withdraw/bonus money flows.
+testability: AUTH_HELPED
+
+[HYP] Registration mass assignment via captcha-free signup
+class: BUSLOGIC
+asset: https://www.ozoon.eu/api/v1/signup
+confidence: 60
+reasoning: reCAPTCHA v3 on login only; signup captcha-free; static 32-hex refSiteToken with affiliate.check-referring-site.enabled:["false"]; signup DTO accepts client-controlled attributes/address sub-objects (update DTO strict, signup DTO separate — CA/US form divergence persists).
+evidence_needed: POST signup with extra attributes/role/vip/balance keys persists vs control; static referral token honored for unverified email.
+verify_steps: [AUTH_HELPED] signup control then signup +extra keys; compare persisted/echoed fields; then referral flow with static token.
+impact: Medium-High — referral fraud, softblock bypass, privilege elevation if role/vip honored.
+testability: AUTH_HELPED
+
+## STEP 4 — SELF-CRITIQUE
+- [PARKED] SSRF @ www.ozoon.com (wnacloud edge): confidence 40; param enumeration attempted repeatedly (url/view/page/callback + metadata IP) → edge returns 200 regardless; no demonstrating probe in 6+ cycles; deprioritized by definition, no +evidence since.
+- BOLA confidence held at 65 despite narrower live confirmation: SDK-bundle evidence (accepted earlier) is authoritative; my 404s are on guessed subpaths for transaction-group/referral, consistent with path drift rather than absent surfaces. Hashed no secrets this cycle.
+- [FINAL] BOLA (wallet-gateway/player-verification verify) 65 > Signup mass-assignment 60 > mock-2FA header 55.
+
+## STEP 5 — NEXT ACTION
+[NEXT] HUMAN: Request program authorization at bugs.olivermaicher.eu for exactly TWO restricted throwaway accounts (synthetic emails; only the two signup POSTs; zero writes to existing data). If granted fire: POST https://www.ozoon.eu/api/v1/signup {"email":"<A>@<valid-domain>","password":"Test1234!","country":"CA","language":"en","attributes":{},"address":{"country":"CA","addressLine":"123 Test St","postalCode":"K1A 0A6"}} (repeat for B); capture sid+ownPID each; with A's sid GET https://services.ozoon.eu/services/wallet-gateway/v1/profiles/{B-ownPID}/balances and /services/player-verification/v1/profiles/{B-ownPID}/verifications/verify vs control {A-ownPID} (foreign 200/differential = BOLA); then POST …/verifications/verify {"verificationType":"PHONE"} with X-MOCK-2FA-VERIFICATION:true then without (mocked 200 vs 400/401 = bypass); enumerate A's own session for exact transaction-group/referral subpaths to restore the other-3-services BOLA breadth.
+
+## STEP 6 — LEARNING
+- [LEARN] ACCEPTED MISCONFIG @ services.ozoon.eu: live route-drift — only wallet-gateway /balances and player-verification /verifications/verify return structured 401 this cycle; transaction-group /groups, referral /referrals, wallet-gateway /balance-actions, player-verification /verifications → Spring Whitelabel 404; "5-service 401" downgraded to SDK-bundle-grade for the other 3.
+- [LEARN] ACCEPTED MISCONFIG @ services.ozoon.eu: 401 uses Z/ms timestamp, Whitelabel 404 uses +0000 — structured 401 emitted by gateway auth filter pre-route (auth gate precedes resource lookup; 404s are backend handler responses).
+- [LEARN] ACCEPTED MISCONFIG @ services.ozoon.eu/services/site-config/v1/countries/CA/profileupdateform: live body confirms currencies_published:["CAD"] hides XBT from clients via published-flag (CAD+XBT stored, XBT unpublished).
+
+## STEP 7 — RISK
+[RISK] ozoon-sportsbook-casino: 81/100 — flat. Anonymous surface re-confirmed exhausted (route-drift checks narrowed 5→2 live-401 BOLA services but both critical vectors' endpoints are confirmed mounted and auth-gated; no new anonymous surface emerged). BOLA (65), mass-assignment (60), mock-2FA (55) all remain AUTH_HELPED behind the restricted signup. Risk moves only on the first authorized differential — +1 on BOLA/header-bypass confirmation, −2 if UUID binding or mock header is stripped server-side.
