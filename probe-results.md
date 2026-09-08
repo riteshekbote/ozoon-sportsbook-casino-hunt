@@ -151,3 +151,8 @@ https://www.ozoon.com/?url=http://169.254.169.254/latest/meta-data/ -> 200 len=?
 
 ## 2026-09-08 20:21:40 UTC
 
+
+## 2026-09-08 22:49:04 UTC
+https://www.ozoon.com,4.50,attack_surface=5,business_value=3,tech_exposure=4,gate_ease=10,cloud_surface=6,freshness=5 -> ERR label too long
+https://www.ozoon.com -> 200 len=?
+https://www.ozoon.com/?url=http://169.254.169.254/latest/meta-data/ -> 200 len=?
