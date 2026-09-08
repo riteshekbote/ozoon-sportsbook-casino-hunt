@@ -340,3 +340,5 @@ www.ozoon.com
 - NEW Live confirmation 2026-09-07: `chat.ozoon.eu` live in-scope subdomain (CNAME `ozoon.eu.glb.network`); returns 404, widget-only CSP, no Ozoon API logic
 - NEW Live confirmation 2026-09-07: `/services/*/v{2,3}/api-docs` and `/actuator*` → gateway 404; no anonymous schema/actuator leak
 - NEW Live confirmation 2026-09-07: `games.glovefrog.plus` jackpotApiBase third-party; Ozoon ownership unconfirmed; off-scope until verified
+
+## 2026-09-08 04:11:28 UTC
