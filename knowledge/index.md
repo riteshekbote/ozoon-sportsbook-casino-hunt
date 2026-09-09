@@ -215,3 +215,9 @@
 - 2026-09-09 REJECTED OTHER @ services.ozoon.eu: /services/*/v{2,3}/api-docs and /actuator* → gateway 404; no anonymous schema/actuator leak.
 - 2026-09-09 REJECTED OTHER @ games.glovefrog.plus / api.wicket-keeper.com: third-party endpoints; Ozoon ownership unconfirmed.
 - 2026-09-09 ACCEPTED MISCONFIG @ services.ozoon.eu/services/site-config/v1/countries/{CC}/profileupdateform: per-country profile-update whitelist is flat; CA=CAD+XBT, US=USD; update DTO strict but signup DTO separate
+- 2026-09-09 ACCEPTED IDOR @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: Reconfirmed — no new anonymous probe displaces the SDK-confirmed BOLA surface across 5 services; binding still unresolved; AUTH_HELPED.
+- 2026-09-09 ACCEPTED AUTH @ services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify: mock-2FA header + allow-permanent-skip remains the single critical gate-bypass candidate; AUTH_HELPED.
+- 2026-09-09 ACCEPTED BUSLOGIC @ www.ozoon.eu/api/v1/signup: captcha-free signup remains the sole gateway to authenticated testing on the core platform; AUTH_HELPED.
+- 2026-09-09 REJECTED SECRET @ www.ozoon.com:3306: identical port-closed/EOF pattern across hosts = shared proxy artifact, not MySQL.
+- 2026-09-09 REJECTED SECRET @ oZoon/hyper, oZoon/mas-film + OTHER @ oZoon/secure-query-string: learning/demo repo artifacts, not confirmed deployed.
+- 2026-09-09 REJECTED OTHER @ services.services.ozoon.eu / games.glovefrog.plus / api.wicket-keeper.com: split-horizon internal hostname + third-party endpoints, ownership unconfirmed.

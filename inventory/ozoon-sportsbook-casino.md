@@ -426,3 +426,10 @@ www.ozoon.com
 - NEW Live confirmation 2026-09-07/08: `games.glovefrog.plus` jackpotApiBase third-party; Ozoon ownership unconfirmed; off-scope until verified
 - NEW Live confirmation 2026-09-07/08: `/services/*/v{2,3}/api-docs` and `/actuator*` → gateway 404; no anonymous schema/actuator leak
 - NEW `api.wicket-keeper.com` referenced in homepage SSR as `apmRum.url` — third-party RUM/APM endpoint, ownership unconfirmed; off-scope pending verification
+
+## 2026-09-09 18:46:50 UTC
+- CHANGED Zero authenticated probes executed against ozoon.eu/services.ozoon.eu across all historic rounds; wallet-gateway+player-verification 401 baseline and signup WAF guard both re-confirmed in KB tail — th
+- CHANGED Inventory file (ozoon-sportsbook-casino.md) still lists ONLY `ozoon.com`/`www.ozoon.com` (marketing edge); `ozoon.eu` (core gambling platform) and `services.ozoon.eu` (backend API) confirmed in-scope 
+- CHANGED Zero authenticated probes executed against core platform (`ozoon.eu`/`services.ozoon.eu`) across all 18+ probe rounds; all probes target only `www.ozoon.com` marketing edge — critical testing gap unch
+- NEW `api.wicket-keeper.com` referenced in homepage SSR as `apmRum.url` — third-party RUM/APM endpoint, ownership unconfirmed; off-scope pending verification
+- CHANGED Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway at `www.ozoon.eu/api/v1/signup`
