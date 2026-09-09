@@ -2028,3 +2028,45 @@ verify_steps: [AUTH_HELPED] signup → sid+ownPID; POST verify {"verificationTyp
 impact: Critical — bypass SMS/PIN/2FA/KYC on deposit/withdraw/bonus money flows.
 testability: AUTH_HELPED
 ## 2026-09-09 06:09:44 UTC [target] (model bigpickle)
+## 2026-09-09 11:36:09 UTC [target] (model bigpickle)
+[HYP] BOLA on profile-keyed UUID endpoints — session identity not bound to path UUID
+class: IDOR
+asset: https://services.ozoon.eu/services/wallet-gateway/v1/profiles/{uuid}/balances (+ player-verification /verifications/verify)
+confidence: 65
+reasoning: SDK bundles key sensitive resources by profile UUID in path across 5 services; anonymous structured 401 {"errorCode":"unauthorized"} re-verified byte-shape-stable on balances and verify = auth pre-check precedes resource lookup; session→path-UUID binding never tested.
+evidence_needed: With A's session, /profiles/{B-ownPID}/... returns B's data (200/differential) while own PID returns A's data.
+verify_steps: [AUTH_HELPED] signup A+B throwaways → sid+ownPID each; A's sid GET /services/wallet-gateway/v1/profiles/{B-ownPID}/balances + /services/player-verification/v1/profiles/{B-ownPID}/verifications vs control {A-ownPID}; foreign 200/differential = BOLA, 401/403 = bound.
+impact: Critical — cross-user wallet/transaction/PII across 5 services; ATO enabler.
+testability: AUTH_HELPED
+[HYP] Registration/referral mass assignment via captcha-free signup
+class: BUSLOGIC
+asset: https://www.ozoon.eu/api/v1/signup
+confidence: 60
+reasoning: reCAPTCHA v3 enforced on login only; signup captcha-free; static 32-hex refSiteToken with affiliate.check-referring-site.enabled:["false"]; signup DTO accepts client-controlled attributes/address sub-objects (update DTO strict, signup DTO separate).
+evidence_needed: POST signup adding role/vip/balance/currency keys persists vs control; static referral token honored for unverified email.
+verify_steps: [AUTH_HELPED] signup control then signup +extra attributes/role/vip/balance; compare persisted/echoed fields; then signup_from_invitation with static refSiteToken.
+impact: Medium-High — referral fraud, softblock bypass, privilege elevation if role/vip honored.
+testability: AUTH_HELPED
+[HYP] Mock-2FA verification header honored — client-controlled 2FA/KYC gate bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify
+confidence: 55
+reasoning: Production SDK sends X-MOCK-2FA-VERIFICATION:true; config two_factor_authenticator.allow-permanent-skip:["true"]; isMockProviderEnabled:false is client-side only, does not resolve server-side honoring; 401 anonymous baseline re-verified on exact verify route.
+evidence_needed: POST verify +header succeeds while byte-identical request without header rejects.
+verify_steps: [AUTH_HELPED] signup → sid+ownPID; POST verify {"verificationType":"PHONE"} +header true then control without; compare status/body.
+impact: Critical — bypass SMS/PIN/2FA/KYC on deposit/withdraw/bonus money flows.
+testability: AUTH_HELPED
+[LEARN] ACCEPTED IDOR @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: Confirmed UUID-path BOLA surface across 5 services; binding unresolved; AUTH_HELPED testing required.
+[LEARN] ACCEPTED AUTH @ services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify: Mock-2FA header in production SDK + allow-permanent-skip config; critical if honored; AUTH_HELPED.
+[LEARN] ACCEPTED BUSLOGIC @ www.ozoon.eu/api/v1/signup: Captcha-free signup with client-controlled attributes/address; static referral token unverified; sole gateway to authenticated testing; AUTH_HELPED.
+[LEARN] ACCEPTED MISCONFIG @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: structured 401 errorCode:"unauthorized" for valid-route bogus UUID = auth pre-check precedes resource lookup; anonymous differential baseline.
+[LEARN] ACCEPTED MISCONFIG @ services.ozoon.eu/services/site-config/v1/countries/{CC}/profileupdateform: unknown country → structured 404 leaking io.crazy88.beatrix.siteconfig.exception.CountryNotFoundException (GoBet/Beatrix fingerprint); flat per-country update whitelist.
+[LEARN] ACCEPTED MISCONFIG @ www.ozoon.eu/api/v1: GET login/whoami → Spring Boot Whitelabel 404 (no method guard); signup GET → WAF "Request Rejected" — WAF staged on mutating signup path only.
+[LEARN] ACCEPTED MISCONFIG @ chat.ozoon.eu: live in-scope subdomain; widget-only, no Ozoon API logic.
+[LEARN] ACCEPTED SSRF @ www.ozoon.com: PWS/wnacloud shared edge; passive GET only; deprioritized vs core platform.
+[LEARN] REJECTED SECRET @ www.ozoon.com:3306: identical port-closed/EOF pattern across hosts = shared proxy artifact.
+[LEARN] REJECTED SECRET @ oZoon/hyper, oZoon/mas-film: creds in learning/demo repos, not confirmed deployed.
+[LEARN] REJECTED OTHER @ oZoon/secure-query-string: SQLi patterns in learning repos, not confirmed deployed.
+[LEARN] REJECTED OTHER @ services.services.ozoon.eu: internal-only backend hostname; NXDOMAIN publicly = split-horizon.
+[LEARN] REJECTED OTHER @ services.ozoon.eu: /services/*/v{2,3}/api-docs and /actuator* → gateway 404; no anonymous schema/actuator leak.
+[LEARN] REJECTED OTHER @ games.glovefrog.plus / api.wicket-keeper.com: third-party endpoints; Ozoon ownership unconfirmed.
