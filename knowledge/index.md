@@ -180,3 +180,23 @@
 - 2026-09-08 REJECTED OTHER @ services.services.ozoon.eu: internal-only backend hostname; NXDOMAIN publicly = split-horizon, not externally reachable.
 - 2026-09-08 REJECTED OTHER @ services.ozoon.eu: /services/*/v{2,3}/api-docs and /actuator* → gateway 404; no anonymous schema/actuator leak.
 - 2026-09-08 REJECTED OTHER @ games.glovefrog.plus / api.wicket-keeper.com: jackpotApiBase/apmRum third-party endpoints; Ozoon ownership unconfirmed; off-scope until verified.
+- 2026-09-09 ACCEPTED IDOR @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: Confirmed UUID-path BOLA surface across 5 services; binding unresolved; AUTH_HELPED testing required
+- 2026-09-09 ACCEPTED AUTH @ services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify: Mock-2FA header in production SDK + allow-permanent-skip config; critical if honored
+- 2026-09-09 ACCEPTED BUSLOGIC @ www.ozoon.eu/api/v1/signup: Captcha-free signup with client-controlled attributes/address; static referral token unverified. Gateway probe to unlock authenticated testing
+- 2026-09-09 ACCEPTED MISCONFIG @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: structured 401 errorCode:"unauthorized" for valid-route bogus UUID = auth pre-check precedes resource lookup; anonymous differential baseline
+- 2026-09-09 ACCEPTED MISCONFIG @ chat.ozoon.eu: live in-scope subdomain (CNAME ozoon.eu.glb.network); widget-only, no Ozoon API logic
+- 2026-09-09 ACCEPTED SSRF @ www.ozoon.com: PWS/wnacloud edge is high-value SSRF target class; warrants parameter enumeration (deprioritized vs core platform)
+- 2026-09-09 REJECTED SECRET @ www.ozoon.com:3306: identical port-closed/EOF pattern across hosts = shared proxy artifact, not MySQL
+- 2026-09-09 REJECTED SECRET @ oZoon/hyper, oZoon/mas-film: creds in learning/demo repos, not confirmed deployed
+- 2026-09-09 REJECTED OTHER @ oZoon/secure-query-string: SQLi patterns in learning repos, not confirmed deployed
+- 2026-09-09 REJECTED OTHER @ services.services.ozoon.eu: internal-only backend hostname in servicesBaseUrl; NXDOMAIN publicly = split-horizon, not externally reachable
+- 2026-09-09 REJECTED OTHER @ services.ozoon.eu: /services/*/v{2,3}/api-docs and /actuator* → gateway 404; no anonymous schema/actuator leak
+- 2026-09-09 REJECTED OTHER @ games.glovefrog.plus: jackpotApiBase third-party; Ozoon ownership unconfirmed; off-scope until verified
+- 2026-09-09 ACCEPTED MISCONFIG @ services.ozoon.eu/services/site-config/v1/countries/{CC}/profileupdateform: unknown country → structured 404 leaking internal exception `io.crazy88.beatrix.siteconfig.exception.CountryNotFoundException` (GoBet/Beatrix backend fingerprint)
+- 2026-09-09 ACCEPTED MISCONFIG @ www.ozoon.eu/api/v1: GET /api/v1/login and /api/v1/whoami → Spring Boot Whitelabel 404 JSON (no method guard, 404 not 405); signup GET → WAF "Request Rejected" → WAF staged on mutating signup path only
+- 2026-09-09 ACCEPTED MISCONFIG @ services.ozoon.eu/services/site-config/v1/countries/{CC}/profileupdateform: per-country profile-update whitelist is flat (email,phone/addressLine/postalCode/language,timeZone/oddsFormat/subscriptionChannels) with no role/vip/attributes country member; CA exposes CAD+XBT (XBT unpublished), US=USD — update DTO is strict but signup DTO separate
+- 2026-09-09 ACCEPTED OTHER @ www.ozoon.eu: homepage SSR JSON references api.wicket-keeper.com as apmRum.url — third-party RUM/APM endpoint, ownership unconfirmed; off-scope pending verification (parallel to glovefrog)
+- 2026-09-09 REJECTED OTHER @ www.ozoon.eu/robots.txt: only sitemap_index.xml + disallow: (all) — known-public-file class, no findings
+- 2026-09-09 REJECTED OTHER @ services.ozoon.eu/services/site-config/v1/countries: bare /countries and unknown-country /countries/XX/profiles are descriptive-error 404 only — no enumeration/restricted-territory leak beyond known codes
+- 2026-09-09 REJECTED OTHER @ www.ozoon.eu/api/v1/logout: GET → structured Spring 405 Method Not Allowed (real POST-only route); OPTIONS → 200. Route-existence confirmatory only; 405-on-POST-logout and OPTIONS are REJECTED classes. No scoped finding.
+- 2026-09-09 REJECTED OTHER @ www.ozoon.eu/api/v1 + services.ozoon.eu/services: passive GET breadth (oauth/authorize/connect/password-forgot/reset/verify-email/session on www; auth/identity/authentication/registration/player on services) all → 404 — no anonymous auth-flow alias/schema leak beyond known login/whoami/signup/logout routes

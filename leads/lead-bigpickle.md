@@ -1999,3 +1999,31 @@ testability: AUTH_HELPED
 [LEARN] REJECTED OTHER @ services.ozoon.eu: /services/*/v{2,3}/api-docs and /actuator* → gateway 404; no anonymous schema/actuator leak.
 [LEARN] REJECTED OTHER @ games.glovefrog.plus / api.wicket-keeper.com: jackpotApiBase/apmRum third-party endpoints; Ozoon ownership unconfirmed; off-scope until verified.
 [RISK] ozoon-sportsbook-casino: 81/100 (flat). Live re-probe this cycle confirms both critical variants (wallet-gateway/balances, player-verification/verify) still return byte-stable structured 401 — gates mounted, binding still unresolved, anonymous surface exhausted. BOLA (65), mass-assignment (60), mock-2FA (55) all remain AUTH_HELPED behind the restricted signup. Risk moves only on the first authorized differential — +1 on BOLA/header-bypass confirmation, −2 if UUID binding or mock header is stripped server-side.
+## 2026-09-09 01:10:09 UTC [target] (model bigpickle)
+[HYP] BOLA on profile-keyed UUID endpoints — session identity not bound to path UUID
+class: IDOR
+asset: https://services.ozoon.eu/services/wallet-gateway/v1/profiles/{uuid}/balances (+ player-verification /verifications/verify)
+confidence: 65
+reasoning: SDK bundles key sensitive resources by profile UUID in path across 5 services; anonymous structured 401 {"errorCode":"unauthorized"} re-verified byte-shape-stable today on balances and verify = auth pre-check precedes resource lookup; session→path-UUID binding never tested.
+evidence_needed: With A's session, /profiles/{B-ownPID}/... returns B's data (200/differential) while own PID returns A's data.
+verify_steps: [AUTH_HELPED] signup A+B throwaways → sid+ownPID each; A's sid GET /services/wallet-gateway/v1/profiles/{B-ownPID}/balances + /services/player-verification/v1/profiles/{B-ownPID}/verifications vs control {A-ownPID}; foreign 200/differential = BOLA, 401/403 = bound.
+impact: Critical — cross-user wallet/transaction/PII across 5 services; ATO enabler.
+testability: AUTH_HELPED
+[HYP] Registration/referral mass assignment via captcha-free signup
+class: BUSLOGIC
+asset: https://www.ozoon.eu/api/v1/signup
+confidence: 60
+reasoning: reCAPTCHA v3 enforced on `login` only; signup captcha-free; static 32-hex refSiteToken with affiliate.check-referring-site.enabled:["false"]; signup DTO accepts client-controlled attributes/address sub-objects (update DTO strict, signup DTO separate).
+evidence_needed: POST signup adding role/vip/balance/currency keys persists vs control; static referral token honored for unverified email.
+verify_steps: [AUTH_HELPED] signup control then signup +extra attributes/role/vip/balance; compare persisted/echoed fields; then signup_from_invitation with static refSiteToken.
+impact: Medium-High — referral fraud, softblock bypass, privilege elevation if role/vip honored.
+testability: AUTH_HELPED
+[HYP] Mock-2FA verification header honored — client-controlled 2FA/KYC gate bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify
+confidence: 55
+reasoning: Production SDK sends X-MOCK-2FA-VERIFICATION:true; config two_factor_authenticator.allow-permanent-skip:["true"]; isMockProviderEnabled:false is client-side only, does not resolve server-side honoring; 401 anonymous baseline re-verified today on exact verify route.
+evidence_needed: POST verify +header succeeds while byte-identical request without header rejects.
+verify_steps: [AUTH_HELPED] signup → sid+ownPID; POST verify {"verificationType":"PHONE"} +header true then control without; compare status/body.
+impact: Critical — bypass SMS/PIN/2FA/KYC on deposit/withdraw/bonus money flows.
+testability: AUTH_HELPED

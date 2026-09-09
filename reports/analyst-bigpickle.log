@@ -10177,3 +10177,150 @@ STEP 6 — LEARNING
 
 STEP 7 — RISK
 [RISK] ozoon-sportsbook-casino: 81/100 (flat). Live re-probe this cycle confirms both critical variants (wallet-gateway/balances, player-verification/verify) still return byte-stable structured 401 — gates mounted, binding still unresolved, anonymous surface exhausted. BOLA (65), mass-assignment (60), mock-2FA (55) all remain AUTH_HELPED behind the restricted signup. Risk moves only on the first authorized differential — +1 on BOLA/header-bypass confirmation, −2 if UUID binding or mock header is stripped server-side.
+===== ANALYST bigpickle 2026-09-09 01:19:23 UTC =====
+[0m
+> build · big-pickle
+[0m
+I'll analyze the current state and provide structured output for this cycle.
+
+Let me check for any new surface data before emitting my analysis.
+[0m$ [0mls -la /home/runner/work/ozoon-sportsbook-casino-hunt/ozoon-sportsbook-casino-hunt/ 2>/dev/null; echo "---"; ls /home/runner/work/ozoon-sportsbook-casino-hunt/ozoon-sportsbook-casino-hunt/*.md 2>/dev/null
+total 300
+drwxr-xr-x 12 runner runner   4096 Sep  9 01:09 .
+drwxr-xr-x  3 runner runner   4096 Sep  9 01:09 ..
+drwxr-xr-x  7 runner runner   4096 Sep  9 01:09 .git
+drwxr-xr-x  3 runner runner   4096 Sep  9 01:09 .github
+-rw-r--r--  1 runner runner   1642 Sep  9 01:09 README.md
+-rw-r--r--  1 runner runner    177 Sep  9 01:09 analyst-out.txt
+-rw-r--r--  1 runner runner 108715 Sep  9 01:09 analyst-prompt.txt
+-rw-r--r--  1 runner runner 104978 Sep  9 01:09 ctx.txt
+drwxr-xr-x  2 runner runner   4096 Sep  9 01:09 inventory
+drwxr-xr-x  2 runner runner   4096 Sep  9 01:09 knowledge
+drwxr-xr-x  2 runner runner   4096 Sep  9 01:09 leads
+-rw-r--r--  1 runner runner   3448 Sep  9 01:09 probe-results.md
+drwxr-xr-x  2 runner runner   4096 Sep  9 01:09 recon-notes
+drwxr-xr-x  2 runner runner   4096 Sep  9 01:09 reports
+drwxr-xr-x  2 runner runner   4096 Sep  9 01:09 reposcan-raw
+-rw-r--r--  1 runner runner   3150 Sep  9 01:09 scope.yml
+drwxr-xr-x  2 runner runner   4096 Sep  9 01:09 scripts
+-rw-r--r--  1 runner runner     33 Sep  9 01:09 state_bigpickle.json
+-rw-r--r--  1 runner runner     33 Sep  9 01:09 state_laguna.json
+-rw-r--r--  1 runner runner     33 Sep  9 01:09 state_ling3.json
+-rw-r--r--  1 runner runner     33 Sep  9 01:09 state_longcat.json
+-rw-r--r--  1 runner runner     33 Sep  9 01:09 state_mimo.json
+-rw-r--r--  1 runner runner     33 Sep  9 01:09 state_nemotron3.json
+drwxr-xr-x  2 runner runner   4096 Sep  9 01:09 triage
+---
+/home/runner/work/ozoon-sportsbook-casino-hunt/ozoon-sportsbook-casino-hunt/README.md
+/home/runner/work/ozoon-sportsbook-casino-hunt/ozoon-sportsbook-casino-hunt/probe-results.md
+[0m
+[0m→ [0mRead probe-results.md
+The knowledge base and my state are essentially unchanged from last cycle — this is pure consolidation. Let me verify the probe-results and check for any new recon since last cycle.
+The probe results show only www.ozoon.com marketing-edge probes have been re-run. No new anonymous surface was discovered this cycle. The state confirms zero authenticated probes — everything remains AUTH_HELPED behind the restricted signup gateway.
+
+This is a pure consolidation cycle. The three critical hypotheses remain blocked on the human-authorized signup. Let me run the passive differential re-probe that's within authorized bounds (read-only GET) to confirm the baseline is intact.
+
+Let me do the read-only baseline re-verification of the two critical gates (that is authorized passive GET) and the site-config fingerprint.
+[0m
+[0m$ [0mcd /tmp/opencode 2>/dev/null || mkdir -p /tmp/opencode && cd /tmp/opencode
+UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/120 Safari/537.36"
+echo "=== wallet-gateway balances (bogus uuid) ==="
+curl -s -o /tmp/opencode/r1.txt -w "HTTP %{http_code} len=%{size_download}\n" -H "User-Agent: $UA" "https://services.ozoon.eu/services/wallet-gateway/v1/profiles/00000000-0000-0000-0000-000000000000/balances"
+echo "--- body: ---"; cat /tmp/opencode/r1.txt; echo
+echo "=== player-verification verify (bogus uuid) ==="
+curl -s -o /tmp/opencode/r2.txt -w "HTTP %{http_code} len=%{size_download}\n" -H "User-Agent: $UA" "https://services.ozoon.eu/services/player-verification/v1/profiles/00000000-0000-0000-0000-000000000000/verifications"
+echo "--- body: ---"; cat /tmp/opencode/r2.txt; echo
+=== wallet-gateway balances (bogus uuid) ===
+HTTP 401 len=159
+--- body: ---
+{"timestamp":"2026-09-09T01:09:53.045Z","status":401,"message":"Authentication required for requested route","error":"Unauthorized","errorCode":"unauthorized"}
+=== player-verification verify (bogus uuid) ===
+HTTP 404 len=110
+--- body: ---
+{"timestamp":"2026-09-09T01:09:53.685+0000","status":404,"error":"Not Found","message":"No message available"}
+[0m
+The baseline is confirmed intact:
+- wallet-gateway balances: byte-shape-stable structured 401 `{"errorCode":"unauthorized"}` — auth pre-check precedes resource lookup ✓ (matches prior cycles)
+- player-verification `/verifications` (list) returns 404 — note this is the list endpoint, not the `/verify` action endpoint. The verify POST is the one with the mock-header hypothesis and it's AUTH_HELPED.
+
+Let me check the exact verify action endpoint baseline and the site-config fingerprint.
+[0m$ [0mcd /tmp/opencode
+UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/120 Safari/537.36"
+echo "=== verify action endpoint (bogus) ==="
+curl -s -o /tmp/opencode/r3.txt -w "HTTP %{http_code} len=%{size_download}\n" -H "User-Agent: $UA" "https://services.ozoon.eu/services/player-verification/v1/profiles/00000000-0000-0000-0000-000000000000/verifications/verify"
+echo "--- body: ---"; cat /tmp/opencode/r3.txt; echo
+echo "=== site-config unknown country fingerprint ==="
+curl -s -o /tmp/opencode/r4.txt -w "HTTP %{http_code} len=%{size_download}\n" -H "User-Agent: $UA" "https://services.ozoon.eu/services/site-config/v1/countries/XX/profileupdateform"
+echo "--- body: ---"; cat /tmp/opencode/r4.txt; echo
+=== verify action endpoint (bogus) ===
+HTTP 401 len=159
+--- body: ---
+{"timestamp":"2026-09-09T01:09:57.510Z","status":401,"message":"Authentication required for requested route","error":"Unauthorized","errorCode":"unauthorized"}
+=== site-config unknown country fingerprint ===
+HTTP 404 len=190
+--- body: ---
+{"timestamp":"2026-09-09T01:09:58.384395413Z","status":404,"exception":"io.crazy88.beatrix.siteconfig.exception.CountryNotFoundException","error":"Not Found","errorCode":"COUNTRY_NOT_FOUND"}
+[0m
+All baselines re-confirmed byte-shape-stable this cycle:
+- **verify action endpoint** (`/verifications/verify`): structured 401 `{"errorCode":"unauthorized"}` — the exact mock-2FA hypothesis gate, auth pre-check precedes resource lookup ✓
+- **site-config unknown country**: structured 404 leaking `io.crazy88.beatrix.siteconfig.exception.CountryNotFoundException` — GoBet/Beatrix backend fingerprint intact ✓
+
+No new anonymous surface. Everything remains behind the AUTH_HELPED signup gateway. This is a consolidation cycle. Emitting structured output.
+
+---
+
+STEP 1 — DELTA
+- NO_DELTA: No new anonymous surface discovered this cycle; all re-probes target www.ozoon.com marketing edge (unchanged).
+- [CHANGED] Live re-probe 2026-09-09: `verify` action endpoint and `wallet-gateway/balances` both return byte-shape-stable structured 401 `{"errorCode":"unauthorized"}`; site-config unknown-country 404 still leaks `io.crazy88.beatrix.siteconfig.exception.CountryNotFoundException` — all three critical gates intact, anonymous differential baseline unchanged.
+
+STEP 2 — PRIORITIZE
+- [PRIO] services.ozoon.eu/services/wallet-gateway/v1/profiles/{uuid}/balances,9.5,attack_surface=9 business_value=10 tech_exposure=8 gate_ease=2 cloud_surface=7 freshness=10
+- [PRIO] services.ozoon.eu/services/player-verification/v1/profiles/{uuid}/verifications/verify,8.5,attack_surface=8 business_value=9 tech_exposure=8 gate_ease=2 cloud_surface=7 freshness=10
+- [PRIO] www.ozoon.eu/api/v1/signup,7.5,attack_surface=8 business_value=8 tech_exposure=6 gate_ease=6 cloud_surface=7 freshness=10
+
+STEP 3 — HYPOTHESES
+[HYP] BOLA on profile-keyed UUID endpoints — session identity not bound to path UUID
+class: IDOR
+asset: https://services.ozoon.eu/services/wallet-gateway/v1/profiles/{uuid}/balances (+ player-verification /verifications/verify)
+confidence: 65
+reasoning: SDK bundles key sensitive resources by profile UUID in path across 5 services; anonymous structured 401 {"errorCode":"unauthorized"} re-verified byte-shape-stable today on balances and verify = auth pre-check precedes resource lookup; session→path-UUID binding never tested.
+evidence_needed: With A's session, /profiles/{B-ownPID}/... returns B's data (200/differential) while own PID returns A's data.
+verify_steps: [AUTH_HELPED] signup A+B throwaways → sid+ownPID each; A's sid GET /services/wallet-gateway/v1/profiles/{B-ownPID}/balances + /services/player-verification/v1/profiles/{B-ownPID}/verifications vs control {A-ownPID}; foreign 200/differential = BOLA, 401/403 = bound.
+impact: Critical — cross-user wallet/transaction/PII across 5 services; ATO enabler.
+testability: AUTH_HELPED
+
+[HYP] Registration/referral mass assignment via captcha-free signup
+class: BUSLOGIC
+asset: https://www.ozoon.eu/api/v1/signup
+confidence: 60
+reasoning: reCAPTCHA v3 enforced on `login` only; signup captcha-free; static 32-hex refSiteToken with affiliate.check-referring-site.enabled:["false"]; signup DTO accepts client-controlled attributes/address sub-objects (update DTO strict, signup DTO separate).
+evidence_needed: POST signup adding role/vip/balance/currency keys persists vs control; static referral token honored for unverified email.
+verify_steps: [AUTH_HELPED] signup control then signup +extra attributes/role/vip/balance; compare persisted/echoed fields; then signup_from_invitation with static refSiteToken.
+impact: Medium-High — referral fraud, softblock bypass, privilege elevation if role/vip honored.
+testability: AUTH_HELPED
+
+[HYP] Mock-2FA verification header honored — client-controlled 2FA/KYC gate bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify
+confidence: 55
+reasoning: Production SDK sends X-MOCK-2FA-VERIFICATION:true; config two_factor_authenticator.allow-permanent-skip:["true"]; isMockProviderEnabled:false is client-side only, does not resolve server-side honoring; 401 anonymous baseline re-verified today on exact verify route.
+evidence_needed: POST verify +header succeeds while byte-identical request without header rejects.
+verify_steps: [AUTH_HELPED] signup → sid+ownPID; POST verify {"verificationType":"PHONE"} +header true then control without; compare status/body.
+impact: Critical — bypass SMS/PIN/2FA/KYC on deposit/withdraw/bonus money flows.
+testability: AUTH_HELPED
+
+STEP 4 — SELF-CRITIQUE
+- [FINAL] survivors (ranked, no drops below 40): BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55). All three remain AUTH_HELPED and unprobed — gated on the restricted signup, which is a mutating create on a live real-money platform requiring explicit program authorization.
+
+STEP 5 — NEXT ACTION
+- [NEXT] HUMAN: Re-request program authorization at bugs.olivermaicher.eu for TWO strictly-restricted throwaway accounts on www.ozoon.eu (synthetic emails; only the two signup POSTs; zero writes to existing data). If granted, fire exactly: POST https://www.ozoon.eu/api/v1/signup {"email":"<A>@<valid-domain>","password":"Test1234!","country":"CA","language":"en","attributes":{},"address":{"country":"CA","addressLine":"123 Test St","postalCode":"K1A 0A6"}} (repeat for B); capture sid+ownPID each; with A's sid GET https://services.ozoon.eu/services/wallet-gateway/v1/profiles/{B-ownPID}/balances + /services/player-verification/v1/profiles/{B-ownPID}/verifications vs control {A-ownPID} (foreign 200 = BOLA); then POST https://services.ozoon.eu/services/player-verification/v1/profiles/{A-ownPID}/verifications/verify {"verificationType":"PHONE"} with X-MOCK-2FA-VERIFICATION:true then without (mocked 200 vs 400/401 = bypass); then a third control signup with injected attributes.role/vip/balance for mass-assignment differential; enumerate A's own session for exact transaction-group/referral subpaths.
+
+STEP 6 — LEARNING
+- [LEARN] ACCEPTED MISCONFIG @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: 2026-09-09 re-probe — wallet-gateway/balances and player-verification/verify both return byte-shape-stable structured 401 {"errorCode":"unauthorized"}; auth pre-check precedes resource lookup on both live gates; anonymous differential baseline intact.
+- [LEARN] ACCEPTED MISCONFIG @ services.ozoon.eu/services/site-config/v1/countries/{CC}/profileupdateform: 2026-09-09 re-probe — unknown country → structured 404 still leaks `io.crazy88.beatrix.siteconfig.exception.CountryNotFoundException` (GoBet/Beatrix fingerprint), byte-stable.
+- [LEARN] ACCEPTED IDOR @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: Confirmed UUID-path BOLA surface across 5 services; binding unresolved; AUTH_HELPED testing required.
+- [LEARN] ACCEPTED AUTH @ services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify: Mock-2FA header + allow-permanent-skip config; critical if honored; AUTH_HELPED.
+- [LEARN] ACCEPTED BUSLOGIC @ www.ozoon.eu/api/v1/signup: Captcha-free signup with client-controlled attributes/address; static referral token unverified; sole gateway to authenticated testing.
+
+STEP 7 — RISK
+- [RISK] ozoon-sportsbook-casino: 81/100 (flat). Live re-probe this cycle confirms both critical variants (wallet-gateway/balances, player-verification/verify) and the site-config fingerprint still return byte-stable structured responses — gates mounted, binding unresolved, anonymous surface exhausted. BOLA (65), mass-assignment (60), mock-2FA (55) all remain AUTH_HELPED behind the restricted signup. Risk moves only on the first authorized differential: +1 on BOLA/header-bypass confirmation, −2 if UUID binding or mock header is stripped server-side.
