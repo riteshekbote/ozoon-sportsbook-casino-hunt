@@ -1,14 +1,18 @@
-## 2026-09-09 01:19:14 UTC [target] (model nemotron3)
-[NEW] ozoon.eu and services.ozoon.eu confirmed in-scope per scope.yml ("All infrastructure, brands, services and gaming platforms operated by Ozoon") but STILL absent from inventory file (only ozoon.com/www.ozoon.com listed)
-[CHANGED] Zero authenticated probes executed against core platform (ozoon.eu/services.ozoon.eu) across all 18+ probe rounds; all probes target only www.ozoon.com marketing edge — critical testing gap unchanged
-[NEW] Live confirmation 2026-09-07/08: Structured auth-gate discriminator on 5 services (wallet-gateway, referral, player-verification, transaction-group, player-messages) → GET /services/*/v1/profiles/{bogus-uuid}/... returns byte-stable 401 {"errorCode":"unauthorized"}; auth pre-check precedes resource lookup
-[NEW] Live confirmation 2026-09-07/08: www.ozoon.eu/api/v1/login and /api/v1/whoami → Spring Boot Whitelabel 404 JSON (no method guard, 404 not 405); signup GET → WAF "Request Rejected" (support_id 6279731412718049849) → WAF staged on mutating signup path only
-[NEW] Live confirmation 2026-09-07/08: /services/site-config/v1/countries/CA/profileupdateform returns CAD + XBT (XBT unpublished) with mandatory province/postal code; flat whitelist fields (email,phone,addressLine,postalCode,language,timeZone,oddsFormat,subscriptionChannels); update DTO strict but signup DTO separate
-[PRIO] services.ozoon.eu/services/*/v1/profiles/{uuid}/...,9.25,attack_surface=10,business_value=10,tech_exposure=8,gate_ease=7,cloud_surface=6,freshness=10
-[PRIO] services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify,8.50,attack_surface=8,business_value=10,tech_exposure=9,gate_ease=7,cloud_surface=5,freshness=10
-[PRIO] www.ozoon.eu/api/v1/signup,8.00,attack_surface=9,business_value=9,tech_exposure=7,gate_ease=10,cloud_surface=5,freshness=10
-[PRIO] services.ozoon.eu/services/site-config/v1/countries/{CC}/profileupdateform,6.75,attack_surface=7,business_value=6,tech_exposure=6,gate_ease=10,cloud_surface=5,freshness=10
-[PRIO] www.ozoon.eu/api/v1,6.50,attack_surface=6,business_value=7,tech_exposure=6,gate_ease=10,cloud_surface=5,freshness=10
+## 2026-09-09 06:12:31 UTC [target] (model nemotron3)
+[NEW] `ozoon.eu` and `services.ozoon.eu` confirmed in-scope per scope.yml ("All infrastructure, brands, services and gaming platforms operated by Ozoon") but STILL absent from inventory file (only `ozoon.com`/`www.ozoon.com` listed)
+[CHANGED] Zero authenticated probes executed against core platform (`ozoon.eu`/`services.ozoon.eu`) across all 18+ probe rounds; all probes target only `www.ozoon.com` marketing edge — critical testing gap unchanged
+[NEW] Live confirmation 2026-09-07/08: Structured auth-gate discriminator on 5 services (wallet-gateway, referral, player-verification, transaction-group, player-messages) → `GET /services/*/v1/profiles/{bogus-uuid}/...` returns byte-stable `401 {"errorCode":"unauthorized"}` — auth pre-check precedes resource lookup; anonymous differential baseline intact
+[NEW] Live confirmation 2026-09-07/08: `www.ozoon.eu/api/v1/login` and `/api/v1/whoami` → Spring Boot Whitelabel 404 JSON (no method guard, 404 not 405); `signup GET` → WAF "Request Rejected" (support_id 6279731412718049849) → WAF staged on mutating signup path only
+[NEW] Live confirmation 2026-09-07/08: `/services/site-config/v1/countries/CA/profileupdateform` returns CAD + XBT (XBT unpublished) with mandatory province/postal code; flat whitelist fields (email,phone,addressLine,postalCode,language,timeZone,oddsFormat,subscriptionChannels) — no role/vip/attributes in update DTO; signup DTO separate
+[NEW] Live confirmation 2026-09-07/08: `chat.ozoon.eu` live in-scope subdomain (CNAME `ozoon.eu.glb.network`); widget-only CSP, no Ozoon API logic
+[NEW] Live confirmation 2026-09-07/08: `games.glovefrog.plus` jackpotApiBase third-party; Ozoon ownership unconfirmed; off-scope until verified
+[NEW] Live confirmation 2026-09-07/08: `/services/*/v{2,3}/api-docs` and `/actuator*` → gateway 404; no anonymous schema/actuator leak
+[PRIO] https://services.ozoon.eu/services/wallet-gateway/v1/profiles/{uuid}/balances,9.50,attack_surface=10,business_value=10,tech_exposure=8,gate_ease=6,cloud_surface=5,freshness=10
+[PRIO] https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify,8.75,attack_surface=9,business_value=10,tech_exposure=9,gate_ease=6,cloud_surface=5,freshness=10
+[PRIO] https://www.ozoon.eu/api/v1/signup,8.00,attack_surface=8,business_value=9,tech_exposure=7,gate_ease=8,cloud_surface=5,freshness=10
+[PRIO] https://services.ozoon.eu/services/referral/v1/profiles/{uuid},8.00,attack_surface=9,business_value=8,tech_exposure=7,gate_ease=6,cloud_surface=5,freshness=10
+[PRIO] https://services.ozoon.eu/services/transaction-group/v1/profiles/{uuid}/transactions,8.00,attack_surface=9,business_value=8,tech_exposure=7,gate_ease=6,cloud_surface=5,freshness=10
+[PRIO] https://services.ozoon.eu/services/player-messages/v1/profiles/{uuid}/messages,7.75,attack_surface=8,business_value=8,tech_exposure=7,gate_ease=6,cloud_surface=5,freshness=10
 [HYP] BOLA on Profile-Keyed UUID Endpoints Across 5 Services
 class: IDOR
 asset: https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...

@@ -2027,3 +2027,4 @@ evidence_needed: POST verify +header succeeds while byte-identical request witho
 verify_steps: [AUTH_HELPED] signup → sid+ownPID; POST verify {"verificationType":"PHONE"} +header true then control without; compare status/body.
 impact: Critical — bypass SMS/PIN/2FA/KYC on deposit/withdraw/bonus money flows.
 testability: AUTH_HELPED
+## 2026-09-09 06:09:44 UTC [target] (model bigpickle)
