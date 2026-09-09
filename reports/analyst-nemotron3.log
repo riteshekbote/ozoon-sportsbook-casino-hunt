@@ -7356,3 +7356,8 @@ STEP 6 — LEARNING
 
 STEP 7 — RISK
 [RISK] ozoon-sportsbook-casino: 81/100 — Core gambling platform (ozoon.eu) with micro-frontend API (services.ozoon.eu) fully mapped via public SDK/config. Three critical vectors with clear AUTH_HELPED test paths: (1) BOLA on UUID-keyed profile endpoints across 5 services (confidence 65), (2) Registration/referral mass assignment on captcha-free signup with unverified static referral token (confidence 60), (3) 2FA/KYC bypass via client-controlled X-MOCK-2FA-VERIFICATION header honored by allow-permanent-skip config (confidence 55). Zero authenticated probes executed; all prior probes target only www.ozoon.com marketing edge. Real-money gaming with crypto/Interac payments, F5 ASM WAF, reCAPTCHA v3 (login-only), 2FA present but backend binding correctness and mock-header handling unverified. High business value + high attack surface + low gate ease (public registration, public API config) = elevated risk.
+===== ANALYST nemotron3 2026-09-09 23:35:21 UTC =====
+[0m
+> build · nemotron-3-ultra-free
+[0m
+[91m[1mError: [0mError from provider (Console): Upstream request failed: [404] Provider returned error
