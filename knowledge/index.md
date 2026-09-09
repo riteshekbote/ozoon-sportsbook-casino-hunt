@@ -221,3 +221,5 @@
 - 2026-09-09 REJECTED SECRET @ www.ozoon.com:3306: identical port-closed/EOF pattern across hosts = shared proxy artifact, not MySQL.
 - 2026-09-09 REJECTED SECRET @ oZoon/hyper, oZoon/mas-film + OTHER @ oZoon/secure-query-string: learning/demo repo artifacts, not confirmed deployed.
 - 2026-09-09 REJECTED OTHER @ services.services.ozoon.eu / games.glovefrog.plus / api.wicket-keeper.com: split-horizon internal hostname + third-party endpoints, ownership unconfirmed.
+- 2026-09-09 ACCEPTED IDOR @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: Reconfirmed — no new anonymous surface displaces the SDK-confirmed BOLA vector across 5 services; binding unresolved; AUTH_HELPED.
+- 2026-09-09 ACCEPTED BUSLOGIC @ www.ozoon.eu/api/v1/signup: captcha-free signup remains sole gateway to authenticated testing; AUTH_HELPED.
