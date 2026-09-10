@@ -228,3 +228,24 @@
 - 2026-09-09 ACCEPTED BUSLOGIC @ www.ozoon.eu/api/v1/signup: captcha-free signup remains sole gateway to authenticated testing; static refSiteToken unverified; AUTH_HELPED.
 - 2026-09-09 REJECTED SECRET + OTHER @ oZoon/hyper, oZoon/mas-film, oZoon/secure-query-string: hardcoded creds/SQLi in learning/demo repos, not confirmed deployed.
 - 2026-09-09 REJECTED OTHER @ services.services.ozoon.eu / games.glovefrog.plus / api.wicket-keeper.com: split-horizon internal hostname + third-party endpoints; ownership unconfirmed, off-scope until verified.
+- 2026-09-10 ACCEPTED IDOR @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: Reconfirmed — no new anonymous surface displaces the SDK-confirmed BOLA vector across 5 services; binding still unresolved; AUTH_HELPED.
+- 2026-09-10 ACCEPTED AUTH @ services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify: mock-2FA header + allow-permanent-skip remains the single critical gate-bypass candidate; isMockProviderEnabled:false is client-side only; AUTH_HELPED.
+- 2026-09-10 ACCEPTED BUSLOGIC @ www.ozoon.eu/api/v1/signup: captcha-free signup remains sole gateway to authenticated testing; static refSiteToken unverified; AUTH_HELPED.
+- 2026-09-10 REJECTED SECRET @ www.ozoon.com:3306: identical port-closed/EOF pattern across hosts = shared proxy artifact, not MySQL.
+- 2026-09-10 REJECTED SECRET + OTHER @ oZoon/hyper, oZoon/mas-film, oZoon/secure-query-string: hardcoded creds/SQLi in learning/demo repos, not confirmed deployed.
+- 2026-09-10 REJECTED OTHER @ services.services.ozoon.eu / games.glovefrog.plus / api.wicket-keeper.com: split-horizon internal hostname + third-party endpoints; ownership unconfirmed, off-scope until verified.
+- 2026-09-10 ACCEPTED IDOR @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: Confirmed UUID-path BOLA surface across 5 services; binding unresolved; AUTH_HELPED testing required
+- 2026-09-10 ACCEPTED AUTH @ services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify: Mock-2FA header in production SDK + allow-permanent-skip config; critical if honored
+- 2026-09-10 ACCEPTED BUSLOGIC @ www.ozoon.eu/api/v1/signup: Captcha-free signup with client-controlled attributes/address; static referral token unverified. Gateway probe to unlock authenticated testing
+- 2026-09-10 ACCEPTED MISCONFIG @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: structured 401 errorCode:"unauthorized" for valid-route bogus UUID = auth pre-check precedes resource lookup; anonymous differential baseline
+- 2026-09-10 ACCEPTED MISCONFIG @ services.ozoon.eu/services/site-config/v1/countries/{CC}/profileupdateform: unknown country → structured 404 leaking internal exception `io.crazy88.beatrix.siteconfig.exception.CountryNotFoundException` (GoBet/Beatrix backend fingerprint)
+- 2026-09-10 ACCEPTED MISCONFIG @ www.ozoon.eu/api/v1: GET login/whoami → Spring Boot Whitelabel 404 (no method guard); signup GET → WAF "Request Rejected" — WAF staged on mutating signup path only
+- 2026-09-10 ACCEPTED MISCONFIG @ services.ozoon.eu/services/site-config/v1/countries/{CC}/profileupdateform: per-country profile-update whitelist is flat; CA=CAD+XBT, US=USD; update DTO strict but signup DTO separate
+- 2026-09-10 ACCEPTED MISCONFIG @ chat.ozoon.eu: live in-scope subdomain; widget-only, no Ozoon API logic
+- 2026-09-10 ACCEPTED SSRF @ www.ozoon.com: PWS/wnacloud shared edge; passive GET only; deprioritized vs core platform
+- 2026-09-10 REJECTED SECRET @ www.ozoon.com:3306: identical port-closed/EOF pattern across hosts = shared proxy artifact
+- 2026-09-10 REJECTED SECRET @ oZoon/hyper, oZoon/mas-film: creds in learning/demo repos, not confirmed deployed
+- 2026-09-10 REJECTED OTHER @ oZoon/secure-query-string: SQLi patterns in learning repos, not confirmed deployed
+- 2026-09-10 REJECTED OTHER @ services.services.ozoon.eu: internal-only backend hostname; NXDOMAIN publicly = split-horizon
+- 2026-09-10 REJECTED OTHER @ services.ozoon.eu: /services/*/v{2,3}/api-docs and /actuator* → gateway 404; no anonymous schema/actuator leak
+- 2026-09-10 REJECTED OTHER @ games.glovefrog.plus / api.wicket-keeper.com: third-party endpoints; Ozoon ownership unconfirmed

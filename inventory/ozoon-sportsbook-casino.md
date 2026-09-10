@@ -443,3 +443,6 @@ www.ozoon.com
 - CHANGED Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway at `www.ozoon.eu/api/v1/signup`
 
 ## 2026-09-09 23:35:21 UTC
+
+## 2026-09-10 01:33:54 UTC
+- NEW `api.wicket-keeper.com` referenced in homepage SSR as `apmRum.url` — third-party RUM/APM endpoint, ownership unconfirmed; off-scope pending verification
