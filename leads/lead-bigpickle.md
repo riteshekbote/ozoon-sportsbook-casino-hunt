@@ -2294,3 +2294,4 @@ testability: AUTH_HELPED
 [LEARN] REJECTED SECRET + OTHER @ oZoon/hyper, oZoon/mas-film, oZoon/secure-query-string: hardcoded creds/SQLi in learning/demo repos, not confirmed deployed.
 [LEARN] REJECTED OTHER @ services.services.ozoon.eu / games.glovefrog.plus / api.wicket-keeper.com: split-horizon internal hostname + third-party endpoints; ownership unconfirmed, off-scope until verified.
 [RISK] ozoon-sportsbook-casino: 80 — real-money gambling platform with confirmed critical surface (BOLA UUID across 5 services, mock-2FA gate-bypass config, mass-assignment-capable signup DTO) but zero authenticated probes executed across all cycles; every hypothesis gated on throwaway account creation requiring program authorization; pipeline now repeating consolidation cycles with no new evidence, which no longer increases risk but confirms the test gap is the binding constraint.
+## 2026-09-10 07:02:58 UTC [target] (model bigpickle)
