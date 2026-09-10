@@ -448,3 +448,9 @@ www.ozoon.com
 - NEW `api.wicket-keeper.com` referenced in homepage SSR as `apmRum.url` — third-party RUM/APM endpoint, ownership unconfirmed; off-scope pending verification
 
 ## 2026-09-10 07:03:07 UTC
+
+## 2026-09-10 12:02:50 UTC
+- NEW `ozoon.eu` and `services.ozoon.eu` confirmed in-scope per scope.yml ("All infrastructure, brands, services and gaming platforms operated by Ozoon") but **still absent from inventory file** (only `ozoo
+- CHANGED Zero authenticated probes executed against core platform (`ozoon.eu`/`services.ozoon.eu`) across all 18+ probe rounds; all probes target only `www.ozoon.com` marketing edge — critical testing gap unch
+- NEW `api.wicket-keeper.com` referenced in homepage SSR as `apmRum.url` — third-party RUM/APM endpoint, ownership unconfirmed; off-scope pending verification (parallel to `games.glovefrog.plus`)
+- CHANGED Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway at `www.ozoon.eu/api/v1/signup`

@@ -1,4 +1,8 @@
-## 2026-09-10 06:46:03 UTC [target] (model nemotron3)
+## 2026-09-10 12:02:41 UTC [target] (model nemotron3)
+[NEW] `ozoon.eu` and `services.ozoon.eu` confirmed in-scope per scope.yml ("All infrastructure, brands, services and gaming platforms operated by Ozoon") but **still absent from inventory file** (only `ozoon.com`/`www.ozoon.com` listed)
+[CHANGED] Zero authenticated probes executed against core platform (`ozoon.eu`/`services.ozoon.eu`) across all 18+ probe rounds; all probes target only `www.ozoon.com` marketing edge — critical testing gap unchanged
+[NEW] `api.wicket-keeper.com` referenced in homepage SSR as `apmRum.url` — third-party RUM/APM endpoint, ownership unconfirmed; off-scope pending verification (parallel to `games.glovefrog.plus`)
+[CHANGED] Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway at `www.ozoon.eu/api/v1/signup`
 [PRIO] https://services.ozoon.eu/services/wallet-gateway/v1/profiles/{uuid}/balances,9.25,attack_surface=10,business_value=10,tech_exposure=9,gate_ease=6,cloud_surface=6,freshness=10
 [PRIO] https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify,8.75,attack_surface=8,business_value=10,tech_exposure=9,gate_ease=6,cloud_surface=5,freshness=10
 [PRIO] https://www.ozoon.eu/api/v1/signup,8.25,attack_surface=9,business_value=9,tech_exposure=8,gate_ease=7,cloud_surface=5,freshness=10
@@ -31,6 +35,7 @@ evidence_needed: With own session, POST /verifications/verify with `X-MOCK-2FA-V
 verify_steps: 1. Register + login throwaway account (from HYP1/HYP2). 2. POST /services/player-verification/v1/profiles/{ownPID}/verifications/verify with header `X-MOCK-2FA-VERIFICATION:true` + minimal body. 3. Observe response. 4. Repeat without header as control. Self-created throwaway only.
 impact: Critical if honored — bypass 2FA/SMS/PIN/KYC gates on withdraw/deposit/bonus (money security control bypass)
 testability: AUTH_HELPED
+[PARKED] None — all three hypotheses have confidence ≥55, valid verify_steps, and are not REJECTED-class
 [FINAL] 1. BOLA on Profile-Keyed UUID Endpoints Across 5 Services (65) — services.ozoon.eu — AUTH_HELPED
 [FINAL] 2. Registration/Referral Mass Assignment via Captcha-Free Signup (60) — www.ozoon.eu/api/v1/signup — AUTH_HELPED
 [FINAL] 3. Mock-2FA Header Honored → Verification/KYC Bypass (55) — services.ozoon.eu — AUTH_HELPED

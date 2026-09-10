@@ -249,3 +249,4 @@
 - 2026-09-10 REJECTED OTHER @ services.services.ozoon.eu: internal-only backend hostname; NXDOMAIN publicly = split-horizon
 - 2026-09-10 REJECTED OTHER @ services.ozoon.eu: /services/*/v{2,3}/api-docs and /actuator* → gateway 404; no anonymous schema/actuator leak
 - 2026-09-10 REJECTED OTHER @ games.glovefrog.plus / api.wicket-keeper.com: third-party endpoints; Ozoon ownership unconfirmed
+- 2026-09-10 ACCEPTED IDOR @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: reconfirmed — no new anonymous surface displaces the SDK-confirmed BOLA vector across 5 services; binding unresolved; AUTH_HELPED.
