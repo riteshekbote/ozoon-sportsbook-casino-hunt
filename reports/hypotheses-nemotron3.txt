@@ -1,13 +1,15 @@
-## 2026-09-11 04:23:22 UTC [target] (model nemotron3)
-[NEW] `api.wicket-keeper.com` referenced in homepage SSR as `apmRum.url` — third-party RUM/APM endpoint, ownership unconfirmed; off-scope pending verification
+## 2026-09-11 09:20:54 UTC [target] (model nemotron3)
+[NEW] `api.wicket-keeper.com` referenced in homepage SSR as `apmRum.url` — third-party RUM/APM endpoint, ownership unconfirmed; off-scope pending verification (parallel to `games.glovefrog.plus`)
 [CHANGED] Inventory file (`inventory/ozoon-sportsbook-casino.md`) still lists ONLY `ozoon.com`/`www.ozoon.com` (marketing edge); `ozoon.eu` (core gambling platform) and `services.ozoon.eu` (backend API) confirmed in-scope per scope.yml but **still absent from inventory file** after 18+ probe rounds
 [CHANGED] Zero authenticated probes executed against core platform (`ozoon.eu`/`services.ozoon.eu`) across all 18+ probe rounds; all probes target only `www.ozoon.com` marketing edge — critical testing gap unchanged
 [CHANGED] Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway at `www.ozoon.eu/api/v1/signup`
+[CHANGED] triage run 2026-09-11-01:26 (mimo) returned no leads — same empty-pipeline pattern as 09-09/09-10 triage; no new evidence
 [PRIO] https://services.ozoon.eu/services/wallet-gateway/v1/profiles/{uuid}/balances,9.25,attack_surface=10,business_value=10,tech_exposure=9,gate_ease=6,cloud_surface=6,freshness=10
 [PRIO] https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify,8.75,attack_surface=8,business_value=10,tech_exposure=9,gate_ease=6,cloud_surface=5,freshness=10
 [PRIO] https://www.ozoon.eu/api/v1/signup,8.25,attack_surface=9,business_value=9,tech_exposure=8,gate_ease=7,cloud_surface=5,freshness=10
 [PRIO] https://services.ozoon.eu/services/site-config/v1/countries/CA/profileupdateform,6.50,attack_surface=7,business_value=6,tech_exposure=7,gate_ease=10,cloud_surface=5,freshness=10
 [PRIO] https://services.ozoon.eu/services/referral/v1/profiles/{uuid},6.50,attack_surface=7,business_value=7,tech_exposure=7,gate_ease=6,cloud_surface=5,freshness=10
+[PRIO] https://chat.ozoon.eu,3.00,attack_surface=3,business_value=2,tech_exposure=2,gate_ease=10,cloud_surface=3,freshness=10
 [HYP] BOLA on Profile-Keyed UUID Endpoints Across 5 Services
 class: IDOR
 asset: https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...
