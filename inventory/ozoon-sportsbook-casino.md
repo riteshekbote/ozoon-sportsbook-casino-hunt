@@ -519,3 +519,5 @@ www.ozoon.com
 - CHANGED `/services/*/v{2,3}/api-docs` and `/actuator*` → gateway 404; no anonymous schema/actuator leak — confirmed
 - CHANGED `games.glovefrog.plus` jackpotApiBase third-party; Ozoon ownership unconfirmed; off-scope until verified — unchanged
 - NEW `api.wicket-keeper.com` referenced in homepage SSR as `apmRum.url` — third-party RUM/APM endpoint, ownership unconfirmed; off-scope pending verification (parallel to `games.glovefrog.plus`)
+
+## 2026-09-11 22:25:47 UTC
