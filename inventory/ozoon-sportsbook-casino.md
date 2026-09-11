@@ -506,3 +506,16 @@ www.ozoon.com
 - CHANGED `chat.ozoon.eu` live in-scope subdomain (CNAME `ozoon.eu.glb.network`); widget-only CSP, no Ozoon API logic — confirmed
 - CHANGED `/services/*/v{2,3}/api-docs` and `/actuator*` → gateway 404; no anonymous schema/actuator leak — confirmed
 - CHANGED `games.glovefrog.plus` jackpotApiBase third-party; Ozoon ownership unconfirmed; off-scope until verified — unchanged
+
+## 2026-09-11 19:53:37 UTC
+- CHANGED triage run 2026-09-11-18:58 (post last cycle) returned "No leads provided" — 3rd consecutive empty triage (11:47/15:51/18:58); probe-results.md byte-unchanged since 17:23; hypothesis leads laguna/ling
+- CHANGED triage 06:38 formally INVALID'd the www.ozoon.com PWS-edge SSRF lead (all `?url=` probes → catch-all 200 len=?, no collab callback, shared-hosting edge behavior) — new formal disposition, previously o
+- CHANGED no new inventory entries, no new live probes, no reposcan output (`TARGET_ORG not configured`), knowledge tail is pure reconfirmation — surface identical to 17:23
+- CHANGED Inventory file (`inventory/ozoon-sportsbook-casino.md`) still lists ONLY `ozoon.com`/`www.ozoon.com` (marketing edge); `ozoon.eu` (core gambling platform) and `services.ozoon.eu` (backend API) confirm
+- CHANGED Zero authenticated probes executed against core platform (`ozoon.eu`/`services.ozoon.eu`) across all 18+ probe rounds; all probes target only `www.ozoon.com` marketing edge — critical testing gap unch
+- CHANGED Live confirmation re-verified: structured 401 `errorCode:"unauthorized"` for valid-route bogus UUID on 5 services = auth pre-check precedes resource lookup; anonymous differential baseline intact
+- CHANGED Live confirmation re-verified: `www.ozoon.eu/api/v1/login` and `/api/v1/whoami` → Spring Boot Whitelabel 404 JSON (no method guard, 404 not 405); `signup GET` → WAF "Request Rejected" (support_id 6279
+- CHANGED `chat.ozoon.eu` live in-scope subdomain (CNAME `ozoon.eu.glb.network`); widget-only CSP, no Ozoon API logic — confirmed
+- CHANGED `/services/*/v{2,3}/api-docs` and `/actuator*` → gateway 404; no anonymous schema/actuator leak — confirmed
+- CHANGED `games.glovefrog.plus` jackpotApiBase third-party; Ozoon ownership unconfirmed; off-scope until verified — unchanged
+- NEW `api.wicket-keeper.com` referenced in homepage SSR as `apmRum.url` — third-party RUM/APM endpoint, ownership unconfirmed; off-scope pending verification (parallel to `games.glovefrog.plus`)

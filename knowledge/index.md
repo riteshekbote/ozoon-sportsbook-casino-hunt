@@ -298,3 +298,4 @@
 - 2026-09-11 REJECTED OTHER @ services.services.ozoon.eu: internal-only backend hostname; NXDOMAIN publicly = split-horizon
 - 2026-09-11 REJECTED OTHER @ services.ozoon.eu: /services/*/v{2,3}/api-docs and /actuator* → gateway 404; no anonymous schema/actuator leak
 - 2026-09-11 REJECTED OTHER @ games.glovefrog.plus / api.wicket-keeper.com: third-party endpoints; Ozoon ownership unconfirmed
+- 2026-09-11 REJECTED SSRF @ www.ozoon.com: triage 06:38 verdict INVALID — ?url=?view=?page= all 200 len=? catch-all shared-edge responses, no collab callback; PWS/wnacloud behavior indistinguishable from catch-all, removing the PWS-edge SSRF hypothesis from active consideration (was deprioritized; now evidence-denied).

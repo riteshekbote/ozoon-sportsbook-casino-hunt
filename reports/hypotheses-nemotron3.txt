@@ -1,23 +1,17 @@
-## 2026-09-11 17:22:52 UTC [target] (model nemotron3)
-[CHANGED] Inventory file (`inventory/ozoon-sportsbook-casino.md`) still lists ONLY `ozoon.com`/`www.ozoon.com` (marketing edge); `ozoon.eu` (core gambling platform: sportsbook/casino/poker) and `services.ozoon.eu` (backend API) confirmed in-scope per scope.yml ("All infrastructure, brands, services and gaming platforms operated by Ozoon") but **absent from inventory** — unchanged for 9+ days
+## 2026-09-11 19:53:05 UTC [target] (model nemotron3)
+[CHANGED] Inventory file (`inventory/ozoon-sportsbook-casino.md`) still lists ONLY `ozoon.com`/`www.ozoon.com` (marketing edge); `ozoon.eu` (core gambling platform) and `services.ozoon.eu` (backend API) confirmed in-scope per scope.yml but absent from inventory
 [CHANGED] Zero authenticated probes executed against core platform (`ozoon.eu`/`services.ozoon.eu`) across all 18+ probe rounds; all probes target only `www.ozoon.com` marketing edge — critical testing gap unchanged
-[NEW] `api.wicket-keeper.com` referenced in homepage SSR as `apmRum.url` — third-party RUM/APM endpoint, ownership unconfirmed; off-scope pending verification (parallel to `games.glovefrog.plus`)
-[CHANGED] Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway at `www.ozoon.eu/api/v1/signup`
-[NEW] Live confirmation re-verified: structured 401 `errorCode:"unauthorized"` for valid-route bogus UUID on 5 services = auth pre-check precedes resource lookup; anonymous differential baseline intact
-[NEW] Live confirmation re-verified: `www.ozoon.eu/api/v1/login` and `/api/v1/whoami` → Spring Boot Whitelabel 404 JSON (no method guard, 404 not 405); `signup GET` → WAF "Request Rejected" (support_id 6279731412718049849) → WAF staged on mutating signup path only
-[NEW] Live confirmation re-verified: `/services/site-config/v1/countries/CA/profileupdateform` returns CAD + XBT (XBT unpublished) with mandatory province/postal code; flat whitelist fields (email,phone,addressLine,postalCode,language,timeZone,oddsFormat,subscriptionChannels) — update DTO strict but signup DTO separate
+[CHANGED] Live confirmation re-verified: structured 401 `errorCode:"unauthorized"` for valid-route bogus UUID on 5 services = auth pre-check precedes resource lookup; anonymous differential baseline intact
+[CHANGED] Live confirmation re-verified: `www.ozoon.eu/api/v1/login` and `/api/v1/whoami` → Spring Boot Whitelabel 404 JSON (no method guard, 404 not 405); `signup GET` → WAF "Request Rejected" (support_id 6279731412718049849) → WAF staged on mutating signup path only
 [CHANGED] `chat.ozoon.eu` live in-scope subdomain (CNAME `ozoon.eu.glb.network`); widget-only CSP, no Ozoon API logic — confirmed
 [CHANGED] `/services/*/v{2,3}/api-docs` and `/actuator*` → gateway 404; no anonymous schema/actuator leak — confirmed
 [CHANGED] `games.glovefrog.plus` jackpotApiBase third-party; Ozoon ownership unconfirmed; off-scope until verified — unchanged
+[NEW] `api.wicket-keeper.com` referenced in homepage SSR as `apmRum.url` — third-party RUM/APM endpoint, ownership unconfirmed; off-scope pending verification (parallel to `games.glovefrog.plus`)
 [PRIO] https://services.ozoon.eu/services/wallet-gateway/v1/profiles/{uuid}/balances,9.25,attack_surface=10,business_value=10,tech_exposure=9,gate_ease=6,cloud_surface=6,freshness=10
 [PRIO] https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify,8.75,attack_surface=8,business_value=10,tech_exposure=9,gate_ease=6,cloud_surface=5,freshness=10
 [PRIO] https://www.ozoon.eu/api/v1/signup,8.25,attack_surface=9,business_value=9,tech_exposure=8,gate_ease=7,cloud_surface=5,freshness=10
 [PRIO] https://services.ozoon.eu/services/referral/v1/profiles/{uuid},7.75,attack_surface=8,business_value=8,tech_exposure=7,gate_ease=6,cloud_surface=5,freshness=10
 [PRIO] https://services.ozoon.eu/services/transaction-group/v1/profiles/{uuid}/transactions,7.75,attack_surface=8,business_value=8,tech_exposure=7,gate_ease=6,cloud_surface=5,freshness=10
-[PRIO] https://services.ozoon.eu/services/player-messages/v1/profiles/{uuid}/messages,7.25,attack_surface=7,business_value=7,tech_exposure=7,gate_ease=6,cloud_surface=5,freshness=10
-[PRIO] https://services.ozoon.eu/services/site-config/v1/countries/CA/profileupdateform,6.50,attack_surface=7,business_value=6,tech_exposure=7,gate_ease=10,cloud_surface=5,freshness=10
-[PRIO] https://chat.ozoon.eu,3.00,attack_surface=3,business_value=2,tech_exposure=2,gate_ease=10,cloud_surface=3,freshness=10
-[PRIO] https://api.wicket-keeper.com,2.50,attack_surface=3,business_value=2,tech_exposure=3,gate_ease=10,cloud_surface=5,freshness=8
 [HYP] BOLA on Profile-Keyed UUID Endpoints Across 5 Services
 class: IDOR
 asset: https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...
