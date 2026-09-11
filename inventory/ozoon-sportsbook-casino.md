@@ -494,3 +494,15 @@ www.ozoon.com
 - CHANGED triage run 2026-09-11-01:26 (mimo) returned no leads — same empty-pipeline pattern as 09-09/09-10 triage; no new evidence
 
 ## 2026-09-11 13:46:17 UTC
+
+## 2026-09-11 17:23:00 UTC
+- CHANGED Inventory file (`inventory/ozoon-sportsbook-casino.md`) still lists ONLY `ozoon.com`/`www.ozoon.com` (marketing edge); `ozoon.eu` (core gambling platform: sportsbook/casino/poker) and `services.ozoon.
+- CHANGED Zero authenticated probes executed against core platform (`ozoon.eu`/`services.ozoon.eu`) across all 18+ probe rounds; all probes target only `www.ozoon.com` marketing edge — critical testing gap unch
+- NEW `api.wicket-keeper.com` referenced in homepage SSR as `apmRum.url` — third-party RUM/APM endpoint, ownership unconfirmed; off-scope pending verification (parallel to `games.glovefrog.plus`)
+- CHANGED Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway at `www.ozoon.eu/api/v1/signup`
+- NEW Live confirmation re-verified: structured 401 `errorCode:"unauthorized"` for valid-route bogus UUID on 5 services = auth pre-check precedes resource lookup; anonymous differential baseline intact
+- NEW Live confirmation re-verified: `www.ozoon.eu/api/v1/login` and `/api/v1/whoami` → Spring Boot Whitelabel 404 JSON (no method guard, 404 not 405); `signup GET` → WAF "Request Rejected" (support_id 6279
+- NEW Live confirmation re-verified: `/services/site-config/v1/countries/CA/profileupdateform` returns CAD + XBT (XBT unpublished) with mandatory province/postal code; flat whitelist fields (email,phone,add
+- CHANGED `chat.ozoon.eu` live in-scope subdomain (CNAME `ozoon.eu.glb.network`); widget-only CSP, no Ozoon API logic — confirmed
+- CHANGED `/services/*/v{2,3}/api-docs` and `/actuator*` → gateway 404; no anonymous schema/actuator leak — confirmed
+- CHANGED `games.glovefrog.plus` jackpotApiBase third-party; Ozoon ownership unconfirmed; off-scope until verified — unchanged
