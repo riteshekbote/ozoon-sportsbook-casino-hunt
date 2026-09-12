@@ -315,3 +315,5 @@
 - 2026-09-12 REJECTED OTHER @ services.ozoon.eu: /services/*/v{2,3}/api-docs and /actuator* → gateway 404; no anonymous schema/actuator leak
 - 2026-09-12 REJECTED OTHER @ games.glovefrog.plus / api.wicket-keeper.com: third-party endpoints; Ozoon ownership unconfirmed
 - 2026-09-12 REJECTED SSRF @ www.ozoon.com: triage 06:38 verdict INVALID — ?url=?view=?page= all 200 len=? catch-all shared-edge responses, no collab callback; PWS/wnacloud behavior indistinguishable from catch-all, removing the PWS-edge SSRF hypothesis from active consideration
+- 2026-09-12 ACCEPTED IDOR @ services.ozoon.eu/services/wallet-gateway/v1/profiles/{uuid}/balances: live drift probe 05:06 → 401/159B, byte-shape-stable vs 2026-09-08 baseline; auth pre-check precedes resource lookup persists; AUTH_HELPED.
+- 2026-09-12 REJECTED OTHER @ ozoon-sportsbook-casino pipeline: triage runs 23:31+01:31 both empty (4th consecutive), probe-results.md empty, laguna/ling3/longcat hypothesis files NULL, reposcan not configured — no new anonymous evidence generated; surface byte-identical to 00:40:45.

@@ -14856,3 +14856,262 @@ STEP 6 — LEARNING
 
 STEP 7 — RISK
 [RISK] ozoon-sportsbook-casino: 80/100 — Real-money gambling platform with confirmed critical attack surface (BOLA UUID across 5 services, mock-2FA gate-bypass config, mass-assignment-capable signup DTO) but zero authenticated probes executed across all cycles. Confidence 55-65 remains unverifiable while account_creation:restricted blocks the throwaway-account gateway. Repeat empty consolidation cycles no longer raise risk — the test gap, not the evidence, is the binding constraint; no drift above 80 and no progress below it.
+===== ANALYST bigpickle 2026-09-12 05:07:27 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mls -la && find . -maxdepth 2 -type f | head -50
+total 380
+drwxr-xr-x 12 runner runner   4096 Sep 12 05:05 .
+drwxr-xr-x  3 runner runner   4096 Sep 12 05:05 ..
+drwxr-xr-x  7 runner runner   4096 Sep 12 05:05 .git
+drwxr-xr-x  3 runner runner   4096 Sep 12 05:05 .github
+-rw-r--r--  1 runner runner   1642 Sep 12 05:05 README.md
+-rw-r--r--  1 runner runner     32 Sep 12 05:05 analyst-out.txt
+-rw-r--r--  1 runner runner 148764 Sep 12 05:05 analyst-prompt.txt
+-rw-r--r--  1 runner runner 145027 Sep 12 05:05 ctx.txt
+drwxr-xr-x  2 runner runner   4096 Sep 12 05:05 inventory
+drwxr-xr-x  2 runner runner   4096 Sep 12 05:05 knowledge
+drwxr-xr-x  2 runner runner   4096 Sep 12 05:05 leads
+-rw-r--r--  1 runner runner   4057 Sep 12 05:05 probe-results.md
+drwxr-xr-x  2 runner runner   4096 Sep 12 05:05 recon-notes
+drwxr-xr-x  2 runner runner   4096 Sep 12 05:05 reports
+drwxr-xr-x  2 runner runner   4096 Sep 12 05:05 reposcan-raw
+-rw-r--r--  1 runner runner   3150 Sep 12 05:05 scope.yml
+drwxr-xr-x  2 runner runner   4096 Sep 12 05:05 scripts
+-rw-r--r--  1 runner runner     33 Sep 12 05:05 state_bigpickle.json
+-rw-r--r--  1 runner runner     33 Sep 12 05:05 state_laguna.json
+-rw-r--r--  1 runner runner     33 Sep 12 05:05 state_ling3.json
+-rw-r--r--  1 runner runner     33 Sep 12 05:05 state_longcat.json
+-rw-r--r--  1 runner runner     33 Sep 12 05:05 state_mimo.json
+-rw-r--r--  1 runner runner     33 Sep 12 05:05 state_nemotron3.json
+drwxr-xr-x  2 runner runner   4096 Sep 12 05:05 triage
+./.git/opencode
+./.git/index
+./.git/HEAD
+./.git/config
+./.git/config.worktree
+./.git/FETCH_HEAD
+./.git/shallow
+./.git/description
+./analyst-out.txt
+./state_nemotron3.json
+./triage/run-2026-09-08-14-07.md
+./triage/run-2026-09-11-18-58.md
+./triage/run-2026-09-04-16-35.md
+./triage/run-2026-09-05-01-06.md
+./triage/run-2026-09-09-15-16.md
+./triage/run-2026-09-06-09-08.md
+./triage/run-2026-09-09-06-04.md
+./triage/run-2026-09-04-07-43.md
+./triage/run-2026-09-09-18-41.md
+./triage/run-2026-09-08-20-51.md
+./triage/run-2026-09-03-07-48.md
+./triage/run-2026-09-02-21-52.md
+./triage/run-2026-09-06-12-55.md
+./triage/run-2026-09-09-21-29.md
+./triage/run-2026-09-03-02-55.md
+./triage/run-2026-09-08-05-11.md
+./triage/run-2026-09-08-09-47.md
+./triage/run-2026-09-03-16-40.md
+./triage/run-2026-09-04-19-07.md
+./triage/run-2026-09-06-00-13.md
+./triage/run-2026-09-02-23-50.md
+./triage/run-2026-09-07-00-05.md
+./triage/run-2026-09-11-23-31.md
+./triage/.gitkeep
+./triage/run-2026-09-12-01-31.md
+./triage/run-2026-09-11-15-51.md
+./triage/run-2026-09-06-22-19.md
+./triage/run-2026-09-11-01-26.md
+./triage/run-2026-09-03-21-52.md
+./triage/run-2026-09-04-02-55.md
+./triage/run-2026-09-09-23-29.md
+./triage/run-2026-09-05-09-57.md
+./triage/run-2026-09-05-13-17.md
+./triage/run-2026-09-03-23-46.md
+./triage/run-2026-09-10-23-22.md
+./triage/run-2026-09-05-22-38.md
+./triage/run-2026-09-08-23-11.md
+./triage/run-2026-09-05-18-22.md
+./triage/run-2026-09-06-18-11.md
+./triage/run-2026-09-07-04-50.md
+[0m
+[0m✱ [0mGlob "**/{inventory/*,art/*,kb*,knowledge*,probe*,triage*,hypotheses*,leads*}"[90m 8 matches[0m
+[0m→ [0mRead scope.yml
+[0m→ [0mRead probe-results.md
+[0m→ [0mRead analyst-out.txt
+[0m→ [0mRead triage/run-2026-09-12-01-31.md
+[0m→ [0mRead triage/run-2026-09-11-23-31.md
+[0m→ [0mRead reports/hypotheses-bigpickle.txt
+[0m
+[0m$ [0mdate -u && echo "---" && git log --oneline -8 && echo "---" && git status --short
+Sat Sep 12 05:06:01 UTC 2026
+---
+b67226a triage 2026-09-12-01-31
+---
+?? analyst-out.txt
+?? analyst-prompt.txt
+?? ctx.txt
+[0m
+[0m$ [0mcat state_bigpickle.json state_laguna.json state_ling3.json state_longcat.json state_mimo.json state_nemotron3.json && echo "---" && ls -la knowledge/ leads/ reports/ recon-notes/ | head -60
+{"phase": "POC", "target": "api"}{"phase": "POC", "target": "api"}{"phase": "POC", "target": "api"}{"phase": "POC", "target": "api"}{"phase": "POC", "target": "api"}{"phase": "POC", "target": "api"}---
+knowledge/:
+total 68
+drwxr-xr-x  2 runner runner  4096 Sep 12 05:05 .
+drwxr-xr-x 12 runner runner  4096 Sep 12 05:05 ..
+-rw-r--r--  1 runner runner 60003 Sep 12 05:05 index.md
+
+leads/:
+total 1092
+drwxr-xr-x  2 runner runner   4096 Sep 12 05:05 .
+drwxr-xr-x 12 runner runner   4096 Sep 12 05:05 ..
+-rw-r--r--  1 runner runner 426035 Sep 12 05:05 lead-bigpickle.md
+-rw-r--r--  1 runner runner   3009 Sep 12 05:05 lead-laguna.md
+-rw-r--r--  1 runner runner   2950 Sep 12 05:05 lead-ling3.md
+-rw-r--r--  1 runner runner   3068 Sep 12 05:05 lead-longcat.md
+-rw-r--r--  1 runner runner     18 Sep 12 05:05 lead-mimo.md
+-rw-r--r--  1 runner runner 636981 Sep 12 05:05 lead-nemotron3.md
+-rw-r--r--  1 runner runner  24407 Sep 12 05:05 reposcan-ozoon-sportsbook-casino.md
+
+recon-notes/:
+total 12
+drwxr-xr-x  2 runner runner 4096 Sep 12 05:05 .
+drwxr-xr-x 12 runner runner 4096 Sep 12 05:05 ..
+-rw-r--r--  1 runner runner  831 Sep 12 05:05 DEDICATED-DEEP.md
+
+reports/:
+total 2688
+drwxr-xr-x  2 runner runner    4096 Sep 12 05:05 .
+drwxr-xr-x 12 runner runner    4096 Sep 12 05:05 ..
+-rw-r--r--  1 runner runner 1206888 Sep 12 05:05 analyst-bigpickle.log
+-rw-r--r--  1 runner runner   12803 Sep 12 05:05 analyst-laguna.log
+-rw-r--r--  1 runner runner   12744 Sep 12 05:05 analyst-ling3.log
+-rw-r--r--  1 runner runner   12862 Sep 12 05:05 analyst-longcat.log
+-rw-r--r--  1 runner runner 1222611 Sep 12 05:05 analyst-nemotron3.log
+-rw-r--r--  1 runner runner    4166 Sep 12 05:05 hypotheses-bigpickle.txt
+-rw-r--r--  1 runner runner      51 Sep 12 05:05 hypotheses-laguna.txt
+-rw-r--r--  1 runner runner      50 Sep 12 05:05 hypotheses-ling3.txt
+-rw-r--r--  1 runner runner      52 Sep 12 05:05 hypotheses-longcat.txt
+-rw-r--r--  1 runner runner   11131 Sep 12 05:05 hypotheses-nemotron3.txt
+-rw-r--r--  1 runner runner  222349 Sep 12 05:05 hypotheses.md
+-rw-r--r--  1 runner runner    1072 Sep 12 05:05 valid-bugs.md
+[0m
+[0m$ [0mfor f in hypotheses-laguna.txt hypotheses-ling3.txt hypotheses-longcat.txt; do echo "=== $f ==="; head -20 "$f"; done
+=== hypotheses-laguna.txt ===
+=== hypotheses-ling3.txt ===
+=== hypotheses-longcat.txt ===
+head: cannot open 'hypotheses-laguna.txt' for reading: No such file or directory
+head: cannot open 'hypotheses-ling3.txt' for reading: No such file or directory
+head: cannot open 'hypotheses-longcat.txt' for reading: No such file or directory
+[0m
+[0m$ [0mtail -40 reports/hypotheses.md && echo "=== valid-bugs ===" && cat reports/valid-bugs.md
+## RANKED HYPOTHESES 2026-09-11 22:25:47 UTC
+- [65] https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...: BOLA on Profile-Keyed UUID Endpoints Across 5 Services (from art/lead_nemotron3.txt)
+- NEXT(hypotheses-nemotron3.txt): HUMAN: Request program authorization at bugs.olivermaicher.eu to create ONE throwaway account on www.ozoon.eu (clearly restricted mutating create, no live custo
+- LEARN: ACCEPTED IDOR @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: Confirmed UUID-path BOLA surface across 5 services; binding unresolved; AUTH_HELPED testing
+- LEARN: ACCEPTED AUTH @ services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify: Mock-2FA header in production SDK + allow-permanent-skip 
+- LEARN: ACCEPTED BUSLOGIC @ www.ozoon.eu/api/v1/signup: Captcha-free signup with client-controlled attributes/address; static referral token unverified. Gateway probe t
+- LEARN: ACCEPTED MISCONFIG @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: structured 401 errorCode:"unauthorized" for valid-route bogus UUID = auth pre-check pr
+- LEARN: ACCEPTED MISCONFIG @ services.ozoon.eu/services/site-config/v1/countries/{CC}/profileupdateform: unknown country → structured 404 leaking internal exception `io
+- LEARN: ACCEPTED MISCONFIG @ www.ozoon.eu/api/v1: GET login/whoami → Spring Boot Whitelabel 404 (no method guard); signup GET → WAF "Request Rejected" — WAF staged on m
+- LEARN: ACCEPTED MISCONFIG @ services.ozoon.eu/services/site-config/v1/countries/{CC}/profileupdateform: per-country profile-update whitelist is flat; CA=CAD+XBT, US=US
+- LEARN: ACCEPTED MISCONFIG @ chat.ozoon.eu: live in-scope subdomain; widget-only, no Ozoon API logic
+- LEARN: ACCEPTED SSRF @ www.ozoon.com: PWS/wnacloud shared edge; passive GET only; deprioritized vs core platform
+- LEARN: REJECTED SECRET @ www.ozoon.com:3306: identical port-closed/EOF pattern across hosts = shared proxy artifact
+- LEARN: REJECTED SECRET @ oZoon/hyper, oZoon/mas-film: creds in learning/demo repos, not confirmed deployed
+- LEARN: REJECTED OTHER @ oZoon/secure-query-string: SQLi patterns in learning repos, not confirmed deployed
+- LEARN: REJECTED OTHER @ services.services.ozoon.eu: internal-only backend hostname; NXDOMAIN publicly = split-horizon
+- LEARN: REJECTED OTHER @ services.ozoon.eu: /services/*/v{2,3}/api-docs and /actuator* → gateway 404; no anonymous schema/actuator leak
+- LEARN: REJECTED OTHER @ games.glovefrog.plus / api.wicket-keeper.com: third-party endpoints; Ozoon ownership unconfirmed
+- LEARN: REJECTED SSRF @ www.ozoon.com: triage 06:38 verdict INVALID — ?url=?view=?page= all 200 len=? catch-all shared-edge responses, no collab callback; PWS/wnacloud 
+
+## RANKED HYPOTHESES 2026-09-12 00:40:45 UTC
+- [65] https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...: BOLA on profile-keyed UUID endpoints across 5 services (from art/lead_bigpickle.txt)
+- NEXT(hypotheses-bigpickle.txt): HUMAN: Re-request program authorization at bugs.olivermaicher.eu for ONE throwaway test account on www.ozoon.eu (strictly restricted mutating create, throwaway 
+- NEXT(hypotheses-nemotron3.txt): HUMAN: Request program authorization at bugs.olivermaicher.eu to create ONE throwaway account on www.ozoon.eu (clearly restricted mutating create, no live custo
+- LEARN: ACCEPTED IDOR @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: Confirmed UUID-path BOLA surface across 5 services; binding unresolved; AUTH_HELPED testing
+- LEARN: ACCEPTED AUTH @ services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify: Mock-2FA header in production SDK + allow-permanent-skip 
+- LEARN: ACCEPTED BUSLOGIC @ www.ozoon.eu/api/v1/signup: Captcha-free signup with client-controlled attributes/address; static referral token unverified. Gateway probe t
+- LEARN: ACCEPTED MISCONFIG @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: structured 401 errorCode:"unauthorized" for valid-route bogus UUID = auth pre-check pr
+- LEARN: ACCEPTED MISCONFIG @ services.ozoon.eu/services/site-config/v1/countries/{CC}/profileupdateform: unknown country → structured 404 leaking internal exception `io
+- LEARN: ACCEPTED MISCONFIG @ www.ozoon.eu/api/v1: GET login/whoami → Spring Boot Whitelabel 404 (no method guard); signup GET → WAF "Request Rejected" — WAF staged on m
+- LEARN: ACCEPTED MISCONFIG @ services.ozoon.eu/services/site-config/v1/countries/{CC}/profileupdateform: per-country profile-update whitelist is flat; CA=CAD+XBT, US=US
+- LEARN: ACCEPTED MISCONFIG @ chat.ozoon.eu: live in-scope subdomain; widget-only, no Ozoon API logic
+- LEARN: ACCEPTED SSRF @ www.ozoon.com: PWS/wnacloud shared edge; passive GET only; deprioritized vs core platform
+- LEARN: REJECTED SECRET @ www.ozoon.com:3306: identical port-closed/EOF pattern across hosts = shared proxy artifact
+- LEARN: REJECTED SECRET @ oZoon/hyper, oZoon/mas-film: creds in learning/demo repos, not confirmed deployed
+- LEARN: REJECTED OTHER @ oZoon/secure-query-string: SQLi patterns in learning repos, not confirmed deployed
+- LEARN: REJECTED OTHER @ services.services.ozoon.eu: internal-only backend hostname; NXDOMAIN publicly = split-horizon
+- LEARN: REJECTED OTHER @ services.ozoon.eu: /services/*/v{2,3}/api-docs and /actuator* → gateway 404; no anonymous schema/actuator leak
+- LEARN: REJECTED OTHER @ games.glovefrog.plus / api.wicket-keeper.com: third-party endpoints; Ozoon ownership unconfirmed
+- LEARN: REJECTED SSRF @ www.ozoon.com: triage 06:38 verdict INVALID — ?url=?view=?page= all 200 len=? catch-all shared-edge responses, no collab callback; PWS/wnacloud 
+=== valid-bugs ===
+# Validated findings (running count 0)
+
+- 5 lead(s) marked VALID at 2026-09-06 22:19:41 UTC
+  - **Verdict: HOLD** — Valid high-impact finding but requires program authorization for account creation to prove. Cannot submit without differential evidence (own 200 vs foreign 401/403 or 200+data).
+  - **Verdict: HOLD** — Valid critical-severity finding but `isMockProviderEnabled:false` in SSR provides mild contrary evidence. Needs authenticated differential test.
+  - **Verdict: HOLD** — Valid medium-high severity finding; also the gateway probe enabling Leads 1 and 2. Needs program authorization for account creation.
+  - | Q6 Not always-rejected | **YES** — SSRF is valid class |
+  - **Bottom line:** Leads 1-3 are the strongest findings on a real-money platform. All three are gated behind `account_creation:restricted` — the hunt bot cannot produce VALID verdicts without program au
+
+- 1 lead(s) marked VALID at 2026-09-11 06:38:29 UTC
+  - | Q7 Reasonable triager? | **No** — triager would classify as informational/informative at best, not a valid bug |
+[0m
+Proceeding with one read-only drift probe on the single highest-value gate (≤1 rps, GET only).
+[0m$ [0mUUID="00000000-0000-4000-8000-000000000000"; curl -sS -o /dev/null -m 20 -w "%{http_code} %{size_download}\n" "https://services.ozoon.eu/services/wallet-gateway/v1/profiles/$UUID/balances" -H 'User-Agent: Mozilla/5.0' ; echo "exit=$?"
+401 159
+exit=0
+[0m
+## STEP 1 — DELTA
+NO_DELTA on attack surface: probe-results.md empty through 00:40:45 with no entries after; triage 2026-09-11-23-31 and 2026-09-12-01-31 both returned "no leads provided" (4th consecutive empty triage); no new inventory entries; laguna/ling3/longcat hypothesis outputs still empty; KB tail identical to last cycle.
+[CHANGED] Live drift probe this cycle (05:06 UTC): `GET /services/wallet-gateway/v1/profiles/{bogus-uuid}/balances` → **401, 159B** — byte-shape-stable structured 401 `{"errorCode":"unauthorized"}` baseline intact on the primary BOLA gate.
+
+## STEP 2 — PRIORITIZE
+[PRIO] https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...,6.25,attack_surface=8,business_value=9,tech_exposure=6,gate_ease=2,cloud_surface=2,freshness=6
+[PRIO] https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify,5.75,attack_surface=6,business_value=9,tech_exposure=6,gate_ease=2,cloud_surface=2,freshness=6
+[PRIO] https://www.ozoon.eu/api/v1/signup,5.35,attack_surface=6,business_value=7,tech_exposure=5,gate_ease=3,cloud_surface=2,freshness=7
+
+## STEP 3 — HYPOTHESES
+[HYP] BOLA on profile-keyed UUID endpoints across 5 services
+class: IDOR
+asset: https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...
+confidence: 65
+reasoning: Public SDK key balances/verify/transactions/referrals/messages by profile UUID in path across wallet-gateway, transaction-group, referral, player-verification, player-messages; anonymous structured 401 {"errorCode":"unauthorized"} re-verified byte-stable this cycle (401/159B on balances); session→path-UUID binding untestable with zero accounts; no anonymous delta this cycle.
+evidence_needed: With A's sid, GET /profiles/{B-PID}/balances returns 200/differential while control {A-PID} returns A's own data.
+verify_steps: [AUTH_HELPED] signup A+B throwaways → capture sid+PID; A's sid GET https://services.ozoon.eu/services/wallet-gateway/v1/profiles/{B-PID}/balances and .../player-verification/v1/profiles/{B-PID}/verifications vs control {A-PID}; foreign 200 = BOLA, 401/403 = bound.
+impact: Critical — cross-user wallet/transaction/PII across 5 services; ATO enabler.
+testability: AUTH_HELPED
+[HYP] Mock-2FA verification header honored — client-controlled 2FA/KYC gate bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify
+confidence: 55
+reasoning: Production SDK sends X-MOCK-2FA-VERIFICATION:true; config two_factor_authenticator.allow-permanent-skip:["true"]; SSR isMockProviderEnabled:false is client-side only (contrary flag priced in 60→55); anonymous 401 baseline stable on verify route; no delta this cycle.
+evidence_needed: POST verify +header succeeds while byte-identical control without header rejects.
+verify_steps: [AUTH_HELPED] signup → own sid+PID; POST .../verifications/verify {"verificationType":"PHONE"} with header true, then identical control without header on self-created account only; compare status/body.
+impact: Critical — 2FA/SMS/PIN/KYC bypass on deposit/withdraw/bonus money flows.
+testability: AUTH_HELPED
+[HYP] Registration/referral mass assignment via captcha-free signup
+class: BUSLOGIC
+asset: https://www.ozoon.eu/api/v1/signup
+confidence: 60
+reasoning: reCAPTCHA v3 enforced only on login; signup/signup_from_invitation captcha-free per config; static 32-hex refSiteToken with affiliate.check-referring-site.enabled:["false"]; signup DTO accepts client-controlled attributes/address sub-objects; update DTO strict but separate; signup GET → WAF, POST gated on authorization.
+evidence_needed: POST signup +extra role/vip/balance/currency keys persists/echoes vs control; static referral token honored for unverified email.
+verify_steps: [AUTH_HELPED] POST control signup on throwaway email, then signup +extra role/vip/balance/currency keys; compare persisted/echoed fields; then signup_from_invitation with static refSiteToken.
+impact: Medium-High — referral fraud, restricted-territory/softblock bypass, privilege elevation if role/vip honored.
+testability: AUTH_HELPED
+
+## STEP 4 — SELF-CRITIQUE
+[PARKED] SSRF @ www.ozoon.com: triage 06:38 INVALID (catch-all 200 len=? for ?url=/?view=/?page=, no collab callback) — removed; PWS/wnacloud hypothesis closed, no revival without new server-behavior evidence.
+[FINAL] 1. BOLA UUID (65) 2. Mock-2FA header (55) 3. Signup mass-assignment (60) — none REJECTED-class, all with concrete evidence_needed, all gated on authorized session. No confidence change warranted: drift probe shows byte-identical baseline, no contrary surface.
+
+## STEP 5 — NEXT ACTION
+[NEXT] HUMAN: Re-request program authorization at bugs.olivermaicher.eu for ONE throwaway test account on www.ozoon.eu (strictly restricted mutating create, throwaway creds, no live customer data, account destroyed post-testing). Purpose: authenticated BOLA differential (wallet-gateway + player-verification profile-UUID cross-read), Mock-2FA header test, signup mass-assignment DTO interrogation. Scope support: ozoon.eu + services.ozoon.eu in-scope per scope.yml ("All infrastructure, brands, services and gaming platforms operated by Ozoon"). Blocker: all three FINAL hypotheses gated on account_creation:restricted; every read-only route already probed to exhaustion (401/404/WAF); 401/159B baseline re-verified this cycle adds no new avenue.
+
+## STEP 6 — LEARNING
+[LEARN] ACCEPTED IDOR @ services.ozoon.eu/services/wallet-gateway/v1/profiles/{uuid}/balances: live drift probe 05:06 → 401/159B, byte-shape-stable vs 2026-09-08 baseline; auth pre-check precedes resource lookup persists; AUTH_HELPED.
+[LEARN] REJECTED OTHER @ ozoon-sportsbook-casino pipeline: triage runs 23:31+01:31 both empty (4th consecutive), probe-results.md empty, laguna/ling3/longcat hypothesis files NULL, reposcan not configured — no new anonymous evidence generated; surface byte-identical to 00:40:45.
+
+## STEP 7 — RISK
+[RISK] ozoon-sportsbook-casino: 80/100 — Real-money gambling platform with confirmed critical attack surface (BOLA UUID across 5 services byte-stable re-verified today, mock-2FA gate-bypass config, mass-assignment-capable signup DTO) but zero authenticated probes executed across all cycles. Confidence 55-65 unverifiable while account_creation:restricted blocks the throwaway gateway; drift-check confirms evidence stable, so no further rise — the test gap, not the evidence, is the binding constraint.

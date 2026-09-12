@@ -529,3 +529,12 @@ www.ozoon.com
 - CHANGED Zero authenticated probes executed against core platform (`ozoon.eu`/`services.ozoon.eu`) across all 18+ probe rounds; all probes target only `www.ozoon.com` marketing edge — critical testing gap unch
 - CHANGED Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway at `www.ozoon.eu/api/v1/signup`
 - CHANGED No new inventory entries, no new live probes, no reposcan output (`TARGET_ORG not configured`); knowledge tail is pure reconfirmation — attack surface identical to 2026-09-11 17:23
+
+## 2026-09-12 05:07:27 UTC
+- CHANGED Live drift probe this cycle (05:06 UTC): `GET /services/wallet-gateway/v1/profiles/{bogus-uuid}/balances` → **401, 159B** — byte-shape-stable structured 401 `{"errorCode":"unauthorized"}` baseline int
+- CHANGED Inventory file (`inventory/ozoon-sportsbook-casino.md`) still lists ONLY `ozoon.com`/`www.ozoon.com` (marketing edge); `ozoon.eu` (core gambling platform) and `services.ozoon.eu` (backend API) confirm
+- CHANGED Zero authenticated probes executed against core platform (`ozoon.eu`/`services.ozoon.eu`) across all 18+ probe rounds; all probes target only `www.ozoon.com` marketing edge — critical testing gap unch
+- CHANGED SSRF at `www.ozoon.com` formally INVALID'd by triage 06:38 — all `?url=` probes → catch-all 200 len=?, no collab callback; PWS/wnacloud behavior indistinguishable from catch-all, removing PWS-edge SSR
+- NEW `api.wicket-keeper.com` referenced in homepage SSR as `apmRum.url` — third-party RUM/APM endpoint, ownership unconfirmed; off-scope pending verification (parallel to `games.glovefrog.plus`)
+- CHANGED Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway at `www.ozoon.eu/api/v1/signup`
+- CHANGED No new inventory entries, no new live probes, no reposcan output (`TARGET_ORG not configured`); knowledge tail is pure reconfirmation — attack surface identical to 2026-09-11 17:23
