@@ -297,3 +297,33 @@ TARGET_ORG not configured for ozoon-sportsbook-casino; skipping public-org deep 
 TARGET_ORG not configured for ozoon-sportsbook-casino; skipping public-org deep scan.
 ## REPOSCAN 2026-09-11 23:18:12 UTC
 TARGET_ORG not configured for ozoon-sportsbook-casino; skipping public-org deep scan.
+## REPOSCAN 2026-09-12 01:15:52 UTC
+[HYP] Hardcoded MySQL Credentials in hyper PHP Image Service
+class: SECRET
+asset: oZoon/hyper/core/config.php:17
+confidence: 15
+reasoning: Hardcoded DB credentials in source: mysqli('localhost', 'hyper', '12345', 'hyper'). Password '12345' is trivially guessable. mysql.txt also documents the full setup including INSERT of user 'hyper01' with password '123456789'. These are localhost dev credentials for a small PHP image hosting demo.
+impact: low
+verify_steps: |
+[HYP] SQL Injection via String Concatenation in hyper PHP App
+class: OTHER
+asset: oZoon/hyper/core/functions.php:142,402,406,434,484
+confidence: 15
+reasoning: All SQL queries are built via direct string concatenation of user-controlled input ($state['qs']['*']) into raw SQL. The 'checkSymbols()' whitelist provides some defense (alphanumeric only), but the pattern is fundamentally unsafe — no parameterized queries or prepared statements. If the whitelist is ever bypassed or expanded, SQL injection is immediate.
+impact: low
+verify_steps: |
+[HYP] Hardcoded Unsplash API Keys (ACCESS_KEY + SECRET)
+class: SECRET
+asset: oZoon/diploma/src/lib/constants.js:11-12
+confidence: 10
+reasoning: Hardcoded Unsplash API credentials: ACCESS_KEY='KVx67XvmzAv0NWFzGhl02RT3YJ0kXfNhhffCmc6V2Vk' and SECRET='NEbVoZN0xAL1MJkl9GCIfHmud75H71MjACB2fo0UdiU'. These are used in a diploma project (Unsplash photo browser). Unsplash demo keys have low value but could be abused for rate-limit evasion or logged in the Unsplash developer dashboard.
+impact: low
+verify_steps: |
+[HYP] Firebase Config Exposed via .env.example Pattern (restaurant app)
+class: MISCONFIG
+asset: oZoon/restaurant/.env.example + src/constants/env.ts + src/dal/firebase/index.ts
+confidence: 10
+reasoning: The restaurant app uses Firebase (initializeApp with apiKey, authDomain, projectId, storageBucket, etc.) loaded from environment variables. The .env.example shows the structure but uses 'your_data' placeholders. The Firebase config pattern is visible in source; if the actual .env were ever committed, full Firebase credentials would be exposed. No actual secrets are in the repo.
+impact: informational
+verify_steps: |
+TARGET_ORG not configured for ozoon-sportsbook-casino; skipping public-org deep scan.
