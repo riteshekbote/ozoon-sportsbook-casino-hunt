@@ -17530,3 +17530,64 @@ STEP 6 — LEARNING
 
 STEP 7 — RISK
 - [RISK] ozoon-sportsbook-casino: 80 — All three critical hypotheses (BOLA 65, mass-assignment 60, mock-2FA 55) remain AUTH_HELPED and unprobed; 6 consecutive empty triages; zero authenticated tests ever; inventory still omits ozoon.eu/services.ozoon.eu (confirmed in-scope); drift baseline re-verified stable, so no exposure change either direction.
+===== ANALYST bigpickle 2026-09-12 23:23:25 UTC =====
+[0m
+> build · big-pickle
+[0m
+STEP 1 — DELTA
+- [CHANGED] KB aggregate tail still carries stale `ACCEPTED SSRF @ www.ozoon.com PWS/wnacloud` echo from 09-11; superseded by 2026-09-12 triage 06:38 INVALID ("?url=?view=?page==" catch-all 200 len=?, no collab callback) — no active SSRF hypothesis on www.ozoon.com remains.
+- [CHANGED] Pipeline 6th consecutive empty cycle: triage runs + laguna all empty, probe-results.md byte-unchanged; no new anonymous evidence generated since 00:40:45.
+- NO_DELTA surface: wallet-gate 401/159B, SSR sha256 6cbdef8e4… (743,198B), refSiteToken a0b5…b084, reCaptcha.enabled:false, isMockProviderEnabled:false, servicesBaseUrl https://services.services.ozoon.eu — all re-verified byte-stable at 21:21 last cycle; no re-probe this cycle.
+
+STEP 2 — PRIORITIZE
+- [PRIO] services.ozoon.eu/services/*/v1/profiles/{uuid}/...: 6.8 (a=8 b=9 t=6 g=2 c=7 f=6) — highest-value; gated only by one authenticated session.
+- [PRIO] www.ozoon.eu/api/v1/signup: 6.5 (a=7 b=8 t=7 g=3 c=6 f=6) — sole auth gateway; WAF staged on this path.
+- [PRIO] services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify: 6.4 (a=7 b=9 t=5 g=2 c=7 f=6) — money-flow gate bypass if honored.
+
+STEP 3 — HYPOTHESES
+[HYP] BOLA on profile-keyed UUID endpoints across 5 services
+class: IDOR
+asset: https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...
+confidence: 65
+reasoning: SDK-confirmed same route shape on wallet-gateway, transaction-group, referral, player-verification, player-messages; 401 {"errorCode":"unauthorized"} pre-check precedes resource lookup (no UUID oracle leak); session→path-UUID binding unobservable with zero accounts; no drift on SSR config or 401 baseline.
+evidence_needed: A's sid GET /profiles/{B-PID}/balances returns 200/differential data vs {A-PID} control.
+verify_steps: [AUTH_HELPED] signup throwaways A+B → sid+PID; A's sid GET .../wallet-gateway/v1/profiles/{B-PID}/balances and .../player-verification/v1/profiles/{B-PID}/verifications vs {A-PID} control; foreign 200 = BOLA, 401/403 = bound.
+impact: Critical — cross-user wallet/PII across 5 services; ATO enabler.
+testability: AUTH_HELPED
+
+[HYP] Registration/referral mass assignment via captcha-free signup
+class: BUSLOGIC
+asset: https://www.ozoon.eu/api/v1/signup
+confidence: 60
+reasoning: reCaptcha.enabled:false; CA profileupdateform 200/784B (CAD+XBT, mandatory province/postal); update DTO strict but signup DTO separate; refSiteToken static byte-stable a0b5…b084; profileIdentifiers:["email"]; referral field unverified.
+evidence_needed: POST signup +extra role/vip/balance/currency keys persists/echoes vs control; static referral token honored.
+verify_steps: [AUTH_HELPED] POST control signup on throwaway email, then +extra role/vip/balance/currency keys; compare persisted fields; signup_from_invitation with static refSiteToken.
+impact: Medium-High — referral fraud, restricted-territory/softblock bypass, privilege elevation if role/vip honored.
+testability: AUTH_HELPED
+
+[HYP] Mock-2FA verification header honored — client-controlled 2FA/KYC gate bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify
+confidence: 55
+reasoning: Production SDK sends X-MOCK-2FA-VERIFICATION:true; config allow-permanent-skip:["true"]; SSR isMockProviderEnabled:false is client-side only (contrary flag priced); wallet-gate 401 baseline stable.
+evidence_needed: POST verify +header succeeds while byte-identical control without header rejects.
+verify_steps: [AUTH_HELPED] signup → own sid+PID; POST .../verifications/verify {"verificationType":"PHONE"} with header true, then control without header on self-created account only.
+impact: Critical — 2FA/SMS/PIN/KYC bypass on deposit/withdraw/bonus flows.
+testability: AUTH_HELPED
+
+STEP 4 — SELF-CRITIQUE
+All three survive: confidence ≥40, none REJECTED-class, each has concrete verify_steps and writes only to self-created throwaway accounts. SSRF not resurrected (evidence-denied). No new anonymous hypothesis is supportable — 6 consecutive empty triage cycles produced zero fresh leads, and re-probing already-byte-stable surface adds noise.
+- [FINAL] BOLA on profile-keyed UUID endpoints across 5 services — 65, AUTH_HELPED
+- [FINAL] Registration/referral mass assignment via captcha-free signup — 60, AUTH_HELPED
+- [FINAL] Mock-2FA verification header honored — 55, AUTH_HELPED
+
+STEP 5 — NEXT ACTION
+[NEXT] HUMAN: Request program authorization at bugs.olivermaicher.eu to register ONE throwaway account on www.ozoon.eu (clearly-scoped mutating create, no live-customer impact) — all three FINAL hypotheses and every remaining unprobed path require an authenticated session; zero progress is possible passively, and this is the 6th consecutive empty cycle without it.
+
+STEP 6 — LEARNING
+- [LEARN] REJECTED OTHER @ ozoon-sportsbook-casino pipeline: triage runs + laguna empty 6th consecutive cycle, probe-results.md byte-unchanged since 00:40:45 — no new anonymous evidence; surface identical to the 21:21 re-verified baseline.
+- [LEARN] ACCEPTED MISCONFIG @ services.ozoon.eu SSR shell: baseline sha256 6cbdef8e4be9… (743,198B) with refSiteToken a0b5…b084, reCaptcha.enabled:false, isMockProviderEnabled:false, servicesBaseUrl https://services.services.ozoon.eu — persisted as cheap drift-diff reference.
+- [LEARN] REJECTED SSRF @ www.ozoon.com: stale "ACCEPTED PWS/wnacloud" KB echo corrected — triage 06:38 INVALID (catch-all 200 len=? across param names, no collab callback) stands as the operative disposition.
+
+STEP 7 — RISK
+[RISK] ozoon-sportsbook-casino: 80 — All three critical hypotheses (BOLA 65, mass-assignment 60, mock-2FA 55) remain gated on one authenticated session; 6+ consecutive empty triage cycles and >18 rounds with zero authenticated probes; sole unblock is explicit program authorization for a single throwaway account.

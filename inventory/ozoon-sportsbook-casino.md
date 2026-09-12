@@ -591,3 +591,5 @@ www.ozoon.com
 - CHANGED Config-drift probe 09:27 UTC on `services.ozoon.eu/` (743,198B SSR shell, sha256 `6cbdef8e4be9f9f54940f708dbf9d8b698e2657741316fd5fd89ba00ee4684f5`): `refSiteToken` byte-identical `a0b5…b084`, `reCapt
 - CHANGED SSRF at `www.ozoon.com` formally INVALID'd by triage 06:38 — all `?url=` probes → catch-all 200 len=?, no collab callback; PWS/wnacloud behavior indistinguishable from catch-all, removing PWS-edge SSR
 - CHANGED Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway at `www.ozoon.eu/api/v1/signup`
+
+## 2026-09-12 23:23:25 UTC
