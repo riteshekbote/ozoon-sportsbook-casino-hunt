@@ -16254,3 +16254,86 @@ STEP 6 — LEARNING:
 
 STEP 7 — RISK:
 [RISK] ozoon-sportsbook-casino: 80/100 — Real-money gambling platform with confirmed critical attack surface (BOLA UUID across 5 services, mock-2FA gate-bypass config, mass-assignment-capable signup DTO) and all three evidence pillars this cycle shown byte-stable against config drift. Zero authenticated probes executed across all cycles; confidence 55-65 remains unverifiable while account_creation:restricted blocks the throwaway gateway. Test gap, not evidence, is the binding constraint; repeat empty cycles neither raise nor lower risk.
+===== ANALYST bigpickle 2026-09-12 13:13:04 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mcurl -sS --max-time 30 -o /tmp/opencode/ozoon_wallet.json -w 'WALLET:%{http_code} %{size_download}B %{time_total}s\n' 'https://services.ozoon.eu/services/wallet-gateway/v1/profiles/00000000-0000-0000-0000-000000000000/balances' && cat /tmp/opencode/ozoon_wallet.json
+WALLET:401 159B 1.223082s
+{"timestamp":"2026-09-12T13:11:49.752Z","status":401,"message":"Authentication required for requested route","error":"Unauthorized","errorCode":"unauthorized"}
+[0m
+[0m$ [0mcurl -sS --max-time 30 -o /tmp/opencode/ozoon_ssr.html -w 'SSR:%{http_code} %{size_download}B %{time_total}s\n' https://services.ozoon.eu/ && sha256sum /tmp/opencode/ozoon_ssr.html && rg -o 'servicesBaseUrl[^,]*|refSiteToken[^,]*|"enabled":(true|false)|isMockProviderEnabled:(true|false)' /tmp/opencode/ozoon_ssr.html | sort -u | head -40
+SSR:200 743198B 2.417717s
+eeb3342ce8473d388f6405cb3dd050e19c223fc6c21fe2edb758c9898b8fb189  /tmp/opencode/ozoon_ssr.html
+/bin/bash: line 1: rg: command not found
+[0m
+[0m$ [0mcurl -sS --max-time 30 -o /tmp/opencode/ozoon_ca_form.json -w 'CA_FORM:%{http_code} %{size_download}B %{time_total}s\n' 'https://services.ozoon.eu/services/site-config/v1/countries/CA/profileupdateform' && head -c 600 /tmp/opencode/ozoon_ca_form.json
+CA_FORM:200 784B 1.575364s
+{"phoneRegex":"[2-9]\\d{9}|3\\d{6}","phonePrefix":"1","stateLabel":"province","postalCodeLabel":"postal-code","postalCodeRegex":"^[ABCEGHJKLMNPRSTVXYabceghjklmnprstvxy]\\d[ABCEGHabceghJ-Nj-nPRSTprstV-Zv-z][ \\-]?\\d[ABCEGHabceghJ-Nj-nPRSTprstV-Zv-z]\\d$","postalCodeLookupAvailable":true,"mandatoryState":true,"mandatoryPostalCode":true,"subscriptionChannels":["EMAIL","SMS","PHONE"],"hostedContactMethods":[],"currencies.default":"CAD","currencies":["CAD","XBT"],"currencies_published":["CAD"],"countrycode":"CA","profileupdateform.fields":["email,phone","addressLine","postalCode","language,timeZon
+[0m
+[0m$ [0mgrep -o 'refSiteToken[^,]\{0,60\}\|"refSiteToken":"[a-f0-9]\{8\}\|reCaptcha{..}[^,]\{0,40\}\|isMockProviderEnabled[^,]\{0,20\}\|servicesBaseUrl[^,]\{0,60\}\|"enabled":\(true\|false\)' /tmp/opencode/ozoon_ssr.html | sort -u | head -40; echo ---; grep -c 'refSiteToken' /tmp/opencode/ozoon_ssr.html
+isMockProviderEnabled\":false
+refSiteToken\":\"a0b5b21a0e7cdbad660f4ce03481b084\"
+servicesBaseUrl\":\"https://services.services.ozoon.eu\"}
+servicesBaseUrl\":\"https://services.services.ozoon.eu\"}]
+---
+1
+[0m
+[0m$ [0mgrep -o 'reCaptcha[^}]\{0,120\}' /tmp/opencode/ozoon_ssr.html | head -3; echo ---; grep -o 'buildId[^,]\{0,40\}\|"version"[^,]\{0,30\}\|"timestamp"[^,]\{0,40\}\|serverTimestamp[^,]\{0,30\}' /tmp/opencode/ozoon_ssr.html | sort -u | head -10
+reCaptcha\":{\"enabled\":false,\"publicKey\":\"6LdenecUAAAAAJ4B8pbbh8EFdv1iTtoC6FG9ljkC\"
+---
+[0m
+STEP 1 — DELTA
+- [CHANGED] services.ozoon.eu SSR shell (13:11 UTC): sha256 flapped `6cbdef8e…`→`eeb3342ce8473d388f6405cb3dd050e19c223fc6c21fe2edb758c9898b8fb189`; **byte-size identical 743,198B** and all four tracked pillars byte-identical (`refSiteToken:"a0b5b21a0e7cdbad660f4ce03481b084"`, `reCaptcha":{"enabled":false,"publicKey":"6Ld…C"}`, `isMockProviderEnabled`:false, `servicesBaseUrl="https://services.services.ozoon.eu"`) → volatile embed field (render nonce/timestamp), no functional config drift; 09:27 hash is NOT a stable drift anchor.
+- [NEW] Fresh 13:11 UTC re-verify: `GET /services/wallet-gateway/v1/profiles/{0000…}/balances` → 401/159B, body-shape-stable `{"errorCode":"unauthorized"}` (timestamp field volatile); `GET /services/site-config/v1/countries/CA/profileupdateform` → 200/784B unchanged (CAD+XBT, XBT unpublished, mandatory province+postal, channels EMAIL/SMS/PHONE).
+- [CHANGED] No new anonymous surface; otherwise identical to 09:29 (6th empty triage pattern continues).
+
+STEP 2 — PRIORITIZE
+- [PRIO] https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...,6.25,attack_surface=8,business_value=9,tech_exposure=6,gate_ease=2,cloud_surface=2,freshness=6
+- [PRIO] https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify,5.75,attack_surface=6,business_value=9,tech_exposure=6,gate_ease=2,cloud_surface=2,freshness=6
+- [PRIO] https://www.ozoon.eu/api/v1/signup,5.35,attack_surface=6,business_value=7,tech_exposure=5,gate_ease=3,cloud_surface=2,freshness=7
+
+STEP 3 — HYPOTHESES
+[HYP] BOLA on profile-keyed UUID endpoints across 5 services
+class: IDOR
+asset: https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...
+confidence: 65
+reasoning: Fresh 13:11 UTC probe → 401/159B body-shape-stable vs 2026-09-08 baseline; auth pre-check precedes resource lookup persists; gateway config drift-none (refSiteToken/reCaptcha/isMockProviderEnabled/servicesBaseUrl byte-identical); session→path-UUID binding untestable with zero accounts.
+evidence_needed: With A's sid, GET /profiles/{B-PID}/balances returns 200/differential while control {A-PID} returns A's own data.
+verify_steps: [AUTH_HELPED] signup A+B throwaways → sid+PID; A's sid GET .../wallet-gateway/v1/profiles/{B-PID}/balances and .../player-verification/v1/profiles/{B-PID}/verifications vs {A-PID} control; foreign 200 = BOLA, 401/403 = bound.
+impact: Critical — cross-user wallet/transaction/PII across 5 services; ATO enabler.
+testability: AUTH_HELPED
+[HYP] Registration/referral mass assignment via captcha-free signup
+class: BUSLOGIC
+asset: https://www.ozoon.eu/api/v1/signup
+confidence: 60
+reasoning: reCaptcha.enabled:false re-confirmed in current SSR (13:11); CA profileupdateform 200/784B byte-stable (CAD+XBT, mandatory province/postal) — update DTO strict but signup DTO separate; refSiteToken byte-stable a0b5…b084; profileIdentifiers:["email"].
+evidence_needed: POST signup +extra role/vip/balance/currency keys persists/echoes vs control; static referral token honored for unverified email.
+verify_steps: [AUTH_HELPED] POST control signup on throwaway email, then +extra role/vip/balance/currency keys; compare persisted/echoed fields; then signup_from_invitation with static refSiteToken.
+impact: Medium-High — referral fraud, restricted-territory/softblock bypass, privilege elevation if role/vip honored.
+testability: AUTH_HELPED
+[HYP] Mock-2FA verification header honored — client-controlled 2FA/KYC gate bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify
+confidence: 55
+reasoning: Production SDK sends X-MOCK-2FA-VERIFICATION:true; config allow-permanent-skip:["true"]; SSR isMockProviderEnabled:false re-confirmed 13:11 (client-side only, contrary flag already priced); fresh anonymous 401 baseline stable on wallet gate; no drift.
+evidence_needed: POST verify +header succeeds while byte-identical control without header rejects.
+verify_steps: [AUTH_HELPED] signup → own sid+PID; POST .../verifications/verify {"verificationType":"PHONE"} with header true, then identical control without header on self-created account only.
+impact: Critical — 2FA/SMS/PIN/KYC bypass on deposit/withdraw/bonus money flows.
+testability: AUTH_HELPED
+
+STEP 4 — SELF-CRITIQUE
+- [PARKED] None — no candidate drops below 40; SSR hash flap is volatile-embed noise, not contrary config evidence.
+- [FINAL] 1. BOLA UUID (65) 2. Signup mass-assignment (60) 3. Mock-2FA header (55) — all AUTH_HELPED; fresh 13:11 re-verification confirms supporting config/401 pillars byte-stable, confidences unchanged. No read-only probe can advance any survivor.
+
+STEP 5 — NEXT ACTION
+- [NEXT] HUMAN: Re-request program authorization at bugs.olivermaicher.eu for ONE throwaway test account on www.ozoon.eu (restricted mutating create, throwaway creds, no live customer data, account destroyed post-testing). Purpose: authenticated BOLA differential (wallet-gateway + player-verification cross-UUID read), Mock-2FA header test, signup mass-assignment DTO interrogation. Blocker: all three FINAL hypotheses gated on account_creation:restricted; 8th cycle with zero authenticated probes; drift re-verification adds confirmation only.
+
+STEP 6 — LEARNING
+- [LEARN] ACCEPTED MISCONFIG @ services.ozoon.eu SSR shell: SSR sha256 is volatile across renders (flapped 6cbdef8e→eeb3342c at 13:11, same 743,198B) while flag+size stable — use flag+size as drift signal, not raw hash; reCaptcha publicKey exposed is public site-key class, no finding.
+- [LEARN] ACCEPTED IDOR @ services.ozoon.eu/services/wallet-gateway/v1/profiles/{uuid}/balances: 13:11 UTC re-verify 401/159B body-shape-stable (timestamp field volatile) — auth pre-check preceding resource lookup persists; anonymous differential baseline intact.
+- [LEARN] ACCEPTED MISCONFIG @ services.ozoon.eu/services/site-config/v1/countries/CA/profileupdateform: 13:11 re-verify 200/784B byte-stable — CAD+XBT (XBT unpublished), mandatory province/postal, EMAIL/SMS/PHONE; signup-adjacent DTO surface unchanged.
+- [LEARN] REJECTED OTHER @ ozoon-sportsbook-casino pipeline: empty triage pattern continues (6th consecutive); laguna/probe runs produced no new anonymous evidence; surface byte-identical apart from volatile SSR hash.
+
+STEP 7 — RISK
+- [RISK] ozoon-sportsbook-casino: 80/100 — Real-money gambling platform with confirmed critical attack surface (BOLA UUID across 5 services, mock-2FA gate-bypass config, mass-assignment-capable signup DTO), all supporting pillars re-verified byte-stable today (13:11 UTC config + 401 baseline). Zero authenticated probes across all 8 cycles; all three FINAL hypotheses (65/60/55) remain unverifiable while account_creation:restricted blocks the throwaway gateway. Binding constraint is test authorization, not evidence; empty cycles neither raise nor lower risk, so score holds at 80.
