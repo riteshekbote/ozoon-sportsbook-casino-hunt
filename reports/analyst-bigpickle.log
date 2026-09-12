@@ -16967,3 +16967,566 @@ No hypothesis dropped. All have confidence>40, not REJECTED class, and concrete 
 
 ## STEP 7 — RISK
 [RISK] ozoon-sportsbook-casino: 80 — All three critical hypotheses (BOLA UUID 65, mass-assignment 60, mock-2FA 55) require authenticated session; zero progress possible without account creation; pipeline stale 5+ triage cycles; core platform (ozoon.eu/services.ozoon.eu) absent from inventory file but confirmed in-scope.
+===== ANALYST bigpickle 2026-09-12 21:23:15 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mdate -u && ls -la && git log --oneline -5 2>/dev/null
+Sat Sep 12 21:21:09 UTC 2026
+total 408
+drwxr-xr-x 12 runner runner   4096 Sep 12 21:21 .
+drwxr-xr-x  3 runner runner   4096 Sep 12 21:20 ..
+drwxr-xr-x  7 runner runner   4096 Sep 12 21:21 .git
+drwxr-xr-x  3 runner runner   4096 Sep 12 21:20 .github
+-rw-r--r--  1 runner runner   1642 Sep 12 21:20 README.md
+-rw-r--r--  1 runner runner     32 Sep 12 21:21 analyst-out.txt
+-rw-r--r--  1 runner runner 161280 Sep 12 21:21 analyst-prompt.txt
+-rw-r--r--  1 runner runner 157543 Sep 12 21:21 ctx.txt
+drwxr-xr-x  2 runner runner   4096 Sep 12 21:20 inventory
+drwxr-xr-x  2 runner runner   4096 Sep 12 21:20 knowledge
+drwxr-xr-x  2 runner runner   4096 Sep 12 21:20 leads
+-rw-r--r--  1 runner runner   4202 Sep 12 21:20 probe-results.md
+drwxr-xr-x  2 runner runner   4096 Sep 12 21:20 recon-notes
+drwxr-xr-x  2 runner runner   4096 Sep 12 21:20 reports
+drwxr-xr-x  2 runner runner   4096 Sep 12 21:20 reposcan-raw
+-rw-r--r--  1 runner runner   3150 Sep 12 21:20 scope.yml
+drwxr-xr-x  2 runner runner   4096 Sep 12 21:20 scripts
+-rw-r--r--  1 runner runner     33 Sep 12 21:20 state_bigpickle.json
+-rw-r--r--  1 runner runner     33 Sep 12 21:20 state_laguna.json
+-rw-r--r--  1 runner runner     33 Sep 12 21:20 state_ling3.json
+-rw-r--r--  1 runner runner     33 Sep 12 21:20 state_longcat.json
+-rw-r--r--  1 runner runner     33 Sep 12 21:20 state_mimo.json
+-rw-r--r--  1 runner runner     33 Sep 12 21:20 state_nemotron3.json
+drwxr-xr-x  2 runner runner   4096 Sep 12 21:20 triage
+f6ea57c reposcan 2026-09-12-21-09
+[0m
+[0m$ [0mls -la inventory/ 2>/dev/null; ls -la *.md 2>/dev/null; find . -name "probe-results.md" -o -name "hypotheses-*.txt" 2>/dev/null | head -20
+total 88
+drwxr-xr-x  2 runner runner  4096 Sep 12 21:20 .
+drwxr-xr-x 12 runner runner  4096 Sep 12 21:21 ..
+-rw-r--r--  1 runner runner 79980 Sep 12 21:20 ozoon-sportsbook-casino.md
+-rw-r--r-- 1 runner runner 1642 Sep 12 21:20 README.md
+-rw-r--r-- 1 runner runner 4202 Sep 12 21:20 probe-results.md
+./probe-results.md
+./reports/hypotheses-ling3.txt
+./reports/hypotheses-bigpickle.txt
+./reports/hypotheses-longcat.txt
+./reports/hypotheses-laguna.txt
+./reports/hypotheses-nemotron3.txt
+[0m
+[0m$ [0mls -la triage/ && ls -la reposcan-raw/ && ls -la recon-notes/ && ls -la leads/ && ls -la knowledge/ && ls -la reports/
+total 324
+drwxr-xr-x  2 runner runner  4096 Sep 12 21:20 .
+drwxr-xr-x 12 runner runner  4096 Sep 12 21:21 ..
+-rw-r--r--  1 runner runner     0 Sep 12 21:20 .gitkeep
+-rw-r--r--  1 runner runner   203 Sep 12 21:20 run-2026-09-02-21-52.md
+-rw-r--r--  1 runner runner   224 Sep 12 21:20 run-2026-09-02-23-50.md
+-rw-r--r--  1 runner runner   178 Sep 12 21:20 run-2026-09-03-02-55.md
+-rw-r--r--  1 runner runner   205 Sep 12 21:20 run-2026-09-03-07-48.md
+-rw-r--r--  1 runner runner   155 Sep 12 21:20 run-2026-09-03-12-35.md
+-rw-r--r--  1 runner runner   182 Sep 12 21:20 run-2026-09-03-16-40.md
+-rw-r--r--  1 runner runner   149 Sep 12 21:20 run-2026-09-03-19-27.md
+-rw-r--r--  1 runner runner   178 Sep 12 21:20 run-2026-09-03-21-52.md
+-rw-r--r--  1 runner runner   172 Sep 12 21:20 run-2026-09-03-23-46.md
+-rw-r--r--  1 runner runner   304 Sep 12 21:20 run-2026-09-04-02-55.md
+-rw-r--r--  1 runner runner   822 Sep 12 21:20 run-2026-09-04-07-43.md
+-rw-r--r--  1 runner runner   224 Sep 12 21:20 run-2026-09-04-12-30.md
+-rw-r--r--  1 runner runner   347 Sep 12 21:20 run-2026-09-04-16-35.md
+-rw-r--r--  1 runner runner   248 Sep 12 21:20 run-2026-09-04-19-07.md
+-rw-r--r--  1 runner runner  5887 Sep 12 21:20 run-2026-09-04-21-33.md
+-rw-r--r--  1 runner runner   189 Sep 12 21:20 run-2026-09-04-23-17.md
+-rw-r--r--  1 runner runner   749 Sep 12 21:20 run-2026-09-05-01-06.md
+-rw-r--r--  1 runner runner   171 Sep 12 21:20 run-2026-09-05-05-50.md
+-rw-r--r--  1 runner runner   174 Sep 12 21:20 run-2026-09-05-09-57.md
+-rw-r--r--  1 runner runner   213 Sep 12 21:20 run-2026-09-05-13-17.md
+-rw-r--r--  1 runner runner   220 Sep 12 21:20 run-2026-09-05-16-08.md
+-rw-r--r--  1 runner runner   160 Sep 12 21:20 run-2026-09-05-18-22.md
+-rw-r--r--  1 runner runner   167 Sep 12 21:20 run-2026-09-05-20-42.md
+-rw-r--r--  1 runner runner   205 Sep 12 21:20 run-2026-09-05-22-38.md
+-rw-r--r--  1 runner runner   159 Sep 12 21:20 run-2026-09-06-00-13.md
+-rw-r--r--  1 runner runner   146 Sep 12 21:20 run-2026-09-06-04-47.md
+-rw-r--r--  1 runner runner   189 Sep 12 21:20 run-2026-09-06-09-08.md
+-rw-r--r--  1 runner runner   156 Sep 12 21:20 run-2026-09-06-12-55.md
+-rw-r--r--  1 runner runner   188 Sep 12 21:20 run-2026-09-06-15-59.md
+-rw-r--r--  1 runner runner   146 Sep 12 21:20 run-2026-09-06-18-11.md
+-rw-r--r--  1 runner runner   231 Sep 12 21:20 run-2026-09-06-20-29.md
+-rw-r--r--  1 runner runner 11289 Sep 12 21:20 run-2026-09-06-22-19.md
+-rw-r--r--  1 runner runner   173 Sep 12 21:20 run-2026-09-07-00-05.md
+-rw-r--r--  1 runner runner   214 Sep 12 21:20 run-2026-09-07-04-50.md
+-rw-r--r--  1 runner runner   166 Sep 12 21:20 run-2026-09-07-09-56.md
+-rw-r--r--  1 runner runner   273 Sep 12 21:20 run-2026-09-07-15-33.md
+-rw-r--r--  1 runner runner   220 Sep 12 21:20 run-2026-09-07-19-23.md
+-rw-r--r--  1 runner runner   194 Sep 12 21:20 run-2026-09-07-22-15.md
+-rw-r--r--  1 runner runner  2430 Sep 12 21:20 run-2026-09-08-00-29.md
+-rw-r--r--  1 runner runner   245 Sep 12 21:20 run-2026-09-08-05-11.md
+-rw-r--r--  1 runner runner   146 Sep 12 21:20 run-2026-09-08-09-47.md
+-rw-r--r--  1 runner runner   213 Sep 12 21:20 run-2026-09-08-14-07.md
+-rw-r--r--  1 runner runner   170 Sep 12 21:20 run-2026-09-08-17-58.md
+-rw-r--r--  1 runner runner   154 Sep 12 21:20 run-2026-09-08-20-51.md
+-rw-r--r--  1 runner runner   135 Sep 12 21:20 run-2026-09-08-23-11.md
+-rw-r--r--  1 runner runner   145 Sep 12 21:20 run-2026-09-09-01-17.md
+-rw-r--r--  1 runner runner   238 Sep 12 21:20 run-2026-09-09-06-04.md
+-rw-r--r--  1 runner runner   298 Sep 12 21:20 run-2026-09-09-11-32.md
+-rw-r--r--  1 runner runner   174 Sep 12 21:20 run-2026-09-09-15-16.md
+-rw-r--r--  1 runner runner   143 Sep 12 21:20 run-2026-09-09-18-41.md
+-rw-r--r--  1 runner runner   146 Sep 12 21:20 run-2026-09-09-21-29.md
+-rw-r--r--  1 runner runner   148 Sep 12 21:20 run-2026-09-09-23-29.md
+-rw-r--r--  1 runner runner   198 Sep 12 21:20 run-2026-09-10-01-25.md
+-rw-r--r--  1 runner runner   229 Sep 12 21:20 run-2026-09-10-06-38.md
+-rw-r--r--  1 runner runner  7828 Sep 12 21:20 run-2026-09-10-11-49.md
+-rw-r--r--  1 runner runner   183 Sep 12 21:20 run-2026-09-10-15-49.md
+-rw-r--r--  1 runner runner   244 Sep 12 21:20 run-2026-09-10-18-56.md
+-rw-r--r--  1 runner runner   172 Sep 12 21:20 run-2026-09-10-21-27.md
+-rw-r--r--  1 runner runner   243 Sep 12 21:20 run-2026-09-10-23-22.md
+-rw-r--r--  1 runner runner  1491 Sep 12 21:20 run-2026-09-11-01-26.md
+-rw-r--r--  1 runner runner 13823 Sep 12 21:20 run-2026-09-11-06-38.md
+-rw-r--r--  1 runner runner   135 Sep 12 21:20 run-2026-09-11-11-47.md
+-rw-r--r--  1 runner runner   266 Sep 12 21:20 run-2026-09-11-15-51.md
+-rw-r--r--  1 runner runner   224 Sep 12 21:20 run-2026-09-11-18-58.md
+-rw-r--r--  1 runner runner   146 Sep 12 21:20 run-2026-09-11-21-37.md
+-rw-r--r--  1 runner runner   144 Sep 12 21:20 run-2026-09-11-23-31.md
+-rw-r--r--  1 runner runner   236 Sep 12 21:20 run-2026-09-12-01-31.md
+-rw-r--r--  1 runner runner   237 Sep 12 21:20 run-2026-09-12-06-29.md
+-rw-r--r--  1 runner runner   154 Sep 12 21:20 run-2026-09-12-11-13.md
+-rw-r--r--  1 runner runner   237 Sep 12 21:20 run-2026-09-12-14-12.md
+-rw-r--r--  1 runner runner   199 Sep 12 21:20 run-2026-09-12-17-15.md
+-rw-r--r--  1 runner runner   454 Sep 12 21:20 run-2026-09-12-19-26.md
+total 12
+drwxr-xr-x  2 runner runner 4096 Sep 12 21:20 .
+drwxr-xr-x 12 runner runner 4096 Sep 12 21:21 ..
+-rw-r--r--  1 runner runner   86 Sep 12 21:20 summary.txt
+total 12
+drwxr-xr-x  2 runner runner 4096 Sep 12 21:20 .
+drwxr-xr-x 12 runner runner 4096 Sep 12 21:21 ..
+-rw-r--r--  1 runner runner  831 Sep 12 21:20 DEDICATED-DEEP.md
+total 1192
+drwxr-xr-x  2 runner runner   4096 Sep 12 21:20 .
+drwxr-xr-x 12 runner runner   4096 Sep 12 21:21 ..
+-rw-r--r--  1 runner runner 469834 Sep 12 21:20 lead-bigpickle.md
+-rw-r--r--  1 runner runner   3264 Sep 12 21:20 lead-laguna.md
+-rw-r--r--  1 runner runner   3200 Sep 12 21:20 lead-ling3.md
+-rw-r--r--  1 runner runner   3328 Sep 12 21:20 lead-longcat.md
+-rw-r--r--  1 runner runner     18 Sep 12 21:20 lead-mimo.md
+-rw-r--r--  1 runner runner 695601 Sep 12 21:20 lead-nemotron3.md
+-rw-r--r--  1 runner runner  25139 Sep 12 21:20 reposcan-ozoon-sportsbook-casino.md
+total 72
+drwxr-xr-x  2 runner runner  4096 Sep 12 21:20 .
+drwxr-xr-x 12 runner runner  4096 Sep 12 21:21 ..
+-rw-r--r--  1 runner runner 63011 Sep 12 21:20 index.md
+total 3048
+drwxr-xr-x  2 runner runner    4096 Sep 12 21:20 .
+drwxr-xr-x 12 runner runner    4096 Sep 12 21:21 ..
+-rw-r--r--  1 runner runner 1343055 Sep 12 21:20 analyst-bigpickle.log
+-rw-r--r--  1 runner runner   13888 Sep 12 21:20 analyst-laguna.log
+-rw-r--r--  1 runner runner   13824 Sep 12 21:20 analyst-ling3.log
+-rw-r--r--  1 runner runner   13952 Sep 12 21:20 analyst-longcat.log
+-rw-r--r--  1 runner runner 1436154 Sep 12 21:20 analyst-nemotron3.log
+-rw-r--r--  1 runner runner    7770 Sep 12 21:20 hypotheses-bigpickle.txt
+-rw-r--r--  1 runner runner      51 Sep 12 21:20 hypotheses-laguna.txt
+-rw-r--r--  1 runner runner      50 Sep 12 21:20 hypotheses-ling3.txt
+-rw-r--r--  1 runner runner      52 Sep 12 21:20 hypotheses-longcat.txt
+-rw-r--r--  1 runner runner   12155 Sep 12 21:20 hypotheses-nemotron3.txt
+-rw-r--r--  1 runner runner  244390 Sep 12 21:20 hypotheses.md
+-rw-r--r--  1 runner runner    1072 Sep 12 21:20 valid-bugs.md
+[0m
+[0m$ [0mcat probe-results.md
+## 2026-09-02 21:55:20 UTC
+
+
+## 2026-09-03 00:00:11 UTC
+
+
+## 2026-09-03 04:18:13 UTC
+
+
+## 2026-09-03 09:03:56 UTC
+
+
+## 2026-09-03 13:36:17 UTC
+
+
+## 2026-09-03 17:24:54 UTC
+https://www.ozoon.com/ -> 200 len=?
+https://www.ozoon.com/api/ -> HTTP 404
+https://www.ozoon.com/robots.txt -> 200 len=?
+https://www.ozoon.com/sitemap.xml -> 200 len=?
+https://www.ozoon.com/hyper/ -> HTTP 404
+https://www.ozoon.com/mas-film/ -> HTTP 404
+https://www.ozoon.com:3306/ -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
+
+## 2026-09-03 20:08:24 UTC
+https://www.ozoon.com/ -> 200 len=?
+https://www.ozoon.com/api/ -> HTTP 404
+https://www.ozoon.com/robots.txt -> 200 len=?
+https://www.ozoon.com/sitemap.xml -> 200 len=?
+
+## 2026-09-03 22:51:16 UTC
+https://www.ozoon.com -> 200 len=?
+https://www.ozoon.com/ -> 200 len=?
+https://www.ozoon.com/api/ -> HTTP 404
+https://www.ozoon.com/robots.txt -> 200 len=?
+https://www.ozoon.com/sitemap.xml -> 200 len=?
+
+## 2026-09-04 00:48:52 UTC
+https://www.ozoon.com -> 200 len=?
+https://www.ozoon.com/ -> 200 len=?
+https://www.ozoon.com/api/ -> HTTP 404
+https://www.ozoon.com/robots.txt -> 200 len=?
+https://www.ozoon.com/sitemap.xml -> 200 len=?
+
+## 2026-09-04 05:14:05 UTC
+https://www.ozoon.com -> 200 len=?
+https://www.ozoon.com/ -> 200 len=?
+https://www.ozoon.com/api/ -> HTTP 404
+https://www.ozoon.com/robots.txt -> 200 len=?
+https://www.ozoon.com/sitemap.xml -> 200 len=?
+
+## 2026-09-04 09:50:35 UTC
+https://www.ozoon.com -> 200 len=?
+https://www.ozoon.com/ -> 200 len=?
+https://www.ozoon.com/api/ -> HTTP 404
+https://www.ozoon.com/robots.txt -> 200 len=?
+https://www.ozoon.com/sitemap.xml -> 200 len=?
+
+## 2026-09-04 14:26:01 UTC
+
+
+## 2026-09-04 18:02:21 UTC
+
+
+## 2026-09-04 20:04:48 UTC
+https://www.ozoon.com/?{url|fetch|callback|import|view -> 200 len=?
+https://www.ozoon.com/?url=https://<collab>/ -> 200 len=?
+
+## 2026-09-04 22:19:16 UTC
+https://www.ozoon.com/?{url|view|page|callback -> 200 len=?
+
+## 2026-09-05 00:16:35 UTC
+
+
+## 2026-09-05 04:46:34 UTC
+https://www.ozoon.com/?{url|view|page|callback -> 200 len=?
+
+## 2026-09-05 08:43:46 UTC
+
+
+## 2026-09-05 12:12:10 UTC
+
+
+## 2026-09-05 15:34:45 UTC
+
+
+## 2026-09-05 17:45:43 UTC
+
+
+## 2026-09-05 19:37:04 UTC
+
+
+## 2026-09-05 21:47:51 UTC
+
+
+## 2026-09-05 23:48:13 UTC
+
+
+## 2026-09-06 04:10:59 UTC
+
+
+## 2026-09-06 08:50:52 UTC
+
+
+## 2026-09-06 12:54:16 UTC
+
+
+## 2026-09-06 16:13:38 UTC
+
+
+## 2026-09-06 18:35:44 UTC
+
+
+## 2026-09-06 20:52:21 UTC
+
+
+## 2026-09-06 22:51:58 UTC
+
+
+## 2026-09-07 00:51:48 UTC
+
+
+## 2026-09-07 05:56:27 UTC
+
+
+## 2026-09-07 12:27:57 UTC
+https://www.ozoon.com,3.0,attack_surface=4,business_value=3,tech_exposure=4,gate_ease=10,cloud_surface=5,freshness=5 -> ERR label too long
+
+## 2026-09-07 17:54:23 UTC
+
+
+## 2026-09-07 21:27:50 UTC
+https://www.ozoon.com,3.5,attack_surface=4,business_value=3,tech_exposure=3,gate_ease=9,cloud_surface=3,freshness=5 -> ERR label too long
+
+## 2026-09-07 23:49:41 UTC
+https://www.ozoon.com -> 200 len=?
+https://www.ozoon.com/?url=http://169.254.169.254/latest/meta-data/ -> 200 len=?
+
+## 2026-09-08 04:11:28 UTC
+
+
+## 2026-09-08 09:02:55 UTC
+
+
+## 2026-09-08 13:34:27 UTC
+
+
+## 2026-09-08 17:50:23 UTC
+
+
+## 2026-09-08 20:21:40 UTC
+
+
+## 2026-09-08 22:49:04 UTC
+https://www.ozoon.com,4.50,attack_surface=5,business_value=3,tech_exposure=4,gate_ease=10,cloud_surface=6,freshness=5 -> ERR label too long
+https://www.ozoon.com -> 200 len=?
+https://www.ozoon.com/?url=http://169.254.169.254/latest/meta-data/ -> 200 len=?
+
+## 2026-09-09 01:19:23 UTC
+
+
+## 2026-09-09 06:12:41 UTC
+
+
+## 2026-09-09 11:42:54 UTC
+
+
+## 2026-09-09 15:34:53 UTC
+
+
+## 2026-09-09 18:46:50 UTC
+
+
+## 2026-09-09 21:39:00 UTC
+
+
+## 2026-09-09 23:35:21 UTC
+
+
+## 2026-09-10 01:33:55 UTC
+
+
+## 2026-09-10 07:03:07 UTC
+
+
+## 2026-09-10 12:02:51 UTC
+
+
+## 2026-09-10 16:16:00 UTC
+
+
+## 2026-09-10 19:17:47 UTC
+
+
+## 2026-09-10 21:47:13 UTC
+
+
+## 2026-09-10 23:57:14 UTC
+
+
+## 2026-09-11 04:23:34 UTC
+
+
+## 2026-09-11 09:21:05 UTC
+
+
+## 2026-09-11 13:46:17 UTC
+
+
+## 2026-09-11 17:23:01 UTC
+
+
+## 2026-09-11 19:53:37 UTC
+
+
+## 2026-09-11 22:25:48 UTC
+
+
+## 2026-09-12 00:40:45 UTC
+
+
+## 2026-09-12 05:07:27 UTC
+
+
+## 2026-09-12 09:29:33 UTC
+
+
+## 2026-09-12 13:13:04 UTC
+
+
+## 2026-09-12 16:27:35 UTC
+
+
+## 2026-09-12 18:52:44 UTC
+[0m
+[0m$ [0mcat triage/run-2026-09-12-19-26.md; echo "=====REPOSCAN SUMMARY====="; cat reposcan-raw/summary.txt
+===== TRIAGE 2026-09-12 19:26:03 UTC =====
+[0m
+> build · mimo-v2.5-free
+[0m
+I see you've set up the validation framework, but the **LEADS** section is empty.
+
+Please provide the specific probe results / leads you want me to validate against the 7-Question Gate. For each lead, I'll need:
+
+- The URL/endpoint tested
+- The finding description
+- Any passive evidence gathered
+
+Once you paste the leads, I'll run each through Q1-Q7 and render a verdict.
+=====REPOSCAN SUMMARY=====
+TARGET_ORG not configured for ozoon-sportsbook-casino; skipping public-org deep scan.
+[0m
+[0m$ [0mgit show --stat f6ea57c | head -40
+commit f6ea57caf84091252e12c474eb738425467b97c4
+Author: github-actions <actions@github.com>
+Date:   Sat Sep 12 21:09:06 2026 +0000
+
+    reposcan 2026-09-12-21-09
+
+ .github/workflows/hunt.yml                |   250 +
+ .github/workflows/reposcan.yml            |   109 +
+ .github/workflows/sync-issues.yml         |    44 +
+ .github/workflows/triage.yml              |   138 +
+ README.md                                 |    34 +
+ inventory/ozoon-sportsbook-casino.md      |   584 +
+ knowledge/index.md                        |   329 +
+ leads/lead-bigpickle.md                   |  3209 ++++++
+ leads/lead-laguna.md                      |    64 +
+ leads/lead-ling3.md                       |    64 +
+ leads/lead-longcat.md                     |    64 +
+ leads/lead-mimo.md                        |     1 +
+ leads/lead-nemotron3.md                   |  3882 +++++++
+ leads/reposcan-ozoon-sportsbook-casino.md |   341 +
+ probe-results.md                          |   236 +
+ recon-notes/DEDICATED-DEEP.md             |    21 +
+ reports/analyst-bigpickle.log             | 16969 ++++++++++++++++++++++++++++
+ reports/analyst-laguna.log                |   512 +
+ reports/analyst-ling3.log                 |   512 +
+ reports/analyst-longcat.log               |   512 +
+ reports/analyst-nemotron3.log             | 10838 ++++++++++++++++++
+ reports/hypotheses-bigpickle.txt          |    52 +
+ reports/hypotheses-laguna.txt             |     1 +
+ reports/hypotheses-ling3.txt              |     1 +
+ reports/hypotheses-longcat.txt            |     1 +
+ reports/hypotheses-nemotron3.txt          |    65 +
+ reports/hypotheses.md                     |  1696 +++
+ reports/valid-bugs.md                     |    11 +
+ reposcan-raw/summary.txt                  |     1 +
+ scope.yml                                 |    55 +
+ scripts/sync-issues.py                    |   429 +
+ state_bigpickle.json                      |     1 +
+ state_laguna.json                         |     1 +
+ state_ling3.json                          |     1 +
+[0m
+New activity detected since last cycle: reposcan at 21:09 committed, and a triage run at 19:26. Checking both plus reposcan outputs.
+Reposcan skipped (TARGET_ORG unconfigured), triage 19:26 empty — 6th consecutive. One cheap read-only drift probe to check the SSR baseline since my 09:27 hash.
+[0m$ [0mtmp=$(mktemp); curl -s --max-time 20 -o "$tmp" -w "HTTP %{http_code} bytes=%{size_download}\n" https://services.ozoon.eu/ ; sha256sum "$tmp"; rm -f "$tmp"
+HTTP 200 bytes=743199
+22eed11d0460049c145133d28363b938835bbd83e16ee7eaa3b337633fbbd1d8  /tmp/tmp.6UWWoK9Btz
+[0m
+Size delta of exactly 1 byte (743,198→743,199) with a changed hash — first config change in days. Grepping key markers to assess drift nature.
+[0m$ [0mtmp=$(mktemp); curl -s --max-time 20 -o "$tmp" https://services.ozoon.eu/
+echo "== refSiteToken =="; grep -o 'refSiteToken[^,}]*' "$tmp" | head -3
+echo "== reCaptcha =="; grep -o 'reCaptcha[^}]\{0,40\}' "$tmp" | head -3
+echo "== servicesBaseUrl =="; grep -o 'servicesBaseUrl[^,}]*' "$tmp" | head -3
+echo "== mock =="; grep -o 'isMockProviderEnabled[^,}]*' "$tmp" | head -3
+echo "== buildId/version hints =="; grep -o 'buildId[^,"]*' "$tmp" | head -3
+grep -o '"version"[^,}]\{0,30\}' "$tmp" | head -5
+echo "== anything new: catchall diffable tokens =="; grep -oE '(recaptchaSiteKey|two_factor_authenticator[^,}]{0,40}|allow-permanent-skip[^,}]{0,20})' "$tmp" | head -10
+rm -f "$tmp"
+== refSiteToken ==
+refSiteToken\":\"a0b5b21a0e7cdbad660f4ce03481b084\"
+== reCaptcha ==
+reCaptcha\":{\"enabled\":false,\"publicKey\":\"6L
+== servicesBaseUrl ==
+servicesBaseUrl\":\"https://services.services.ozoon.eu\"
+servicesBaseUrl\":\"https://services.services.ozoon.eu\"
+== mock ==
+isMockProviderEnabled\":false
+== buildId/version hints ==
+== anything new: catchall diffable tokens ==
+[0m
+[0m$ [0mtmp=$(mktemp); curl -s --max-time 20 -o "$tmp" https://services.ozoon.eu/
+grep -oE '20[0-9]{2}-[0-9]{2}-[0-9]{2}[T ][0-9:]{5,8}' "$tmp" | sort | uniq -c | sort -rn | head -8
+echo "== deploy/version markers =="
+grep -oE '(deployId|deploymentId|BUILD_ID|Next\.js v?[0-9.]+|builtAt|releaseId)[^,}"]{0,30}' "$tmp" | head -8
+rm -f "$tmp"
+10 2026-09-12T21:21:28
+      2 2026-08-18T14:32:54
+      2 2026-03-11T10:33:19
+      1 2026-09-11T16:10:06
+      1 2026-09-02T14:17:16
+      1 2026-09-01T21:04:52
+      1 2026-09-01T21:04:14
+      1 2026-08-28T10:35:51
+== deploy/version markers ==
+[0m
+All key markers byte-identical; timestamps regenerated at 21:21:28 (SSR cache-bust) explain the +1B/hash delta. No config or code drift. Finalizing the analysis.
+
+---
+
+STEP 1 — DELTA
+- [CHANGED] Triage run 19:26 empty (6th consecutive empty triage); reposcan 21:09 skipped (`TARGET_ORG not configured`) — no new anonymous evidence; probe-results.md byte-unchanged since 00:40:45.
+- [CHANGED] SSR config-drift re-probe 21:21 → sha256 `22eed11d…` (743,199B, +1B vs 09:27 baseline `6cbdef8e…`); all key markers byte-identical (`refSiteToken` a0b5…b084, `reCaptcha.enabled:false`, `isMockProviderEnabled:false`, `servicesBaseUrl=https://services.services.ozoon.eu`); the 1-byte delta is embedded SSR timestamp regeneration (observed 21:21:28), not config/code drift — drift baseline refreshed.
+
+STEP 2 — PRIORITIZE
+- [PRIO] services.ozoon.eu,7.0,attack_surface:9 business_value:9 tech_exposure:8 gate_ease:2 cloud_surface:3 freshness:6
+- [PRIO] www.ozoon.eu/api/v1/signup,6.8,attack_surface:7 business_value:9 tech_exposure:6 gate_ease:3 cloud_surface:3 freshness:6
+- [PRIO] www.ozoon.com,3.45,attack_surface:2 business_value:3 tech_exposure:3 gate_ease:9 cloud_surface:2 freshness:2
+
+STEP 3 — HYPOTHESES
+- [HYP] BOLA on profile-keyed UUID endpoints across 5 services
+```
+class: IDOR
+asset: https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...
+confidence: 65
+reasoning: Fresh 05:06 probe → 401/159B body-shape-stable vs 2026-09-08 baseline; auth pre-check precedes resource lookup persists; SSR config drift-none re-confirmed 21:21 (refSiteToken/reCaptcha/isMockProviderEnabled/servicesBaseUrl byte-identical); session→path-UUID binding untestable with zero accounts.
+evidence_needed: With A's sid, GET /profiles/{B-PID}/balances returns 200/differential while control {A-PID} returns A's own data.
+verify_steps: [AUTH_HELPED] signup A+B throwaways → sid+PID; A's sid GET .../wallet-gateway/v1/profiles/{B-PID}/balances and .../player-verification/v1/profiles/{B-PID}/verifications vs {A-PID} control; foreign 200 = BOLA, 401/403 = bound.
+impact: Critical — cross-user wallet/transaction/PII across 5 services; ATO enabler.
+testability: AUTH_HELPED
+```
+- [HYP] Registration/referral mass assignment via captcha-free signup
+```
+class: BUSLOGIC
+asset: https://www.ozoon.eu/api/v1/signup
+confidence: 60
+reasoning: reCaptcha.enabled:false re-confirmed 21:21 SSR; CA profileupdateform 200/784B byte-stable (CAD+XBT mandatory province/postal); update DTO strict but signup DTO separate; refSiteToken byte-stable a0b5…b084; profileIdentifiers:["email"].
+evidence_needed: POST signup +extra role/vip/balance/currency keys persists/echoes vs control; static referral token honored.
+verify_steps: [AUTH_HELPED] POST control signup on throwaway email, then +extra role/vip/balance/currency keys; compare persisted fields; signup_from_invitation with static refSiteToken.
+impact: Medium-High — referral fraud, softblock bypass, privilege elevation if role/vip honored.
+testability: AUTH_HELPED
+```
+- [HYP] Mock-2FA verification header honored — client-controlled 2FA/KYC gate bypass
+```
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify
+confidence: 55
+reasoning: Production SDK sends X-MOCK-2FA-VERIFICATION:true; config allow-permanent-skip:["true"]; SSR isMockProviderEnabled:false re-confirmed 21:21 (client-side only, contrary flag sorted); wallet-gate 401 baseline stable.
+evidence_needed: POST verify +header succeeds while byte-identical control without header rejects.
+verify_steps: [AUTH_HELPED] signup → own sid+PID; POST .../verifications/verify {"verificationType":"PHONE"} with header true, then identical control without header on self-created account only.
+impact: Critical — 2FA/SMS/PIN/KYC bypass on deposit/withdraw/bonus money flows.
+testability: AUTH_HELPED
+```
+
+STEP 4 — SELF-CRITIQUE
+- [FINAL] BOLA on profile-keyed UUID endpoints across 5 services — 65, AUTH_HELPED (drift-refreshed baseline, no reject-class overlap)
+- [FINAL] Registration/referral mass assignment via captcha-free signup — 60, AUTH_HELPED (signup remains RESTRICTED mutating; gated on explicit authorization, not dropped)
+- [FINAL] Mock-2FA verification header honored — 55, AUTH_HELPED (contra-flag `isMockProviderEnabled:false` is client-side only, already priced)
+- [PARKED] none — all survivors ≥55 with concrete verify steps; empty-pipeline cycle adds nothing to displace them
+
+STEP 5 — NEXT ACTION
+- [NEXT] HUMAN: Request program authorization at bugs.olivermaicher.eu for ONE throwaway-account creation on www.ozoon.eu (`POST /api/v1/signup`, restricted to the sole mutating create) — 6th consecutive empty triage cycle, zero authenticated probes ever executed, and all three FINAL hypotheses are gated on that session; no further anonymous probe can move the needle.
+
+STEP 6 — LEARNING
+- [LEARN] REJECTED OTHER @ ozoon-sportsbook-casino pipeline: triage run 19:26 empty (6th consecutive), reposcan 21:09 skipped (TARGET_ORG unconfigured), probe-results.md byte-unchanged since 00:40:45 — no new anonymous evidence generated; surface identical to 18:52.
+- [LEARN] ACCEPTED MISCONFIG @ services.ozoon.eu SSR shell: config-drift re-probe 21:21 → sha256 22eed11d… (743,199B, +1B vs 09:27 baselined 6cbdef8e…); all key markers byte-identical (refSiteToken a0b5…b084, reCaptcha.enabled:false, isMockProviderEnabled:false, servicesBaseUrl unchanged); size delta explained by SSR timestamp regeneration (21:21:28), no config/code drift; baseline refreshed for future cheap diffs.
+
+STEP 7 — RISK
+- [RISK] ozoon-sportsbook-casino: 80 — All three critical hypotheses (BOLA 65, mass-assignment 60, mock-2FA 55) remain AUTH_HELPED and unprobed; 6 consecutive empty triages; zero authenticated tests ever; inventory still omits ozoon.eu/services.ozoon.eu (confirmed in-scope); drift baseline re-verified stable, so no exposure change either direction.

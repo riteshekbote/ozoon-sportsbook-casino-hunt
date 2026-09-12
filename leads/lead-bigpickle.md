@@ -3207,3 +3207,28 @@ testability: AUTH_HELPED
 [LEARN] ACCEPTED MISCONFIG @ services.ozoon.eu SSR shell: config-drift probe 09:27 → sha256 6cbdef8e… (743,198B); refSiteToken a0b5…b084 byte-stable, reCaptcha.enabled:false, isMockProviderEnabled:false, servicesBaseUrl=https://services.services.ozoon.eu unchanged; gateway config persistence reconfirmed; drift baseline hashed for cheap future diffs.
 [LEARN] REJECTED OTHER @ ozoon-sportsbook-casino pipeline: triage runs 01:31+06:29 both empty (5th consecutive), probe-results.md byte-unchanged since 00:40:45, laguna 05:05 empty — no new anonymous evidence generated; surface byte-identical to 05:07 aside from my drift baseline.
 [RISK] ozoon-sportsbook-casino: 80 — All three critical hypotheses (BOLA UUID 65, mass-assignment 60, mock-2FA 55) require authenticated session; zero progress possible without account creation; pipeline stale 5+ triage cycles; core platform (ozoon.eu/services.ozoon.eu) absent from inventory file but confirmed in-scope.
+## 2026-09-12 21:22:24 UTC [target] (model bigpickle)
+class: IDOR
+asset: https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...
+confidence: 65
+reasoning: Fresh 05:06 probe → 401/159B body-shape-stable vs 2026-09-08 baseline; auth pre-check precedes resource lookup persists; SSR config drift-none re-confirmed 21:21 (refSiteToken/reCaptcha/isMockProviderEnabled/servicesBaseUrl byte-identical); session→path-UUID binding untestable with zero accounts.
+evidence_needed: With A's sid, GET /profiles/{B-PID}/balances returns 200/differential while control {A-PID} returns A's own data.
+verify_steps: [AUTH_HELPED] signup A+B throwaways → sid+PID; A's sid GET .../wallet-gateway/v1/profiles/{B-PID}/balances and .../player-verification/v1/profiles/{B-PID}/verifications vs {A-PID} control; foreign 200 = BOLA, 401/403 = bound.
+impact: Critical — cross-user wallet/transaction/PII across 5 services; ATO enabler.
+testability: AUTH_HELPED
+class: BUSLOGIC
+asset: https://www.ozoon.eu/api/v1/signup
+confidence: 60
+reasoning: reCaptcha.enabled:false re-confirmed 21:21 SSR; CA profileupdateform 200/784B byte-stable (CAD+XBT mandatory province/postal); update DTO strict but signup DTO separate; refSiteToken byte-stable a0b5…b084; profileIdentifiers:["email"].
+evidence_needed: POST signup +extra role/vip/balance/currency keys persists/echoes vs control; static referral token honored.
+verify_steps: [AUTH_HELPED] POST control signup on throwaway email, then +extra role/vip/balance/currency keys; compare persisted fields; signup_from_invitation with static refSiteToken.
+impact: Medium-High — referral fraud, softblock bypass, privilege elevation if role/vip honored.
+testability: AUTH_HELPED
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify
+confidence: 55
+reasoning: Production SDK sends X-MOCK-2FA-VERIFICATION:true; config allow-permanent-skip:["true"]; SSR isMockProviderEnabled:false re-confirmed 21:21 (client-side only, contrary flag sorted); wallet-gate 401 baseline stable.
+evidence_needed: POST verify +header succeeds while byte-identical control without header rejects.
+verify_steps: [AUTH_HELPED] signup → own sid+PID; POST .../verifications/verify {"verificationType":"PHONE"} with header true, then identical control without header on self-created account only.
+impact: Critical — 2FA/SMS/PIN/KYC bypass on deposit/withdraw/bonus money flows.
+testability: AUTH_HELPED
