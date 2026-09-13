@@ -18299,3 +18299,527 @@ STEP 6 — LEARNING
 
 STEP 7 — RISK
 [RISK] ozoon-sportsbook-casino: 80 — Core three (BOLA 65, mass-assignment 60, mock-2FA 55) remain gated on one authorized account after 6+ empty triage cycles and 19+ rounds with zero authenticated probes; new Pick'Em Supabase surface (RLS 42) is cheap to test in-browser but still needs the key; risk unchanged at 80 because discovery breadth grew while testability of value remains externally gated.
+===== ANALYST bigpickle 2026-09-13 06:54:45 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mls -la && ls -la artifacts 2>/dev/null; ls -la inventory 2>/dev/null
+total 424
+drwxr-xr-x 12 runner runner   4096 Sep 13 06:46 .
+drwxr-xr-x  3 runner runner   4096 Sep 13 06:46 ..
+drwxr-xr-x  7 runner runner   4096 Sep 13 06:46 .git
+drwxr-xr-x  3 runner runner   4096 Sep 13 06:46 .github
+-rw-r--r--  1 runner runner   1642 Sep 13 06:46 README.md
+-rw-r--r--  1 runner runner     32 Sep 13 06:46 analyst-out.txt
+-rw-r--r--  1 runner runner 171223 Sep 13 06:46 analyst-prompt.txt
+-rw-r--r--  1 runner runner 167486 Sep 13 06:46 ctx.txt
+drwxr-xr-x  2 runner runner   4096 Sep 13 06:46 inventory
+drwxr-xr-x  2 runner runner   4096 Sep 13 06:46 knowledge
+drwxr-xr-x  2 runner runner   4096 Sep 13 06:46 leads
+-rw-r--r--  1 runner runner   4289 Sep 13 06:46 probe-results.md
+drwxr-xr-x  2 runner runner   4096 Sep 13 06:46 recon-notes
+drwxr-xr-x  2 runner runner   4096 Sep 13 06:46 reports
+drwxr-xr-x  2 runner runner   4096 Sep 13 06:46 reposcan-raw
+-rw-r--r--  1 runner runner   3150 Sep 13 06:46 scope.yml
+drwxr-xr-x  2 runner runner   4096 Sep 13 06:46 scripts
+-rw-r--r--  1 runner runner     33 Sep 13 06:46 state_bigpickle.json
+-rw-r--r--  1 runner runner     33 Sep 13 06:46 state_laguna.json
+-rw-r--r--  1 runner runner     33 Sep 13 06:46 state_ling3.json
+-rw-r--r--  1 runner runner     33 Sep 13 06:46 state_longcat.json
+-rw-r--r--  1 runner runner     33 Sep 13 06:46 state_mimo.json
+-rw-r--r--  1 runner runner     33 Sep 13 06:46 state_nemotron3.json
+drwxr-xr-x  2 runner runner   4096 Sep 13 06:46 triage
+total 92
+drwxr-xr-x  2 runner runner  4096 Sep 13 06:46 .
+drwxr-xr-x 12 runner runner  4096 Sep 13 06:46 ..
+-rw-r--r--  1 runner runner 84009 Sep 13 06:46 ozoon-sportsbook-casino.md
+[0m
+[0m✱ [0mGlob "**/*.{md,txt,json}"[90m 100 matches[0m
+[0m→ [0mRead triage/run-2026-09-13-06-17.md
+[0m→ [0mRead probe-results.md
+[0m→ [0mRead leads/lead-bigpickle.md
+[0m
+[0m$ [0mcd /tmp/opencode && curl -sS -m 30 -D headers.txt "https://nfl-pickem-league.ozoon.eu/" -o home.html; echo "exit=$?"; wc -c home.html; grep -ioE '(supabase|eyJ[a-zA-Z0-9_-]{20,}|anon|cgoqgofzqunixkwcttzi)' home.html | sort -u | head -30; echo "---SCRIPTS---"; grep -oE 'src="[^"]+"' home.html | head -40
+exit=0
+35693 home.html
+grep: home.html: binary file matches
+---SCRIPTS---
+grep: home.html: binary file matches
+[0m
+[0m$ [0mcd /tmp/opencode && curl -sS --compressed -m 30 "https://nfl-pickem-league.ozoon.eu/" -o home.html; echo "exit=$?"; wc -c home.html; head -c 400 home.html | tr -d '\0'; echo; echo "---supabase hits---"; grep -ioE '(supabase|eyJ[a-zA-Z0-9._-]{16,}|anon( k?ey)?|cgoqgofzqunixkwcttzi)' home.html | sort | uniq -c | head; echo "---script srcs---"; grep -oE '<script[^>]*src="[^"]*"' home.html | head -40
+exit=0
+35693 home.html
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" as="image" href="/assets/hero-football-BF94d4AJ.png"/><link rel="stylesheet" href="/assets/styles-DXWpRiMJ.css" data-precedence="default"/><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=League+Gothic&amp;family=Oswald:wght@400&a
+---supabase hits---
+grep: home.html: binary file matches
+---script srcs---
+grep: home.html: binary file matches
+[0m
+[0m$ [0mcd /tmp/opencode && grep -aoE 'src="[^"]+"|href="[^"]+\.js"' home.html | sort -u | head -40; echo "===SUPABASE==="; grep -aoiE '(supabase|eyJ[a-zA-Z0-9._-]{16,}|anon.?key|cgoqgofzqunixkwcttzi)[^"<]*' home.html | sort -u | head -20
+href="/assets/StatusPill-HkNr6y_w.js"
+href="/assets/doug-flutie-D51ZAczI.js"
+href="/assets/hero-football-do3_Xp_f.js"
+href="/assets/index-DwbHQ6kd.js"
+href="/assets/jsx-runtime-DGeXAQPT.js"
+href="/assets/link-BVl_oogU.js"
+href="/assets/matchContext-B_X6CX1g.js"
+href="/assets/redirect-CaDPrkdo.js"
+href="/assets/root-DLTE-HSj.js"
+href="/assets/routes-Dydqbgt6.js"
+href="/assets/useBaseQuery-BgSnwxQS.js"
+href="/assets/useRouter-Bi89nSkP.js"
+href="/assets/useStore-BOb2AA3u.js"
+src="/assets/doug-flutie-BsTbOfHw.png"
+src="/assets/hero-football-BF94d4AJ.png"
+src="/assets/index-DwbHQ6kd.js"
+src="data:image/svg+xml,%3csvg%20width=&#x27;119&#x27;%20height=&#x27;40&#x27;%20viewBox=&#x27;0%200%20119%2040&#x27;%20fill=&#x27;none&#x27;%20xmlns=&#x27;http://www.w3.org/2000/svg&#x27;%3e%3cg%20clip-path=&#x27;url(%23clip0_29_5445)&#x27;%3e%3cpath%20d=&#x27;M14.782%2028.0766V11.992C14.782%207.12484%2013.2328%204.93731%209.996%204.93731C6.7592%204.93731%205.20787%207.12484%205.20787%2011.992V28.0766C5.20787%2032.946%206.75704%2035.1313%209.996%2035.1313C13.235%2035.1313%2014.782%2032.946%2014.782%2028.0766ZM0%2028.9243V11.1465C0%204.09178%203.65871%200.0722656%209.996%200.0722656C16.3333%200.0722656%2019.9942%204.09395%2019.9942%2011.1465V28.9243C19.9942%2035.979%2016.3333%2040.0007%209.996%2040.0007C3.65871%2040.0007%200%2035.979%200%2028.9243Z&#x27;%20fill=&#x27;%23E6BE8A&#x27;/%3e%3cpath%20d=&#x27;M25.0701%2035.06L36.1219%205.85672H27.039C25.7018%205.85672%2024.5746%204.72718%2024.5746%203.38735C24.5746%202.04751%2025.7018%200.917969%2027.039%200.917969H39.5707C42.1044%200.917969%2042.8075%202.96241%2041.8923%205.36241L30.7691%2034.3554H40.7651C42.1044%2034.3554%2043.2295%2035.4849%2043.2295%2036.8247C43.2295%2038.1646%2042.1022%2039.2941%2040.7651%2039.2941H27.3895C24.9965%2039.2941%2024.1527%2037.5315%2025.0679%2035.06&#x27;%20fill=&#x27;%23E6BE8A&#x27;/%3e%3cpath%20d=&#x27;M61.8952%2028.0766V11.992C61.8952%207.12484%2060.346%204.93731%2057.1092%204.93731C53.8724%204.93731%2052.3211%207.12484%2052.3211%2011.992V28.0766C52.3211%2032.946%2053.8702%2035.1313%2057.1092%2035.1313C60.3482%2035.1313%2061.8952%2032.946%2061.8952%2028.0766ZM47.111%2028.9243V11.1465C47.111%204.09178%2050.7719%200.0722656%2057.1092%200.0722656C63.4465%200.0722656%2067.1052%204.09395%2067.1052%2011.1465V28.9243C67.1052%2035.979%2063.4443%2040.0007%2057.1092%2040.0007C50.7741%2040.0007%2047.111%2035.979%2047.111%2028.9243Z&#x27;%20fill=&#x27;%23E6BE8A&#x27;/%3e%3cpath%20d=&#x27;M87.7355%2028.0766V11.992C87.7355%207.12484%2086.1863%204.93731%2082.9495%204.93731C79.7127%204.93731%2078.1614%207.12484%2078.1614%2011.992V28.0766C78.1614%2032.946%2079.7105%2035.1313%2082.9495%2035.1313C86.1885%2035.1313%2087.7355%2032.946%2087.7355%2028.0766ZM72.9535%2028.9243V11.1465C72.9535%204.09178%2076.6122%200.0722656%2082.9517%200.0722656C89.2911%200.0722656%2092.9477%204.09395%2092.9477%2011.1465V28.9243C92.9477%2035.979%2089.2868%2040.0007%2082.9517%2040.0007C76.6165%2040.0007%2072.9535%2035.979%2072.9535%2028.9243Z&#x27;%20fill=&#x27;%23E6BE8A&#x27;/%3e%3cpath%20d=&#x27;M99.0058%2036.8238V11.0764C99.0058%204.02168%20102.667%200%20109.002%200C115.337%200%20118.998%204.02168%20118.998%2011.0764V36.826C118.998%2038.2374%20117.801%2039.4363%20116.395%2039.4363C114.989%2039.4363%20113.79%2038.2374%20113.79%2036.826V11.9241C113.79%207.05474%20112.241%204.86938%20109.002%204.86938C105.763%204.86938%20104.216%207.05474%20104.216%2011.9241V36.826C104.216%2038.2374%20103.019%2039.4363%20101.611%2039.4363C100.202%2039.4363%2099.0058%2038.2374%2099.0058%2036.826&#x27;%20fill=&#x27;%23E6BE8A&#x27;/%3e%3c/g%3e%3cdefs%3e%3cclipPath%20id=&#x27;clip0_29_5445&#x27;%3e%3crect%20width=&#x27;119&#x27;%20height=&#x27;40&#x27;%20fill=&#x27;white&#x27;/%3e%3c/clipPath%3e%3c/defs%3e%3c/svg%3e"
+===SUPABASE===
+[0m
+[0m$ [0mcd /tmp/opencode && for f in routes-Dydqbgt6 matchContext-B_X6CX1g useStore-BOb2AA3u root-DLTE-HSj index-DwbHQ6kd; do curl -sS --compressed -m 20 "https://nfl-pickem-league.ozoon.eu/assets/$f.js" -o "$f.js"; done; ls -la *.js; echo "===grep supabase/anon/eyJ/apikey/project ref==="; grep -aloiE 'supabase|anon|eyJ[a-zA-Z0-9._-]{16,}|apikey|cgoqgofzqunixkwcttzi|rest/v1|auth/v1' *.js 2>/dev/null
+-rw-r--r-- 1 runner runner 609972 Sep 13 06:47 index-DwbHQ6kd.js
+-rw-r--r-- 1 runner runner    179 Sep 13 06:47 matchContext-B_X6CX1g.js
+-rw-r--r-- 1 runner runner     32 Sep 13 06:47 root-DLTE-HSj.js
+-rw-r--r-- 1 runner runner   8636 Sep 13 06:47 routes-Dydqbgt6.js
+-rw-r--r-- 1 runner runner  18502 Sep 13 06:47 useStore-BOb2AA3u.js
+===grep supabase/anon/eyJ/apikey/project ref===
+index-DwbHQ6kd.js
+[0m
+[0m$ [0mcd /tmp/opencode && grep -aoiE 'supabase[^,;){]{0,80}|eyJ[a-zA-Z0-9._-]{10,}|cgoqgofzqunixkwcttzi|anon[^,;){]{0,60}|createClient[^,;]{0,120}|SUPABASE[A-Z_]{0,20}|apikey' index-DwbHQ6kd.js | sort -u | head -50
+Anonymously(e
+ApiKey
+Supabase Auth server.`
+Supabase CLI to a recent version
+Supabase-Api-Version`
+Supabase-Api-Version`]||(i[ad]=od[`2024-01-01`].name
+SupabaseAuthClient(o.auth??
+anonymous>
+anonymous>`
+anonymous`}
+apiKey
+apikey
+cgoqgofzqunixkwcttzi
+createClient (or to the GoTrueClient constructor).")}function ff(){return new Proxy({}
+createClient:this._createOAuthClient.bind(this)
+supabase-js/$
+supabase.`
+supabase.auth.$
+supabase.auth.getSession(
+supabase.auth.getUser(
+supabase.auth.onAuthStateChange(
+supabase.auth.token`
+supabase.co`
+supabase.gotrue-js.locks.debug`
+supabase.in`
+supabase/auth-js: Address "$
+supabase/auth-js: Both wallet and url must be specified in non-browser environments.`
+supabase/auth-js: Expected parameter to be UUID but is not`
+supabase/auth-js: Invalid SIWE message field "chainId". Chain ID must be a EIP-155 chain
+supabase/auth-js: Invalid SIWE message field "domain". Domain must be provided.`
+supabase/auth-js: Invalid SIWE message field "nonce". Nonce must be at least 8 character
+supabase/auth-js: Invalid SIWE message field "resources". Every resource must be a valid
+supabase/auth-js: Invalid SIWE message field "statement". Statement must not include '\\
+supabase/auth-js: Invalid SIWE message field "uri". URI must be provided.`
+supabase/auth-js: Invalid SIWE message field "version". Version must be '1'. Provided va
+supabase/auth-js: No accounts available. Please ensure the wallet is connected.`
+supabase/auth-js: No compatible Ethereum wallet interface on the window object (window.e
+supabase/auth-js: No compatible Solana wallet interface on the window object (window.sol
+supabase/auth-js: Parameter scope must be one of $
+supabase/auth-js: Unsupported chain "$
+supabase/auth-js: Wallet does not have a compatible signMessage(
+supabase/auth-js: Wallet method eth_requestAccounts is missing or invalid`
+supabase/auth-js: Wallet method signIn(
+supabase/auth-js: Wallet signMessage(
+supabase/auth-js: client was created with userStorage option and there was no user store
+supabase/auth-js: the passkey API is experimental and disabled by default. Enable it by 
+supabase/discussions/45715`
+supabase/gotrue-js: Session as retrieved from URL expires in $
+supabase/gotrue-js: Session as retrieved from URL was issued in the future? Check the de
+supabase/gotrue-js: Session as retrieved from URL was issued over 120s ago
+[0m
+[0m$ [0mcd /tmp/opencode && grep -aoE '.{180}cgoqgofzqunixkwcttzi.{180}' index-DwbHQ6kd.js | head -5; echo "===eyJ keys==="; grep -aoE 'eyJ[a-zA-Z0-9._-]{40,}' index-DwbHQ6kd.js | sort -u | head -10; echo "===createClient call==="; grep -aoE '.{120}createClient\(.{160}' index-DwbHQ6kd.js | head -5
+n`)===`Bearer ${e}`&&r.delete(`Authorization`),r.set(`apikey`,e),fetch(t,{...n,headers:r})}}function Zp(){let e=`sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM`;return Kp(`https://cgoqgofzqunixkwcttzi.supabase.co`,e,{global:{fetch:Xp(e)},auth:{storage:Jp(),persistSession:!0,autoRefreshToken:!0}})}var Qp,$p=new Proxy({},{get(e,t,n){return Qp||=Zp(),Reflect.get(Qp,t,n)}}),em=uc({
+===eyJ keys===
+===createClient call===
+[0m
+[0m$ [0mcd /tmp/opencode && curl -sS -m 25 -o supabase-root.json -w "HTTP %{http_code} len=%{size_download}\n" "https://cgoqgofzqunixkwcttzi.supabase.co/rest/v1/" -H "apikey: sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM" -H "Accept: application/openapi+json"; head -c 600 supabase-root.json
+HTTP 401 len=98
+{"message":"Secret API key required","hint":"Only secret API keys can be used for this endpoint."}
+[0m
+[0m$ [0mcd /tmp/opencode && echo "===from( table calls in index ==="; grep -aoE '\.from\(`[^`]{1,40}`\)|\.from\("[^"]{1,40}"\)|\.from\(`[^`]{1,40}`\)\.select|from\(`?[a-z_]{2,40}`?' index-DwbHQ6kd.js | sort | uniq -c | sort -rn | head -25; echo "===routes chunk==="; grep -aoE '\.from\([^)]{0,60}\)|select\([^)]{0,60}\)|rest/v1[^"`]{0,40}|table[^,;]{0,40}' routes-Dydqbgt6.js | sort -u | head -30; echo "===useStore==="; grep -aoE 'from\([^)]{0,50}\)|select\([^)]{0,60}\)|apikey|sb_publishable|supabase' useStore-BOb2AA3u.js | sort -u | head -20
+===from( table calls in index ===
+      3 from(this
+      3 from(new
+===routes chunk===
+===useStore===
+from(t.keys()
+[0m
+[0m→ [0mRead /tmp/opencode/routes-Dydqbgt6.js
+[0m
+[0m$ [0mcd /tmp/opencode && grep -naoE 'supabase[^;]{0,120}|\.from\([^)]{0,80}|cgoqgofzqunixkwcttzi|/api/[a-zA-Z0-9/_-]{1,60}|fetch\("[^"]{0,80}' routes-Dydqbgt6.js useStore-BOb2AA3u.js matchContext-B_X6CX1g.js index-DwbHQ6kd.js 2>/dev/null | grep -aviE 'auth-js|gotrue|postgrest-js|apifetch|sdk|library' | head -40
+useStore-BOb2AA3u.js:1:.from(t.keys(
+index-DwbHQ6kd.js:12:.from(n.base.marked
+index-DwbHQ6kd.js:12:.from(e
+index-DwbHQ6kd.js:12:.from(e,`base64`
+index-DwbHQ6kd.js:12:.from(e
+index-DwbHQ6kd.js:12:.from(new Set(t
+index-DwbHQ6kd.js:12:.from(new Set(t
+index-DwbHQ6kd.js:12:/api/broadcast
+index-DwbHQ6kd.js:12:/api/broadcast
+index-DwbHQ6kd.js:13:.from(t,e=>c.setUint8(l++,e.charCodeAt(0
+index-DwbHQ6kd.js:13:.from(n,e=>c.setUint8(l++,e.charCodeAt(0
+index-DwbHQ6kd.js:13:.from(i,e=>c.setUint8(l++,e.charCodeAt(0
+index-DwbHQ6kd.js:13:.from(r,e=>c.setUint8(l++,e.charCodeAt(0
+index-DwbHQ6kd.js:13:.from(new Set(e
+index-DwbHQ6kd.js:13:supabase/supabase-js/blob/master/packages/core/realtime-js/migrations/httpsend-server-version.md`))
+index-DwbHQ6kd.js:13:.from(e.keys(
+index-DwbHQ6kd.js:18:.from(e
+index-DwbHQ6kd.js:18:supabase\.(co|in|red)$/.test(i.hostname)&&!i.hostname.includes(`storage.supabase.`)&&(i.hostname=i.hostname.replace(`supabase.`,
+index-DwbHQ6kd.js:18:supabase.`))
+index-DwbHQ6kd.js:18:supabase/ssr on both the server and client to store the code verifier in cookies.`,`AuthPKCECodeVerifierMissingError`,400,`pkce_
+index-DwbHQ6kd.js:19:.from(e,$d
+index-DwbHQ6kd.js:19:.from(r
+index-DwbHQ6kd.js:19:supabase.auth.getSession() or from some supabase.auth.onAuthStateChange() events could be insecure! This value comes directly fr
+index-DwbHQ6kd.js:19:supabase.auth.getUser() instead which authenticates the data by contacting the Supabase Auth server.`),t.value=!0),Reflect.get(e
+index-DwbHQ6kd.js:19:.from(t,e=>e.toString(16
+index-DwbHQ6kd.js:22:.from(this.stateChangeEmitters.values(
+index-DwbHQ6kd.js:22:supabase-js/${lp}
+index-DwbHQ6kd.js:22:supabase.co`,`*.supabase.in`),t.push(`localhost`,`127.0.0.1`,`[::1]`),t}function Op(e){"@babel/helpers - typeof"
+index-DwbHQ6kd.js:22:supabase/supabase-js: Unrecognized Supabase API key format. Expected a legacy JWT key or a new-format key (sb_publishable_… / sb
+index-DwbHQ6kd.js:22:supabase/supabase-js.`)},Rp=(e,t,n,r,i,a)=>{let o=Pp(r),s=Fp(),c=i?.enabled===!0,l=i?.respectSamplingDecision!==!1,u=c?Dp(t):nul
+index-DwbHQ6kd.js:22:supabaseUrl is required.`)
+index-DwbHQ6kd.js:22:supabaseUrl: Must be a valid HTTP or HTTPS URL.`)
+index-DwbHQ6kd.js:22:supabaseUrl: Provided URL is malformed.`)}}var Wp=class extends ip{constructor(e){super(e)}},Gp=class{constructor(e,t,n){this.su
+index-DwbHQ6kd.js:22:supabaseKey=t
+index-DwbHQ6kd.js:22:supabaseKey is required.`)
+index-DwbHQ6kd.js:22:supabase/supabase-js: Supabase Client is configured with the accessToken option, accessing supabase.auth.${String(t)} is not pos
+index-DwbHQ6kd.js:22:.from(e
+index-DwbHQ6kd.js:22:supabaseKey}_initSupabaseAuthClient({autoRefreshToken:e,persistSession:t,detectSessionInUrl:n,storage:r,userStorage:i,storageKey
+index-DwbHQ6kd.js:22:supabaseKey}`,apikey:`${this.supabaseKey}`}
+index-DwbHQ6kd.js:22:supabaseKey}),e?.params)}))}_listenForAuthEvents(){return this.auth.onAuthStateChange((e,t)=>{this._handleTokenChanged(e,`CLIENT
+[0m
+[0m$ [0mcd /tmp/opencode && curl -sS --compressed -m 20 "https://nfl-pickem-league.ozoon.eu/assets/useBaseQuery-BgSnwxQS.js" -o useBaseQuery.js; ls -la useBaseQuery.js; echo "=== useBaseQuery content (first 4000 chars) ==="; head -c 4000 useBaseQuery.js
+-rw-r--r-- 1 runner runner 8832 Sep 13 06:48 useBaseQuery.js
+=== useBaseQuery content (first 4000 chars) ===
+import{r as e,t}from"./jsx-runtime-DGeXAQPT.js";import{c as n}from"./useRouter-Bi89nSkP.js";import{C as r,S as i,_ as a,b as o,c as s,d as c,g as l,h as u,l as d,m as f,o as p,p as m,u as h,v as g,x as _,y as v}from"./index-DwbHQ6kd.js";var y=class extends r{constructor(e,t){super(),this.options=t,this.#e=e,this.#s=null,this.#o=h(),this.bindMethods(),this.setOptions(t)}#e;#t=void 0;#n=void 0;#r=void 0;#i;#a;#o;#s;#c;#l;#u;#d;#f;#p;#m=new Set;bindMethods(){this.refetch=this.refetch.bind(this)}onSubscribe(){this.listeners.size===1&&(this.#t.addObserver(this),x(this.#t,this.options)?this.#h():this.updateResult(),this.#y())}onUnsubscribe(){this.hasListeners()||this.destroy()}shouldFetchOnReconnect(){return S(this.#t,this.options,this.options.refetchOnReconnect)}shouldFetchOnWindowFocus(){return S(this.#t,this.options,this.options.refetchOnWindowFocus)}destroy(){this.listeners=new Set,this.#b(),this.#x(),this.#t.removeObserver(this)}setOptions(e){let t=this.options,n=this.#t;if(this.options=this.#e.defaultQueryOptions(e),this.options.enabled!==void 0&&typeof this.options.enabled!=`boolean`&&typeof this.options.enabled!=`function`&&typeof l(this.options.enabled,this.#t)!=`boolean`)throw Error(`Expected enabled to be a boolean or a callback that returns a boolean`);this.#S(),this.#t.setOptions(this.options),t._defaulted&&!g(this.options,t)&&this.#e.getQueryCache().notify({type:`observerOptionsUpdated`,query:this.#t,observer:this});let r=this.hasListeners();r&&C(this.#t,n,this.options,t)&&this.#h(),this.updateResult(),r&&(this.#t!==n||l(this.options.enabled,this.#t)!==l(t.enabled,this.#t)||a(this.options.staleTime,this.#t)!==a(t.staleTime,this.#t))&&this.#g();let i=this.#_();r&&(this.#t!==n||l(this.options.enabled,this.#t)!==l(t.enabled,this.#t)||i!==this.#p)&&this.#v(i)}getOptimisticResult(e){let t=this.#e.getQueryCache().build(this.#e,e),n=this.createResult(t,e);return T(this,n)&&(this.#r=n,this.#a=this.options,this.#i=this.#t.state),n}getCurrentResult(){return this.#r}trackResult(e,t){return new Proxy(e,{get:(e,n)=>(this.trackProp(n),t?.(n),n===`promise`&&(this.trackProp(`data`),!this.options.experimental_prefetchInRender&&this.#o.status===`pending`&&this.#o.reject(Error(`experimental_prefetchInRender feature flag is not enabled`))),Reflect.get(e,n))})}trackProp(e){this.#m.add(e)}getCurrentQuery(){return this.#t}refetch({...e}={}){return this.fetch({...e})}fetchOptimistic(e){let t=this.#e.defaultQueryOptions(e),n=this.#e.getQueryCache().build(this.#e,t);return n.fetch().then(()=>this.createResult(n,t))}fetch(e){return this.#h({...e,cancelRefetch:e.cancelRefetch??!0}).then(()=>(this.updateResult(),this.#r))}#h(e){this.#S();let t=this.#t.fetch(this.options,e);return e?.throwOnError||(t=t.catch(f)),t}#g(){this.#b();let e=a(this.options.staleTime,this.#t);if(c.isServer()||this.#r.isStale||!m(e))return;let t=o(this.#r.dataUpdatedAt,e)+1;this.#d=_.setTimeout(()=>{this.#r.isStale||this.updateResult()},t)}#_(){return(typeof this.options.refetchInterval==`function`?this.options.refetchInterval(this.#t):this.options.refetchInterval)??!1}#v(e){this.#x(),this.#p=e,!(c.isServer()||l(this.options.enabled,this.#t)===!1||!m(this.#p)||this.#p===0)&&(this.#f=_.setInterval(()=>{(this.options.refetchIntervalInBackground||i.isFocused())&&this.#h()},this.#p))}#y(){this.#g(),this.#v(this.#_())}#b(){this.#d!==void 0&&(_.clearTimeout(this.#d),this.#d=void 0)}#x(){this.#f!==void 0&&(_.clearInterval(this.#f),this.#f=void 0)}createResult(e,t){let n=this.#t,r=this.options,i=this.#r,a=this.#i,o=this.#a,c=e===n?this.#n:e.state,{state:d}=e,f={...d},p=!1,m;if(t._optimisticResults){let i=this.hasListeners(),a=!i&&x(e,t),o=i&&C(e,n,t,r);(a||o)&&(f={...f,...s(d.data,e.options)}),t._optimisticResults===`isRestoring`&&(f.fetchStatus=`idle`)}let{error:g,errorUpdatedAt:_,status:v}=f;m=f.data;let y=!1;if(t.placeholderData!==void 0&&m===void 0&&v===`pending`){let e;i?.isPlaceholderData&&t.placeholderData===o?.placeholderData?(e=i.data,y=!0):e=typeof t.placeholderData==`fun
+[0m
+[0m$ [0mcd /tmp/opencode && grep -aoE '(queryFn|select|from|fetch|leaderboard|pick|player|profile|week|season|entry|score|insert|update|channel|realtime)[^,;]{0,80}' routes-Dydqbgt6.js | sort -u | head -60
+from"./StatusPill-HkNr6y_w.js"
+from"./doug-flutie-D51ZAczI.js"
+from"./hero-football-do3_Xp_f.js"
+from"./index-DwbHQ6kd.js"
+from"./jsx-runtime-DGeXAQPT.js"
+from"./link-BVl_oogU.js"
+from"./useBaseQuery-BgSnwxQS.js"
+from-background to-transparent`})]})]})
+leaderboard
+leaderboard moves each week.`}]
+picks every week. Think you know football better?`})]})
+players in action`
+score
+season prizes.`})]})
+selections in seconds
+week
+weekly game window to open.`}
+weekly shot at the prizes.`})]})
+weekly tie-break question.`}
+[0m
+[0m$ [0mcd /tmp/opencode && grep -aoE 'href="/[^"]*"' home.html | sort -u | head -30; echo "===also fetch a likely page==="; curl -sS --compressed -m 20 -o leaderboard.html -w "leaderboard HTTP %{http_code} len=%{size_download}\n" "https://nfl-pickem-league.ozoon.eu/leaderboard"
+href="/"
+href="/assets/StatusPill-HkNr6y_w.js"
+href="/assets/doug-flutie-D51ZAczI.js"
+href="/assets/hero-football-BF94d4AJ.png"
+href="/assets/hero-football-do3_Xp_f.js"
+href="/assets/index-DwbHQ6kd.js"
+href="/assets/jsx-runtime-DGeXAQPT.js"
+href="/assets/link-BVl_oogU.js"
+href="/assets/matchContext-B_X6CX1g.js"
+href="/assets/redirect-CaDPrkdo.js"
+href="/assets/root-DLTE-HSj.js"
+href="/assets/routes-Dydqbgt6.js"
+href="/assets/styles-DXWpRiMJ.css"
+href="/assets/useBaseQuery-BgSnwxQS.js"
+href="/assets/useRouter-Bi89nSkP.js"
+href="/assets/useStore-BOb2AA3u.js"
+href="/auth"
+href="/auth?mode=register"
+href="/auth?mode=signin"
+href="/leaderboard"
+href="/prize"
+href="/terms"
+===also fetch a likely page===
+leaderboard HTTP 200 len=7435
+[0m
+[0m$ [0mcd /tmp/opencode && for p in prize terms auth; do curl -sS --compressed -m 20 -o "$p.html" -w "$p HTTP %{http_code} len=%{size_download}\n" "https://nfl-pickem-league.ozoon.eu/$p"; done; echo "=== route chunks per page ==="; for f in leaderboard prize terms auth; do echo "--$f--"; grep -aoE '/assets/[a-zA-Z0-9./_-]+\.js' $f.html | sort -u; done
+prize HTTP 200 len=9481
+terms HTTP 200 len=8742
+auth HTTP 200 len=7817
+=== route chunks per page ===
+--leaderboard--
+/assets/auth-middleware-NSiP4EwV.js
+/assets/doug-flutie-D51ZAczI.js
+/assets/hero-football-do3_Xp_f.js
+/assets/index-DwbHQ6kd.js
+/assets/jsx-runtime-DGeXAQPT.js
+/assets/leaderboard-Bvbtr33m.js
+/assets/link-BVl_oogU.js
+/assets/matchContext-B_X6CX1g.js
+/assets/redirect-CaDPrkdo.js
+/assets/root-DLTE-HSj.js
+/assets/route-HwVBjYir.js
+/assets/useQuery-B7su2Z6u.js
+/assets/useRouter-Bi89nSkP.js
+/assets/useStore-BOb2AA3u.js
+--prize--
+/assets/hero-football-do3_Xp_f.js
+/assets/index-DwbHQ6kd.js
+/assets/jsx-runtime-DGeXAQPT.js
+/assets/link-BVl_oogU.js
+/assets/matchContext-B_X6CX1g.js
+/assets/prize-DzajMvGc.js
+/assets/redirect-CaDPrkdo.js
+/assets/root-DLTE-HSj.js
+/assets/useRouter-Bi89nSkP.js
+/assets/useStore-BOb2AA3u.js
+--terms--
+/assets/index-DwbHQ6kd.js
+/assets/jsx-runtime-DGeXAQPT.js
+/assets/link-BVl_oogU.js
+/assets/matchContext-B_X6CX1g.js
+/assets/redirect-CaDPrkdo.js
+/assets/root-DLTE-HSj.js
+/assets/terms-B1CRbXgj.js
+/assets/useRouter-Bi89nSkP.js
+/assets/useStore-BOb2AA3u.js
+--auth--
+/assets/auth-B_Tdw0ie.js
+/assets/email.functions-C-KHr-7n.js
+/assets/index-DwbHQ6kd.js
+/assets/jsx-runtime-DGeXAQPT.js
+/assets/link-BVl_oogU.js
+/assets/matchContext-B_X6CX1g.js
+/assets/redirect-CaDPrkdo.js
+/assets/root-DLTE-HSj.js
+/assets/useRouter-Bi89nSkP.js
+/assets/useStore-BOb2AA3u.js
+[0m
+[0m$ [0mcd /tmp/opencode && for f in auth-middleware-NSiP4EwV leaderboard-Bvbtr33m route-HwVBjYir useQuery-B7su2Z6u auth-B_Tdw0ie email.functions-C-KHr-7n prize-DzajMvGc; do curl -sS --compressed -m 20 "https://nfl-pickem-league.ozoon.eu/assets/$f.js" -o "$f.js" 2>/dev/null; done; ls -la auth-middleware-NSiP4EwV.js leaderboard-Bvbtr33m.js route-HwVBjYir.js useQuery-B7su2Z6u.js auth-B_Tdw0ie.js email.functions-C-KHr-7n.js prize-DzajMvGc.js 2>/dev/null
+-rw-r--r-- 1 runner runner 6002 Sep 13 06:49 auth-B_Tdw0ie.js
+-rw-r--r-- 1 runner runner   77 Sep 13 06:49 auth-middleware-NSiP4EwV.js
+-rw-r--r-- 1 runner runner  441 Sep 13 06:49 email.functions-C-KHr-7n.js
+-rw-r--r-- 1 runner runner 7416 Sep 13 06:49 leaderboard-Bvbtr33m.js
+-rw-r--r-- 1 runner runner 8964 Sep 13 06:49 prize-DzajMvGc.js
+-rw-r--r-- 1 runner runner  141 Sep 13 06:49 route-HwVBjYir.js
+-rw-r--r-- 1 runner runner  501 Sep 13 06:49 useQuery-B7su2Z6u.js
+[0m
+[0m$ [0mcd /tmp/opencode && echo "=== leaderboard chunk: query/table usage ==="; grep -aoE '(\.from\([^)]{0,60}\)|\.select\([^)]{0,60}\)|leaderboard[a-z_]*|\bfrom\(`?[a-z_]{2,40}`?|order\([^)]{0,40}\)|eq\([^)]{0,50}\)|channel\([^)]{0,50}\))' leaderboard-Bvbtr33m.js | sort -u | head -30; echo; echo "=== auth chunk ==="; grep -aoE '(signInWithPassword|signUp|signInWithOtp|resetPasswordForEmail|\.from\(|\.select\(|apikey|sb_publishable|functions|invoke\([^)]{0,60}\)|/api/[a-zA-Z0-9/_-]{1,40})' auth-B_Tdw0ie.js | sort -u | head -30; echo; echo "=== email.functions chunk ==="; head -c 800 email.functions-C-KHr-7n.js
+=== leaderboard chunk: query/table usage ===
+leaderboard
+
+=== auth chunk ===
+functions
+signInWithPassword
+
+=== email.functions chunk ===
+import{A as e,E as t}from"./index-DwbHQ6kd.js";import{t as n}from"./auth-middleware-NSiP4EwV.js";var r=t({method:`POST`}).middleware([n]).handler(e(`59c0c496a5cf7d40eef2e45fc43e2d68e6f65e32c072522786376a5a6969e416`)),i=t({method:`POST`}).handler(e(`6506db6517ac6dccd00793e68bc478ea6c3abca7ab972c2251310b146e77008e`)),a=t({method:`POST`}).handler(e(`bddd3a4c61910bf4f67abb147625e5e72695d6fbc480e3ed85acb8f05a1c91dc`));export{a as n,r,i as t};
+[0m
+[0m$ [0mcd /tmp/opencode && echo "=== all chunks: candidate table-name string literals ==="; grep -hoE '\b(picks|pick_ems|pickems|users|profiles|user_profiles|player|players|members|league|leagues|league_members|entries|weekly_picks|leaderboards|leaderboard_|scores|results|seasons|weeks|teams|invite|invites|subscriptions)\b' leaderboard-Bvbtr33m.js prize-DzajMvGc.js routes-Dydqbgt6.js auth-B_Tdw0ie.js useStore-BOb2AA3u.js useQuery-B7su2Z6u.js 2>/dev/null | sort | uniq -c | sort -rn | head -30; echo; echo "=== how does leaderboard query data? look for useQuery queryFn ==="; grep -aoE 'queryFn[^,}]{0,120}|useQuery\([^)]{0,120}|suspense[^}]{0,80}' leaderboard-Bvbtr33m.js | head -20
+=== all chunks: candidate table-name string literals ===
+      6 picks
+      2 results
+      2 players
+      2 league
+      1 weeks
+      1 entries
+
+=== how does leaderboard query data? look for useQuery queryFn ===
+queryFn:e
+[0m
+[0m$ [0mcd /tmp/opencode && echo "=== string literals in leaderboard chunk ==="; grep -aoE '`[^`]{3,60}`|"[^"]{3,60}"' leaderboard-Bvbtr33m.js | sort -u | head -50
+=== string literals in leaderboard chunk ===
+"./auth-middleware-NSiP4EwV.js"
+"./doug-flutie-D51ZAczI.js"
+"./hero-football-do3_Xp_f.js"
+"./index-DwbHQ6kd.js"
+"./jsx-runtime-DGeXAQPT.js"
+"./link-BVl_oogU.js"
+"./useQuery-B7su2Z6u.js"
+`)),d=e(),f=e=>o({queryKey:[`
+`).trim(),r=(t??`
+`).trim();return n&&r?`
+`)]})]}),i.doug&&(0,d.jsxs)(`
+`,"aria-hidden":`
+`,(0,d.jsx)(`
+`,(0,d.jsxs)(`
+`,children:(0,d.jsx)(`
+`,children:(0,d.jsxs)(`
+`,children:[(0,d.jsx)(`
+`,children:[(0,d.jsxs)(`
+`,children:[`
+`,children:[i.rows.length===0&&(0,d.jsx)(`
+`,children:[p.last_week.points,`
+`,children:`
+`,children:i.doug.display_label}),(0,d.jsxs)(`
+`,children:i.doug.doug_rank??`
+`,children:i.doug.doug_total})]}),(0,d.jsxs)(`
+`,children:p.total_points})]}),p.last_week&&(0,d.jsxs)(`
+`,children:r}),(0,d.jsx)(`
+`,children:t}),(0,d.jsx)(`
+`,className:`
+`,fill:`
+`,gradientUnits:`
+`,height:`
+`,i.doug.week_correct??`
+`,i.doug.week_total,`
+`,p.rank??`
+`,p=i.user;return(0,d.jsxs)(`
+`,preserveAspectRatio:`
+`,s,`
+`,stopColor:`
+`,stopOpacity:`
+`,viewBox:`
+`,x1:`
+`,x2:`
+`,y1:`
+`,y2:`
+`,{children:(0,d.jsxs)(`
+`,{children:[(0,d.jsx)(`
+`,{className:`
+`,{className:n?`
+`,{id:`
+[0m
+[0m$ [0mcd /tmp/opencode && grep -aoE 'window\.__[A-Za-z]+[^<]{0,400}' leaderboard.html | head -5; echo "===look for loader data markers==="; grep -aoE '"rows":\[[^]]{0,300}|"user":\{[^}]{0,200}|leaderboards?[^,]{0,120}|"total_points":[0-9]+' leaderboard.html | head -10; echo "(if empty, data may be client-fetched)"
+===look for loader data markers===
+leaderboard for weekly and season prizes."/><meta property="og:image" content="https://storage.googleapis.com/gpt-engineer-file-upl
+leaderboard for the Ozoon NFL Pick&#x27;Em League."/><meta name="robots" content="noindex"/><meta property="og:title" content="Ozoo
+leaderboard-Bvbtr33m.js"/><link rel="modulepreload" href="/assets/useQuery-B7su2Z6u.js"/><link rel="modulepreload" href="/assets/do
+leaderboard" data-status="active" aria-current="page">Leaderboard</a><a href="/prize" class="font-body text-body-sm font-medium tex
+leaderboard":$R[10]={preloads:$R[11]=["/assets/leaderboard-Bvbtr33m.js"
+leaderboard leaderboard"
+leaderboard leaderboard"})($R["tsr"]);$_TSR.e();document.currentScript.remove()</script><script type="module" async="" src="/assets
+(if empty, data may be client-fetched)
+[0m
+[0m$ [0mcd /tmp/opencode && KEY="sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM"; echo "key sha256:"; printf '%s' "$KEY" | sha256sum; echo "===calibration: nonexistent table==="; curl -sS -m 20 -o c1.json -w "HTTP %{http_code} len=%{size_download}\n" "https://cgoqgofzqunixkwcttzi.supabase.co/rest/v1/zzz_nonexistent_tbl_9f41?select=*&limit=1" -H "apikey: $KEY"; head -c 300 c1.json; echo; echo "===picks table limit 1==="; curl -sS -m 20 -o c2.json -w "HTTP %{http_code} len=%{size_download}\n" "https://cgoqgofzqunixkwcttzi.supabase.co/rest/v1/picks?select=*&limit=1" -H "apikey: $KEY"; head -c 400 c2.json; echo
+key sha256:
+553053822732d106306e3395ff55a3a2da751c1a2213950b6750ff546efcc76e  -
+===calibration: nonexistent table===
+HTTP 404 len=137
+{"code":"PGRST205","details":null,"hint":null,"message":"Could not find the table 'public.zzz_nonexistent_tbl_9f41' in the schema cache"}
+===picks table limit 1===
+HTTP 404 len=161
+{"code":"PGRST205","details":null,"hint":"Perhaps you meant the table 'public.profiles'","message":"Could not find the table 'public.picks' in the schema cache"}
+[0m
+[0m$ [0mcd /tmp/opencode && KEY="sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM"; curl -sS -m 20 -o c3.json -w "profiles HTTP %{http_code} len=%{size_download} content-range=%header{content-range}\n" "https://cgoqgofzqunixkwcttzi.supabase.co/rest/v1/profiles?select=*&limit=1" -H "apikey: $KEY"; echo "---body (truncated, PII-type fields kept short)---"; head -c 500 c3.json; echo; echo "---field names only---"; grep -aoE '"[a-zA-Z_]{2,30}"\s*:' c3.json | sort -u | head -25
+profiles HTTP 200 len=2 content-range=*/*
+---body (truncated, PII-type fields kept short)---
+[]
+---field names only---
+[0m
+[0m$ [0mcd /tmp/opencode && echo "=== auth.html: redirect/callback/supabase refs ==="; grep -aoiE '(redirect[^"<]{0,120}|callback[^"<]{0,80}|supabase[^"<]{0,80}|vercel[^"<]{0,60}|auth[^"<]{0,80})' auth.html | sort -u | head -20; echo "=== wallet-gate drift ==="; curl -sS -m 20 -o wg.json -w "wallet-gate HTTP %{http_code} len=%{size_download}\n" "https://services.ozoon.eu/services/wallet-gateway/v1/profiles/00000000-0000-0000-0000-000000000000/balances"; head -c 200 wg.json
+=== auth.html: redirect/callback/supabase refs ===
+Authority
+Authority under license number OGL/2024/674/0714. The registered address is Kaya Ric
+auth
+auth auth
+auth-B_Tdw0ie.js
+auth?mode=register
+auth?mode=signin
+redirect-CaDPrkdo.js
+=== wallet-gate drift ===
+wallet-gate HTTP 401 len=159
+{"timestamp":"2026-09-13T06:50:48.348Z","status":401,"message":"Authentication required for requested route","error":"Unauthorized","errorCode":"unauthorized"}
+[0m
+[0m$ [0mcd /home/runner/work/ozoon-sportsbook-casino-hunt/ozoon-sportsbook-casino-hunt && cat >> probe-results.md <<'EOF'
+
+## 2026-09-13 06:50:00 UTC
+GET https://nfl-pickem-league.ozoon.eu/ -> 200 (Vercel/Remix SPA shell; route chunks: /leaderboard /prize /terms /auth)
+GET /assets/index-DwbHQ6kd.js -> 200 (609KB; = full supabase-js v2 bundle + app; project ref cgoqgofzqunixkwcttzi.supabase.co; createClient w/ publishable key sb_publishable_2k_*; custom fetch wrapper Xp sets ?apikey= + Authorization Bearer)
+GET /rest/v1/ (anon root openapi) -> 401 {"message":"Secret API key required"} (openapi root is service-role-only)
+GET /rest/v1/zzz_nonexistent_tbl_9f41?select=*&limit=1 (apikey publishable) -> 404 PGRST205 schema-cache (key ACCEPTED by PostgREST)
+GET /rest/v1/picks?select=*&limit=1 (apikey publishable) -> 404 PGRST205 hint "Perhaps you meant the table 'public.profiles'" (real table exposed)
+GET /rest/v1/profiles?select=*&limit=1 (apikey publishable) -> 200 [] Content-Range */* (RLS default-deny for anonymous SELECT; no rows)
+GET https://services.ozoon.eu/services/wallet-gateway/v1/profiles/00000000-0000-0000-0000-000000000000/balances -> 401/159B {"errorCode":"unauthorized"} byte-shape-stable (timestamp 06:50:48Z)
+EOF
+echo appended; tail -20 probe-results.md | head -24
+appended
+## 2026-09-12 18:52:44 UTC
+
+
+## 2026-09-12 21:23:15 UTC
+
+
+## 2026-09-12 23:23:25 UTC
+
+
+## 2026-09-13 01:30:08 UTC
+
+
+## 2026-09-13 06:50:00 UTC
+GET https://nfl-pickem-league.ozoon.eu/ -> 200 (Vercel/Remix SPA shell; route chunks: /leaderboard /prize /terms /auth)
+GET /assets/index-DwbHQ6kd.js -> 200 (609KB; = full supabase-js v2 bundle + app; project ref cgoqgofzqunixkwcttzi.supabase.co; createClient w/ publishable key sb_publishable_2k_*; custom fetch wrapper Xp sets ?apikey= + Authorization Bearer)
+GET /rest/v1/ (anon root openapi) -> 401 {"message":"Secret API key required"} (openapi root is service-role-only)
+GET /rest/v1/zzz_nonexistent_tbl_9f41?select=*&limit=1 (apikey publishable) -> 404 PGRST205 schema-cache (key ACCEPTED by PostgREST)
+GET /rest/v1/picks?select=*&limit=1 (apikey publishable) -> 404 PGRST205 hint "Perhaps you meant the table 'public.profiles'" (real table exposed)
+GET /rest/v1/profiles?select=*&limit=1 (apikey publishable) -> 200 [] Content-Range */* (RLS default-deny for anonymous SELECT; no rows)
+GET https://services.ozoon.eu/services/wallet-gateway/v1/profiles/00000000-0000-0000-0000-000000000000/balances -> 401/159B {"errorCode":"unauthorized"} byte-shape-stable (timestamp 06:50:48Z)
+[0m
+STEP 1 — DELTA
+- [NEW] Supabase publishable key for the Pick'Em backend recovered from the public JS bundle `index-DwbHQ6kd.js` (609KB, full supabase-js v2 + app): project `cgoqgofzqunixkwcttzi.supabase.co`, `createClient(url, sb_publishable_2k_*)` with custom fetch wrapper `Xp` that injects `?apikey=` and `Authorization: Bearer`. Key sha256=`553053822732d106306e3395ff55a3a2da751c1a2213950b6750ff546efcc76e` (publishable-by-design).
+- [NEW] Live anon-key RLS test on PostgREST: `/rest/v1/profiles?select=*&limit=1` with key → **200 `[]` `Content-Range: */*`**; `/rest/v1/picks` → 404 PGRST205 with hint `Perhaps you meant the table 'public.profiles'`. Key is ACCEPTED by PostgREST (schema-cache 404, not 401) but anonymous SELECT returns zero rows → RLS default-deny confirmed at anon level.
+- [CHANGED] nfl-pickem RLS hypothesis (was 42, freshest) now evidence-denied for anonymous reads — no user rows readable with the app's own key.
+- [CHANGED] wallet-gateway drift 06:50Z → GET balances bogus UUID → **401/159B** `{"errorCode":"unauthorized"}` (timestamp `2026-09-13T06:50:48.348Z`): byte-shape-stable vs 09-08/09-12 baselines; auth pre-check intact.
+- [CHANGED] Pipeline triage 06:17 empty (7th consecutive) but this cycle produced live evidence (bundle key extraction + anon RLS + drift), breaking the pure-reconfirmation streak. Probe results appended to probe-results.md 06:50.
+
+STEP 2 — PRIORITIZE
+- [PRIO] https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...,7.95,attack_surface=10,business_value=10,tech_exposure=8,gate_ease=3,cloud_surface=5,freshness=8
+- [PRIO] https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify,7.05,attack_surface=8,business_value=9,tech_exposure=7,gate_ease=3,cloud_surface=5,freshness=8
+- [PRIO] https://www.ozoon.eu/api/v1/signup,6.70,attack_surface=7,business_value=9,tech_exposure=6,gate_ease=4,cloud_surface=5,freshness=7
+- [PRIO] https://cgoqgofzqunixkwcttzi.supabase.co/rest/v1/ (backend of nfl-pickem-league.ozoon.eu),5.95,attack_surface=6,business_value=4,tech_exposure=7,gate_ease=8,cloud_surface=7,freshness=5 — anon-read RLS proved deny, value dropped from 6.80
+
+STEP 3 — HYPOTHESES
+[HYP] BOLA on profile-keyed UUID endpoints across 5 services
+class: IDOR
+asset: https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...
+confidence: 65
+reasoning: 06:50 drift re-verified bogus-UUID balances → 401/159B byte-shape-stable; SDK-confirmed profile-UUID route shape on wallet-gateway, transaction-group, referral, player-verification, player-messages. Session→path-UUID binding still unobserved (zero circulo authenticated probes).
+evidence_needed: With A's session, GET /profiles/{B-PID}/balances or /verifications returns 200/differential data vs {A-PID} control.
+verify_steps: [AUTH_HELPED] two throwaway accounts A+B → capture sids/PIDs; A's sid GET .../wallet-gateway/v1/profiles/{B-PID}/balances and .../player-verification/v1/profiles/{B-PID}/verifications vs {A-PID} control. Foreign 200 = BOLA; 401/403 = bound.
+impact: Critical — cross-user wallet/transaction/PII across 5 services; ATO enabler.
+testability: AUTH_HELPED
+
+[HYP] Mock-2FA verification header honored — client-controlled 2FA/KYC gate bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify
+confidence: 55
+reasoning: Production SDK sends X-MOCK-2FA-VERIFICATION:true; config `two_factor_authenticator.allow-permanent-skip:["true"]`; SSR isMockProviderEnabled:false is client-side only; wallet-gate 401 baseline stable (06:50).
+evidence_needed: POST verify +header succeeds while byte-identical control without header rejects.
+verify_steps: [AUTH_HELPED] signup → own sid+PID; POST .../verifications/verify {"verificationType":"PHONE"} with header true, then control without header, on self-created account only.
+impact: Critical — 2FA/SMS/PIN/KYC bypass on deposit/withdraw/bonus flows.
+testability: AUTH_HELPED
+
+[HYP] Registration/referral mass assignment via captcha-free signup
+class: BUSLOGIC
+asset: https://www.ozoon.eu/api/v1/signup
+confidence: 60
+reasoning: reCAPTCHA enforced only on login (not signup/signup_from_invitation per public config); client-controlled attributes/address sub-objects; static refSiteToken a0b5…b084 with check-referring-site disabled; profileupdateform gives strict update-DTO baseline (CA=CAD+XBT, US=USD) but signup DTO is separate and unreversed.
+evidence_needed: POST signup +extra keys (attributes.role/vip_level/is_verified/balance, currency override) persists vs control; referral token impersonation honored.
+verify_steps: [AUTH_HELPED] control signup vs +role/vip/balance signup; login both, GET whoami/profile to compare persisted state; invitation signup with static refSiteToken on throwaway accounts only.
+impact: Medium-High — referral fraud, territory/regulatory softblock bypass, possible privilege elevation if role/vip persisted.
+testability: AUTH_HELPED
+
+STEP 4 — SELF-CRITIQUE
+- [PARKED] Supabase Pick'Em RLS misconfig (was 42): hypothesis tested with the recovered publishable key — anon SELECT on `profiles` → 200 `[]` (RLS default-deny), so no anonymous row leak; key is client-design, not a secret. Remaining exposure would need a leaked user session (not present) or a write-path RLS gap, both requiring authenticated/user context and POST; parked, not a finding.
+- [PARKED] PostgREST PGRST205 schema-cache hint (`public.profiles` suggested): descriptive-error-only table-name leak — REJECTED class, no credit.
+- [PARKED] SSRF @ www.ozoon.com: already triage-INVALID (06:38), not re-credited.
+- [FINAL] 1) BOLA profile-UUID (65) — AUTH_HELPED; 2) Mass-assignment signup (60) — AUTH_HELPED; 3) Mock-2FA verify (55) — AUTH_HELPED.
+
+STEP 5 — NEXT ACTION
+- [NEXT] HUMAN: Request program authorization at bugs.olivermaicher.eu for ONE throwaway account creation on www.ozoon.eu (clearly-scoped mutating create, no live-customer impact) — unblocks all three FINAL hypotheses (BOLA/mass-assignment/mock-2FA) after 7 consecutive gated cycles. The prior second dependency (in-browser Supabase key capture) is now obsolete — the Pick'Em key was recovered passively this cycle and its anon RLS class already cleared.
+
+STEP 6 — LEARNING
+- [LEARN] ACCEPTED OTHER @ nfl-pickem-league.ozoon.eu: publishable Supabase key recovered from public bundle index-DwbHQ6kd.js (sha256 55305382…); PostgREST accepts it (PGRST205 schema-cache 404s when table missing); `public.profiles` real + exposed in schema cache. Key is client-design publishable, not a secret.
+- [LEARN] REJECTED OTHER @ cgoqgofzqunixkwcttzi.supabase.co/rest/v1: anon-key RLS probe on profiles → 200 [] default-deny; no anonymous PII. RLS hypothesis evidence-denied at anon level (was 42).
+- [LEARN] REJECTED OTHER @ cgoqgofzqunixkwcttzi.supabase.co/rest/v1: PGRST205 schema-cache table-name hints = descriptive-error-only leak, REJECTED class.
+- [LEARN] ACCEPTED MISCONFIG @ services.ozoon.eu: 06:50Z wallet-gate balances bogus UUID → 401/159B `{"errorCode":"unauthorized"}` byte-shape-stable vs 09-08/09-12; auth pre-check precedes resource lookup persists; no anonymous differential.
+
+STEP 7 — RISK
+- [RISK] ozoon-sportsbook-casino: 80 — Risk unchanged: three critical hypotheses (BOLA 65, mass-assignment 60, mock-2FA 55) remain gated on one authorized throwaway account after 7 consecutive empty triage cycles; this cycle did grow anonymous discovery (key recovered, RLS class cleared, drift stable) but none of it reduced the untestable high-value surface on the live money path; sole unblock remains explicit program authorization.

@@ -609,3 +609,5 @@ www.ozoon.com
 - CHANGED SSRF at `www.ozoon.com` formally INVALID'd by triage 06:38 — all `?url=` probes → catch-all 200 len=?, no collab callback; PWS/wnacloud behavior indistinguishable from catch-all
 - CHANGED Triage runs 01:31 + 06:29 both empty — 5th consecutive empty triage; laguna cycle 05:05 empty; probe-results.md byte-unchanged since 00:40:45
 - CHANGED Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway at `www.ozoon.eu/api/v1/signup`
+
+## 2026-09-13 06:54:45 UTC

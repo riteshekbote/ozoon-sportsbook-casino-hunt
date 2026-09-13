@@ -3331,3 +3331,4 @@ testability: AUTH_HELPED
 [LEARN] ACCEPTED OTHER @ ozoon CT enumeration: certspotter API reliable for ozoon.eu subdomain breadth (A-records are wildcard-poisoned, so DNS brute is useless); fold into each cycle's standard breadth step.
 [LEARN] REJECTED OTHER @ ozoon-sportsbook-casino pipeline: triage 01:11 empty (6th consecutive), probe-results.md held no new data through 23:23; no new anonymous evidence generated this cycle aside from my CT/probe work.
 [RISK] ozoon-sportsbook-casino: 80 — Core three (BOLA 65, mass-assignment 60, mock-2FA 55) remain gated on one authorized account after 6+ empty triage cycles and 19+ rounds with zero authenticated probes; new Pick'Em Supabase surface (RLS 42) is cheap to test in-browser but still needs the key; risk unchanged at 80 because discovery breadth grew while testability of value remains externally gated.
+## 2026-09-13 06:52:02 UTC [target] (model bigpickle)
