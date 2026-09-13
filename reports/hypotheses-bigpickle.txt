@@ -1,1 +1,37 @@
-## 2026-09-13 19:09:43 UTC [target] (model bigpickle)
+## 2026-09-13 21:26:33 UTC [target] (model bigpickle)
+verify_steps: [AUTH_HELPED] throwaway signup with extra fields vs minimal control; compare resulting session claims.
+impact: High — privilege escalation / bonus+balance manipulation if honored.
+testability: AUTH_HELPED
+[NEXT] HUMAN: Request program authorization at bugs.olivermaicher.eu for ONE throwaway account creation on www.ozoon.eu (restricted create, no live customer data) — unblocks BOLA + mock-2FA + mass-assignment, now 8th consecutive gated cycle with zero authenticated probes.
+[LEARN] REJECTED OTHER @ games.glovefrog.plus / api.wicket-keeper.com: third-party endpoints; Ozoon ownership unconfirmed
+[LEARN] REJECTED SSRF @ www.ozoon.com: triage 06:38 verdict INVALID — ?url=?view=?page= all 200 len=? catch-all shared-edge responses, no collab callback; PWS/wnacloud behavior indistinguishable from catch-all, removing the PWS-edge SSRF hypothesis from active consideration
+[LEARN] ACCEPTED MISCONFIG @ services.ozoon.eu SSR shell: config-drift probe 09:27 → sha256 6cbdef8e… (743,198B); refSiteToken a0b5…b084 byte-stable, reCaptcha.enabled:false, isMockProviderEnabled:false, servicesBaseUrl=https://services.services.ozoon.eu unchanged; gateway client config persistence reconfirmed; drift baseline hashed for cheap future diffs
+[LEARN] REJECTED OTHER @ ozoon-sportsbook-casino pipeline: triage runs 01:31+06:29 empty (5th consecutive), probe-results.md byte-unchanged since 00:40:45, laguna 05:05 empty — no new anonymous evidence generated; surface byte-identical to 05:07 aside from my drift baseline
+[RISK] ozoon-sportsbook-casino: 81/100 — Core gambling platform (ozoon.eu) with micro-frontend API (services.ozoon.eu) fully mapped via public SDK/config. Three critical vectors with clear AUTH_HELPED test paths: (1) BOLA on UUID-keyed profile endpoints across 5 services (confidence 65), (2) Registration/referral mass assignment on captcha-free signup with unverified static referral token (confidence 60), (3) 2FA/KYC bypass via client-controlled X-MOCK-2FA-VERIFICATION header honored by allow-permanent-skip config (confidence 55). Zero authenticated probes executed; all prior probes target only www.ozoon.com marketing edge. Real-money gaming with crypto/Interac payments, F5 ASM WAF, reCAPTCHA v3 (login-only), 2FA present but backend binding correctness and mock-header handling unverified. High business value + high attack surface + low gate ease (public registration, public API config) = elevated risk. New Supabase-backed promo app (nfl-pickem-league) adds RLS-dependent data surface.
+[HYP] BOLA on Profile-Keyed UUID Endpoints Across 5 Services
+class: IDOR
+asset: https://services.ozoon.eu/services/{wallet-gateway,transaction-group,referral,player-verification,player-messages}/v1/profiles/{uuid}/...
+confidence: 65
+reasoning: SDK-confirmed {uuid}-path route shape on 5 services; anonymous probes stay 401/159B {"errorCode":"unauthorized"} = auth pre-check precedes resource lookup; session→path-UUID binding never observed because zero authenticated sessions exist (7th empty triage, unchanged surface).
+evidence_needed: With A's sid, A reads foreign {B-PID}/balances or /verifications → 200/data vs {A-PID} control; 401/403 = bound.
+verify_steps: [AUTH_HELPED] A signs in; GET /services/wallet-gateway/v1/profiles/{B-PID}/balances vs own {A-PID}/balances control; same for player-verification/v1/profiles/{B-PID}/verifications.
+impact: Critical — cross-player wallet/transaction/PII across 5 services; ATO enabler.
+testability: AUTH_HELPED
+[HYP] Mock-2FA Verification Header Honored = 2FA/KYC Gate Bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify
+confidence: 55
+reasoning: Production SDK sends X-MOCK-2FA-VERIFICATION:true; config two_factor_authenticator.allow-permanent-skip:["true"]; SSR isMockProviderEnabled:false is client-only and does not resolve server behavior; only differential accept/reject on own account proves it.
+evidence_needed: POST verify {"verificationType":"PHONE"} + header succeeds while byte-identical control without header rejects, on own account.
+verify_steps: [AUTH_HELPED] signup → own sid; POST .../verifications/verify with X-MOCK-2FA-VERIFICATION:true, then identical control; compare status.
+impact: Critical — 2FA/SMS/PIN/KYC bypass on deposit/withdraw/bonus flows.
+testability: AUTH_HELPED
+[HYP] Supabase RLS as Sole Row Control on Pick'Em League Data
+class: OTHER
+asset: https://nfl-pickem-league.ozoon.eu (project cgoqgofzqunixkwcttzi.supabase.co, auth + PostgREST)
+confidence: 42
+reasoning: Vercel/Remix promo app embeds live Supabase client; anon key observed server-side in fetched chunks; key-less probes → 401. RLS is the only row-control layer; anon key alone (plus row-enumeration SQL) could expose cross-player picks/PII if RLS misconfigured.
+evidence_needed: With anon key captured in-browser, unauthenticated PostgREST SELECT of another player's picks/PII succeeds; control within own row fails without session.
+verify_steps: [AUTH_HELPED] browser network capture of apikey from league page; GET {SUPABASE}/rest/v1/picks?select=*&limit=100 (read-only) then diff against expected RLS deny.
+impact: Medium — cross-player PII (name/email/picks) in promotional league; no casino wallet exposure.
+testability: AUTH_HELPED

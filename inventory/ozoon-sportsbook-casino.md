@@ -633,3 +633,14 @@ www.ozoon.com
 - CHANGED Zero authenticated probes executed against core platform (`ozoon.eu`/`services.ozoon.eu`) across all 18+ probe rounds; all probes target only `www.ozoon.com` marketing edge.
 - CHANGED Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway at `www.ozoon.eu/api/v1/signup`.
 - CHANGED SSRF at `www.ozoon.com` formally INVALID'd by triage 06:38 — all `?url=?view=?page=` probes → catch-all 200 len=?, no collab callback; PWS/wnacloud behavior indistinguishable from catch-all.
+
+## 2026-09-13 21:28:47 UTC
+- NEW `nfl-pickem-league.ozoon.eu` live Vercel/Remix promo app with embedded Supabase client (project `cgoqgofzqunixkwcttzi.supabase.co`), auth + PostgREST; anon key server-side in chunks; keyless probes 40
+- NEW `static.ozoon.eu` second PWS SSR front (755,927B) exposing `servicesBaseUrl=https://services.ozoon.eu` (public entry) vs `services.ozoon.eu` shell carrying split-horizon `services.services.ozoon.eu`
+- NEW `blog.ozoon.eu` (Next.js PWS marketing), `sportsfeeds.ozoon.eu` (persistent 503/0B) — neither on core auth/money path
+- NEW CT enumeration via certspotter API reliable for `ozoon.eu` subdomain breadth (A-records wildcard-poisoned)
+- CHANGED `services.ozoon.eu` SSR shell config-drift: 01:25 probe → 743,201B sha256 `59a51c62` (+3B vs 743,198B/`6cbdef8e` baseline, benign ts/version); `refSiteToken a0b5…b084`, `reCaptcha.enabled:false`, `isM
+- CHANGED `wallet-gateway` bogus-UUID `/balances` → 401/159B structured `{"errorCode":"unauthorized"}` byte-shape-stable — auth pre-check intact
+- CHANGED Inventory file still lists ONLY `ozoon.com`/`www.ozoon.com`; `ozoon.eu` (core platform) and `services.ozoon.eu` (backend API) confirmed in-scope per scope.yml but absent from inventory
+- CHANGED Zero authenticated probes executed against core platform (`ozoon.eu`/`services.ozoon.eu`) across all 18+ probe rounds; all probes target only `www.ozoon.com` marketing edge
+- CHANGED SSRF at `www.ozoon.com` formally INVALID'd by triage 06:38 — all `?url=?view=?page=` probes → catch-all 200 len=?, no collab callback; PWS/wnacloud behavior indistinguishable from catch-all
