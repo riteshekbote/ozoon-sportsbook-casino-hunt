@@ -18885,3 +18885,625 @@ testability: AUTH_HELPED
 
 ### STEP 7 — RISK
 [RISK] ozoon-sportsbook-casino: 80 — Core three (BOLA 65, mock-2FA 55, Supabase RLS 42) remain gated on one authorized account after 6+ empty triage cycles and 19+ rounds with zero authenticated probes; new Pick'Em Supabase surface (RLS 42) is cheap to test in-browser but still needs the key; risk unchanged at 80 because discovery breadth grew while testability of value remains externally gated.
+===== ANALYST bigpickle 2026-09-13 16:45:42 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mls -la && cat scope.yml 2>/dev/null | head -40; ls inventory 2>/dev/null; ls art 2>/dev/null
+total 428
+drwxr-xr-x 12 runner runner   4096 Sep 13 16:38 .
+drwxr-xr-x  3 runner runner   4096 Sep 13 16:38 ..
+drwxr-xr-x  7 runner runner   4096 Sep 13 16:38 .git
+drwxr-xr-x  3 runner runner   4096 Sep 13 16:38 .github
+-rw-r--r--  1 runner runner   1642 Sep 13 16:38 README.md
+-rw-r--r--  1 runner runner     32 Sep 13 16:38 analyst-out.txt
+-rw-r--r--  1 runner runner 171818 Sep 13 16:38 analyst-prompt.txt
+-rw-r--r--  1 runner runner 168081 Sep 13 16:38 ctx.txt
+drwxr-xr-x  2 runner runner   4096 Sep 13 16:38 inventory
+drwxr-xr-x  2 runner runner   4096 Sep 13 16:38 knowledge
+drwxr-xr-x  2 runner runner   4096 Sep 13 16:38 leads
+-rw-r--r--  1 runner runner   4347 Sep 13 16:38 probe-results.md
+drwxr-xr-x  2 runner runner   4096 Sep 13 16:38 recon-notes
+drwxr-xr-x  2 runner runner   4096 Sep 13 16:38 reports
+drwxr-xr-x  2 runner runner   4096 Sep 13 16:38 reposcan-raw
+-rw-r--r--  1 runner runner   3150 Sep 13 16:38 scope.yml
+drwxr-xr-x  2 runner runner   4096 Sep 13 16:38 scripts
+-rw-r--r--  1 runner runner     33 Sep 13 16:38 state_bigpickle.json
+-rw-r--r--  1 runner runner     33 Sep 13 16:38 state_laguna.json
+-rw-r--r--  1 runner runner     33 Sep 13 16:38 state_ling3.json
+-rw-r--r--  1 runner runner     33 Sep 13 16:38 state_longcat.json
+-rw-r--r--  1 runner runner     33 Sep 13 16:38 state_mimo.json
+-rw-r--r--  1 runner runner     33 Sep 13 16:38 state_nemotron3.json
+drwxr-xr-x  2 runner runner   4096 Sep 13 16:38 triage
+programs:
+  ozoon-sportsbook-casino:
+    name: Ozoon Bug Bounty
+    disclosure_policy: via bugs.olivermaicher.eu (Oliver Maicher private program) - report + PoC + contact + payment
+    assets:
+      - name: "All infrastructure, brands, services and gaming platforms operated by Ozoon"
+        priority: In
+    out_of_scope:
+- "Network level Denial of Service attacks"
+      - "Application Denial of Service by locking user accounts"
+      - "Descriptive error messages or headers (e.g. Stack Traces, banner grabbing)"
+      - "Disclosure of known public files or directories (e.g. robots.txt)"
+      - "Outdated software / library versions"
+      - "OPTIONS / TRACE HTTP method enabled"
+      - "CSRF on logout"
+      - "CSRF on forms that are available to anonymous users"
+      - "Cookies that lack HTTP Only or Secure settings for non-sensitive data"
+      - "Self-XSS and issues exploitable only through Self-XSS"
+      - "Reports resulting from automated scanning utilities without additional details or a POC demonstrating a specific exploit"
+      - "Attacks requiring physical access to a user's device"
+      - "Attacks dependent upon social engineering of employees or vendors"
+      - "Username enumeration based on login or forgot password pages"
+      - "Enforcement policies for brute force, rate limiting, or account lockout"
+      - "SSL/TLS best practices"
+      - "SSL attacks such as BEAST, BREACH, Renegotiation attack"
+      - "Clickjacking, without additional details demonstrating a specific exploit"
+      - "Mail configuration issues including SPF, DKIM, DMARC settings"
+      - "Use of a known-vulnerable library without a description of an exploit specific to our implementation"
+      - "Password and account recovery policies"
+      - "Presence of autocomplete functionality in form fields"
+      - "Publicly accessible login panels"
+      - "Lack of email address verification during account registration or account invitation"
+      - "Lack of email address verification password restore"
+      - "Session control during email/password changes"
+      - "Social engineering, physical attacks, and DoS/DDoS testing (per program notes)"
+      - "Exposure of customer/employee/financial/authentication data during testing (per program notes)"
+    github_orgs:
+      - none-configured
+
+rules:
+ozoon-sportsbook-casino.md
+[0m
+[0m$ [0mcat analyst-out.txt state_bigpickle.json; echo ---; ls leads/; echo ---; grep -c "ACC" knowledge/*.md 2>/dev/null | head; ls knowledge/
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mls -la && cat scope.yml 2>/dev/null | head -40; ls inventory 2>/dev/null; ls art 2>/dev/null
+total 428
+drwxr-xr-x 12 runner runner   4096 Sep 13 16:38 .
+drwxr-xr-x  3 runner runner   4096 Sep 13 16:38 ..
+drwxr-xr-x  7 runner runner   4096 Sep 13 16:38 .git
+drwxr-xr-x  3 runner runner   4096 Sep 13 16:38 .github
+-rw-r--r--  1 runner runner   1642 Sep 13 16:38 README.md
+-rw-r--r--  1 runner runner     32 Sep 13 16:38 analyst-out.txt
+-rw-r--r--  1 runner runner 171818 Sep 13 16:38 analyst-prompt.txt
+-rw-r--r--  1 runner runner 168081 Sep 13 16:38 ctx.txt
+drwxr-xr-x  2 runner runner   4096 Sep 13 16:38 inventory
+drwxr-xr-x  2 runner runner   4096 Sep 13 16:38 knowledge
+drwxr-xr-x  2 runner runner   4096 Sep 13 16:38 leads
+-rw-r--r--  1 runner runner   4347 Sep 13 16:38 probe-results.md
+drwxr-xr-x  2 runner runner   4096 Sep 13 16:38 recon-notes
+drwxr-xr-x  2 runner runner   4096 Sep 13 16:38 reports
+drwxr-xr-x  2 runner runner   4096 Sep 13 16:38 reposcan-raw
+-rw-r--r--  1 runner runner   3150 Sep 13 16:38 scope.yml
+drwxr-xr-x  2 runner runner   4096 Sep 13 16:38 scripts
+-rw-r--r--  1 runner runner     33 Sep 13 16:38 state_bigpickle.json
+-rw-r--r--  1 runner runner     33 Sep 13 16:38 state_laguna.json
+-rw-r--r--  1 runner runner     33 Sep 13 16:38 state_ling3.json
+-rw-r--r--  1 runner runner     33 Sep 13 16:38 state_longcat.json
+-rw-r--r--  1 runner runner     33 Sep 13 16:38 state_mimo.json
+-rw-r--r--  1 runner runner     33 Sep 13 16:38 state_nemotron3.json
+drwxr-xr-x  2 runner runner   4096 Sep 13 16:38 triage
+programs:
+  ozoon-sportsbook-casino:
+    name: Ozoon Bug Bounty
+    disclosure_policy: via bugs.olivermaicher.eu (Oliver Maicher private program) - report + PoC + contact + payment
+    assets:
+      - name: "All infrastructure, brands, services and gaming platforms operated by Ozoon"
+        priority: In
+    out_of_scope:
+- "Network level Denial of Service attacks"
+      - "Application Denial of Service by locking user accounts"
+      - "Descriptive error messages or headers (e.g. Stack Traces, banner grabbing)"
+      - "Disclosure of known public files or directories (e.g. robots.txt)"
+      - "Outdated software / library versions"
+      - "OPTIONS / TRACE HTTP method enabled"
+      - "CSRF on logout"
+      - "CSRF on forms that are available to anonymous users"
+      - "Cookies that lack HTTP Only or Secure settings for non-sensitive data"
+      - "Self-XSS and issues exploitable only through Self-XSS"
+      - "Reports resulting from automated scanning utilities without additional details or a POC demonstrating a specific exploit"
+      - "Attacks requiring physical access to a user's device"
+      - "Attacks dependent upon social engineering of employees or vendors"
+      - "Username enumeration based on login or forgot password pages"
+      - "Enforcement policies for brute force, rate limiting, or account lockout"
+      - "SSL/TLS best practices"
+      - "SSL attacks such as BEAST, BREACH, Renegotiation attack"
+      - "Clickjacking, without additional details demonstrating a specific exploit"
+      - "Mail configuration issues including SPF, DKIM, DMARC settings"
+      - "Use of a known-vulnerable library without a description of an exploit specific to our implementation"
+      - "Password and account recovery policies"
+      - "Presence of autocomplete functionality in form fields"
+      - "Publicly accessible login panels"
+      - "Lack of email address verification during account registration or account invitation"
+      - "Lack of email address verification password restore"
+      - "Session control during email/password changes"
+      - "Social engineering, physical attacks, and DoS/DDoS testing (per program notes)"
+      - "Exposure of customer/employee/financial/authentication data during testing (per program notes)"
+    github_orgs:
+      - none-configured
+
+rules:
+ozoon-sportsbook-casino.md
+[0m
+{"phase": "POC", "target": "api"}---
+lead-bigpickle.md
+lead-laguna.md
+lead-ling3.md
+lead-longcat.md
+lead-mimo.md
+lead-nemotron3.md
+reposcan-ozoon-sportsbook-casino.md
+---
+204
+index.md
+[0m
+[0m$ [0mcat probe-results.md
+## 2026-09-02 21:55:20 UTC
+
+
+## 2026-09-03 00:00:11 UTC
+
+
+## 2026-09-03 04:18:13 UTC
+
+
+## 2026-09-03 09:03:56 UTC
+
+
+## 2026-09-03 13:36:17 UTC
+
+
+## 2026-09-03 17:24:54 UTC
+https://www.ozoon.com/ -> 200 len=?
+https://www.ozoon.com/api/ -> HTTP 404
+https://www.ozoon.com/robots.txt -> 200 len=?
+https://www.ozoon.com/sitemap.xml -> 200 len=?
+https://www.ozoon.com/hyper/ -> HTTP 404
+https://www.ozoon.com/mas-film/ -> HTTP 404
+https://www.ozoon.com:3306/ -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
+
+## 2026-09-03 20:08:24 UTC
+https://www.ozoon.com/ -> 200 len=?
+https://www.ozoon.com/api/ -> HTTP 404
+https://www.ozoon.com/robots.txt -> 200 len=?
+https://www.ozoon.com/sitemap.xml -> 200 len=?
+
+## 2026-09-03 22:51:16 UTC
+https://www.ozoon.com -> 200 len=?
+https://www.ozoon.com/ -> 200 len=?
+https://www.ozoon.com/api/ -> HTTP 404
+https://www.ozoon.com/robots.txt -> 200 len=?
+https://www.ozoon.com/sitemap.xml -> 200 len=?
+
+## 2026-09-04 00:48:52 UTC
+https://www.ozoon.com -> 200 len=?
+https://www.ozoon.com/ -> 200 len=?
+https://www.ozoon.com/api/ -> HTTP 404
+https://www.ozoon.com/robots.txt -> 200 len=?
+https://www.ozoon.com/sitemap.xml -> 200 len=?
+
+## 2026-09-04 05:14:05 UTC
+https://www.ozoon.com -> 200 len=?
+https://www.ozoon.com/ -> 200 len=?
+https://www.ozoon.com/api/ -> HTTP 404
+https://www.ozoon.com/robots.txt -> 200 len=?
+https://www.ozoon.com/sitemap.xml -> 200 len=?
+
+## 2026-09-04 09:50:35 UTC
+https://www.ozoon.com -> 200 len=?
+https://www.ozoon.com/ -> 200 len=?
+https://www.ozoon.com/api/ -> HTTP 404
+https://www.ozoon.com/robots.txt -> 200 len=?
+https://www.ozoon.com/sitemap.xml -> 200 len=?
+
+## 2026-09-04 14:26:01 UTC
+
+
+## 2026-09-04 18:02:21 UTC
+
+
+## 2026-09-04 20:04:48 UTC
+https://www.ozoon.com/?{url|fetch|callback|import|view -> 200 len=?
+https://www.ozoon.com/?url=https://<collab>/ -> 200 len=?
+
+## 2026-09-04 22:19:16 UTC
+https://www.ozoon.com/?{url|view|page|callback -> 200 len=?
+
+## 2026-09-05 00:16:35 UTC
+
+
+## 2026-09-05 04:46:34 UTC
+https://www.ozoon.com/?{url|view|page|callback -> 200 len=?
+
+## 2026-09-05 08:43:46 UTC
+
+
+## 2026-09-05 12:12:10 UTC
+
+
+## 2026-09-05 15:34:45 UTC
+
+
+## 2026-09-05 17:45:43 UTC
+
+
+## 2026-09-05 19:37:04 UTC
+
+
+## 2026-09-05 21:47:51 UTC
+
+
+## 2026-09-05 23:48:13 UTC
+
+
+## 2026-09-06 04:10:59 UTC
+
+
+## 2026-09-06 08:50:52 UTC
+
+
+## 2026-09-06 12:54:16 UTC
+
+
+## 2026-09-06 16:13:38 UTC
+
+
+## 2026-09-06 18:35:44 UTC
+
+
+## 2026-09-06 20:52:21 UTC
+
+
+## 2026-09-06 22:51:58 UTC
+
+
+## 2026-09-07 00:51:48 UTC
+
+
+## 2026-09-07 05:56:27 UTC
+
+
+## 2026-09-07 12:27:57 UTC
+https://www.ozoon.com,3.0,attack_surface=4,business_value=3,tech_exposure=4,gate_ease=10,cloud_surface=5,freshness=5 -> ERR label too long
+
+## 2026-09-07 17:54:23 UTC
+
+
+## 2026-09-07 21:27:50 UTC
+https://www.ozoon.com,3.5,attack_surface=4,business_value=3,tech_exposure=3,gate_ease=9,cloud_surface=3,freshness=5 -> ERR label too long
+
+## 2026-09-07 23:49:41 UTC
+https://www.ozoon.com -> 200 len=?
+https://www.ozoon.com/?url=http://169.254.169.254/latest/meta-data/ -> 200 len=?
+
+## 2026-09-08 04:11:28 UTC
+
+
+## 2026-09-08 09:02:55 UTC
+
+
+## 2026-09-08 13:34:27 UTC
+
+
+## 2026-09-08 17:50:23 UTC
+
+
+## 2026-09-08 20:21:40 UTC
+
+
+## 2026-09-08 22:49:04 UTC
+https://www.ozoon.com,4.50,attack_surface=5,business_value=3,tech_exposure=4,gate_ease=10,cloud_surface=6,freshness=5 -> ERR label too long
+https://www.ozoon.com -> 200 len=?
+https://www.ozoon.com/?url=http://169.254.169.254/latest/meta-data/ -> 200 len=?
+
+## 2026-09-09 01:19:23 UTC
+
+
+## 2026-09-09 06:12:41 UTC
+
+
+## 2026-09-09 11:42:54 UTC
+
+
+## 2026-09-09 15:34:53 UTC
+
+
+## 2026-09-09 18:46:50 UTC
+
+
+## 2026-09-09 21:39:00 UTC
+
+
+## 2026-09-09 23:35:21 UTC
+
+
+## 2026-09-10 01:33:55 UTC
+
+
+## 2026-09-10 07:03:07 UTC
+
+
+## 2026-09-10 12:02:51 UTC
+
+
+## 2026-09-10 16:16:00 UTC
+
+
+## 2026-09-10 19:17:47 UTC
+
+
+## 2026-09-10 21:47:13 UTC
+
+
+## 2026-09-10 23:57:14 UTC
+
+
+## 2026-09-11 04:23:34 UTC
+
+
+## 2026-09-11 09:21:05 UTC
+
+
+## 2026-09-11 13:46:17 UTC
+
+
+## 2026-09-11 17:23:01 UTC
+
+
+## 2026-09-11 19:53:37 UTC
+
+
+## 2026-09-11 22:25:48 UTC
+
+
+## 2026-09-12 00:40:45 UTC
+
+
+## 2026-09-12 05:07:27 UTC
+
+
+## 2026-09-12 09:29:33 UTC
+
+
+## 2026-09-12 13:13:04 UTC
+
+
+## 2026-09-12 16:27:35 UTC
+
+
+## 2026-09-12 18:52:44 UTC
+
+
+## 2026-09-12 21:23:15 UTC
+
+
+## 2026-09-12 23:23:25 UTC
+
+
+## 2026-09-13 01:30:08 UTC
+
+
+## 2026-09-13 06:54:45 UTC
+
+
+## 2026-09-13 12:59:52 UTC
+[0m
+[0m$ [0mcurl -s -m 20 -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" https://nfl-pickem-league.ozoon.eu/ -o /tmp/opencode/pickem.html -w "HTTP %{http_code} %{size_download}B\n"; sleep 1; grep -oE 'src="[^"]+\.js[^"]*"' /tmp/opencode/pickem.html | head -30; echo "---links---"; grep -oE 'href="[^"]+"' /tmp/opencode/pickem.html | head -20
+HTTP 200 35693B
+grep: /tmp/opencode/pickem.html: binary file matches
+---links---
+grep: /tmp/opencode/pickem.html: binary file matches
+[0m
+[0m$ [0mgrep -aoE 'src="[^"]+"' /tmp/opencode/pickem.html | sort -u; echo "---"; grep -aoiE 'supabase[a-z0-9._-]*="[^"]*"|supabase[a-z0-9._-]*:' /tmp/opencode/pickem.html | head -20; echo "---NFL/supabase ref---"; grep -aoE 'cgoqgofzqunixkwcttzi[^"'"'"' ]*' /tmp/opencode/pickem.html | sort -u | head
+src="/assets/doug-flutie-BsTbOfHw.png"
+src="/assets/hero-football-BF94d4AJ.png"
+src="/assets/index-DwbHQ6kd.js"
+src="data:image/svg+xml,%3csvg%20width=&#x27;119&#x27;%20height=&#x27;40&#x27;%20viewBox=&#x27;0%200%20119%2040&#x27;%20fill=&#x27;none&#x27;%20xmlns=&#x27;http://www.w3.org/2000/svg&#x27;%3e%3cg%20clip-path=&#x27;url(%23clip0_29_5445)&#x27;%3e%3cpath%20d=&#x27;M14.782%2028.0766V11.992C14.782%207.12484%2013.2328%204.93731%209.996%204.93731C6.7592%204.93731%205.20787%207.12484%205.20787%2011.992V28.0766C5.20787%2032.946%206.75704%2035.1313%209.996%2035.1313C13.235%2035.1313%2014.782%2032.946%2014.782%2028.0766ZM0%2028.9243V11.1465C0%204.09178%203.65871%200.0722656%209.996%200.0722656C16.3333%200.0722656%2019.9942%204.09395%2019.9942%2011.1465V28.9243C19.9942%2035.979%2016.3333%2040.0007%209.996%2040.0007C3.65871%2040.0007%200%2035.979%200%2028.9243Z&#x27;%20fill=&#x27;%23E6BE8A&#x27;/%3e%3cpath%20d=&#x27;M25.0701%2035.06L36.1219%205.85672H27.039C25.7018%205.85672%2024.5746%204.72718%2024.5746%203.38735C24.5746%202.04751%2025.7018%200.917969%2027.039%200.917969H39.5707C42.1044%200.917969%2042.8075%202.96241%2041.8923%205.36241L30.7691%2034.3554H40.7651C42.1044%2034.3554%2043.2295%2035.4849%2043.2295%2036.8247C43.2295%2038.1646%2042.1022%2039.2941%2040.7651%2039.2941H27.3895C24.9965%2039.2941%2024.1527%2037.5315%2025.0679%2035.06&#x27;%20fill=&#x27;%23E6BE8A&#x27;/%3e%3cpath%20d=&#x27;M61.8952%2028.0766V11.992C61.8952%207.12484%2060.346%204.93731%2057.1092%204.93731C53.8724%204.93731%2052.3211%207.12484%2052.3211%2011.992V28.0766C52.3211%2032.946%2053.8702%2035.1313%2057.1092%2035.1313C60.3482%2035.1313%2061.8952%2032.946%2061.8952%2028.0766ZM47.111%2028.9243V11.1465C47.111%204.09178%2050.7719%200.0722656%2057.1092%200.0722656C63.4465%200.0722656%2067.1052%204.09395%2067.1052%2011.1465V28.9243C67.1052%2035.979%2063.4443%2040.0007%2057.1092%2040.0007C50.7741%2040.0007%2047.111%2035.979%2047.111%2028.9243Z&#x27;%20fill=&#x27;%23E6BE8A&#x27;/%3e%3cpath%20d=&#x27;M87.7355%2028.0766V11.992C87.7355%207.12484%2086.1863%204.93731%2082.9495%204.93731C79.7127%204.93731%2078.1614%207.12484%2078.1614%2011.992V28.0766C78.1614%2032.946%2079.7105%2035.1313%2082.9495%2035.1313C86.1885%2035.1313%2087.7355%2032.946%2087.7355%2028.0766ZM72.9535%2028.9243V11.1465C72.9535%204.09178%2076.6122%200.0722656%2082.9517%200.0722656C89.2911%200.0722656%2092.9477%204.09395%2092.9477%2011.1465V28.9243C92.9477%2035.979%2089.2868%2040.0007%2082.9517%2040.0007C76.6165%2040.0007%2072.9535%2035.979%2072.9535%2028.9243Z&#x27;%20fill=&#x27;%23E6BE8A&#x27;/%3e%3cpath%20d=&#x27;M99.0058%2036.8238V11.0764C99.0058%204.02168%20102.667%200%20109.002%200C115.337%200%20118.998%204.02168%20118.998%2011.0764V36.826C118.998%2038.2374%20117.801%2039.4363%20116.395%2039.4363C114.989%2039.4363%20113.79%2038.2374%20113.79%2036.826V11.9241C113.79%207.05474%20112.241%204.86938%20109.002%204.86938C105.763%204.86938%20104.216%207.05474%20104.216%2011.9241V36.826C104.216%2038.2374%20103.019%2039.4363%20101.611%2039.4363C100.202%2039.4363%2099.0058%2038.2374%2099.0058%2036.826&#x27;%20fill=&#x27;%23E6BE8A&#x27;/%3e%3c/g%3e%3cdefs%3e%3cclipPath%20id=&#x27;clip0_29_5445&#x27;%3e%3crect%20width=&#x27;119&#x27;%20height=&#x27;40&#x27;%20fill=&#x27;white&#x27;/%3e%3c/clipPath%3e%3c/defs%3e%3c/svg%3e"
+---
+---NFL/supabase ref---
+[0m
+[0m$ [0mcurl -s -m 20 -A "Mozilla/5.0" https://nfl-pickem-league.ozoon.eu/assets/index-DwbHQ6kd.js -o /tmp/opencode/pickem-index.js -w "HTTP %{http_code} %{size_download}B\n"; sleep 1; grep -aoE 'supabase[a-zA-Z._/<>=-]+' /tmp/opencode/pickem-index.js | sort -u | head -30; echo "---anonkey---"; grep -aoE 'eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}' /tmp/opencode/pickem-index.js | head
+HTTP 200 609972B
+supabase-js/
+supabase.
+supabase.auth.
+supabase.auth.getSession
+supabase.auth.getUser
+supabase.auth.onAuthStateChange
+supabase.auth.token
+supabase.co
+supabase.gotrue-js.locks.debug
+supabase.in
+supabase/auth-js
+supabase/discussions/
+supabase/gotrue-js
+supabase/ssr
+supabase/supabase-js
+supabase/supabase-js.
+supabase/supabase-js/blob/master/packages/core/realtime-js/migrations/httpsend-server-version.md
+supabaseKey
+supabaseKey=t
+supabaseUrl
+supabaseUrl=e
+---anonkey---
+[0m
+[0m$ [0mgrep -aoP '.{0,80}supabaseKey.{0,80}' /tmp/opencode/pickem-index.js | head -10; echo "---url---"; grep -aoP '.{0,80}supabaseUrl.{0,80}' /tmp/opencode/pickem-index.js | head -10; echo "---fetch supabase---"; grep -aoP '.{0,100}cgoqgofzqunixkwcttzi.{0,100}' /tmp/opencode/pickem-index.js | head -10
+p{constructor(e){super(e)}},Gp=class{constructor(e,t,n){this.supabaseUrl=e,this.supabaseKey=t;let r=Up(e);if(!t)throw Error(`supabaseKey is required.`);Lp(t),this.realtime
+n??null}async _getAccessToken(){var e=this;return await e._getSessionToken()??e.supabaseKey}_initSupabaseAuthClient({autoRefreshToken:e,persistSession:t,detectSessionInUrl
+AcquireTimeout:d,skipAutoInitialize:f},p,m){let h={Authorization:`Bearer ${this.supabaseKey}`,apikey:`${this.supabaseKey}`};return new Wp({url:this.authUrl.href,headers:Np
+eturn new $l(this.realtimeUrl.href,Np(Np({},e),{},{params:Np(Np({},{apikey:this.supabaseKey}),e?.params)}))}_listenForAuthEvents(){return this.auth.onAuthStateChange((e,t)
+---url---
+sToken:delete f.accessToken,f}function Up(e){let t=e?.trim();if(!t)throw Error(`supabaseUrl is required.`);if(!t.match(/^https?:\/\//i))throw Error(`Invalid supabaseUrl: M
+valid HTTP or HTTPS URL.`);try{return new URL(Vp(t))}catch{throw Error(`Invalid supabaseUrl: Provided URL is malformed.`)}}var Wp=class extends ip{constructor(e){super(e)}
+},Gp=class{constructor(e,t,n){this.supabaseUrl=e,this.supabaseKey=t;let r=Up(e);if(!t)throw Error(`supabaseKey is required.`);
+---fetch supabase---
+eaders:r})}}function Zp(){let e=`sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM`;return Kp(`https://cgoqgofzqunixkwcttzi.supabase.co`,e,{global:{fetch:Xp(e)},auth:{storage:Jp(),persistSession:!0,autoRefreshToken:!0}})}va
+[0m
+Found the Supabase anon key directly embedded in the client bundle:
+[0m$ [0mgrep -aoP 'sb_publishable_[A-Za-z0-9_-]+' /tmp/opencode/pickem-index.js | sort -u; echo "---full createClient line---"; grep -aoP '.{0,30}cgoqgofzqunixkwcttzi.{0,120}' /tmp/opencode/pickem-index.js
+sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM
+---full createClient line---
+_zqoMHuwM`;return Kp(`https://cgoqgofzqunixkwcttzi.supabase.co`,e,{global:{fetch:Xp(e)},auth:{storage:Jp(),persistSession:!0,autoRefreshToken:!0}})}var Qp,$p=new Proxy({}
+[0m
+The anon key is directly embedded. Now the read-only exposure check on the Supabase REST root (schema introspection only, no row access):
+[0m$ [0mcurl -s -m 20 "https://cgoqgofzqunixkwcttzi.supabase.co/rest/v1/" \
+  -H "apikey: sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM" \
+  -H "Authorization: Bearer sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM" \
+  -H "Accept: application/openapi+json" \
+  -o /tmp/opencode/rest-root.json -w "HTTP %{http_code} %{size_download}B\n"; sleep 1; head -c 600 /tmp/opencode/rest-root.json; echo
+HTTP 401 98B
+{"message":"Secret API key required","hint":"Only secret API keys can be used for this endpoint."}
+[0m
+[0m$ [0mcurl -s -m 20 "https://cgoqgofzqunixkwcttzi.supabase.co/rest/v1/" \
+  -H "apikey: sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM" \
+  -H "Authorization: Bearer sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM" \
+  -o /tmp/opencode/rest-root2.json -w "HTTP %{http_code} %{size_download}B\n"; sleep 1; cat /tmp/opencode/rest-root2.json | head -c 500; echo; echo "---pg dump / rest admin---"; for p in "pg/rest/v1/" ""; do curl -s -m 15 "https://cgoqgofzqunixkwcttzi.supabase.co/$p" -H "apikey: sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM" -w " [%{http_code}]\n" -o /tmp/opencode/x$RANDOM.txt; sleep 1; done
+HTTP 401 98B
+{"message":"Secret API key required","hint":"Only secret API keys can be used for this endpoint."}
+---pg dump / rest admin---
+ [404]
+ [404]
+[0m
+[0m$ [0mcurl -s -m 20 "https://cgoqgofzqunixkwcttzi.supabase.co/rest/v1/nonexistent_table_zzz?select=*" \
+  -H "apikey: sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM" \
+  -H "Authorization: Bearer sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM" \
+  -o /tmp/opencode/bogus.json -w "HTTP %{http_code} %{size_download}B\n"; sleep 1; cat /tmp/opencode/bogus.json
+HTTP 404 134B
+{"code":"PGRST205","details":null,"hint":null,"message":"Could not find the table 'public.nonexistent_table_zzz' in the schema cache"}
+[0m
+[0m$ [0mcurl -s -m 20 "https://api.certspotter.com/v1/issuances?domain=ozoon.eu&include_subdomains=true&expand=dns_names" -o /tmp/opencode/ct.json -w "HTTP %{http_code}\n"; sleep 1; grep -aoE '"dns_names":\[[^]]*\]' /tmp/opencode/ct.json | grep -aoE '[a-z0-9._-]+\.[a-z0-9.-]+\.ozoon\.eu' | sort -u
+HTTP 200
+[0m
+The publishable key is valid but reveals no anonymous read surface. Now CT drift check + core shell drift probe:
+[0m$ [0mcurl -s -m 30 -A "Mozilla/5.0" https://services.ozoon.eu/ -o /tmp/opencode/shell.html -w "HTTP %{http_code} %{size_download}B\n"; sleep 1; sha256sum /tmp/opencode/shell.html; grep -aoE 'refSiteToken[":= ]+[a-f0-9]+' /tmp/opencode/shell.html | head -1; grep -aoE 'servicesBaseUrl[":= ]+[^",}]+' /tmp/opencode/shell.html | head -1; grep -aoE 'isMockProviderEnabled[":= ]+[a-z]+' /tmp/opencode/shell.html | head -1
+HTTP 200 743200B
+4d70fc87bfbac5105a983c00c2fe29133815c2fd90de970494e2a0af78f5e9d8  /tmp/opencode/shell.html
+[0m
+[0m$ [0mhead -c 400 /tmp/opencode/ct.json; echo; echo "---count---"; wc -c /tmp/opencode/ct.json
+[
+	{
+		"id":"12964917412",
+		"tbs_sha256":"2e62492bd22a823ea73ac3f30ccb88b7b184a4e5a02f8c74b35ffda6a52ffff3",
+		"cert_sha256":"9e1701a998d99861d822d52d029cd37626595aad4f44089ffbfefe6cbfa112f1",
+		"dns_names":["*.ozoon.eu","ozoon.eu"],
+		"pubkey_sha256":"98e6491a13913e9e39fef541d748a93e31987b5e49bca1b1bb10ad9ec1127896",
+		"not_before":"2025-12-04T09:20:35Z",
+		"not_after":"2027-01-05T09:20:34Z",
+		
+---count---
+3339 /tmp/opencode/ct.json
+[0m
+[0m$ [0mgrep -aoE 'refSiteToken.{0,30}' /tmp/opencode/shell.html | head -3; grep -aoE 'servicesBaseUrl.{0,40}' /tmp/opencode/shell.html | head -3; grep -aoE 'isMockProviderEnabled.{0,25}' /tmp/opencode/shell.html | head -3; grep -aoE 'reCaptcha.{0,60}' /tmp/opencode/shell.html | head -3
+refSiteToken\":\"a0b5b21a0e7cdbad660f4ce03
+servicesBaseUrl\":\"https://services.services.ozoon.eu\
+servicesBaseUrl\":\"https://services.services.ozoon.eu\
+isMockProviderEnabled\":false,\"children\":\"$
+reCaptcha\":{\"enabled\":false,\"publicKey\":\"6LdenecUAAAAAJ4B8pbbh8
+[0m
+[0m$ [0mls -la leads/; wc -l leads/lead-bigpickle.md 2>/dev/null; head -20 leads/lead-bigpickle.md 2>/dev/null
+total 1264
+drwxr-xr-x  2 runner runner   4096 Sep 13 16:38 .
+drwxr-xr-x 12 runner runner   4096 Sep 13 16:38 ..
+-rw-r--r--  1 runner runner 492645 Sep 13 16:38 lead-bigpickle.md
+-rw-r--r--  1 runner runner   3519 Sep 13 16:38 lead-laguna.md
+-rw-r--r--  1 runner runner   3450 Sep 13 16:38 lead-ling3.md
+-rw-r--r--  1 runner runner   3588 Sep 13 16:38 lead-longcat.md
+-rw-r--r--  1 runner runner     18 Sep 13 16:38 lead-mimo.md
+-rw-r--r--  1 runner runner 740885 Sep 13 16:38 lead-nemotron3.md
+-rw-r--r--  1 runner runner  29892 Sep 13 16:38 reposcan-ozoon-sportsbook-casino.md
+3375 leads/lead-bigpickle.md
+## 2026-09-03 17:19:37 UTC [target] (model bigpickle)
+[NEW] `ozoon.eu` — actual gambling platform (sportsbook/casino/poker), NOT in inventory. Discovered via web search; ozoon.com is marketing-only.
+[NEW] `services.ozoon.eu` — backend service domain found in HTML `<link rel="preconnect">` hints on ozoon.eu.
+[NEW] 3 test pages exposed in ozoon.eu sitemap: `/promotions-test` (live, empty), `/blackjack-main-test` (404), `/casino/how-to-play-casino/odds-test` (404).
+[NEW] Legacy "Bodog" branding at `/contents/chatbox-psat` — customer survey still references old brand name.
+[NEW] ozoon.com runs Next.js on PWS/8.3.1.0.8 with CNAME to `wnacloud.com`; ozoon.eu uses Next.js + micro-frontend architecture (React 19 + TanStack Query shared runtime).
+[PRIO] ozoon.eu, 9.0, attack_surface=10, business_value=10, tech_exposure=7 (Next.js micro-frontend, PWA, registration/login/auth flows, crypto payments), gate_ease=6 (registration form exposed, no auth required for browsing), cloud_surface=5, freshness=10.
+[PRIO] services.ozoon.eu, 7.5, attack_surface=8, business_value=9, tech_exposure=8 (backend API service), gate_ease=4 (requires auth), cloud_surface=6, freshness=10.
+[PRIO] www.ozoon.com, 3.5, attack_surface=4, business_value=3, tech_exposure=3 (WordPress+Next.js marketing), gate_ease=9 (fully public), cloud_surface=3, freshness=5.
+[HYP] Registration Form Mass Assignment / Business Logic Bypass
+class: BUSLOGIC
+asset: https://www.ozoon.eu (registration form)
+confidence: 55
+reasoning: Registration form exposes fields: First Name, Last Name, DOB, Mobile, Email, Password, Country, ZIP, Referral Email. Country defaults to "United States" but platform is Canada-focused. No visible CAPTCHA on registration (reCAPTCHA badge present but may not enforce). Referral email field could be abused for referral bonus manipulation. The form is client-side rendered via Next.js micro-frontend, meaning server-side validation is the only control.
+evidence_needed: Intercept registration POST to identify server-side field validation; test if extra fields (e.g., role, balance, vip_level) are accepted via mass assignment.
+verify_steps: 1. Use browser devtools to capture the registration form submission request (POST endpoint, headers, body). 2. Test if adding extra fields (e.g., `balance`, `role`, `admin`) in the POST body are accepted. 3. Test if referral email field accepts any email without verification.
+impact: Medium — Potential for referral bonus abuse, privilege escalation if mass assignment accepted, or account creation with elevated permissions.
+testability: AUTH_HELPED
+[HYP] services.ozoon.eu API Endpoint Discovery & IDOR/BOLA
+class: IDOR
+[0m
+[0m$ [0mcat >> probe-results.md <<'EOF'
+
+## 2026-09-13 16:45:00 UTC
+GET https://nfl-pickem-league.ozoon.eu/ -> 200, 35693B (Vercel/Remix)
+GET https://nfl-pickem-league.ozoon.eu/assets/index-DwbHQ6kd.js -> 200, 609972B; embedded supabaseUrl=https://cgoqgofzqunixkwcttzi.supabase.co + publishable key sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM (client bundle, by-design public)
+GET https://cgoqgofzqunixkwcttzi.supabase.co/rest/v1/ (apikey=pub key, Accept openapi) -> 401 {"Secret API key required"}
+GET https://cgoqgofzqunixkwcttzi.supabase.co/rest/v1/nonexistent_table_zzz?select=* (apikey=pub key) -> 404 PGRST205, hint null (no schema leak)
+GET https://api.certspotter.com/v1/issuances?domain=ozoon.eu&include_subdomains=true -> wildcard *.ozoon.eu cert only; no new subdomains
+GET https://services.ozoon.eu/ -> 200, 743200B, sha256 4d70fc87bfbac5105a983c00c2fe29133815c2fd90de970494e2a0af78f5e9d8; refSiteToken a0b5..., isMockProviderEnabled:false, servicesBaseUrl=services.services.ozoon.eu byte-identical
+EOF
+echo appended; wc -l probe-results.md
+appended
+259 probe-results.md
+[0m
+STEP 1 — DELTA
+- [NEW] Pick'Em Supabase publishable key extracted passively from client bundle `/assets/index-DwbHQ6kd.js`: `sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM` + project `cgoqgofzqunixkwcttzi` — by-design PUBLIC key (Supabase new-format), not a secret.
+- [CHANGED] Supabase RLS hypothesis weakened (42→~30): pub key IS valid against PostgREST (reaches PGRST logic), but root+OpenAPI demand a secret key (`{"Secret API key required"}`) and bogus-table `PGRST205` returns `hint:null` → no anonymous schema/table leak; row-level RLS test needs an in-app account (AUTH_HELPED) and dumping rows crosses the program's data-exposure exclusion.
+- [CHANGED] `services.ozoon.eu/` SSR shell drift: 743,200B sha256 `4d70fc87…` (vs baselines 743,198B/`6cbdef8e`, 743,201B/`59a51c62`); `refSiteToken a0b5…`, `isMockProviderEnabled:false`, `servicesBaseUrl=services.services.ozoon.eu` byte-identical — benign ±3B ts/version shift, new drift hash.
+- [CHANGED] CT belt (certspotter `*.ozoon.eu`): only the wildcard cert; zero new in-scope subdomains.
+
+STEP 2 — PRIORITIZE
+- [PRIO] services.ozoon.eu/services/*/v1/profiles/{uuid}/...,7.95,attack_surface=10,business_value=10,tech_exposure=8,gate_ease=3,cloud_surface=5,freshness=8
+- [PRIO] services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify,7.05,attack_surface=8,business_value=9,tech_exposure=7,gate_ease=3,cloud_surface=5,freshness=8
+- [PRIO] www.ozoon.eu/api/v1/signup,6.70,attack_surface=7,business_value=9,tech_exposure=6,gate_ease=4,cloud_surface=5,freshness=7
+- [PRIO] cgoqgofzqunixkwcttzi.supabase.co/rest/v1/,5.75,attack_surface=5,business_value=5,tech_exposure=7,gate_ease=4,cloud_surface=6,freshness=10
+
+STEP 3 — HYPOTHESES
+[HYP] BOLA on profile-keyed UUID endpoints across 5 services
+class: IDOR
+asset: https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...
+confidence: 65
+reasoning: SDK-confirmed route shape on wallet-gateway/transaction-group/referral/player-verification/player-messages; this cycle's wallet-gate drift (shell +2B) and CT returned no change; anonymous probes stay 401 `{"errorCode":"unauthorized"}` — auth pre-check precedes resource lookup, no UUID oracle. Session→path-UUID binding untestable with zero accounts.
+evidence_needed: With A's sid, A reads {B-PID}/balances or /verifications → 200/differential vs {A-PID} control.
+verify_steps: [AUTH_HELPED] two throwaway accounts A+B; A's sid GET /services/wallet-gateway/v1/profiles/{B-PID}/balances and player-verification/v1/profiles/{B-PID}/verifications vs {A-PID} control; foreign 200 = BOLA, 401/403 = bound.
+impact: Critical — cross-user wallet/transaction/PII across 5 services; ATO enabler.
+testability: AUTH_HELPED
+[HYP] Mock-2FA verification header honored = 2FA/KYC gate bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify
+confidence: 55
+reasoning: Production SDK sends X-MOCK-2FA-VERIFICATION:true; `allow-permanent-skip:["true"]` config; SSR `isMockProviderEnabled:false` re-confirmed this cycle (client-side only). Wallet-gate 401 baseline stable; no anonymous evidence this cycle displaces it.
+evidence_needed: POST verify {"verificationType":"PHONE"} +header succeeds while byte-identical control without header rejects, on self-created account.
+verify_steps: [AUTH_HELPED] signup → own sid; POST .../verifications/verify with header true, then control; differential accept/reject on own account only.
+impact: Critical — 2FA/SMS/PIN/KYC bypass on deposit/withdraw/bonus flows.
+testability: AUTH_HELPED
+[HYP] Signup mass-assignment for role/vip/currency injection
+class: BUSLOGIC
+asset: https://www.ozoon.eu/api/v1/signup
+confidence: 60
+reasoning: Captcha-free signup (reCaptcha gated to login action only), client-controlled attributes/address sub-objects, static 32-hex refSiteToken with `check-referring-site.enabled:["false"]`; update DTO is strict but signup DTO is separate — mass-assignment surface. Sole gateway to BOLA/mock-2FA testing.
+evidence_needed: POST signup +role/vip/balance/currency wins over control (creates elevated account or credited balance).
+verify_steps: [AUTH_HELPED] throwaway signup with extra fields vs minimal control; compare resulting session claims.
+impact: High — privilege escalation / bonus+balance manipulation if honored.
+testability: AUTH_HELPED
+
+STEP 4 — SELF-CRITIQUE
+- [PARKED] Supabase Pick'Em RLS (42→30): key extracted is by-design-public publishable key; anonymous schema enumeration denied (secret-key-required, PGRST205 hint null); RLS rows need in-app account and row-dumps are out-of-scope data exposure — hypothesis no longer independently testable, dropped below 40.
+- [PARKED] Mass-assignment signup (60): unchanged, retained as prior; gated on same account creation, re-emitted as hypothesis (unblockable only with authorization).
+- [FINAL] 1) BOLA profile-UUID (65), 2) Mock-2FA verify (55).
+
+STEP 5 — NEXT ACTION
+[NEXT] HUMAN: Request program authorization at bugs.olivermaicher.eu for ONE throwaway account creation on www.ozoon.eu (restricted create, no live customer data) — unblocks BOLA + mock-2FA + mass-assignment, now 8th consecutive gated cycle with zero authenticated probes.
+
+STEP 6 — LEARNING
+- [LEARN] ACCEPTED OTHER @ nfl-pickem-league.ozoon.eu: Supabase `sb_publishable_…` key is by-design public (client-bundle); PostgREST denies anonymous schema enumeration (root/OpenAPI need secret key, PGRST205 hint null); RLS row review = AUTH_HELPED + data-exposure guard — Pick'Em surface hardened, removed from active consideration.
+- [LEARN] ACCEPTED MISCONFIG @ services.ozoon.eu SSR shell: new drift baseline 743,200B sha256 4d70fc87bf…; refSiteToken/isMockProviderEnabled/servicesBaseUrl byte-identical to prior baselines — benign ts/version shift only.
+- [LEARN] ACCEPTED OTHER @ ozoon CT belt: certspotter continue as standard breadth step (wildcard `*.ozoon.eu` cert only this cycle, zero new subdomains).
+
+STEP 7 — RISK
+- [RISK] ozoon-sportsbook-casino: 80 — Two core money-path vectors remain (BOLA 65, mock-2FA 55) gated on one authorized account after 8 empty-pipeline cycles; RLS path objectively hardened (public-by-design key, closed anon surface), discovery breadth shrinks while value-testability stays externally gated.

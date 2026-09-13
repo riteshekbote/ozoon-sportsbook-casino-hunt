@@ -3373,3 +3373,51 @@ testability: AUTH_HELPED
 [LEARN] ACCEPTED OTHER @ ozoon CT enumeration: certspotter API reliable for ozoon.eu subdomain breadth (A-records are wildcard-poisoned, so DNS brute is useless); fold into each cycle's standard breadth step.
 [LEARN] REJECTED OTHER @ ozoon-sportsbook-casino pipeline: triage 01:11 empty (6th consecutive), probe-results.md held no new data through 23:23; no new anonymous evidence generated this cycle aside from my CT/probe work.
 [RISK] ozoon-sportsbook-casino: 80 — Core three (BOLA 65, mock-2FA 55, Supabase RLS 42) remain gated on one authorized account after 6+ empty triage cycles and 19+ rounds with zero authenticated probes; new Pick'Em Supabase surface (RLS 42) is cheap to test in-browser but still needs the key; risk unchanged at 80 because discovery breadth grew while testability of value remains externally gated.
+## 2026-09-13 16:43:03 UTC [target] (model bigpickle)
+[NEW] `ozoon.eu` — actual gambling platform (sportsbook/casino/poker), NOT in inventory. Discovered via web search; ozoon.com is marketing-only.
+[NEW] `services.ozoon.eu` — backend service domain found in HTML `<link rel="preconnect">` hints on ozoon.eu.
+[NEW] 3 test pages exposed in ozoon.eu sitemap: `/promotions-test` (live, empty), `/blackjack-main-test` (404), `/casino/how-to-play-casino/odds-test` (404).
+[NEW] Legacy "Bodog" branding at `/contents/chatbox-psat` — customer survey still references old brand name.
+[NEW] ozoon.com runs Next.js on PWS/8.3.1.0.8 with CNAME to `wnacloud.com`; ozoon.eu uses Next.js + micro-frontend architecture (React 19 + TanStack Query shared runtime).
+[PRIO] ozoon.eu, 9.0, attack_surface=10, business_value=10, tech_exposure=7 (Next.js micro-frontend, PWA, registration/login/auth flows, crypto payments), gate_ease=6 (registration form exposed, no auth required for browsing), cloud_surface=5, freshness=10.
+[PRIO] services.ozoon.eu, 7.5, attack_surface=8, business_value=9, tech_exposure=8 (backend API service), gate_ease=4 (requires auth), cloud_surface=6, freshness=10.
+[PRIO] www.ozoon.com, 3.5, attack_surface=4, business_value=3, tech_exposure=3 (WordPress+Next.js marketing), gate_ease=9 (fully public), cloud_surface=3, freshness=5.
+[HYP] Registration Form Mass Assignment / Business Logic Bypass
+class: BUSLOGIC
+asset: https://www.ozoon.eu (registration form)
+confidence: 55
+reasoning: Registration form exposes fields: First Name, Last Name, DOB, Mobile, Email, Password, Country, ZIP, Referral Email. Country defaults to "United States" but platform is Canada-focused. No visible CAPTCHA on registration (reCAPTCHA badge present but may not enforce). Referral email field could be abused for referral bonus manipulation. The form is client-side rendered via Next.js micro-frontend, meaning server-side validation is the only control.
+evidence_needed: Intercept registration POST to identify server-side field validation; test if extra fields (e.g., role, balance, vip_level) are accepted via mass assignment.
+verify_steps: 1. Use browser devtools to capture the registration form submission request (POST endpoint, headers, body). 2. Test if adding extra fields (e.g., `balance`, `role`, `admin`) in the POST body are accepted. 3. Test if referral email field accepts any email without verification.
+impact: Medium — Potential for referral bonus abuse, privilege escalation if mass assignment accepted, or account creation with elevated permissions.
+testability: AUTH_HELPED
+[HYP] services.ozoon.eu API Endpoint Discovery & IDOR/BOLA
+class: IDOR
+[HYP] BOLA on profile-keyed UUID endpoints across 5 services
+class: IDOR
+asset: https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...
+confidence: 65
+reasoning: SDK-confirmed route shape on wallet-gateway/transaction-group/referral/player-verification/player-messages; this cycle's wallet-gate drift (shell +2B) and CT returned no change; anonymous probes stay 401 `{"errorCode":"unauthorized"}` — auth pre-check precedes resource lookup, no UUID oracle. Session→path-UUID binding untestable with zero accounts.
+evidence_needed: With A's sid, A reads {B-PID}/balances or /verifications → 200/differential vs {A-PID} control.
+verify_steps: [AUTH_HELPED] two throwaway accounts A+B; A's sid GET /services/wallet-gateway/v1/profiles/{B-PID}/balances and player-verification/v1/profiles/{B-PID}/verifications vs {A-PID} control; foreign 200 = BOLA, 401/403 = bound.
+impact: Critical — cross-user wallet/transaction/PII across 5 services; ATO enabler.
+testability: AUTH_HELPED
+[HYP] Mock-2FA verification header honored = 2FA/KYC gate bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify
+confidence: 55
+reasoning: Production SDK sends X-MOCK-2FA-VERIFICATION:true; `allow-permanent-skip:["true"]` config; SSR `isMockProviderEnabled:false` re-confirmed this cycle (client-side only). Wallet-gate 401 baseline stable; no anonymous evidence this cycle displaces it.
+evidence_needed: POST verify {"verificationType":"PHONE"} +header succeeds while byte-identical control without header rejects, on self-created account.
+verify_steps: [AUTH_HELPED] signup → own sid; POST .../verifications/verify with header true, then control; differential accept/reject on own account only.
+impact: Critical — 2FA/SMS/PIN/KYC bypass on deposit/withdraw/bonus flows.
+testability: AUTH_HELPED
+[HYP] Signup mass-assignment for role/vip/currency injection
+class: BUSLOGIC
+asset: https://www.ozoon.eu/api/v1/signup
+confidence: 60
+reasoning: Captcha-free signup (reCaptcha gated to login action only), client-controlled attributes/address sub-objects, static 32-hex refSiteToken with `check-referring-site.enabled:["false"]`; update DTO is strict but signup DTO is separate — mass-assignment surface. Sole gateway to BOLA/mock-2FA testing.
+evidence_needed: POST signup +role/vip/balance/currency wins over control (creates elevated account or credited balance).
+verify_steps: [AUTH_HELPED] throwaway signup with extra fields vs minimal control; compare resulting session claims.
+impact: High — privilege escalation / bonus+balance manipulation if honored.
+testability: AUTH_HELPED
+[NEXT] HUMAN: Request program authorization at bugs.olivermaicher.eu for ONE throwaway account creation on www.ozoon.eu (restricted create, no live customer data) — unblocks BOLA + mock-2FA + mass-assignment, now 8th consecutive gated cycle with zero authenticated probes.

@@ -613,3 +613,10 @@ www.ozoon.com
 ## 2026-09-13 06:54:45 UTC
 
 ## 2026-09-13 12:59:51 UTC
+
+## 2026-09-13 16:45:42 UTC
+- NEW `ozoon.eu` — actual gambling platform (sportsbook/casino/poker), NOT in inventory. Discovered via web search; ozoon.com is marketing-only.
+- NEW `services.ozoon.eu` — backend service domain found in HTML `<link rel="preconnect">` hints on ozoon.eu.
+- NEW 3 test pages exposed in ozoon.eu sitemap: `/promotions-test` (live, empty), `/blackjack-main-test` (404), `/casino/how-to-play-casino/odds-test` (404).
+- NEW Legacy "Bodog" branding at `/contents/chatbox-psat` — customer survey still references old brand name.
+- NEW ozoon.com runs Next.js on PWS/8.3.1.0.8 with CNAME to `wnacloud.com`; ozoon.eu uses Next.js + micro-frontend architecture (React 19 + TanStack Query shared runtime).
