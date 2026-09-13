@@ -1790,3 +1790,12 @@
 - LEARN: REJECTED SSRF @ www.ozoon.com: triage 06:38 verdict INVALID — ?url=?view=?page= all 200 len=? catch-all shared-edge responses, no collab callback; PWS/wnacloud 
 - LEARN: ACCEPTED MISCONFIG @ services.ozoon.eu SSR shell: config-drift probe 09:27 → sha256 6cbdef8e… (743,198B); refSiteToken a0b5…b084 byte-stable, reCaptcha.enabled:
 - LEARN: REJECTED OTHER @ ozoon-sportsbook-casino pipeline: triage runs 01:31+06:29 empty (5th consecutive), probe-results.md byte-unchanged since 00:40:45, laguna 05:05
+
+## RANKED HYPOTHESES 2026-09-13 12:59:51 UTC
+- [65] https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...: BOLA on profile-keyed UUID endpoints across 5 services (from art/lead_bigpickle.txt)
+- NEXT(hypotheses-bigpickle.txt): HUMAN: Request program authorization at bugs.olivermaicher.eu for (a) ONE throwaway account creation on www.ozoon.eu to unblock BOLA/mass-assignment/mock-2FA (7
+- LEARN: ACCEPTED OTHER @ nfl-pickem-league.ozoon.eu: Vercel/Remix promo app (distinct Vercel edge vs PWS cluster) embedding Supabase client + live project cgoqgofzqunix
+- LEARN: ACCEPTED MISCONFIG @ services.ozoon.eu SSR shell: 01:25 drift → 743,201B sha256 59a51c62 (+3B vs 743,198B/6cbdef8e baseline, benign ts/version); refSiteToken a0
+- LEARN: ACCEPTED OTHER @ static.ozoon.eu / blog.ozoon.eu / sportsfeeds.ozoon.eu: static = second PWS SSR front (755,927B) with PUBLIC servicesBaseUrl=https://services.o
+- LEARN: ACCEPTED OTHER @ ozoon CT enumeration: certspotter API reliable for ozoon.eu subdomain breadth (A-records are wildcard-poisoned, so DNS brute is useless); fold 
+- LEARN: REJECTED OTHER @ ozoon-sportsbook-casino pipeline: triage 01:11 empty (6th consecutive), probe-results.md held no new data through 23:23; no new anonymous evide
