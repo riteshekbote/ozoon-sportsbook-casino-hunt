@@ -1,13 +1,4 @@
-## 2026-09-12 23:22:27 UTC [target] (model bigpickle)
-[HYP] BOLA on profile-keyed UUID endpoints across 5 services
-class: IDOR
-asset: https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...
-confidence: 65
-reasoning: SDK-confirmed same route shape on wallet-gateway, transaction-group, referral, player-verification, player-messages; 401 {"errorCode":"unauthorized"} pre-check precedes resource lookup (no UUID oracle leak); session→path-UUID binding unobservable with zero accounts; no drift on SSR config or 401 baseline.
-evidence_needed: A's sid GET /profiles/{B-PID}/balances returns 200/differential data vs {A-PID} control.
-verify_steps: [AUTH_HELPED] signup throwaways A+B → sid+PID; A's sid GET .../wallet-gateway/v1/profiles/{B-PID}/balances and .../player-verification/v1/profiles/{B-PID}/verifications vs {A-PID} control; foreign 200 = BOLA, 401/403 = bound.
-impact: Critical — cross-user wallet/PII across 5 services; ATO enabler.
-testability: AUTH_HELPED
+## 2026-09-13 01:30:00 UTC [target] (model bigpickle)
 [HYP] Registration/referral mass assignment via captcha-free signup
 class: BUSLOGIC
 asset: https://www.ozoon.eu/api/v1/signup
@@ -28,3 +19,51 @@ impact: Critical — 2FA/SMS/PIN/KYC bypass on deposit/withdraw/bonus flows.
 testability: AUTH_HELPED
 [NEXT] HUMAN: Request program authorization at bugs.olivermaicher.eu to register ONE throwaway account on www.ozoon.eu (clearly-scoped mutating create, no live-customer impact) — all three FINAL hypotheses and every remaining unprobed path require an authenticated session; zero progress is possible passively, and this is the 6th consecutive empty cycle without it.
 [RISK] ozoon-sportsbook-casino: 80 — All three critical hypotheses (BOLA 65, mass-assignment 60, mock-2FA 55) remain gated on one authenticated session; 6+ consecutive empty triage cycles and >18 rounds with zero authenticated probes; sole unblock is explicit program authorization for a single throwaway account.
+[NEW] certspotter CT enumeration (`*.ozoon.eu`) surfaces 4 live in-scope hosts absent from KB/inventory: `blog.ozoon.eu`, `nfl-pickem-league.ozoon.eu`, `sportsfeeds.ozoon.eu`, `static.ozoon.eu`.
+[NEW] `nfl-pickem-league.ozoon.eu` = Vercel/Remix promo app ("Ozoon NFL Pick'Em League"), distinct edge, embedding a Supabase client (auth `persistSession`/`supabase.auth.token` + PostgREST) against live project `cgoqgofzqunixkwcttzi.supabase.co`; bare key-less `/rest/v1/` and `/auth/v1/` → 401 `No API key found in request`; anon key NOT inlined in fetched client chunks (idx/routes/root/useStore) → server-side.
+[NEW] `static.ozoon.eu` = second SSR front (755,927B, PWS/8.3.1.0.8) whose shell carries `servicesBaseUrl=https://services.ozoon.eu` (public entry name) vs `services.ozoon.eu` shell carrying the split-horizon `https://services.services.ozoon.eu` — public/dry config fingerprint split.
+[NEW] `sportsfeeds.ozoon.eu` root → persistent 503/0B (PWS, twice); `blog.ozoon.eu` = Next.js PWS marketing blog.
+[CHANGED] My 01:25 drift: `services.ozoon.eu/` now 743,201B sha256 `59a51c62…` (was 743,198B / `6cbdef8e…`) — +3B benign version/ts shift; `refSiteToken a0b5…b084`, `reCaptcha.enabled:false`, `isMockProviderEnabled:false`, `servicesBaseUrl=services.services.ozoon.eu` all byte-identical.
+[CHANGED] `wallet-gateway` bogus-UUID balances → 401/159B structured `{"errorCode":"unauthorized"}` byte-shape-stable (timestamp varies) — auth pre-check intact.
+[CHANGED] Pipeline: triage 01:11 empty (6th consecutive); probe-results.md had no new data through 23:23.
+[PRIO] https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...,7.95,attack_surface=10,business_value=10,tech_exposure=8,gate_ease=3,cloud_surface=5,freshness=8
+[PRIO] https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify,7.05,attack_surface=8,business_value=9,tech_exposure=7,gate_ease=3,cloud_surface=5,freshness=8
+[PRIO] https://cgoqgofzqunixkwcttzi.supabase.co/rest/v1/ (backend of nfl-pickem-league.ozoon.eu),6.80,attack_surface=6,business_value=6,tech_exposure=8,gate_ease=6,cloud_surface=7,freshness=10
+[PRIO] https://www.ozoon.eu/api/v1/signup,6.70,attack_surface=7,business_value=9,tech_exposure=6,gate_ease=4,cloud_surface=5,freshness=7
+[HYP] BOLA on profile-keyed UUID endpoints across 5 services
+class: IDOR
+asset: https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...
+confidence: 65
+reasoning: SDK-confirmed same route shape on wallet-gateway, transaction-group, referral, player-verification, player-messages. Fresh 01:25 probe: bogus-UUID balances → 401/159B structured `{"errorCode":"unauthorized"}` byte-shape-stable vs 2026-09-08 baseline; auth pre-check precedes resource lookup (no UUID oracle). Session→path-UUID binding remains untestable with zero accounts; SSR config drift none.
+evidence_needed: With A's sid, GET /profiles/{B-PID}/balances or /verifications returns 200/differential data vs {A-PID} control.
+verify_steps: [AUTH_HELPED] throwaway A+B → sid+PID; A's sid GET .../wallet-gateway/v1/profiles/{B-PID}/balances and .../player-verification/v1/profiles/{B-PID}/verifications vs {A-PID} control; foreign 200 = BOLA, 401/403 = bound.
+impact: Critical — cross-user wallet/transaction/PII across 5 services; ATO enabler.
+testability: AUTH_HELPED
+[HYP] Mock-2FA verification header honored — client-controlled 2FA/KYC gate bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify
+confidence: 55
+reasoning: Production SDK sends X-MOCK-2FA-VERIFICATION:true; config two_factor_authenticator.allow-permanent-skip:["true"]; SSR isMockProviderEnabled:false re-confirmed 01:25 (client-side only, contrary flag priced); wallet-gate 401 baseline stable.
+evidence_needed: POST verify +header succeeds while byte-identical control without header rejects.
+verify_steps: [AUTH_HELPED] signup → own sid+PID; POST .../verifications/verify {"verificationType":"PHONE"} with header true, then control without header on self-created account only.
+impact: Critical — 2FA/SMS/PIN/KYC bypass on deposit/withdraw/bonus flows.
+testability: AUTH_HELPED
+[HYP] RLS misconfig on embedded Supabase PostgREST backend (Pick'Em app)
+class: IDOR
+asset: https://cgoqgofzqunixkwcttzi.supabase.co/rest/v1/ (backend of nfl-pickem-league.ozoon.eu)
+confidence: 42
+reasoning: Vercel/Remix client bundles Supabase auth+PostgREST code and live project ref; key-less GETs to /rest/v1/ and /auth/v1/ → 401 "No API key found in request" (expected). Anon key not inlined in listed client chunks (idx/routes/root/useStore). If key ever leaks (loader/RTK/env), the PostgREST surface's ONLY row-level control is RLS — same misconfig class as the SDK-confirmed BOLA pattern elsewhere in the brand.
+evidence_needed: App-issued anon key applied to GET {ref}.supabase.co/rest/v1/<table>?select=* returns another player's rows (200 rows) vs control 200-empty/403.
+verify_steps: [AUTH_HELPED] in-browser, load nfl-pickem-league.ozoon.eu, capture `apikey` on any /rest/v1 request (network tab); with that key only, read-only GET /rest/v1/ schema + select=* on likely tables (profiles, picks, league); no POST; foreign-row return = RLS misconfig.
+impact: Medium — cross-player PII (name/email/picks) in promotional league; no casino wallet exposure.
+testability: AUTH_HELPED
+[PARKED] Mass-assignment signup (conf 60): unchanged and intact — POST /api/v1/signup +extra role/vip/balance/currency vs control; referral static token. Retained as prior FINAL; gated on the same account creation, re-emitted only when unblocked.
+[PARKED] SSRF @ www.ozoon.com (was deprioritized): already formally INVALID by triage 06:38 — not re-credited this cycle.
+[FINAL] 1) BOLA profile-UUID (65), 2) Mass-assignment signup (60, retained), 3) Mock-2FA verify (55), 4) Supabase Pick'Em RLS (42, NEW — freshest testable path this cycle).
+[NEXT] HUMAN: Request program authorization at bugs.olivermaicher.eu for (a) ONE throwaway account creation on www.ozoon.eu to unblock BOLA/mass-assignment/mock-2FA (7th consecutive gated cycle), and (b) one in-browser capture of the nfl-pickem-league.ozoon.eu Supabase `apikey` for read-only PostgREST/RLS review — single request covering both remaining mutation-and-key dependencies.
+[LEARN] ACCEPTED OTHER @ nfl-pickem-league.ozoon.eu: Vercel/Remix promo app (distinct Vercel edge vs PWS cluster) embedding Supabase client + live project cgoqgofzqunixkwcttzi.supabase.co (auth+PostgREST); anon key server-side in fetched chunks; key-less probes 401. New in-scope brand surface; RLS is sole row control.
+[LEARN] ACCEPTED MISCONFIG @ services.ozoon.eu SSR shell: 01:25 drift → 743,201B sha256 59a51c62 (+3B vs 743,198B/6cbdef8e baseline, benign ts/version); refSiteToken a0b5…b084, reCaptcha.enabled:false, isMockProviderEnabled:false, servicesBaseUrl=services.services.ozoon.eu byte-identical; wallet-gate 401/159B baseline intact. New drift hash 59a51c62….
+[LEARN] ACCEPTED OTHER @ static.ozoon.eu / blog.ozoon.eu / sportsfeeds.ozoon.eu: static = second PWS SSR front (755,927B) with PUBLIC servicesBaseUrl=https://services.ozoon.eu (public/dry config fingerprint split vs services shell internals); blog = Next.js marketing; sportsfeeds = persistent 503/0B (PWS upstream down) — none on the core auth/money path.
+[LEARN] ACCEPTED OTHER @ ozoon CT enumeration: certspotter API reliable for ozoon.eu subdomain breadth (A-records are wildcard-poisoned, so DNS brute is useless); fold into each cycle's standard breadth step.
+[LEARN] REJECTED OTHER @ ozoon-sportsbook-casino pipeline: triage 01:11 empty (6th consecutive), probe-results.md held no new data through 23:23; no new anonymous evidence generated this cycle aside from my CT/probe work.
+[RISK] ozoon-sportsbook-casino: 80 — Core three (BOLA 65, mass-assignment 60, mock-2FA 55) remain gated on one authorized account after 6+ empty triage cycles and 19+ rounds with zero authenticated probes; new Pick'Em Supabase surface (RLS 42) is cheap to test in-browser but still needs the key; risk unchanged at 80 because discovery breadth grew while testability of value remains externally gated.

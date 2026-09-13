@@ -593,3 +593,19 @@ www.ozoon.com
 - CHANGED Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway at `www.ozoon.eu/api/v1/signup`
 
 ## 2026-09-12 23:23:25 UTC
+
+## 2026-09-13 01:30:08 UTC
+- NEW certspotter CT enumeration (`*.ozoon.eu`) surfaces 4 live in-scope hosts absent from KB/inventory: `blog.ozoon.eu`, `nfl-pickem-league.ozoon.eu`, `sportsfeeds.ozoon.eu`, `static.ozoon.eu`.
+- NEW `nfl-pickem-league.ozoon.eu` = Vercel/Remix promo app ("Ozoon NFL Pick'Em League"), distinct edge, embedding a Supabase client (auth `persistSession`/`supabase.auth.token` + PostgREST) against live pr
+- NEW `static.ozoon.eu` = second SSR front (755,927B, PWS/8.3.1.0.8) whose shell carries `servicesBaseUrl=https://services.ozoon.eu` (public entry name) vs `services.ozoon.eu` shell carrying the split-horiz
+- NEW `sportsfeeds.ozoon.eu` root → persistent 503/0B (PWS, twice); `blog.ozoon.eu` = Next.js PWS marketing blog.
+- CHANGED My 01:25 drift: `services.ozoon.eu/` now 743,201B sha256 `59a51c62…` (was 743,198B / `6cbdef8e…`) — +3B benign version/ts shift; `refSiteToken a0b5…b084`, `reCaptcha.enabled:false`, `isMockProviderEna
+- CHANGED `wallet-gateway` bogus-UUID balances → 401/159B structured `{"errorCode":"unauthorized"}` byte-shape-stable (timestamp varies) — auth pre-check intact.
+- CHANGED Pipeline: triage 01:11 empty (6th consecutive); probe-results.md had no new data through 23:23.
+- CHANGED Inventory file still lists ONLY `ozoon.com`/`www.ozoon.com`; `ozoon.eu` (core platform) and `services.ozoon.eu` (backend API) confirmed in-scope per scope.yml but absent from inventory
+- CHANGED Zero authenticated probes executed against core platform (`ozoon.eu`/`services.ozoon.eu`) across all 18+ probe rounds; all probes target only `www.ozoon.com` marketing edge
+- CHANGED Live drift probe 05:06 UTC: `GET /services/wallet-gateway/v1/profiles/{bogus-uuid}/balances` → 401/159B, byte-shape-stable structured 401 `{"errorCode":"unauthorized"}` baseline intact
+- CHANGED Config-drift probe 09:27 UTC on `services.ozoon.eu/` (743,198B SSR shell, sha256 `6cbdef8e4be9f9f54940f708dbf9d8b698e2657741316fd5fd89ba00ee4684f5`): `refSiteToken` byte-identical `a0b5…b084`, `reCapt
+- CHANGED SSRF at `www.ozoon.com` formally INVALID'd by triage 06:38 — all `?url=` probes → catch-all 200 len=?, no collab callback; PWS/wnacloud behavior indistinguishable from catch-all
+- CHANGED Triage runs 01:31 + 06:29 both empty — 5th consecutive empty triage; laguna cycle 05:05 empty; probe-results.md byte-unchanged since 00:40:45
+- CHANGED Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway at `www.ozoon.eu/api/v1/signup`
