@@ -3421,3 +3421,4 @@ verify_steps: [AUTH_HELPED] throwaway signup with extra fields vs minimal contro
 impact: High — privilege escalation / bonus+balance manipulation if honored.
 testability: AUTH_HELPED
 [NEXT] HUMAN: Request program authorization at bugs.olivermaicher.eu for ONE throwaway account creation on www.ozoon.eu (restricted create, no live customer data) — unblocks BOLA + mock-2FA + mass-assignment, now 8th consecutive gated cycle with zero authenticated probes.
+## 2026-09-13 19:09:43 UTC [target] (model bigpickle)
