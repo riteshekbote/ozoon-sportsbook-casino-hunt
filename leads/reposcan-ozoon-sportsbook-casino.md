@@ -345,3 +345,47 @@ TARGET_ORG not configured for ozoon-sportsbook-casino; skipping public-org deep 
 TARGET_ORG not configured for ozoon-sportsbook-casino; skipping public-org deep scan.
 ## REPOSCAN 2026-09-13 06:14:17 UTC
 TARGET_ORG not configured for ozoon-sportsbook-casino; skipping public-org deep scan.
+## REPOSCAN 2026-09-13 11:59:32 UTC
+class: SECRET
+asset: `mas-film/core/config.php:13`
+confidence: 95
+reasoning: `$state['mysql'] = new mysqli('localhost', 'masha', '12345', 'masha');` — plaintext DB username and password hardcoded in source. Identical creds documented in `mas-film/mysql.txt:5` (`CREATE USER 'masha'@'localhost' IDENTIFIED BY '12345'`).
+impact: HIGH — DB credentials committed to public repo; if reused on production, full DB compromise.
+verify_steps: Check if `bugs.olivermaicher.eu` or any in-scope host runs a MySQL user `masha:12345`. Review git history for when these were added vs last commit date.
+class: SECRET
+asset: `hyper/core/config.php:17`
+confidence: 95
+reasoning: `$state['mysql'] = new mysqli('localhost', 'hyper', '12345', 'hyper');` — plaintext creds. `hyper/mysql.txt:5` confirms `CREATE USER 'hyper'@'localhost' IDENTIFIED BY '12345'`. Also leaks a test user `hyper01` with password `123456789` at `hyper/mysql.txt:51-54`.
+impact: HIGH — public repo exposes full DB credentials and a known test user/password pair.
+verify_steps: Confirm MySQL service on in-scope host accepts `hyper:12345`. Check for the `hyper01:123456789` account.
+class: SECRET
+asset: `secure-query-string/settings.php:7`
+confidence: 90
+reasoning: `$registry['mysql'] = new mysqli('localhost', 'aaa', 'aaa', 'aaa');` — plaintext DB credentials with a trivially weak password `aaa`.
+impact: MEDIUM — credentials committed; weak password suggests dev/test reuse risk.
+verify_steps: Check if any in-scope MySQL instance has user `aaa:aaa`.
+class: MISCONFIG
+asset: `secure-query-string/settings.php:44`, `mas-film/core/functions.php:92-104`, `hyper/core/functions.php:142`
+confidence: 95
+reasoning: All three PHP apps construct SQL queries by string concatenation directly from user-controlled input (`$_GET`, `$_POST`, `$_SERVER['QUERY_STRING']`). No prepared statements or `mysqli_real_escape_string()` used anywhere. Example: `'SELECT encode FROM aSecure WHERE decode = \''.$decode.'\''` in `secure-query-string/settings.php:44`. Same pattern in `mas-film/core/functions.php` for every CRUD operation (lines 92-397) and in `hyper/core/functions.php` for token lookups (line 142).
+impact: CRITICAL — classic SQL injection; allows full DB read/write on all three apps. While `checkSymbols()`/`checkNum()`/`checkStr()` provide partial input validation, the regex-based whitelist is narrow but bypassable via encoding tricks in some PHP configurations.
+verify_steps: Attempt `' OR 1=1--` in any parameter. Review whether `allowSymbols` character set permits quote characters or semicolons.
+class: SECRET
+asset: `php-learn-5/include/helpers.php:46-52`
+confidence: 85
+reasoning: Hardcoded auth array: `['login' => '1@bk.ru', 'password' => '1']` through `5@bk.ru`/`5`. Passwords are single-digit integers. These are used directly in `routes/login.php:6` with loose `==` comparison.
+impact: MEDIUM — trivially guessable credentials committed to public repo; if deployed, allows unauthorized access.
+verify_steps: Confirm if any in-scope app uses this codebase. Test login with `1@bk.ru`/`1`.
+class: MISCONFIG
+asset: `php-learn-5/include/helpers.php:54-73`, `php-learn-5/routes/login.php`
+confidence: 80
+reasoning: `updateCookie()` sets `$_COOKIE['login']` and the login check in `login.php:6` trusts the cookie value directly. An attacker can set a `login` cookie to any valid email (e.g., `1@bk.ru`) and bypass authentication entirely — the password check only runs if `$_POST` is submitted, but the session is established via cookie.
+impact: HIGH — authentication bypass by cookie manipulation.
+verify_steps: Set `login=1@bk.ru` cookie and access `/manages` without submitting login form.
+class: MISCONFIG
+asset: `mas-film/core/config.php:4-5`, `hyper/core/config.php:4-5`
+confidence: 70
+reasoning: Both apps set `error_reporting(E_ALL)` and `ini_set('display_errors', 'on')`. This exposes PHP stack traces, file paths, and potential DB errors to end users.
+impact: MEDIUM — information disclosure; aids attackers in mapping application internals and discovering injection points.
+verify_steps: Trigger a malformed request to verify error output is shown.
+TARGET_ORG not configured for ozoon-sportsbook-casino; skipping public-org deep scan.
