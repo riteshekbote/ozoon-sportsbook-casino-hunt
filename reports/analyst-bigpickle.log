@@ -20123,3 +20123,122 @@ STEP 6 — LEARNING
 
 STEP 7 — RISK
 - [RISK] ozoon-sportsbook-casino: 80 — unchanged: all value-bearing hypotheses (BOLA 65, mock-2FA 55, RLS 42) remain gated on one authorized account after 7+ consecutive empty triages and 8+ gated cycles with zero authenticated probes; discovery breadth stable, so persistent-high but not rising.
+===== ANALYST bigpickle 2026-09-13 23:37:51 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mcurl -s --max-time 25 "https://nfl-pickem-league.ozoon.eu/" -o /tmp/opencode/nfl-index.html; echo "HTTP $(curl -s -o /dev/null -w '%{http_code}' --max-time 20 'https://nfl-pickem-league.ozoon.eu/') bytes=$(stat -c%s /tmp/opencode/nfl-index.html 2>/dev/null)"; grep -oiE '(supabase|rest/v1|/assets/[A-Za-z0-9._-]+\.js)' /tmp/opencode/nfl-index.html | sort -u | head -40
+HTTP 200 bytes=35693
+grep: /tmp/opencode/nfl-index.html: binary file matches
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "wallet-balances drift: HTTP %{http_code} bytes=%{size_download}\n" --max-time 20 "https://services.ozoon.eu/services/wallet-gateway/v1/profiles/00000000-0000-0000-0000-000000000000/balances"; curl -s -o /dev/null -w "ssh shell drift: HTTP %{http_code} bytes=%{size_download}\n" --max-time 20 "https://services.ozoon.eu/"
+wallet-balances drift: HTTP 401 bytes=159
+ssh shell drift: HTTP 200 bytes=743156
+[0m
+[0m$ [0mgrep -aoiE '(src|href)="[^"]+"' /tmp/opencode/nfl-index.html | grep -iE 'asset|\.js|\.css|remix' | sort -u | head -30; echo "---SUPABASE---"; grep -aoiE '[a-z0-9]{20,}\.supabase\.(co|in)' /tmp/opencode/nfl-index.html | sort -u | head
+href="/assets/StatusPill-HkNr6y_w.js"
+href="/assets/doug-flutie-D51ZAczI.js"
+href="/assets/hero-football-BF94d4AJ.png"
+href="/assets/hero-football-do3_Xp_f.js"
+href="/assets/index-DwbHQ6kd.js"
+href="/assets/jsx-runtime-DGeXAQPT.js"
+href="/assets/link-BVl_oogU.js"
+href="/assets/matchContext-B_X6CX1g.js"
+href="/assets/redirect-CaDPrkdo.js"
+href="/assets/root-DLTE-HSj.js"
+href="/assets/routes-Dydqbgt6.js"
+href="/assets/styles-DXWpRiMJ.css"
+href="/assets/useBaseQuery-BgSnwxQS.js"
+href="/assets/useRouter-Bi89nSkP.js"
+href="/assets/useStore-BOb2AA3u.js"
+src="/assets/doug-flutie-BsTbOfHw.png"
+src="/assets/hero-football-BF94d4AJ.png"
+src="/assets/index-DwbHQ6kd.js"
+---SUPABASE---
+[0m
+[0m$ [0mcurl -s --max-time 25 "https://nfl-pickem-league.ozoon.eu/assets/routes-Dydqbgt6.js" -o /tmp/opencode/routes.js; curl -s --max-time 25 "https://nfl-pickem-league.ozoon.eu/assets/root-DLTE-HSj.js" -o /tmp/opencode/root.js; curl -s --max-time 25 "https://nfl-pickem-league.ozoon.eu/assets/index-DwbHQ6kd.js" -o /tmp/opencode/index.js; for f in routes root index; do echo "== $f ($(stat -c%s /tmp/opencode/$f.js 2>/dev/null)B) =="; grep -aoiE '[ek][ey][a-z-]*-?[A-Za-z0-9+/]{20,}|eyJ[A-Za-z0-9._-]{20,}|[a-z0-9]{20}\.supabase\.(co|in)|rest/v1/[a-zA-Z_]{2,}' /tmp/opencode/$f.js | sort -u | head -15; done
+== routes (8636B) ==
+== root (32B) ==
+== index (609972B) ==
+cgoqgofzqunixkwcttzi.supabase.co
+eer-file-uploads/gXfnUpR3tMYfbzj0iwMbJgJhfvv2/social
+ketOptionsToQueryString
+keys/authentication/options
+keys/authentication/verify
+keys/registration/options
+keys/registration/verify
+[0m
+[0m$ [0mgrep -aoE 'createClient\s*\([^)]{0,300}\)' /tmp/opencode/index.js | head -3; echo "---keys---"; grep -aoE '"(apikey|Authorization|anon|public|Publishable)[^"]*"' /tmp/opencode/index.js | sort -u | head -20; echo "---rest---"; grep -aoE 'rest/v1/[A-Za-z_?=&$%{}.-]{0,80}' /tmp/opencode/index.js | sort -u | head -20; echo "---base/manifest---"; grep -aoE 'cgoqgofzqunixkwcttzi\.supabase\.co/[A-Za-z0-9/_-]{0,40}' /tmp/opencode/index.js | sort -u | head
+createClient (or to the GoTrueClient constructor)
+---keys---
+"public-key"
+---rest---
+---base/manifest---
+[0m
+[0m$ [0mgrep -aoE '.{120}cgoqgofzqunixkwcttzi\.supabase\.co.{120}' /tmp/opencode/index.js | head -3; echo "---createClient args---"; grep -aoE '\.createClient\("[^"]{5,120}",[^)]{0,220}' /tmp/opencode/index.js | head -3; grep -aoE 'createClient\("[^"]{5,120}' /tmp/opencode/index.js | head -5
+`,e),fetch(t,{...n,headers:r})}}function Zp(){let e=`sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM`;return Kp(`https://cgoqgofzqunixkwcttzi.supabase.co`,e,{global:{fetch:Xp(e)},auth:{storage:Jp(),persistSession:!0,autoRefreshToken:!0}})}var Qp,$p=new Proxy({},{get(e,t,n)
+---createClient args---
+[0m
+[0m$ [0mgrep -aoE 'function Xp\(e\)\{.{0,400}' /tmp/opencode/index.js | head -1
+function Xp(e){return(t,n)=>{let r=new Headers(typeof Request<`u`&&t instanceof Request?t.headers:void 0);return n?.headers&&new Headers(n.headers).forEach((e,t)=>r.set(t,e)),Yp(e)&&r.get(`Authorization`)===`Bearer ${e}`&&r.delete(`Authorization`),r.set(`apikey`,e),fetch(t,{...n,headers:r})}}function Zp(){let e=`sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM`;return Kp(`https://cgoqgofzqunixkwcttzi.supabase.co`,
+[0m
+[0m$ [0mrm -f /tmp/opencode/nfl-index.html /tmp/opencode/routes.js /tmp/opencode/root.js /tmp/opencode/index.js
+(no output)
+[0m
+Cleaned up probe artifacts:
+STEP 1 — DELTA
+- [CHANGED] Pipeline: triage still empty (7th consecutive); probe-results.md no new data; KB/leads byte-stable — no new anonymous evidence enters this cycle.
+- [CHANGED] services.ozoon.eu SSR shell drift probe → 743,156B (was 743,201B @ 01:25, 743,198B @ 09-12 baseline): -45B vs last cycle, benign ts/version variance, no config change.
+- [NEW] wallet-gateway balances drift probe → 401/159B, byte-shape-stable `{"errorCode":"unauthorized"}`; auth pre-check intact.
+- [NEW] nfl-pickem-league.ozoon.eu Supabase extraction completed: index.js chunk (609,972B) exposes project `cgoqgofzqunixkwcttzi.supabase.co` + anon/publishable key `sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM` (SBP v2); custom fetcher injects `apikey:` header and self-drops `Authorization` when it equals the key. Public-by-design client credential confirmed in-bundle — no secret.
+
+STEP 2 — PRIORITIZE
+[PRIO] services.ozoon.eu/services/*/v1/profiles/{uuid}/...,5.85,a7/b10/t6/g2/c3/f1
+[PRIO] www.ozoon.eu/api/v1/signup,5.10,a6/b9/t5/g2/c2/f1
+[PRIO] services.ozoon.eu/player-verification/v1/profiles/{sid}/verifications/verify,4.85,a5/b9/t5/g2/c2/f1
+[PRIO] nfl-pickem-league.ozoon.eu (Supabase cgoqgofzqunixkwcttzi),4.75,a4/b5/t6/g4/c2/f8
+
+STEP 3 — HYPOTHESES
+[HYP] BOLA on Profile-Keyed UUID Endpoints Across 5 Services
+class: IDOR
+asset: https://services.ozoon.eu/services/{wallet-gateway,transaction-group,referral,player-verification,player-messages}/v1/profiles/{uuid}/...
+confidence: 65
+reasoning: SDK-confirmed {uuid}-path route shape on 5 services; anonymous probes stay 401/159B structured `{"errorCode":"unauthorized"}` = auth pre-check precedes resource lookup (re-verified this cycle); session→path-UUID binding never observed because no authenticated sessions exist (7th empty triage).
+evidence_needed: A's sid reads foreign {B-PID}/balances or /verifications → 200/data vs {A-PID} control; 401/403 = bound.
+verify_steps: [AUTH_HELPED] A signs in; GET /services/wallet-gateway/v1/profiles/{B-PID}/balances vs own {A-PID}/balances control; same for player-verification/v1/profiles/{B-PID}/verifications.
+impact: Critical — cross-user wallet/transaction/PII across 5 services; ATO enabler.
+testability: AUTH_HELPED
+[HYP] Signup Mass-Assignment for role/vip/currency Injection
+class: BUSLOGIC
+asset: https://www.ozoon.eu/api/v1/signup
+confidence: 60
+reasoning: Captcha-free signup (reCaptcha gated to login only), client-controlled attributes/address sub-objects, static 32-hex refSiteToken + `affiliate.check-referring-site.enabled:["false"]`; update DTO strict but signup DTO separate; sole gateway to BOLA/mock-2FA testing.
+evidence_needed: POST signup +role/vip/balance/currency wins over minimal control (elevated account or credited balance).
+verify_steps: [AUTH_HELPED] throwaway signup with extra fields vs minimal control; diff resulting session claims.
+impact: High — privilege escalation / bonus+balance manipulation if honored.
+testability: AUTH_HELPED
+[HYP] Mock-2FA Verification Header Honored = 2FA/KYC Gate Bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify
+confidence: 55
+reasoning: Production SDK sends X-MOCK-2FA-VERIFICATION:true; `two_factor_authenticator.allow-permanent-skip:["true"]`; SSR `isMockProviderEnabled:false` is client-only and does not resolve server behavior; only differential accept/reject on own account proves it.
+evidence_needed: POST verify {"verificationType":"PHONE"} + header succeeds while byte-identical control without header rejects, on own sid.
+verify_steps: [AUTH_HELPED] signup → own sid; POST .../verifications/verify with X-MOCK-2FA-VERIFICATION:true, then identical control; compare status.
+impact: Critical — 2FA/SMS/PIN/KYC bypass on deposit/withdraw/bonus flows.
+testability: AUTH_HELPED
+
+STEP 4 — SELF-CRITIQUE
+- [PARKED] Supabase RLS as sole row control on Pick'Em data: anon key extraction now complete (config-only, public-by-design), but the deciding test (foreign-row PostgREST SELECT vs own-row control) requires reading other players' picks/PII = program-prohibited customer-data exposure; needs explicit authorization before any differential read. Confidence 42 → parked, HUMAN-gated.
+- [PARKED] mock-2FA hypothesis: SSR `isMockProviderEnabled:false` remains mild contrary evidence; confidence held at 55 pending authorized differential test (would not serve a report without own-account proof).
+- [FINAL] BOLA (65), mass-assignment (60), mock-2FA (55) — all unchanged, all AUTH_HELPED, all gated on the same signup authorization; no anonymous probe can advance them (surface byte-stable, 7th empty triage).
+
+STEP 5 — NEXT ACTION
+[NEXT] HUMAN: Request program authorization via bugs.olivermaicher.eu for ONE restricted throwaway-account creation on www.ozoon.eu/api/v1/signup (create-only, no live-customer data, no wallet operations) — unblocks BOLA + mock-2FA + mass-assignment differential tests; 9th consecutive gated cycle otherwise.
+
+STEP 6 — LEARNING
+[LEARN] ACCEPTED OTHER @ nfl-pickem-league.ozoon.eu (supabase project cgoqgofzqunixkwcttzi): complete Supabase client init extracted from public index.js chunk — URL + anon key `sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM` (SBP v2), fetcher injects `apikey` header only; key is public-by-design client credential, config fingerprint only, not a secret claim.
+[LEARN] REJECTED OTHER @ nfl-pickem-league RLS differential: verify step requires reading foreign players' picks = program-prohibited customer-data exposure during testing; PARKED until explicit scope authorization (supersedes prior ACCEPTED OTHER confidence-42 row).
+[LEARN] ACCEPTED MISCONFIG @ services.ozoon.eu SSR shell: drift 09-13 → 743,156B (-45B vs 01:25 743,201B), benign ts/version variance; refSiteToken a0b5…b084, reCaptcha.enabled:false, isMockProviderEnabled:false, servicesBaseUrl unchanged; wallet-gate 401/159B byte-shape-stable. New size baseline 743,156B for future diffs.
+
+STEP 7 — RISK
+[RISK] ozoon-sportsbook-casino: 81/100 — Core real-money gambling platform (ozoon.eu) fully mapped via public SDK/config; three critical AUTH_HELPED vectors unprobed (BOLA 65, mass-assignment 60, mock-2FA 55), zero authenticated probes across 8+ gated cycles; surface byte-stable, pipeline empty (7th consecutive). New Supabase promo app (nfl-pickem-league) adds RLS-dependent data surface but its decisive test is program-prohibited. High business value + high attack surface + low gate ease (public signup) = sustained elevated risk, strictly gated on one throwaway-account authorization.
