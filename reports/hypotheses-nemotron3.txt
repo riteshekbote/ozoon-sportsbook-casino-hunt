@@ -1,5 +1,16 @@
-## 2026-09-14 14:27:12 UTC [target] (model nemotron3)
-[PRIO] services.ozoon.eu/services/*/v1/profiles/{uuid}/...,9.5,attack_surface=10,business_value=10,tech_exposure=8,gate_ease=6,cloud_surface=7,freshness=9
+## 2026-09-14 19:32:48 UTC [target] (model nemotron3)
+[NEW] nfl-pickem-league.ozoon.eu: Vercel/Remix promo app with live Supabase project cgoqgofzqunixkwcttzi.supabase.co (auth+PostgREST); anon key sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM in public chunks; keyless probes 401
+[NEW] static.ozoon.eu: second PWS SSR front (755,927B) exposing servicesBaseUrl=https://services.ozoon.eu (public entry) vs services.ozoon.eu shell carrying split-horizon services.services.ozoon.eu
+[NEW] blog.ozoon.eu: Next.js PWS marketing blog; sportsfeeds.ozoon.eu: persistent 503/0B (PWS upstream down) — neither on core auth/money path
+[NEW] CT enumeration via certspotter API confirmed reliable for ozoon.eu subdomain breadth (A-records wildcard-poisoned, DNS brute useless)
+[CHANGED] services.ozoon.eu SSR shell config-drift 09-14 probe → 743,193B sha256 1ddad5e3 (+37B vs 09-13 743,156B, benign ts/version); refSiteToken a0b5…b084, reCaptcha.enabled:false, isMockProviderEnabled:false, servicesBaseUrl=services.services.ozoon.eu byte-identical
+[CHANGED] wallet-gateway bogus-UUID /balances → 401/159B structured {"errorCode":"unauthorized"} byte-shape-stable — auth pre-check intact
+[CHANGED] Pipeline: triage empty (8th consecutive), probe-results.md no new data, certspotter CT refresh → same 7 names, zero new subdomains; no new anonymous evidence this cycle
+[CHANGED] Inventory file still lists ONLY ozoon.com/www.ozoon.com; ozoon.eu (core platform) and services.ozoon.eu (backend API) confirmed in-scope per scope.yml but absent from inventory
+[CHANGED] Zero authenticated probes executed against core platform (ozoon.eu/services.ozoon.eu) across all 18+ probe rounds; all probes target only www.ozoon.com marketing edge
+[CHANGED] Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway at www.ozoon.eu/api/v1/signup
+[CHANGED] SSRF at www.ozoon.com formally INVALID'd by triage 06:38 — all ?url=?view=?page= probes → catch-all 200 len=?, no collab callback; PWS/wnacloud behavior indistinguishable from catch-all
+[PRIO] services.ozoon.eu/services/{wallet-gateway,transaction-group,referral,player-verification,player-messages}/v1/profiles/{uuid}/...,9.5,attack_surface=10,business_value=10,tech_exposure=8,gate_ease=6,cloud_surface=7,freshness=9
 [PRIO] www.ozoon.eu/api/v1/signup,8.0,attack_surface=8,business_value=9,tech_exposure=7,gate_ease=7,cloud_surface=6,freshness=8
 [PRIO] services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify,8.0,attack_surface=7,business_value=10,tech_exposure=9,gate_ease=6,cloud_surface=6,freshness=9
 [PRIO] nfl-pickem-league.ozoon.eu,6.5,attack_surface=7,business_value=5,tech_exposure=8,gate_ease=5,cloud_surface=8,freshness=7
@@ -17,7 +28,7 @@ testability: AUTH_HELPED
 class: BUSLOGIC
 asset: https://www.ozoon.eu/api/v1/signup
 confidence: 60
-reasoning: reCAPTCHA v3 enforced ONLY on `login` action; `signup` and `signup_from_invitation` are captcha-free per public config. Static referral token `refSiteToken` (32-hex) with `affiliate.check-referring-site.enabled:["false"]` → referral/site field unverified. Signup accepts client-controlled `attributes` and `address` sub-objects. Profile update form schema (`/services/site-config/v1/countries/US|CA/profileupdateform`) returns whitelisted fields: email, phone, addressLine, postalCode, language, timeZone, oddsFormat, subscriptionChannels — baseline for mass-assignment comparison.
+reasoning: reCAPTCHA v3 enforced ONLY on login action; signup and signup_from_invitation are captcha-free per public config. Static referral token refSiteToken (32-hex) with affiliate.check-referring-site.enabled:["false"] → referral/site field unverified. Signup accepts client-controlled attributes and address sub-objects. Profile update form schema (/services/site-config/v1/countries/US|CA/profileupdateform) returns whitelisted fields: email, phone, addressLine, postalCode, language, timeZone, oddsFormat, subscriptionChannels — baseline for mass-assignment comparison.
 evidence_needed: On self-created account, POST signup adding extra keys (attributes.role, vip_level, is_verified, balance, currency override) → observe persistence vs rejection over control signup; test referral token impersonation via static refSiteToken
 verify_steps: 1. Register control via POST /api/v1/signup (no captcha). 2. Register test adding role/vip/balance fields — compare response/body. 3. Invitation signup POST with static refSiteToken + unverified referral email. 4. Test country override to restricted territory (softblock bypass).
 impact: Medium-High — referral bonus fraud, territory/regulatory softblock bypass, possible privilege elevation on mass-assigned role/vip
@@ -26,9 +37,9 @@ testability: AUTH_HELPED
 class: AUTH
 asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify
 confidence: 55
-reasoning: Production SDK sends client-controlled `X-MOCK-2FA-VERIFICATION` header on verification endpoint. Config exposes MFA ops map (validatePhone:CONFIRMATION_CODE:SMS, withdraw:CONFIRMATION_CODE:SMS, enable2fa:PIN_CODE) and `two_factor_authenticator.allow-permanent-skip:["true"]`. If honored, client claims SMS/PIN/phone verification complete without actual verification. SSR `isMockProviderEnabled:false` is client-side, does not resolve server-side handling.
-evidence_needed: With own session, POST /verifications/verify with `X-MOCK-2FA-VERIFICATION:true` vs absent → mocked acceptance (200) vs rejection (401/400)
-verify_steps: 1. Register + login throwaway account (from HYP1/HYP2). 2. POST /services/player-verification/v1/profiles/{ownPID}/verifications/verify with header `X-MOCK-2FA-VERIFICATION:true` + minimal body. 3. Observe response. 4. Repeat without header as control. Self-created throwaway only.
+reasoning: Production SDK sends client-controlled X-MOCK-2FA-VERIFICATION header on verification endpoint. Config exposes MFA ops map (validatePhone:CONFIRMATION_CODE:SMS, withdraw:CONFIRMATION_CODE:SMS, enable2fa:PIN_CODE) and two_factor_authenticator.allow-permanent-skip:["true"]. If honored, client claims SMS/PIN/phone verification complete without actual verification. SSR isMockProviderEnabled:false is client-side, does not resolve server-side handling.
+evidence_needed: With own session, POST /verifications/verify with X-MOCK-2FA-VERIFICATION:true vs absent → mocked acceptance (200) vs rejection (401/400)
+verify_steps: 1. Register + login throwaway account (from HYP1/HYP2). 2. POST /services/player-verification/v1/profiles/{ownPID}/verifications/verify with header X-MOCK-2FA-VERIFICATION:true + minimal body. 3. Observe response. 4. Repeat without header as control. Self-created throwaway only.
 impact: Critical if honored — bypass 2FA/SMS/PIN/KYC gates on withdraw/deposit/bonus (money security control bypass)
 testability: AUTH_HELPED
 [PARKED] Supabase RLS Bypass on NFL Pick'Em League Promo App: confidence 45 < 50 threshold; promo app is ancillary surface (not core money/auth path); RLS testing requires two authenticated accounts and program authorization for customer-data exposure during testing (program note prohibits). Superseded by core platform hypotheses.
