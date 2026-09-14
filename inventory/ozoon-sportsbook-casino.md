@@ -679,3 +679,5 @@ www.ozoon.com
 - CHANGED Zero authenticated probes executed against core platform (`ozoon.eu`/`services.ozoon.eu`) across all 18+ probe rounds; all probes target only `www.ozoon.com` marketing edge.
 - CHANGED SSRF at `www.ozoon.com` formally INVALID'd by triage 06:38 — all `?url=?view=?page=` probes → catch-all 200 len=?, no collab callback; PWS/wnacloud behavior indistinguishable from catch-all.
 - CHANGED Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway at `www.ozoon.eu/api/v1/signup`.
+
+## 2026-09-14 14:27:22 UTC

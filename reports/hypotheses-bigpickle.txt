@@ -1,4 +1,4 @@
-## 2026-09-14 07:12:21 UTC [target] (model bigpickle)
+## 2026-09-14 14:17:19 UTC [target] (model bigpickle)
 [PRIO] services.ozoon.eu/services/*/v1/profiles/{uuid}/...,5.85,a9/b10/t6/g2/c3/f1
 [PRIO] www.ozoon.eu/api/v1/signup,5.10,a6/b9/t5/g2/c2/f1
 [PRIO] services.ozoon.eu/player-verification/v1/profiles/{sid}/verifications/verify,4.85,a5/b9/t5/g2/c2/f1

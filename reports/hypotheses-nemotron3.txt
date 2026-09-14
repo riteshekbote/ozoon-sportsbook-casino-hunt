@@ -1,26 +1,14 @@
-## 2026-09-14 07:18:43 UTC [target] (model nemotron3)
-[NEW] `nfl-pickem-league.ozoon.eu` — Vercel/Remix promo app with live Supabase project `cgoqgofzqunixkwcttzi.supabase.co` (auth + PostgREST); anon key `sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM` in public chunks; key-less probes return 401. New in-scope brand surface; RLS is sole row control.
-[NEW] `static.ozoon.eu` — Second PWS SSR front (755,927B) exposing `servicesBaseUrl=https://services.ozoon.eu` (public entry name) vs `services.ozoon.eu` shell carrying split-horizon `services.services.ozoon.eu`.
-[NEW] `blog.ozoon.eu` — Next.js PWS marketing blog; `sportsfeeds.ozoon.eu` — persistent 503/0B (PWS upstream down). Neither on core auth/money path.
-[NEW] CT enumeration via certspotter API confirmed reliable for `ozoon.eu` subdomain breadth (A-records wildcard-poisoned, DNS brute useless).
-[CHANGED] `services.ozoon.eu` SSR shell config-drift: 09-14 probe → 743,193B sha256 `1ddad5e3` (+37B vs 09-13 743,156B, benign ts/version); `refSiteToken a0b5…b084`, `reCaptcha.enabled:false`, `isMockProviderEnabled:false`, `servicesBaseUrl=services.services.ozoon.eu` byte-identical; wallet-gate 401/159B baseline intact.
-[CHANGED] Pipeline: triage empty (8th consecutive), probe-results.md no new data, certspotter CT refresh → same 7 names, zero new subdomains; no new anonymous evidence this cycle.
-[CHANGED] Inventory file still lists ONLY `ozoon.com`/`www.ozoon.com`; `ozoon.eu` (core platform) and `services.ozoon.eu` (backend API) confirmed in-scope per scope.yml but absent from inventory.
-[CHANGED] Zero authenticated probes executed against core platform (`ozoon.eu`/`services.ozoon.eu`) across all 18+ probe rounds; all probes target only `www.ozoon.com` marketing edge.
-[CHANGED] SSRF at `www.ozoon.com` formally INVALID'd by triage 06:38 — all `?url=?view=?page=` probes → catch-all 200 len=?, no collab callback; PWS/wnacloud behavior indistinguishable from catch-all.
-[CHANGED] Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway at `www.ozoon.eu/api/v1/signup`.
-[PRIO] https://services.ozoon.eu/services/{wallet-gateway,transaction-group,referral,player-verification,player-messages}/v1/profiles/{uuid}/...,9.50,attack_surface=10,business_value=10,tech_exposure=9,gate_ease=6,cloud_surface=5,freshness=10
-[PRIO] https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify,9.00,attack_surface=9,business_value=10,tech_exposure=10,gate_ease=6,cloud_surface=5,freshness=10
-[PRIO] https://www.ozoon.eu/api/v1/signup,8.75,attack_surface=9,business_value=9,tech_exposure=8,gate_ease=7,cloud_surface=5,freshness=10
-[PRIO] https://nfl-pickem-league.ozoon.eu,8.10,attack_surface=9,business_value=7,tech_exposure=10,gate_ease=8,cloud_surface=8,freshness=10
-[PRIO] https://static.ozoon.eu,6.25,attack_surface=6,business_value=5,tech_exposure=6,gate_ease=10,cloud_surface=5,freshness=10
-[PRIO] https://chat.ozoon.eu,4.50,attack_surface=4,business_value=3,tech_exposure=4,gate_ease=10,cloud_surface=5,freshness=10
-[PRIO] https://api.wicket-keeper.com,3.00,attack_surface=3,business_value=2,tech_exposure=3,gate_ease=10,cloud_surface=8,freshness=5
+## 2026-09-14 14:27:12 UTC [target] (model nemotron3)
+[PRIO] services.ozoon.eu/services/*/v1/profiles/{uuid}/...,9.5,attack_surface=10,business_value=10,tech_exposure=8,gate_ease=6,cloud_surface=7,freshness=9
+[PRIO] www.ozoon.eu/api/v1/signup,8.0,attack_surface=8,business_value=9,tech_exposure=7,gate_ease=7,cloud_surface=6,freshness=8
+[PRIO] services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify,8.0,attack_surface=7,business_value=10,tech_exposure=9,gate_ease=6,cloud_surface=6,freshness=9
+[PRIO] nfl-pickem-league.ozoon.eu,6.5,attack_surface=7,business_value=5,tech_exposure=8,gate_ease=5,cloud_surface=8,freshness=7
+[PRIO] static.ozoon.eu,5.5,attack_surface=6,business_value=4,tech_exposure=6,gate_ease=8,cloud_surface=5,freshness=7
 [HYP] BOLA on Profile-Keyed UUID Endpoints Across 5 Services
 class: IDOR
-asset: https://services.ozoon.eu/services/*/v1/profiles/{uuid}/...
+asset: https://services.ozoon.eu/services/{wallet-gateway,transaction-group,referral,player-verification,player-messages}/v1/profiles/{uuid}/...
 confidence: 65
-reasoning: Public SDK/config confirms 5 services (wallet-gateway, transaction-group, referral, player-verification, player-messages) address sensitive resources by UUID path with session cookie (sid). Live 401 on unauthenticated probes to random/VIP UUIDs proves auth-gating exists but binding unresolved. Structured 401 errorCode:"unauthorized" for valid-route bogus UUID = auth pre-check precedes resource lookup; anonymous differential baseline recorded.
+reasoning: Public SDK/config confirms 5 services address sensitive resources by UUID path with session cookie (sid). Live 401 on unauthenticated probes to random/VIP UUIDs proves auth-gating exists but binding unresolved. Structured 401 errorCode:"unauthorized" for valid-route bogus UUID = auth pre-check precedes resource lookup; anonymous differential baseline recorded.
 evidence_needed: With valid own session (sid + ownPID), GET /services/wallet-gateway/v1/profiles/{ownPID}/balances returns 200; swap PID for another UUID → 200 with foreign data = BOLA confirmed vs 401/403 = bound
 verify_steps: 1. POST https://www.ozoon.eu/api/v1/signup (captcha-free) → register throwaway account. 2. Login → capture sid cookie + ownPID from response. 3. GET /services/referral/v1/profiles/{ownPID} → baseline 200. 4. GET same with consecutive/random UUIDs → compare. 5. Repeat on /wallet-gateway/balances, /transaction-group/transactions, /player-messages/messages. 6. Test write: PUT /services/profile/v1/profiles/{other-id}
 impact: Critical — cross-tenant PII (names, DOB, emails, messages), financial transaction history, wallet balances, referral data; write variants → account modification
@@ -42,15 +30,6 @@ reasoning: Production SDK sends client-controlled `X-MOCK-2FA-VERIFICATION` head
 evidence_needed: With own session, POST /verifications/verify with `X-MOCK-2FA-VERIFICATION:true` vs absent → mocked acceptance (200) vs rejection (401/400)
 verify_steps: 1. Register + login throwaway account (from HYP1/HYP2). 2. POST /services/player-verification/v1/profiles/{ownPID}/verifications/verify with header `X-MOCK-2FA-VERIFICATION:true` + minimal body. 3. Observe response. 4. Repeat without header as control. Self-created throwaway only.
 impact: Critical if honored — bypass 2FA/SMS/PIN/KYC gates on withdraw/deposit/bonus (money security control bypass)
-testability: AUTH_HELPED
-[HYP] Supabase RLS Bypass on NFL Pick'Em League Promo App
-class: IDOR
-asset: https://nfl-pickem-league.ozoon.eu
-confidence: 45
-reasoning: Vercel/Remix app embeds Supabase client (auth + PostgREST) against live project `cgoqgofzqunixkwcttzi.supabase.co`. Anon key `sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM` (SBP v2, public-by-design) in fetched chunks. Key-less probes return 401. RLS is sole row control — no server-side middleware observed. Auth uses `supabase.auth.token` persistence.
-evidence_needed: With two self-created throwaway accounts, verify cross-account data access via PostgREST (e.g., `select * from picks where user_id != own_id`) using anon key + own JWT vs foreign JWT.
-verify_steps: 1. Register two throwaway accounts on nfl-pickem-league.ozoon.eu. 2. Capture anon key + JWT for each. 3. Query PostgREST `/rest/v1/picks?user_id=eq.<other_uid>` with own JWT → expect 401/empty if RLS enforced. 4. Test JWT alg confusion (none/HS256) on Supabase JWT endpoint. 5. Test auth bypass via `supabase.auth.token` localStorage manipulation.
-impact: Medium — cross-user pick data exposure (PII: email, picks history); potential prize manipulation if leaderboard writes use same RLS
 testability: AUTH_HELPED
 [PARKED] Supabase RLS Bypass on NFL Pick'Em League Promo App: confidence 45 < 50 threshold; promo app is ancillary surface (not core money/auth path); RLS testing requires two authenticated accounts and program authorization for customer-data exposure during testing (program note prohibits). Superseded by core platform hypotheses.
 [FINAL] 1. BOLA on Profile-Keyed UUID Endpoints Across 5 Services (65) — services.ozoon.eu — AUTH_HELPED
