@@ -20242,3 +20242,85 @@ STEP 6 — LEARNING
 
 STEP 7 — RISK
 [RISK] ozoon-sportsbook-casino: 81/100 — Core real-money gambling platform (ozoon.eu) fully mapped via public SDK/config; three critical AUTH_HELPED vectors unprobed (BOLA 65, mass-assignment 60, mock-2FA 55), zero authenticated probes across 8+ gated cycles; surface byte-stable, pipeline empty (7th consecutive). New Supabase promo app (nfl-pickem-league) adds RLS-dependent data surface but its decisive test is program-prohibited. High business value + high attack surface + low gate ease (public signup) = sustained elevated risk, strictly gated on one throwaway-account authorization.
+===== ANALYST bigpickle 2026-09-14 01:43:23 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mcurl -s --max-time 25 "https://api.certspotter.com/v1/issuances?domain=ozoon.eu&include_subdomains=true&expand=dns_names" | tr ',' '\n' | grep -o '"[^"]*ozoon\.[^"]*"' | sort -u | head -60
+"*.ozoon.eu"
+"blog.ozoon.eu"
+"nfl-pickem-league.ozoon.eu"
+"ozoon.eu"
+"sportsfeeds.ozoon.eu"
+"static.ozoon.eu"
+"www.ozoon.eu"
+[0m
+[0m$ [0mcurl -s -o /tmp/opencode/wg.txt -w "%{http_code} %{size_download}\n" --max-time 25 "https://services.ozoon.eu/services/wallet-gateway/v1/profiles/123e4567-e89b-12d3-a456-426614174000/balances" && cat /tmp/opencode/wg.txt
+401 159
+{"timestamp":"2026-09-14T01:40:30.703Z","status":401,"message":"Authentication required for requested route","error":"Unauthorized","errorCode":"unauthorized"}
+[0m
+[0m$ [0mcurl -s -o /tmp/opencode/srvc.html -w "%{http_code} %{size_download}\n" --max-time 25 https://services.ozoon.eu/ && sha256sum /tmp/opencode/srvc.html
+200 743193
+1ddad5e3faaf2644339f0ef1e4b71aa71a435010e23ab6dc9d57036a4fe9fd8b  /tmp/opencode/srvc.html
+[0m
+[0m$ [0mgrep -o 'refSiteToken[^,]*' /tmp/opencode/srvc.html | head -1; grep -o '"reCaptcha"[^}]*' /tmp/opencode/srvc.html | head -1; grep -o 'isMockProviderEnabled[^,]*' /tmp/opencode/srvc.html | head -1; grep -o 'servicesBaseUrl[^,]*' /tmp/opencode/srvc.html | head -1
+refSiteToken\":\"a0b5b21a0e7cdbad660f4ce03481b084\"
+isMockProviderEnabled\":false
+servicesBaseUrl\":\"https://services.services.ozoon.eu\"}]
+[0m
+STEP 1 — DELTA
+- [CHANGED] services.ozoon.eu SSR shell: 743,193B sha256 1ddad5e3 (+37B vs 09-13 743,156B, benign ts/version); refSiteToken a0b5…b084, isMockProviderEnabled:false, servicesBaseUrl=services.services.ozoon.eu byte-identical; new size baseline 743,193B for future diffs.
+- [CHANGED] wallet-gateway bogus-UUID /balances → 401/159B byte-shape-stable (ts 2026-09-14T01:40:30Z); auth pre-check precedes resource lookup, intact.
+- [CHANGED] certspotter CT refresh: same 7 ozoon.eu cert names (blog/nfl-pickem-league/sportsfeeds/static/www + apex/wildcard); zero new subdomains.
+- Pipeline: triage empty again (8th consecutive); probe-results.md no new data; surface otherwise byte-identical to 09-13.
+
+STEP 2 — PRIORITIZE
+[PRIO] services.ozoon.eu/services/*/v1/profiles/{uuid}/...,5.85,a7/b10/t6/g2/c3/f1
+[PRIO] www.ozoon.eu/api/v1/signup,5.10,a6/b9/t5/g2/c2/f1
+[PRIO] services.ozoon.eu/player-verification/v1/profiles/{sid}/verifications/verify,4.85,a5/b9/t5/g2/c2/f1
+[PRIO] nfl-pickem-league.ozoon.eu (Supabase cgoqgofzqunixkwcttzi),4.50,a4/b5/t6/g4/c2/f7
+
+STEP 3 — HYPOTHESES
+[HYP] BOLA on Profile-Keyed UUID Endpoints Across 5 Services
+class: IDOR
+asset: https://services.ozoon.eu/services/{wallet-gateway,transaction-group,referral,player-verification,player-messages}/v1/profiles/{uuid}/...
+confidence: 65
+reasoning: SDK-confirmed {uuid}-path route shape on 5 services; anonymous probes stay 401/159B structured {"errorCode":"unauthorized"} (re-verified 01:40Z this cycle) = auth pre-check precedes resource lookup; session→path-UUID binding never observed because zero authenticated sessions exist (8th empty triage).
+evidence_needed: A's sid reads foreign {B-PID}/balances or /verifications → 200/data vs {A-PID} control; 401/403 = bound.
+verify_steps: [AUTH_HELPED] A signs in; GET /services/wallet-gateway/v1/profiles/{B-PID}/balances vs own {A-PID}/balances control; same for player-verification/v1/profiles/{B-PID}/verifications.
+impact: Critical — cross-player wallet/transaction/PII across 5 services; ATO enabler.
+testability: AUTH_HELPED
+
+[HYP] Signup Mass-Assignment for role/vip/currency Injection
+class: BUSLOGIC
+asset: https://www.ozoon.eu/api/v1/signup
+confidence: 60
+reasoning: Captcha-free signup (reCaptcha gated to login only), client-controlled attributes/address sub-objects, static 32-hex refSiteToken a0b5…b084 + affiliate.check-referring-site.enabled:["false"]; update DTO strict but signup DTO separate; sole gateway to BOLA/mock-2FA testing.
+evidence_needed: POST signup +role/vip/balance/currency wins over minimal control (elevated account or credited balance).
+verify_steps: [AUTH_HELPED] throwaway signup with extra fields vs minimal control; diff resulting session claims.
+impact: High — privilege escalation / bonus+balance manipulation if honored.
+testability: AUTH_HELPED
+
+[HYP] Mock-2FA Verification Header Honored = 2FA/KYC Gate Bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify
+confidence: 55
+reasoning: Production SDK sends X-MOCK-2FA-VERIFICATION:true; config two_factor_authenticator.allow-permanent-skip:["true"]; SSR isMockProviderEnabled:false is client-only and does not resolve server behavior; only differential accept/reject on own account proves it.
+evidence_needed: POST verify {"verificationType":"PHONE"} + header succeeds while byte-identical control without header rejects, on own sid.
+verify_steps: [AUTH_HELPED] signup → own sid; POST .../verifications/verify with X-MOCK-2FA-VERIFICATION:true, then identical control; compare status.
+impact: Critical — 2FA/SMS/PIN/KYC bypass on deposit/withdraw/bonus flows.
+testability: AUTH_HELPED
+
+STEP 4 — SELF-CRITIQUE
+[PARKED] Supabase RLS differential @ nfl-pickem-league.ozoon.eu: verify step requires reading foreign players' picks = program-prohibited customer-data exposure; parked until explicit scope authorization.
+[FINAL] BOLA UUID (65) → signup mass-assignment (60) → mock-2FA header (55): none dropped; all three remain AUTH_HELPED, all gated on the same signup authorization.
+
+STEP 5 — NEXT ACTION
+[NEXT] HUMAN: Request program authorization via bugs.olivermaicher.eu for ONE restricted throwaway-account creation on www.ozoon.eu/api/v1/signup (create-only, no live-customer data, no wallet operations) — unblocks BOLA + mock-2FA + mass-assignment differential tests; 9th consecutive gated cycle otherwise.
+
+STEP 6 — LEARNING
+[LEARN] ACCEPTED MISCONFIG @ services.ozoon.eu SSR shell: 09-14 drift → 743,193B sha256 1ddad5e3 (+37B vs 09-13 743,156B, benign ts/version); refSiteToken a0b5…b084, isMockProviderEnabled:false, servicesBaseUrl=services.services.ozoon.eu byte-identical; wallet-gate 401/159B byte-stable. New size baseline 743,193B for cheap future diffs.
+[LEARN] REJECTED OTHER @ ozoon-sportsbook-casino pipeline: triage empty (8th consecutive), probe-results.md no new data, certspotter CT refresh → same 7 names, zero new subdomains; no new anonymous evidence this cycle.
+
+STEP 7 — RISK
+[RISK] ozoon-sportsbook-casino: 81/100 — Core real-money gambling platform (ozoon.eu) fully mapped via public SDK/config; three critical AUTH_HELPED vectors unprobed (BOLA 65, mass-assignment 60, mock-2FA 55), zero authenticated probes across 9+ gated cycles; surface byte-stable, pipeline empty, no new subdomains. High business value + high attack surface + low gate ease (public captcha-free signup) = sustained elevated risk, strictly gated on one throwaway-account authorization.

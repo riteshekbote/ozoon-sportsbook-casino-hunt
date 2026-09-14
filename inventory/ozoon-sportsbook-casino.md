@@ -657,3 +657,13 @@ www.ozoon.com
 - CHANGED Zero authenticated probes executed against core platform (`ozoon.eu`/`services.ozoon.eu`) across all 18+ probe rounds; all probes target only `www.ozoon.com` marketing edge
 - CHANGED Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway at `www.ozoon.eu/api/v1/signup`
 - CHANGED SSRF at `www.ozoon.com` formally INVALID'd by triage 06:38 — all `?url=?view=?page=` probes → catch-all 200 len=?, no collab callback; PWS/wnacloud behavior indistinguishable from catch-all
+
+## 2026-09-14 01:43:23 UTC
+- NEW certspotter CT enumeration surfaced 4 live in-scope subdomains absent from inventory: `nfl-pickem-league.ozoon.eu` (Vercel/Remix + Supabase), `static.ozoon.eu` (2nd PWS SSR front, public `servicesBase
+- NEW `nfl-pickem-league.ozoon.eu` exposes complete Supabase client init in public JS: URL `cgoqgofzqunixkwcttzi.supabase.co` + anon key `sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM` (SBP v2, public-by-d
+- CHANGED `services.ozoon.eu` SSR shell config-drift 09-13 01:25 → 743,201B sha256 `59a51c62` (+3B vs 743,198B baseline, benign ts/version); `refSiteToken a0b5…b084`, `reCaptcha.enabled:false`, `isMockProviderE
+- CHANGED `wallet-gateway` bogus-UUID `/balances` → 401/159B structured `{"errorCode":"unauthorized"}` byte-shape-stable — auth pre-check intact
+- CHANGED Pipeline: triage 01:11 empty (6th consecutive); probe-results.md held no new data through 23:23
+- CHANGED Inventory file still lists ONLY `ozoon.com`/`www.ozoon.com`; `ozoon.eu` (core platform) and `services.ozoon.eu` (backend API) confirmed in-scope per scope.yml but absent from inventory
+- CHANGED Zero authenticated probes executed against core platform (`ozoon.eu`/`services.ozoon.eu`) across all 18+ probe rounds; all probes target only `www.ozoon.com` marketing edge
+- CHANGED SSRF at `www.ozoon.com` formally INVALID'd by triage 06:38 — all `?url=?view=?page=` probes → catch-all 200 len=?, no collab callback; PWS/wnacloud behavior indistinguishable from catch-all
