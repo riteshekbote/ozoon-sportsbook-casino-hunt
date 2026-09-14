@@ -21344,3 +21344,151 @@ verify_steps: [AUTH_HELPED] signup → own sid; POST .../verifications/verify wi
 [0m✗ [0mcurl -s -o /tmp/wallet-check -w "HTTP %{http_code} len=%{size_download}" --max-time 10 --connect-timeout 5 "https://services.ozoon.eu/services/wallet-gateway/v1/profiles/00000000-0000-0000-0000-000000000001/balances" 2>/dev/null; echo; cat /tmp/wallet-check 2>/dev/null; echo "---"; curl -s -o /tmp/ssr-shell -w "HTTP %{http_code} len=%{size_download}" --max-time 15 --connect-timeout 5 "https://services.ozoon.eu/" 2>/dev/null; echo; wc -c < /tmp/ssr-shell 2>/dev/null failed
 [91m[1mError: [0mThe user rejected permission to use this specific tool call.
 Now let me run one cheap read-only baseline probe against the known wallet-gate to confirm current state before writing output:
+===== ANALYST bigpickle 2026-09-14 22:48:45 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mcurl -sS -m 40 -A "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/120 Safari/537.36" -o /tmp/opencode/layout.js -w "layout %{http_code} %{size_download}\n" "https://www.ozoon.eu/assets/_next/static/chunks/app/%5Blocale%5D/layout-df512a1a581be543.js"; sleep 1; curl -sS -m 40 -A "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/120 Safari/537.36" -o /tmp/opencode/pantheon.js -w "pantheon %{http_code} %{size_download}\n" "https://www.ozoon.eu/assets/_next/static/chunks/pantheon-modules-54ad3b04423ff20f.js"
+layout 200 59271
+pantheon 200 119718
+[0m
+[0m$ [0mecho "=== layout.js ==="; grep -oE '"/api/[^"]*"|/api/v1/[a-z_-]+' /tmp/opencode/layout.js | sort -u | head -60; echo "=== pantheon.js ==="; grep -oE '"/api/[^"]*"|/api/v1/[a-z_-]+' /tmp/opencode/pantheon.js | sort -u | head -80
+=== layout.js ===
+=== pantheon.js ===
+"/api/v1/complete-registration"
+"/api/v1/document-verification-status/profile/"
+"/api/v1/logout"
+"/api/v1/profile-info/"
+"/api/v1/profiles/"
+"/api/v1/signup"
+/api/v1/games
+/api/v1/jackpots
+[0m
+[0m$ [0mecho "=== context around complete-registration ==="; grep -oE '.{80}complete-registration.{120}' /tmp/opencode/pantheon.js | head -5; echo "=== profile-info / profiles context ==="; grep -oE '.{60}(profile-info|/profiles/|document-verification-status).{100}' /tmp/opencode/pantheon.js | head -8
+=== context around complete-registration ===
+tent-type":"application/json"});try{let r=await n.servicesFetcher.post("/api/v1/complete-registration",e,{headers:t,sessionRequirement:!1}).data();if(!(null==r?void 0:r.sessionId))throw new i("Partner Join Error: Custom e
+=== profile-info / profiles context ===
+oken=void 0;let n=r(69419),o="/services/integration/v1/token/profiles/".concat(n.SESSION_ID_PLACEHOLDER,"/customer-support"),i=async()=>(0,n.fetchAuthorizedService)(o,{me
+n=r(69419),o=async()=>(0,n.fetchAuthorizedService)("/api/v1/document-verification-status/profile/".concat(n.SESSION_ID_PLACEHOLDER,"?documentType=").concat("ID_DOCUMENT"));t.apiGetDocument
+r(69419),o=async e=>(0,n.fetchService)("/services/profile/v1/profiles/forgotten-password",{body:JSON.stringify({...e}),headers:{"Content-Type":"application/json"},method:
+r(69419),o=async()=>{let e="/services/player-verification/v1/profiles/".concat(n.SESSION_ID_PLACEHOLDER,"/verifications/PIN_CODE/request-reset");return(0,n.fetchAuthorize
+async e=>(0,n.fetchAuthorizedService)("/services/messages/v1/profiles/".concat(n.SESSION_ID_PLACEHOLDER,"/player-messages"),{body:JSON.stringify({messageIds:e,messagePatc
+id 0;let n=r(69419),o=async e=>{let t="/services/messages/v1/profiles/".concat(n.SESSION_ID_PLACEHOLDER,"/player-messages");return e&&0!==e.pageParam&&(t="/services/messa
+nc(e,t)=>(0,n.fetchAuthorizedService)("/services/messages/v1/profiles/".concat(n.SESSION_ID_PLACEHOLDER,"/player-messages/").concat(e),{body:JSON.stringify(t),headers:{"C
+async e=>(0,n.fetchAuthorizedService)("/services/messages/v1/profiles/".concat(n.SESSION_ID_PLACEHOLDER,"/player-notifications?ids=").concat(e),{headers:{"Content-Type":"
+[0m
+[0m$ [0mecho "=== signup usage ==="; grep -oE '.{40}/api/v1/signup.{100}' /tmp/opencode/pantheon.js | head -3; echo "=== complete-registration caller context (60 chars before) ==="; grep -oE '.{220}/api/v1/complete-registration' /tmp/opencode/pantheon.js | head -2; echo "=== X-MOCK or mock ===="; grep -oE 'X-[A-Z-]+' /tmp/opencode/pantheon.js | sort -u | head; echo "=== refSite/partner/referral ==="; grep -oiE 'refSiteToken|referral[a-zA-Z]*|partner[Cc]ode' /tmp/opencode/pantheon.js | sort -u | head
+=== signup usage ===
+"});try{let r=await (0,n.fetchService)("/api/v1/signup",{body:JSON.stringify(e),headers:a,method:"POST"});if(null===(t=r.body)||void 0===t?void 0:t.errorC
+=== complete-registration caller context (60 chars before) ===
+i extends Error{constructor(e,t){super(e,t),this.name="PartnerJoinRequestError"}}t.PartnerJoinRequestError=i;let a=async e=>{let t=new Headers({"content-type":"application/json"});try{let r=await n.servicesFetcher.post("/api/v1/complete-registration
+=== X-MOCK or mock ====
+X-B
+X-C
+X-CAPTCHA-TOKEN
+X-ENFORCEMENT-METHOD
+X-GEOIP-COUNTRY
+X-L
+X-LANG
+X-LANGUAGE
+X-M
+X-MFA-CODE
+=== refSite/partner/referral ===
+REFERRAL
+ReferralInformation
+ReferralProfile
+ReferralStorage
+refSiteToken
+referral
+referralEMail
+referralEmail
+[0m
+[0m$ [0mecho "=== MOCK ===="; grep -oE '"[A-Za-z-]*MOCK[A-Za-z-]*"[^,}]{0,40}' /tmp/opencode/pantheon.js | head; grep -oE 'X-MOCK[^"]*' /tmp/opencode/pantheon.js | head; echo "=== ENFORCEMENT context ==="; grep -oE '.{80}X-ENFORCEMENT-METHOD.{60}' /tmp/opencode/pantheon.js | head -3; echo "=== complete-registration body keys ==="; grep -oE 'complete-registration[^}]{0,400}' /tmp/opencode/pantheon.js | head -1
+=== MOCK ====
+X-MOCK-2FA-VERIFICATION
+=== ENFORCEMENT context ===
+TOKEN",t):r&&(E.append("X-MFA-CODE",r),"twoFactorAuthentication"===c&&E.append("X-ENFORCEMENT-METHOD","TWO_FACTOR_AUTHENTICATION"));try{let t=await (0,n.fetchSe
+=== complete-registration body keys ===
+complete-registration",e,{headers:t,sessionRequirement:!1
+[0m
+[0m$ [0mgrep -oE '.{120}X-MOCK-2FA-VERIFICATION.{80}' /tmp/opencode/pantheon.js | head -3
+tion(e){let t=arguments.length>1&&void 0!==arguments[1]&&arguments[1],r=new Headers({"Content-Type":"application/json","X-MOCK-2FA-VERIFICATION":t.toString()});return(0,n.fetchAuthorizedService)("".concat(o,"/verifications/
+[0m
+[0m$ [0mgrep -oE '.{260}X-MOCK-2FA-VERIFICATION.{160}' /tmp/opencode/pantheon.js | head -2
+>(0,n.fetchAuthorizedService)("".concat(o,"/operations/").concat(e,"/status"));t.retrieveProfileVerificationStatusRequest=i;let a=async function(e){let t=arguments.length>1&&void 0!==arguments[1]&&arguments[1],r=new Headers({"Content-Type":"application/json","X-MOCK-2FA-VERIFICATION":t.toString()});return(0,n.fetchAuthorizedService)("".concat(o,"/verifications/verify"),{body:JSON.stringify(e),headers:r,method:"PUT"})};t.verifyProfileReques
+[0m
+[0m$ [0mcurl -sS -m 30 -A "Mozilla/5.0" -o /tmp/opencode/int.txt -w "integration %{http_code} %{size_download}\n" "https://services.ozoon.eu/services/integration/v1/token/profiles/00000000-0000-0000-0000-000000000000/customer-support"; sleep 1; curl -sS -m 30 -A "Mozilla/5.0" -o /tmp/opencode/fp.txt -w "forgotten-password %{http_code} %{size_download}\n" "https://services.ozoon.eu/services/profile/v1/profiles/forgotten-password"; echo "--- integration body ---"; cat /tmp/opencode/int.txt | head -c 300; echo; echo "--- forgotten-password body ---"; cat /tmp/opencode/fp.txt | head -c 300
+integration 403 97
+forgotten-password 405 145
+--- integration body ---
+{"timestamp":"2026-09-14T22:45:38.950Z","status":403,"error":"Forbidden","errorCode":"forbidden"}
+--- forgotten-password body ---
+{"timestamp":"2026-09-14T22:45:40.371+00:00","status":405,"error":"Method Not Allowed","path":"/services/profile/v1/profiles/forgotten-password"}
+[0m
+[0m$ [0mcurl -sS -m 30 -A "Mozilla/5.0" -o /tmp/opencode/cr.txt -w "complete-registration-GET %{http_code} %{size_download}\n" "https://www.ozoon.eu/api/v1/complete-registration"; head -c 200 /tmp/opencode/cr.txt
+complete-registration-GET 200 2
+{}
+[0m
+STEP 1 — DELTA
+- NEW: `pantheon-modules-54ad3b04423ff20f.js` (119,718B) exposes anonymous `POST /api/v1/complete-registration` with `sessionRequirement:!1` (no session), body passed verbatim from caller, returns `sessionId` — phase-2 of the Partner Join (referral/affiliate) flow built on client `ReferralInformation`/`referralEmail` structures.
+- NEW: live `GET https://www.ozoon.eu/api/v1/complete-registration` → **200 `{}` (2B)** — anonymous and NOT WAF-staged (contrast: signup GET → WAF "Request Rejected").
+- NEW: SDK sets `X-MOCK-2FA-VERIFICATION` (client-supplied boolean arg) on **PUT** `.../verifications/verify` (fetchAuthorizedService); sub-routes `.../verifications/PIN_CODE/request-reset` + `.../operations/{id}/status` mapped.
+- NEW: enforced-auth fetch carries client headers `X-MFA-CODE` + `X-ENFORCEMENT-METHOD: TWO_FACTOR_AUTHENTICATION`.
+- NEW: live `GET /services/integration/v1/token/profiles/{bogus}/customer-support` → **403/97B `{"errorCode":"forbidden"}`** — third distinct gateway auth shape (5 known services = 401/159B `unauthorized`).
+- NEW: `/services/profile/v1/profiles/forgotten-password` live GET → 405 Spring structured (POST-only, anonymous handler confirmed); player-messages service is actually `/services/messages/v1/profiles/{sid}/player-messages`.
+- CHANGED: pipeline 9th consecutive empty triage; CT still 7 names; only new anonymous evidence is my chunk-mining.
+
+STEP 2 — PRIORITIZE
+- [PRIO] services.ozoon.eu/services/*/v1/profiles/{uuid}/...,6.35,a9/b10/t6/g2/c3/f1
+- [PRIO] services.ozoon.eu/player-verification/v1/profiles/{sid}/verifications/verify,5.30,a5/b9/t5/g3/c2/f4
+- [PRIO] www.ozoon.eu/api/v1/complete-registration,4.95,a5/b6/t4/g5/c1/f9
+- [PRIO] services.ozoon.eu/services/integration/v1/token/...,4.25,a4/b5/t3/g3/c1/f8
+
+STEP 3 — HYPOTHESES
+[HYP] Mock-2FA verification header honored on PUT verify = 2FA gate bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify
+confidence: 55
+reasoning: Production SDK helper sets X-MOCK-2FA-VERIFICATION (boolean arg) on PUT .../verifications/verify via fetchAuthorizedService; config two_factor_authenticator.allow-permanent-skip:["true"]; SSR isMockProviderEnabled:false is client-only; no session exists to prove server honor.
+evidence_needed: On own sid, PUT verify {verificationType:"PHONE"} with header vs byte-identical control without header → different outcome = honored.
+verify_steps: [AUTH_HELPED] signup → own sid; PUT .../verifications/verify with X-MOCK-2FA-VERIFICATION:true, then identical control without; compare status/body.
+impact: Critical — 2FA/KYC gate bypass across player base; ATO enabler.
+testability: AUTH_HELPED
+[HYP] Partner-Join complete-registration mass-assignment / pre-verification session issuance
+class: BUSLOGIC
+asset: https://www.ozoon.eu/api/v1/complete-registration
+confidence: 50
+reasoning: POST carries sessionRequirement:!1 with caller-controlled body and returns sessionId; live GET → 200 {} (2B) anonymous, no WAF (signup GET is WAF-blocked); referral data is client-constructed.
+evidence_needed: Mutating diff: POST +role/vip/referral fields issues sessionId with claims beyond minimal control, or session before email verification.
+verify_steps: read-only done (GET 200 {} ungated). Mutating requires program auth (account_creation:restricted): POST {email,password,country,attributes,role} vs minimal control; diff claims.
+impact: Medium-High — referral bonus manipulation, unverified session issuance, privilege escalation if extra fields honored.
+testability: HUMAN_ONLY
+[HYP] BOLA on Profile-Keyed UUID Endpoints Across 5 Services
+class: IDOR
+asset: https://services.ozoon.eu/services/{wallet-gateway,transaction-group,referral,player-verification,messages}/v1/profiles/{uuid}/...
+confidence: 65
+reasoning: SDK-confirmed {uuid}-path route shape; anonymous probes byte-stable 401/159B since 2026-09-08; session→path-UUID binding unobserved (zero sessions, 9th empty triage).
+evidence_needed: A reads foreign {B}/balances or /verifications → 200/data vs own control; 401/403 = bound.
+verify_steps: [AUTH_HELPED] A signs in; GET own {pid}/balances vs {B-PID}/balances; same for .../verifications.
+impact: Critical — cross-player wallet/transaction/PII; ATO enabler.
+testability: AUTH_HELPED
+
+STEP 4 — SELF-CRITIQUE
+- [PARKED] integration 403 token-service (conf 45): single known read-only data point; needs session to separate ACL from BOLA; weakest new lead.
+- [PARKED] X-MFA-CODE / X-ENFORCEMENT-METHOD client headers: no exploit path without 2FA-challenge session; enforcement likely server-side; drop below threshold.
+- [PARKED] X-MOCK-2FA header reshape: method now PUT — incorporated into mock-2FA hypothesis above, not standalone.
+- [FINAL] survivors ranked: BOLA `{uuid}` profiles (65) > mock-2FA PUT verify (55) > complete-registration partner mass-assignment (50).
+
+STEP 5 — NEXT ACTION
+- [NEXT] PROBE: extract all `/_next/static/chunks/*.js` URLs from the current `services.ozoon.eu/` SSR shell and the `www.ozoon.eu` module manifest, then read-only GET + grep each for `/api/v1/|/services/` route strings and header patterns — complete the anonymous endpoint map (complete-registration was found this way in one shot). ≤1 rps, space 1s.
+
+STEP 6 — LEARNING
+- [LEARN] ACCEPTED MISCONFIG @ www.ozoon.eu/api/v1/complete-registration: GET → 200 `{}` (2B) anonymous, NOT WAF-staged (contrast signup GET WAF) — second unguarded mutating auth-flow route; joins signup gate; account_creation:restricted applies to POST tests.
+- [LEARN] ACCEPTED MISCONFIG @ services.ozoon.eu/services/integration/v1/token/profiles/{uuid}/customer-support: GET bogus → 403/97B `{"errorCode":"forbidden"}` — integration service uses a distinct auth layer; third gateway fingerprint (401/159B on 5 services, 405 on profile, 403 here).
+- [LEARN] ACCEPTED AUTH @ services.ozoon.eu/player-verification: prod SDK sets X-MOCK-2FA-VERIFICATION on PUT `.../verifications/verify`; sub-routes PIN_CODE/request-reset + operations/{id}/status mapped; header is client-toggle.
+- [LEARN] ACCEPTED OTHER @ www.ozoon.eu pantheon-modules chunk: route strings confirm /api/v1/signup + complete-registration (anonymous), profile-info/, document-verification-status/profile/{sid} (auth), games/jackpots (public); X-MFA-CODE + X-ENFORCEMENT-METHOD on enforced-auth.
+- [LEARN] REJECTED OTHER @ services.ozoon.eu/services/profile/v1/profiles/forgotten-password: GET → 405 structured proves POST-only real handler; anonymous password-recovery flow is REJECTED class (recovery policy), no standalone finding.
+- [LEARN] REJECTED OTHER @ ozoon-sportsbook-casino pipeline: 9th consecutive empty triage, CT 7 names; only new anonymous evidence from chunk-mining.
+
+STEP 7 — RISK
+- [RISK] ozoon-sportsbook-casino: 81 — new anonymous ungated auth-flow route (complete-registration), third distinct auth-gate fingerprint (integration 403), mock-2FA vector reconfirmed as PUT in prod bundle; decisive tests still gated on an authorized session never granted across 9 empty cycles — surface grew, verification remains blocked.

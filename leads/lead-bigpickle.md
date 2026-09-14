@@ -3677,3 +3677,31 @@ confidence: 55
 reasoning: Production SDK sends X-MOCK-2FA-VERIFICATION:true; config two_factor_authenticator.allow-permanent-skip:["true"]; SSR isMockProviderEnabled:false is client-side only and does not resolve server behavior; only differential accept/reject on own account proves it.
 evidence_needed: POST verify {"verificationType":"PHONE"} + header succeeds while byte-identical control without header rejects, on own sid.
 verify_steps: [AUTH_HELPED] signup → own sid; POST .../verifications/verify with X-MOCK-2FA-VERIFICATION:true, then identical control; compare status.
+## 2026-09-14 22:46:39 UTC [target] (model bigpickle)
+[HYP] Mock-2FA verification header honored on PUT verify = 2FA gate bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify
+confidence: 55
+reasoning: Production SDK helper sets X-MOCK-2FA-VERIFICATION (boolean arg) on PUT .../verifications/verify via fetchAuthorizedService; config two_factor_authenticator.allow-permanent-skip:["true"]; SSR isMockProviderEnabled:false is client-only; no session exists to prove server honor.
+evidence_needed: On own sid, PUT verify {verificationType:"PHONE"} with header vs byte-identical control without header → different outcome = honored.
+verify_steps: [AUTH_HELPED] signup → own sid; PUT .../verifications/verify with X-MOCK-2FA-VERIFICATION:true, then identical control without; compare status/body.
+impact: Critical — 2FA/KYC gate bypass across player base; ATO enabler.
+testability: AUTH_HELPED
+[HYP] Partner-Join complete-registration mass-assignment / pre-verification session issuance
+class: BUSLOGIC
+asset: https://www.ozoon.eu/api/v1/complete-registration
+confidence: 50
+reasoning: POST carries sessionRequirement:!1 with caller-controlled body and returns sessionId; live GET → 200 {} (2B) anonymous, no WAF (signup GET is WAF-blocked); referral data is client-constructed.
+evidence_needed: Mutating diff: POST +role/vip/referral fields issues sessionId with claims beyond minimal control, or session before email verification.
+verify_steps: read-only done (GET 200 {} ungated). Mutating requires program auth (account_creation:restricted): POST {email,password,country,attributes,role} vs minimal control; diff claims.
+impact: Medium-High — referral bonus manipulation, unverified session issuance, privilege escalation if extra fields honored.
+testability: HUMAN_ONLY
+[HYP] BOLA on Profile-Keyed UUID Endpoints Across 5 Services
+class: IDOR
+asset: https://services.ozoon.eu/services/{wallet-gateway,transaction-group,referral,player-verification,messages}/v1/profiles/{uuid}/...
+confidence: 65
+reasoning: SDK-confirmed {uuid}-path route shape; anonymous probes byte-stable 401/159B since 2026-09-08; session→path-UUID binding unobserved (zero sessions, 9th empty triage).
+evidence_needed: A reads foreign {B}/balances or /verifications → 200/data vs own control; 401/403 = bound.
+verify_steps: [AUTH_HELPED] A signs in; GET own {pid}/balances vs {B-PID}/balances; same for .../verifications.
+impact: Critical — cross-player wallet/transaction/PII; ATO enabler.
+testability: AUTH_HELPED
