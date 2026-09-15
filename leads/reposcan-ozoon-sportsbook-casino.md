@@ -411,3 +411,61 @@ TARGET_ORG not configured for ozoon-sportsbook-casino; skipping public-org deep 
 TARGET_ORG not configured for ozoon-sportsbook-casino; skipping public-org deep scan.
 ## REPOSCAN 2026-09-15 01:55:51 UTC
 TARGET_ORG not configured for ozoon-sportsbook-casino; skipping public-org deep scan.
+## REPOSCAN 2026-09-15 07:04:41 UTC
+[HYP] Active Unsplash API Key + Secret Committed to Public Repo
+class: SECRET
+asset: oZoon/diploma-try/src/js/lib/constants.js:13-14, oZoon/diploma/src/lib/constants.js:11-12
+confidence: 90
+reasoning: Hardcoded Unsplash `ACCESS_KEY='KVx67XvmzAv0NWFzGhl02RT3YJ0kXfNhhffCmc6V2Vk'` and `SECRET='NEbVoZN0xAL1MJkl9GCIfHmud75H71MjACB2fo0UdiU'` committed in plaintext across two repos (diploma-try and diploma). Prior scans confirmed these keys are ACTIVE via live Unsplash API call. Key scope includes potential write permissions.
+impact: Medium — Active API key abuse (rate-limit exhaustion, unauthorized read/write if scope permits). If reused on Ozoon production systems, broader credential compromise.
+verify_steps: 1. Make a read request to Unsplash API with the key to confirm liveness 2. Test write scope (like/unlike photo) 3. Cross-reference whether these keys appear in ozoon.eu/ozoon.com production bundles
+[HYP] Hardcoded MySQL Credentials — hyper repo
+class: SECRET
+asset: oZoon/hyper/core/config.php:17, oZoon/hyper/mysql.txt:5,51-54
+confidence: 85
+reasoning: Plaintext MySQL creds `user='hyper', password='12345', database='hyper'` hardcoded in config.php line 17. mysql.txt:5 confirms `CREATE USER 'hyper'@'localhost' IDENTIFIED BY '12345'`. mysql.txt:51-54 documents a second user `hyper01` with password `123456789`. Password '12345' is the 3rd most common password globally. Grants include `WITH GRANT OPTION` and full DDL privileges.
+impact: High — Full DB compromise if deployed. Public repo exposes credentials + test user with weak password.
+verify_steps: 1. Check if any ozoon.com/ozoon.eu subdomain runs this PHP codebase (server header PWS/8.3.1.0.8 suggests shared hosting) 2. Test MySQL 3306 exposure on discovered hosts 3. Attempt login with `hyper:12345` or `hyper01:123456789`
+[HYP] Hardcoded MySQL Credentials — mas-film repo
+class: SECRET
+asset: oZoon/mas-film/core/config.php:13, oZoon/mas-film/mysql.txt:5
+confidence: 85
+reasoning: Plaintext MySQL creds `user='masha', password='12345', database='masha'` hardcoded in config.php line 13. mysql.txt:5 confirms `CREATE USER 'masha'@'localhost' IDENTIFIED BY '12345'`. Identical weak password pattern as hyper repo.
+impact: High — Full DB compromise if deployed.
+verify_steps: 1. Check if any ozoon subdomain hosts this film database app 2. Scan for MySQL 3306 on discovered hosts
+[HYP] Hardcoded MySQL Credentials — secure-query-string repo
+class: SECRET
+asset: oZoon/secure-query-string/settings.php:7
+confidence: 80
+reasoning: Plaintext MySQL creds `user='aaa', password='aaa', database='aaa'` hardcoded in settings.php line 7. Identical user/pass/db pattern suggests test/dev default but committed to public GitHub.
+impact: Medium — DB compromise if deployed; SQLi amplifies impact.
+verify_steps: 1. Check if any ozoon subdomain runs this URL-shortener app 2. Scan for MySQL exposure
+[HYP] SQL Injection — Pervasive String Concatenation Across 3 PHP Apps
+class: OTHER
+asset: oZoon/hyper/core/functions.php:142,165,373,402,434,484; oZoon/mas-film/core/functions.php:92-397 (all CRUD); oZoon/secure-query-string/settings.php:44,50-51,129
+confidence: 90
+reasoning: All three PHP apps construct SQL queries by direct string concatenation of user-controlled input (`$_GET`, `$_POST`, `$_SERVER['QUERY_STRING']`) into raw SQL. No prepared statements or `mysqli_real_escape_string()`. Examples: `hyper/functions.php:142` — `'SELECT userId FROM tokens WHERE token = \'' . $state['qs']['token'] . '\''`; `mas-film/functions.php:100` — `'ORDER BY films.filmID ' . $state['params']['sort']`; `secure-query-string/settings.php:44` — `'SELECT encode FROM aSecure WHERE decode = \''.$decode.'\'`. The `checkSymbols()` whitelist provides partial input validation (alphanumeric only) but is narrow and may be bypassable via encoding tricks in some PHP configurations.
+impact: Critical — Classic SQL injection; allows full DB read/write on all three apps. Enables data exfiltration, authentication bypass, or RCE if MySQL has FILE privilege.
+verify_steps: 1. Test `' OR 1=1--` in any parameter 2. Review whether `allowSymbols` character set permits quote characters 3. Confirm if any in-scope endpoint runs this code
+[HYP] Hardcoded Auth Credentials + Cookie Auth Bypass — php-learn-5
+class: SECRET
+asset: oZoon/php-learn-5/include/helpers.php:46-52
+confidence: 85
+reasoning: Hardcoded auth array: `['login' => '1@bk.ru', 'password' => '1']` through `5@bk.ru`/`5`. Passwords are single-digit integers matching the email numeric prefix. Used in `routes/login.php:6` with loose `==` comparison.
+impact: Medium — Trivially guessable credentials committed to public repo; if deployed, allows unauthorized access.
+verify_steps: 1. Confirm if any in-scope app uses this codebase 2. Test login with `1@bk.ru`/`1`
+[HYP] Cookie-Based Authentication Bypass — php-learn-5
+class: MISCONFIG
+asset: oZoon/php-learn-5/include/helpers.php:54-73, oZoon/php-learn-5/routes/login.php
+confidence: 80
+reasoning: `updateCookie()` at helpers.php:67 trusts `$_COOKIE['login']` directly — if the cookie value matches any login in the auth array, the session is established. The login form at login.php:18-23 auto-fills the hidden `login` field from `$_COOKIE['login']` without validation. An attacker can set a `login=1@bk.ru` cookie and bypass authentication entirely — the password check only runs if `$_POST` is submitted.
+impact: High — Authentication bypass by cookie manipulation.
+verify_steps: Set `login=1@bk.ru` cookie and access `/manages` without submitting the login form
+[HYP] Debug Mode Enabled in Production Config — hyper, mas-film
+class: MISCONFIG
+asset: oZoon/hyper/core/config.php:4-5, oZoon/mas-film/core/config.php:4-5
+confidence: 75
+reasoning: Both apps set `error_reporting(E_ALL)` and `ini_set('display_errors', 'on')`. This exposes PHP error messages, stack traces, file paths, DB structure, and potentially sensitive variable values to end users.
+impact: Low-Medium — Information disclosure; aids attackers in mapping application internals and discovering injection points.
+verify_steps: Trigger a malformed request to any ozoon PHP endpoint to verify error output is shown
+TARGET_ORG not configured for ozoon-sportsbook-casino; skipping public-org deep scan.
