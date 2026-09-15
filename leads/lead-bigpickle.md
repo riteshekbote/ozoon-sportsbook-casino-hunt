@@ -3706,3 +3706,46 @@ verify_steps: [AUTH_HELPED] A signs in; GET own {pid}/balances vs {B-PID}/balanc
 impact: Critical — cross-player wallet/transaction/PII; ATO enabler.
 testability: AUTH_HELPED
 ## 2026-09-15 01:20:48 UTC [target] (model bigpickle)
+## 2026-09-15 06:18:03 UTC [target] (model bigpickle)
+[PRIO] services.ozoon.eu/services/wallet-gateway,transaction-group,referral,player-verification,player-messages/v1/profiles/{uuid}/...,5.85,a9/b10/t6/g2/c3/f1
+[PRIO] www.ozoon.eu/api/v1/signup,5.10,a6/b9/t5/g2/c2/f1
+[PRIO] services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify,4.85,a5/b9/t5/g2/c2/f1
+[PRIO] nfl-pickem-league.ozoon.eu (Supabase cgoqgofzqunixkwcttzi),4.50,a4/b5/t6/g4/c2/f7
+[PRIO] www.ozoon.eu/api/v1/complete-registration,3.80,a4/b7/t4/g2/c2/f5
+[HYP] BOLA on Profile-Keyed UUID Endpoints Across 5 Services
+class: IDOR
+asset: https://services.ozoon.eu/services/{wallet-gateway,transaction-group,referral,player-verification,player-messages}/v1/profiles/{uuid}/...
+confidence: 65
+reasoning: SDK-confirmed {uuid}-path route shape on 5 services; anonymous probes stay 401/159B structured {"errorCode":"unauthorized"} (byte-shape-stable since 2026-09-08 baseline); session↔path-UUID binding never observed because zero authenticated sessions exist (8th empty triage).
+evidence_needed: A's sid reads foreign {B-PID}/balances or /verifications → 200/data vs {A-PID} control; 401/403 = bound.
+verify_steps: [AUTH_HELPED] A signs in; GET /services/wallet-gateway/v1/profiles/{B-PID}/balances vs own {A-PID}/balances control; same for player-verification/v1/profiles/{B-PID}/verifications.
+impact: Critical — cross-player wallet/transaction/PII across 5 services; ATO enabler.
+testability: AUTH_HELPED
+[HYP] Mock-2FA Verification Header Honored = 2FA/KYC Gate Bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify
+confidence: 55
+reasoning: Production SDK sends X-MOCK-2FA-VERIFICATION:true; config two_factor_authenticator.allow-permanent-skip:["true"]; SSR isMockProviderEnabled:false is client-side only and does not resolve server behavior; only differential accept/reject on own account proves it.
+evidence_needed: POST verify {"verificationType":"PHONE"} + header succeeds while byte-identical control without header rejects, on own sid.
+verify_steps: [AUTH_HELPED] signup → own sid; POST .../verifications/verify with X-MOCK-2FA-VERIFICATION:true, then identical control without; compare status/body.
+impact: Critical — 2FA/KYC gate bypass across player base; ATO enabler.
+testability: AUTH_HELPED
+[HYP] Signup Mass-Assignment for role/vip/currency Injection
+class: BUSLOGIC
+asset: https://www.ozoon.eu/api/v1/signup
+confidence: 60
+reasoning: Captcha-free signup (reCaptcha gated to login only), client-controlled attributes/address sub-objects, static 32-hex refSiteToken a0b5…b084 + affiliate.check-referring-site.enabled:["false"]; update DTO strict but signup DTO separate; sole gateway to BOLA/mock-2FA testing.
+evidence_needed: POST signup +role/vip/balance/currency wins over minimal control (elevated account or credited balance).
+verify_steps: [AUTH_HELPED] throwaway signup with extra fields vs minimal control; diff resulting session claims.
+impact: High — privilege escalation / bonus+balance manipulation if honored.
+testability: AUTH_HELPED
+[PARKED] Partner-Join complete-registration mass-assignment: confidence 50 < threshold; GET returns empty 200 {} anonymous; no differential evidence; superseded by signup mass-assignment hypothesis.
+[FINAL] BOLA UUID (65) — survives; highest attack surface + business value.
+[FINAL] Mock-2FA header (55) — survives; critical if honored but isMockProviderEnabled:false is contrary evidence.
+[FINAL] Mass-assignment (60) — survives; sole gateway to authenticated testing.
+[NEXT] HUMAN: Request program authorization at bugs.olivermaicher.eu to create ONE throwaway account on www.ozoon.eu (clearly restricted mutating create, no live customer data touched). Exact scope: POST https://www.ozoon.eu/api/v1/signup with throwaway credentials to obtain session cookie, enabling AUTH_HELPED testing of all three FINAL hypotheses.
+[LEARN] ACCEPTED MISCONFIG @ services.ozoon.eu SSR shell: drift 09-14 → 743,193B sha256 1ddad5e3 (+37B vs 09-13 743,156B, benign ts/version); refSiteToken a0b5…b084, isMockProviderEnabled:false, servicesBaseUrl=services.services.ozoon.eu byte-identical; wallet-gate 401/159B byte-stable.
+[LEARN] ACCEPTED OTHER @ nfl-pickem-league.ozoon.eu: Supabase anon key is public-by-design client credential, not a secret claim; RLS is sole row control.
+[LEARN] REJECTED OTHER @ nfl-pickem-league RLS differential: testing requires reading foreign players' picks = program-prohibited customer-data exposure; PARKED until explicit scope authorization.
+[LEARN] REJECTED OTHER @ ozoon-sportsbook-casino pipeline: triage empty 8th consecutive; no new anonymous evidence generated.
+[RISK] ozoon-sportsbook-casino: 80 — three critical AUTH_HELPED vectors (BOLA UUID 65, Mock-2FA 55, Mass-assignment 60) confirmed via public SDK/config, zero authenticated probes executed across 13 days of testing; platform risk ceiling capped by auth gateway.
