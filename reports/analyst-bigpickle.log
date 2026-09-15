@@ -21748,3 +21748,57 @@ testability: AUTH_HELPED
 ### STEP 7 — RISK
 
 [RISK] ozoon-sportsbook-casino: 80 — three critical AUTH_HELPED vectors (BOLA UUID 65, Mock-2FA 55, Mass-assignment 60) confirmed via public SDK/config, zero authenticated probes executed across 13 days of testing; platform risk ceiling capped by auth gateway.
+===== ANALYST bigpickle 2026-09-15 11:59:12 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mls -la; ls inventory/ 2>/dev/null; ls probe-results.md 2>/dev/null && tail -5 probe-results.md
+total 480
+drwxr-xr-x 12 runner runner   4096 Sep 15 11:55 .
+drwxr-xr-x  3 runner runner   4096 Sep 15 11:55 ..
+drwxr-xr-x  7 runner runner   4096 Sep 15 11:55 .git
+drwxr-xr-x  3 runner runner   4096 Sep 15 11:55 .github
+-rw-r--r--  1 runner runner   1642 Sep 15 11:55 README.md
+-rw-r--r--  1 runner runner     32 Sep 15 11:55 analyst-out.txt
+-rw-r--r--  1 runner runner 197461 Sep 15 11:55 analyst-prompt.txt
+-rw-r--r--  1 runner runner 193724 Sep 15 11:55 ctx.txt
+drwxr-xr-x  2 runner runner   4096 Sep 15 11:55 inventory
+drwxr-xr-x  2 runner runner   4096 Sep 15 11:55 knowledge
+drwxr-xr-x  2 runner runner   4096 Sep 15 11:55 leads
+-rw-r--r--  1 runner runner   4666 Sep 15 11:55 probe-results.md
+drwxr-xr-x  2 runner runner   4096 Sep 15 11:55 recon-notes
+drwxr-xr-x  2 runner runner   4096 Sep 15 11:55 reports
+drwxr-xr-x  2 runner runner   4096 Sep 15 11:55 reposcan-raw
+-rw-r--r--  1 runner runner   3150 Sep 15 11:55 scope.yml
+drwxr-xr-x  2 runner runner   4096 Sep 15 11:55 scripts
+-rw-r--r--  1 runner runner     33 Sep 15 11:55 state_bigpickle.json
+-rw-r--r--  1 runner runner     33 Sep 15 11:55 state_laguna.json
+-rw-r--r--  1 runner runner     33 Sep 15 11:55 state_ling3.json
+-rw-r--r--  1 runner runner     33 Sep 15 11:55 state_longcat.json
+-rw-r--r--  1 runner runner     33 Sep 15 11:55 state_mimo.json
+-rw-r--r--  1 runner runner     33 Sep 15 11:55 state_nemotron3.json
+drwxr-xr-x  2 runner runner   4096 Sep 15 11:55 triage
+ozoon-sportsbook-casino.md
+probe-results.md
+## 2026-09-15 01:22:44 UTC
+
+
+## 2026-09-15 06:23:08 UTC
+[0m
+[0m→ [0mRead scope.yml
+[0m→ [0mRead state_bigpickle.json
+[0m
+[0m$ [0mcurl -s -o /tmp/ozoon_ssr_shell.html -w "%{http_code} %{size_download}" --max-time 15 --connect-timeout 5 -H "User-Agent: Mozilla/5.0" "https://services.ozoon.eu/" 2>/dev/null; echo ""
+200 743953
+[0m
+[0m$ [0msha256sum /tmp/ozoon_ssr_shell.html && grep -oP 'servicesBaseUrl[^"]*"[^"]*"' /tmp/ozoon_ssr_shell.html | head -5 && grep -oP 'isMockProviderEnabled[^,}]*' /tmp/ozoon_ssr_shell.html | head -3 && grep -oP 'reCaptcha\.enabled[^,}]*' /tmp/ozoon_ssr_shell.html | head -3 && grep -oP 'refSiteToken[^"]*"[^"]*"' /tmp/ozoon_ssr_shell.html | head -3 && grep -oP 'two_factor_authenticator[^}]*}' /tmp/ozoon_ssr_shell.html | head -3 && wc -c /tmp/ozoon_ssr_shell.html
+3f10dabd82d4018a8f986b941ecb316d28b9366ca7dc2be25d0065c6b27274ec  /tmp/ozoon_ssr_shell.html
+servicesBaseUrl\":\"
+servicesBaseUrl\":\"
+isMockProviderEnabled\":false
+refSiteToken\":\"
+743953 /tmp/ozoon_ssr_shell.html
+[0m
+[93m[1m! [0mpermission requested: external_directory (/tmp/*); auto-rejecting
+[0m✗ [0msleep 1 && curl -s -o /tmp/ozoon_wallet.json -w "%{http_code} %{size_download}" --max-time 10 --connect-timeout 5 -H "User-Agent: Mozilla/5.0" -H "Content-Type: application/json" "https://services.ozoon.eu/services/wallet-gateway/v1/profiles/00000000-0000-0000-0000-000000000000/balances" 2>/dev/null && echo "" && cat /tmp/ozoon_wallet.json failed
+[91m[1mError: [0mThe user rejected permission to use this specific tool call.
