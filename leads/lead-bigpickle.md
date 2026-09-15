@@ -3705,3 +3705,4 @@ evidence_needed: A reads foreign {B}/balances or /verifications → 200/data vs 
 verify_steps: [AUTH_HELPED] A signs in; GET own {pid}/balances vs {B-PID}/balances; same for .../verifications.
 impact: Critical — cross-player wallet/transaction/PII; ATO enabler.
 testability: AUTH_HELPED
+## 2026-09-15 01:20:48 UTC [target] (model bigpickle)

@@ -21492,3 +21492,188 @@ STEP 6 — LEARNING
 
 STEP 7 — RISK
 - [RISK] ozoon-sportsbook-casino: 81 — new anonymous ungated auth-flow route (complete-registration), third distinct auth-gate fingerprint (integration 403), mock-2FA vector reconfirmed as PUT in prod bundle; decisive tests still gated on an authorized session never granted across 9 empty cycles — surface grew, verification remains blocked.
+===== ANALYST bigpickle 2026-09-15 01:22:44 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mgit log --oneline -5 2>/dev/null; git status --short 2>/dev/null | head -20
+c3f6147 triage 2026-09-15-00-41
+?? analyst-out.txt
+?? analyst-prompt.txt
+?? ctx.txt
+[0m
+[0m$ [0mls -t probe-results.md 2>/dev/null && stat -c '%y %s' probe-results.md 2>/dev/null; ls art/ 2>/dev/null | tail -10
+probe-results.md
+2026-09-15 01:19:37.458236754 +0000 4608
+[0m
+[0m$ [0mtail -40 probe-results.md
+## 2026-09-12 23:23:25 UTC
+
+
+## 2026-09-13 01:30:08 UTC
+
+
+## 2026-09-13 06:54:45 UTC
+
+
+## 2026-09-13 12:59:52 UTC
+
+
+## 2026-09-13 16:45:42 UTC
+
+
+## 2026-09-13 19:17:08 UTC
+
+
+## 2026-09-13 21:28:47 UTC
+
+
+## 2026-09-13 23:37:51 UTC
+
+
+## 2026-09-14 01:43:23 UTC
+
+
+## 2026-09-14 07:18:54 UTC
+
+
+## 2026-09-14 14:27:22 UTC
+
+
+## 2026-09-14 19:33:03 UTC
+
+
+## 2026-09-14 22:48:45 UTC
+[0m
+[0m$ [0mls -t art/ 2>/dev/null | head; cat analyst-prompt.txt 2>/dev/null | head -30
+=== KNOWLEDGE BASE ===
+# Knowledge Base (seed)
+- 2026-09-03 REJECTED SECRET @ www.ozoon.com:3306 — port 3306 response likely shared proxy EOF pattern (identical port set across hosts), not confirmed real MySQL; no auth testing without service confirmation
+- 2026-09-03 ACCEPTED SSRF @ www.ozoon.com — PWS/wnacloud edge is high-value SSRF target class; warrants parameter enumeration
+- 2026-09-03 ACCEPTED BUSLOGIC @ ozoon.eu: Registration form with referral email field, country override, and client-side rendering suggests server-side validation is the only defense. Mass assignment testing requires authenticated interception.
+- 2026-09-03 ACCEPTED IDOR @ services.ozoon.eu: Backend API domain confirmed in HTML source. Micro-frontend architecture means API calls are likely routed through this domain. Discovery requires browser-based interception.
+- 2026-09-03 REJECTED SECRET @ oZoon/hyper, oZoon/mas-film (reposcan): Hardcoded MySQL credentials in GitHub repos are in learning/demo repos, not confirmed deployed to ozoon.com/ozoon.eu infrastructure. Low confidence without deployment confirmation.
+- 2026-09-03 REJECTED OTHER @ oZoon/secure-query-string (reposcan): SQL injection patterns in learning repos. Not confirmed as deployed code. Requires deployment confirmation.
+- 2026-09-03 ACCEPTED IDOR @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: Specific UUID-path BOLA pattern confirmed via SDK bundles; all sensitive resources keyed by profile UUID in path.
+- 2026-09-03 ACCEPTED AUTH @ services.ozoon.eu/services/player-verification/v1/...: X-MOCK-2FA-VERIFICATION header present in production SDK on verification endpoint; potential 2FA/KYC bypass backdoor.
+- 2026-09-04 REJECTED SECRET @ www.ozoon.com:3306 — port 3306 response likely shared proxy EOF pattern (identical port set across hosts), not confirmed real MySQL; no auth testing without service confirmation
+- 2026-09-04 ACCEPTED SSRF @ www.ozoon.com — PWS/wnacloud edge is high-value SSRF target class; warrants parameter enumeration
+- 2026-09-04 ACCEPTED BUSLOGIC @ ozoon.eu: Registration form with referral email field, country override, and client-side rendering suggests server-side validation is the only defense. Mass assignment testing requires authenticated interception.
+- 2026-09-04 ACCEPTED IDOR @ services.ozoon.eu: Backend API domain confirmed in HTML source. Micro-frontend architecture means API calls are likely routed through this domain. Discovery requires browser-based interception.
+- 2026-09-04 REJECTED SECRET @ oZoon/hyper, oZoon/mas-film (reposcan): Hardcoded MySQL credentials in GitHub repos are in learning/demo repos, not confirmed deployed to ozoon.com/ozoon.eu infrastructure. Low confidence without deployment confirmation.
+- 2026-09-04 REJECTED OTHER @ oZoon/secure-query-string (reposcan): SQL injection patterns in learning repos. Not confirmed as deployed code. Requires deployment confirmation.
+- 2026-09-04 ACCEPTED IDOR @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: Specific UUID-path BOLA pattern confirmed via SDK bundles; all sensitive resources keyed by profile UUID in path.
+- 2026-09-04 ACCEPTED AUTH @ services.ozoon.eu/services/player-verification/v1/...: X-MOCK-2FA-VERIFICATION header present in production SDK on verification endpoint; potential 2FA/KYC bypass backdoor.
+- 2026-09-04 ACCEPTED IDOR @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: Confirmed UUID-path BOLA surface across 5 services; binding unresolved; AUTH_HELPED testing required.
+- 2026-09-04 ACCEPTED AUTH @ services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify: Mock-2FA header in production SDK + allow-permanent-skip config; critical if honored.
+- 2026-09-04 ACCEPTED BUSLOGIC @ www.ozoon.eu/api/v1/signup: Captcha-free signup with client-controlled attributes/address; static referral token unverified.
+- 2026-09-04 ACCEPTED AUTH @ services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify: Mock-2FA header in production SDK + allow-permanent-skip config; critical if honored. Requires AUTH_HELPED test (NEXT probe unlocks).
+- 2026-09-04 ACCEPTED BUSLOGIC @ www.ozoon.eu/api/v1/signup: Captcha-free signup with client-controlled attributes/address; static referral token unverified. Gateway probe to unlock authenticated testing.
+- 2026-09-04 REJECTED SECRET @ www.ozoon.com:3306: Port 3306 response likely shared proxy EOF pattern; no auth testing without service confirmation.
+- 2026-09-04 REJECTED SECRET @ oZoon/hyper, oZoon/mas-film: Hardcoded MySQL credentials in learning/demo repos; not confirmed deployed.
+- 2026-09-04 REJECTED OTHER @ oZoon/secure-query-string: SQLi patterns in learning repos; not confirmed deployed.
+- 2026-09-04 ACCEPTED SSRF @ www.ozoon.com: PWS/wnacloud edge is high-value SSRF target class; warrants parameter enumeration (deprioritized vs core platform)
+- 2026-09-04 ACCEPTED AUTH @ services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify: mock-2FA header + allow-permanent-skip config form a single critical gate-bypass vector; requires authorized session.
+- 2026-09-04 ACCEPTED IDOR @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: BOLA surface across 5 services confirmed via SDK bundles; session↔UUID binding unresolved; gated on authorized session.
+- 2026-09-04 ACCEPTED BUSLOGIC @ www.ozoon.eu/api/v1/signup: captcha-free signup with client-controlled attributes/address; static referral token; gateway to all authenticated testing.
+[0m
+[0m$ [0mgit show --stat HEAD 2>/dev/null | head -20; ls -t *.txt *.md 2>/dev/null | head; ls triage/ 2>/dev/null | tail -5
+commit c3f61476cff8c441c33152535f0dfa37d723410b
+Author: github-actions <actions@github.com>
+Date:   Tue Sep 15 00:41:57 2026 +0000
+
+    triage 2026-09-15-00-41
+
+ .github/workflows/hunt.yml                |   250 +
+ .github/workflows/reposcan.yml            |   109 +
+ .github/workflows/sync-issues.yml         |    44 +
+ .github/workflows/triage.yml              |   138 +
+ README.md                                 |    34 +
+ inventory/ozoon-sportsbook-casino.md      |   711 +
+ knowledge/index.md                        |   379 +
+ leads/lead-bigpickle.md                   |  3707 +++++
+ leads/lead-laguna.md                      |    78 +
+ leads/lead-ling3.md                       |    78 +
+ leads/lead-longcat.md                     |    78 +
+ leads/lead-mimo.md                        |     1 +
+ leads/lead-nemotron3.md                   |  4743 ++++++
+ leads/reposcan-ozoon-sportsbook-casino.md |   411 +
+analyst-out.txt
+analyst-prompt.txt
+ctx.txt
+probe-results.md
+README.md
+run-2026-09-14-06-25.md
+run-2026-09-14-13-18.md
+run-2026-09-14-18-43.md
+run-2026-09-14-22-15.md
+run-2026-09-15-00-41.md
+[0m
+[0m$ [0mcat run-2026-09-15-00-41.md 2>/dev/null | head -40; echo "---mimo---"; cat leads/lead-mimo.md 2>/dev/null | head -5
+---mimo---
+# Lead log (seed)
+[0m
+[0m$ [0mBOGUS="00000000-0000-0000-0000-000000000000"; curl -sk -o /tmp/wg.out -w "wallet-gateway: %{http_code} %{size_download}B\n" "https://services.ozoon.eu/services/wallet-gateway/v1/profiles/$BOGUS/balances"; head -c 200 /tmp/wg.out; echo
+wallet-gateway: 401 159B
+{"timestamp":"2026-09-15T01:20:12.805Z","status":401,"message":"Authentication required for requested route","error":"Unauthorized","errorCode":"unauthorized"}
+[0m
+[0m$ [0mcurl -sk -o /tmp/shell.out -w "services shell: %{http_code} %{size_download}B\n" "https://services.ozoon.eu/"; sha256sum /tmp/shell.out 2>/dev/null
+services shell: 200 743203B
+3f2833b6420383ef9adc6fc0321fdc4ac05f73df1b18148d787b191e46f4e774  /tmp/shell.out
+[0m
+[0m$ [0mcurl -s "https://api.certspotter.com/v1/issuances?domain=ozoon.eu&include_subdomains=true&expand=dns_names" 2>/dev/null | grep -o '"dns_names":\[[^]]*\]' | grep -o '"[a-z0-9-]*\.ozoon\.eu"' | sort -u | head -30
+(no output)
+[0m
+[0m$ [0mcurl -s "https://api.certspotter.com/v1/issuances?domain=ozoon.eu&include_subdomains=true&expand=dns_names" -o /tmp/ct.json 2>/dev/null; wc -c /tmp/ct.json; grep -oE '"[a-zA-Z0-9*_-]+\.ozoon\.eu"' /tmp/ct.json | sort -u
+3475 /tmp/ct.json
+"*.ozoon.eu"
+"blog.ozoon.eu"
+"nfl-pickem-league.ozoon.eu"
+"sportsfeeds.ozoon.eu"
+"static.ozoon.eu"
+"www.ozoon.eu"
+[0m
+CT refresh: same known names, zero new subdomains. Let me act on my queued registration-form interception probe (passive chunk fetch) before emitting findings.
+[0m$ [0mfor u in \
+"https://www.ozoon.eu/assets/_next/static/chunks/app/%5Blocale%5D/layout-df512a1a581be543.js" \
+"https://www.ozoon.eu/assets/_next/static/chunks/pantheon-modules-54ad3b04423ff20f.js" ; do
+echo "== $u"; curl -sk -o /tmp/chunk.js -w "%{http_code} %{size_download}B\n" "$u"; done
+== https://www.ozoon.eu/assets/_next/static/chunks/app/%5Blocale%5D/layout-df512a1a581be543.js
+200 59271B
+== https://www.ozoon.eu/assets/_next/static/chunks/pantheon-modules-54ad3b04423ff20f.js
+200 119718B
+[0m
+[0m$ [0mgrep -oE '"/[a-zA-Z0-9/_{}.:-]*(signup|register|auth|login|referral|complete-registration)[a-zA-Z0-9/_{}.:-]*"' /tmp/chunk.js 2>/dev/null | sort -u | head -30; echo "== layout:"; curl -sk "https://www.ozoon.eu/assets/_next/static/chunks/app/%5Blocale%5D/layout-df512a1a581be543.js" -o /tmp/layout.js -w "%{http_code} %{size_download}B\n"; grep -oE '(api/v1|services)/[a-zA-Z0-9/_${}.-]{2,60}' /tmp/layout.js | sort -u | head -30
+"/api/v1/complete-registration"
+"/api/v1/signup"
+"/services/login-service/v1/auth/handoff"
+"/services/login-service/v1/login"
+"/services/referral/v1/profiles/"
+"/services/referral/v1/profiles/tracking/"
+"/services/signup-service/v1/invitation/signup"
+"/services/signup-service/v1/invitation/validate/"
+== layout:
+200 59271B
+services/deviceprotect/
+services/deviceprotect/device-tracking/
+services/deviceprotect/devices/
+services/v1/
+[0m
+New anonymous-registration-breadth endpoints found in chunk. Probing read-only (GET only, 1rps) for the pre-auth classes:
+[0m$ [0mfor p in \
+"services/referral/v1/profiles/tracking/" \
+"services/signup-service/v1/invitation/validate/" \
+"services/signup-service/v1/invitation/signup" \
+"services/login-service/v1/auth/handoff" \
+"services/deviceprotect/device-tracking/"; do
+curl -sk -o /tmp/r.out -w "%{http_code} %{size_download}B  $p\n" "https://services.ozoon.eu/$p"; sleep 1; done
+404 110B  services/referral/v1/profiles/tracking/
+404 110B  services/signup-service/v1/invitation/validate/
+405 142B  services/signup-service/v1/invitation/signup
+405 133B  services/login-service/v1/auth/handoff
+404 110B  services/deviceprotect/device-tracking/
+[0m
+[93m[1m! [0mpermission requested: external_directory (/tmp/*); auto-rejecting
+[0m✗ [0mfor p in "signup-service/v1/invitation/signup" "login-service/v1/auth/handoff"; do
+echo "== $p"; curl -sk "https://services.ozoon.eu/services/$p" -o /tmp/b.out; cat /tmp/b.out; echo; sleep 1; done failed
+[91m[1mError: [0mThe user rejected permission to use this specific tool call.
