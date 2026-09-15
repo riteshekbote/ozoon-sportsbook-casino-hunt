@@ -22588,3 +22588,803 @@ sportsfeeds.ozoon.eu
 static.ozoon.eu
 www.ozoon.eu
 [0m
+===== ANALYST bigpickle 2026-09-15 23:02:18 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mls -la && echo "---" && find . -maxdepth 2 -type f | head -50
+total 488
+drwxr-xr-x 12 runner runner   4096 Sep 15 22:58 .
+drwxr-xr-x  3 runner runner   4096 Sep 15 22:58 ..
+drwxr-xr-x  7 runner runner   4096 Sep 15 22:58 .git
+drwxr-xr-x  3 runner runner   4096 Sep 15 22:58 .github
+-rw-r--r--  1 runner runner   1642 Sep 15 22:58 README.md
+-rw-r--r--  1 runner runner     32 Sep 15 22:58 analyst-out.txt
+-rw-r--r--  1 runner runner 202534 Sep 15 22:58 analyst-prompt.txt
+-rw-r--r--  1 runner runner 198797 Sep 15 22:58 ctx.txt
+drwxr-xr-x  2 runner runner   4096 Sep 15 22:58 inventory
+drwxr-xr-x  2 runner runner   4096 Sep 15 22:58 knowledge
+drwxr-xr-x  2 runner runner   4096 Sep 15 22:58 leads
+-rw-r--r--  1 runner runner   4753 Sep 15 22:58 probe-results.md
+drwxr-xr-x  2 runner runner   4096 Sep 15 22:58 recon-notes
+drwxr-xr-x  2 runner runner   4096 Sep 15 22:58 reports
+drwxr-xr-x  2 runner runner   4096 Sep 15 22:58 reposcan-raw
+-rw-r--r--  1 runner runner   3150 Sep 15 22:58 scope.yml
+drwxr-xr-x  2 runner runner   4096 Sep 15 22:58 scripts
+-rw-r--r--  1 runner runner     33 Sep 15 22:58 state_bigpickle.json
+-rw-r--r--  1 runner runner     33 Sep 15 22:58 state_laguna.json
+-rw-r--r--  1 runner runner     33 Sep 15 22:58 state_ling3.json
+-rw-r--r--  1 runner runner     33 Sep 15 22:58 state_longcat.json
+-rw-r--r--  1 runner runner     33 Sep 15 22:58 state_mimo.json
+-rw-r--r--  1 runner runner     33 Sep 15 22:58 state_nemotron3.json
+drwxr-xr-x  2 runner runner   4096 Sep 15 22:58 triage
+---
+./.git/opencode
+./.git/index
+./.git/HEAD
+./.git/config
+./.git/config.worktree
+./.git/FETCH_HEAD
+./.git/shallow
+./.git/description
+./analyst-out.txt
+./state_nemotron3.json
+./triage/run-2026-09-08-14-07.md
+./triage/run-2026-09-11-18-58.md
+./triage/run-2026-09-04-16-35.md
+./triage/run-2026-09-13-21-15.md
+./triage/run-2026-09-12-21-37.md
+./triage/run-2026-09-05-01-06.md
+./triage/run-2026-09-09-15-16.md
+./triage/run-2026-09-06-09-08.md
+./triage/run-2026-09-12-17-15.md
+./triage/run-2026-09-09-06-04.md
+./triage/run-2026-09-04-07-43.md
+./triage/run-2026-09-09-18-41.md
+./triage/run-2026-09-12-14-12.md
+./triage/run-2026-09-08-20-51.md
+./triage/run-2026-09-03-07-48.md
+./triage/run-2026-09-02-21-52.md
+./triage/run-2026-09-06-12-55.md
+./triage/run-2026-09-13-01-11.md
+./triage/run-2026-09-09-21-29.md
+./triage/run-2026-09-14-18-43.md
+./triage/run-2026-09-03-02-55.md
+./triage/run-2026-09-08-05-11.md
+./triage/run-2026-09-08-09-47.md
+./triage/run-2026-09-14-22-15.md
+./triage/run-2026-09-03-16-40.md
+./triage/run-2026-09-15-00-41.md
+./triage/run-2026-09-15-19-12.md
+./triage/run-2026-09-04-19-07.md
+./triage/run-2026-09-06-00-13.md
+./triage/run-2026-09-14-13-18.md
+./triage/run-2026-09-12-23-19.md
+./triage/run-2026-09-02-23-50.md
+./triage/run-2026-09-07-00-05.md
+./triage/run-2026-09-11-23-31.md
+./triage/run-2026-09-15-15-35.md
+./triage/.gitkeep
+./triage/run-2026-09-14-06-25.md
+./triage/run-2026-09-12-01-31.md
+./triage/run-2026-09-11-15-51.md
+./triage/run-2026-09-13-16-25.md
+[0m
+[0m$ [0mls -la triage/ | tail -15 && echo "===" && cat probe-results.md && echo "===" && cat scope.yml
+-rw-r--r--  1 runner runner   174 Sep 15 22:58 run-2026-09-13-16-25.md
+-rw-r--r--  1 runner runner   407 Sep 15 22:58 run-2026-09-13-18-55.md
+-rw-r--r--  1 runner runner   259 Sep 15 22:58 run-2026-09-13-21-15.md
+-rw-r--r--  1 runner runner   993 Sep 15 22:58 run-2026-09-13-23-13.md
+-rw-r--r--  1 runner runner   142 Sep 15 22:58 run-2026-09-14-01-11.md
+-rw-r--r--  1 runner runner 11475 Sep 15 22:58 run-2026-09-14-06-25.md
+-rw-r--r--  1 runner runner   202 Sep 15 22:58 run-2026-09-14-13-18.md
+-rw-r--r--  1 runner runner   197 Sep 15 22:58 run-2026-09-14-18-43.md
+-rw-r--r--  1 runner runner   255 Sep 15 22:58 run-2026-09-14-22-15.md
+-rw-r--r--  1 runner runner   252 Sep 15 22:58 run-2026-09-15-00-41.md
+-rw-r--r--  1 runner runner   508 Sep 15 22:58 run-2026-09-15-05-48.md
+-rw-r--r--  1 runner runner   364 Sep 15 22:58 run-2026-09-15-11-04.md
+-rw-r--r--  1 runner runner   196 Sep 15 22:58 run-2026-09-15-15-35.md
+-rw-r--r--  1 runner runner 10407 Sep 15 22:58 run-2026-09-15-19-12.md
+-rw-r--r--  1 runner runner   179 Sep 15 22:58 run-2026-09-15-22-18.md
+===
+
+## 2026-09-02 21:55:20 UTC
+
+
+## 2026-09-03 00:00:11 UTC
+
+
+## 2026-09-03 04:18:13 UTC
+
+
+## 2026-09-03 09:03:56 UTC
+
+
+## 2026-09-03 13:36:17 UTC
+
+
+## 2026-09-03 17:24:54 UTC
+https://www.ozoon.com/ -> 200 len=?
+https://www.ozoon.com/api/ -> HTTP 404
+https://www.ozoon.com/robots.txt -> 200 len=?
+https://www.ozoon.com/sitemap.xml -> 200 len=?
+https://www.ozoon.com/hyper/ -> HTTP 404
+https://www.ozoon.com/mas-film/ -> HTTP 404
+https://www.ozoon.com:3306/ -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
+
+## 2026-09-03 20:08:24 UTC
+https://www.ozoon.com/ -> 200 len=?
+https://www.ozoon.com/api/ -> HTTP 404
+https://www.ozoon.com/robots.txt -> 200 len=?
+https://www.ozoon.com/sitemap.xml -> 200 len=?
+
+## 2026-09-03 22:51:16 UTC
+https://www.ozoon.com -> 200 len=?
+https://www.ozoon.com/ -> 200 len=?
+https://www.ozoon.com/api/ -> HTTP 404
+https://www.ozoon.com/robots.txt -> 200 len=?
+https://www.ozoon.com/sitemap.xml -> 200 len=?
+
+## 2026-09-04 00:48:52 UTC
+https://www.ozoon.com -> 200 len=?
+https://www.ozoon.com/ -> 200 len=?
+https://www.ozoon.com/api/ -> HTTP 404
+https://www.ozoon.com/robots.txt -> 200 len=?
+https://www.ozoon.com/sitemap.xml -> 200 len=?
+
+## 2026-09-04 05:14:05 UTC
+https://www.ozoon.com -> 200 len=?
+https://www.ozoon.com/ -> 200 len=?
+https://www.ozoon.com/api/ -> HTTP 404
+https://www.ozoon.com/robots.txt -> 200 len=?
+https://www.ozoon.com/sitemap.xml -> 200 len=?
+
+## 2026-09-04 09:50:35 UTC
+https://www.ozoon.com -> 200 len=?
+https://www.ozoon.com/ -> 200 len=?
+https://www.ozoon.com/api/ -> HTTP 404
+https://www.ozoon.com/robots.txt -> 200 len=?
+https://www.ozoon.com/sitemap.xml -> 200 len=?
+
+## 2026-09-04 14:26:01 UTC
+
+
+## 2026-09-04 18:02:21 UTC
+
+
+## 2026-09-04 20:04:48 UTC
+https://www.ozoon.com/?{url|fetch|callback|import|view -> 200 len=?
+https://www.ozoon.com/?url=https://<collab>/ -> 200 len=?
+
+## 2026-09-04 22:19:16 UTC
+https://www.ozoon.com/?{url|view|page|callback -> 200 len=?
+
+## 2026-09-05 00:16:35 UTC
+
+
+## 2026-09-05 04:46:34 UTC
+https://www.ozoon.com/?{url|view|page|callback -> 200 len=?
+
+## 2026-09-05 08:43:46 UTC
+
+
+## 2026-09-05 12:12:10 UTC
+
+
+## 2026-09-05 15:34:45 UTC
+
+
+## 2026-09-05 17:45:43 UTC
+
+
+## 2026-09-05 19:37:04 UTC
+
+
+## 2026-09-05 21:47:51 UTC
+
+
+## 2026-09-05 23:48:13 UTC
+
+
+## 2026-09-06 04:10:59 UTC
+
+
+## 2026-09-06 08:50:52 UTC
+
+
+## 2026-09-06 12:54:16 UTC
+
+
+## 2026-09-06 16:13:38 UTC
+
+
+## 2026-09-06 18:35:44 UTC
+
+
+## 2026-09-06 20:52:21 UTC
+
+
+## 2026-09-06 22:51:58 UTC
+
+
+## 2026-09-07 00:51:48 UTC
+
+
+## 2026-09-07 05:56:27 UTC
+
+
+## 2026-09-07 12:27:57 UTC
+https://www.ozoon.com,3.0,attack_surface=4,business_value=3,tech_exposure=4,gate_ease=10,cloud_surface=5,freshness=5 -> ERR label too long
+
+## 2026-09-07 17:54:23 UTC
+
+
+## 2026-09-07 21:27:50 UTC
+https://www.ozoon.com,3.5,attack_surface=4,business_value=3,tech_exposure=3,gate_ease=9,cloud_surface=3,freshness=5 -> ERR label too long
+
+## 2026-09-07 23:49:41 UTC
+https://www.ozoon.com -> 200 len=?
+https://www.ozoon.com/?url=http://169.254.169.254/latest/meta-data/ -> 200 len=?
+
+## 2026-09-08 04:11:28 UTC
+
+
+## 2026-09-08 09:02:55 UTC
+
+
+## 2026-09-08 13:34:27 UTC
+
+
+## 2026-09-08 17:50:23 UTC
+
+
+## 2026-09-08 20:21:40 UTC
+
+
+## 2026-09-08 22:49:04 UTC
+https://www.ozoon.com,4.50,attack_surface=5,business_value=3,tech_exposure=4,gate_ease=10,cloud_surface=6,freshness=5 -> ERR label too long
+https://www.ozoon.com -> 200 len=?
+https://www.ozoon.com/?url=http://169.254.169.254/latest/meta-data/ -> 200 len=?
+
+## 2026-09-09 01:19:23 UTC
+
+
+## 2026-09-09 06:12:41 UTC
+
+
+## 2026-09-09 11:42:54 UTC
+
+
+## 2026-09-09 15:34:53 UTC
+
+
+## 2026-09-09 18:46:50 UTC
+
+
+## 2026-09-09 21:39:00 UTC
+
+
+## 2026-09-09 23:35:21 UTC
+
+
+## 2026-09-10 01:33:55 UTC
+
+
+## 2026-09-10 07:03:07 UTC
+
+
+## 2026-09-10 12:02:51 UTC
+
+
+## 2026-09-10 16:16:00 UTC
+
+
+## 2026-09-10 19:17:47 UTC
+
+
+## 2026-09-10 21:47:13 UTC
+
+
+## 2026-09-10 23:57:14 UTC
+
+
+## 2026-09-11 04:23:34 UTC
+
+
+## 2026-09-11 09:21:05 UTC
+
+
+## 2026-09-11 13:46:17 UTC
+
+
+## 2026-09-11 17:23:01 UTC
+
+
+## 2026-09-11 19:53:37 UTC
+
+
+## 2026-09-11 22:25:48 UTC
+
+
+## 2026-09-12 00:40:45 UTC
+
+
+## 2026-09-12 05:07:27 UTC
+
+
+## 2026-09-12 09:29:33 UTC
+
+
+## 2026-09-12 13:13:04 UTC
+
+
+## 2026-09-12 16:27:35 UTC
+
+
+## 2026-09-12 18:52:44 UTC
+
+
+## 2026-09-12 21:23:15 UTC
+
+
+## 2026-09-12 23:23:25 UTC
+
+
+## 2026-09-13 01:30:08 UTC
+
+
+## 2026-09-13 06:54:45 UTC
+
+
+## 2026-09-13 12:59:52 UTC
+
+
+## 2026-09-13 16:45:42 UTC
+
+
+## 2026-09-13 19:17:08 UTC
+
+
+## 2026-09-13 21:28:47 UTC
+
+
+## 2026-09-13 23:37:51 UTC
+
+
+## 2026-09-14 01:43:23 UTC
+
+
+## 2026-09-14 07:18:54 UTC
+
+
+## 2026-09-14 14:27:22 UTC
+
+
+## 2026-09-14 19:33:03 UTC
+
+
+## 2026-09-14 22:48:45 UTC
+
+
+## 2026-09-15 01:22:44 UTC
+
+
+## 2026-09-15 06:23:08 UTC
+
+
+## 2026-09-15 11:59:12 UTC
+
+
+## 2026-09-15 16:50:31 UTC
+
+
+## 2026-09-15 20:14:45 UTC
+
+===
+programs:
+  ozoon-sportsbook-casino:
+    name: Ozoon Bug Bounty
+    disclosure_policy: via bugs.olivermaicher.eu (Oliver Maicher private program) - report + PoC + contact + payment
+    assets:
+      - name: "All infrastructure, brands, services and gaming platforms operated by Ozoon"
+        priority: In
+    out_of_scope:
+- "Network level Denial of Service attacks"
+      - "Application Denial of Service by locking user accounts"
+      - "Descriptive error messages or headers (e.g. Stack Traces, banner grabbing)"
+      - "Disclosure of known public files or directories (e.g. robots.txt)"
+      - "Outdated software / library versions"
+      - "OPTIONS / TRACE HTTP method enabled"
+      - "CSRF on logout"
+      - "CSRF on forms that are available to anonymous users"
+      - "Cookies that lack HTTP Only or Secure settings for non-sensitive data"
+      - "Self-XSS and issues exploitable only through Self-XSS"
+      - "Reports resulting from automated scanning utilities without additional details or a POC demonstrating a specific exploit"
+      - "Attacks requiring physical access to a user's device"
+      - "Attacks dependent upon social engineering of employees or vendors"
+      - "Username enumeration based on login or forgot password pages"
+      - "Enforcement policies for brute force, rate limiting, or account lockout"
+      - "SSL/TLS best practices"
+      - "SSL attacks such as BEAST, BREACH, Renegotiation attack"
+      - "Clickjacking, without additional details demonstrating a specific exploit"
+      - "Mail configuration issues including SPF, DKIM, DMARC settings"
+      - "Use of a known-vulnerable library without a description of an exploit specific to our implementation"
+      - "Password and account recovery policies"
+      - "Presence of autocomplete functionality in form fields"
+      - "Publicly accessible login panels"
+      - "Lack of email address verification during account registration or account invitation"
+      - "Lack of email address verification password restore"
+      - "Session control during email/password changes"
+      - "Social engineering, physical attacks, and DoS/DDoS testing (per program notes)"
+      - "Exposure of customer/employee/financial/authentication data during testing (per program notes)"
+    github_orgs:
+      - none-configured
+
+rules:
+  passive_first: false          # deep-hunt agent: active probes allowed when scoped
+  max_requests_per_second: 1    # never hammer live infra
+  no_doom: true                 # no DoS/DDoS, no account-lockout attacks
+  account_creation: restricted  # only on test/sandbox assets, never live customer data
+  no_data_modification: true    # no writes/deletes on live customer data
+  no_pre_disclosure: true       # never disclose before program response
+  poc_required: true            # scanner output alone is REJECTED
+  redact_secrets_in_commits: true
+
+models:
+  - { id: opencode/big-pickle, name: bigpickle }
+  - { id: opencode/nemotron-3-ultra-free, name: nemotron3 }
+  - { id: opencode/longcat-2.0-free, name: longcat }
+  - { id: opencode/ling-3.0-flash-free, name: ling3 }
+  - { id: opencode/laguna-s-2.1-free, name: laguna }
+[0m
+[0m$ [0mecho "=== triage 09-15-22-18 ===" && cat triage/run-2026-09-15-22-18.md && echo "=== triage 09-15-19-12 (head) ===" && head -40 triage/run-2026-09-15-19-12.md && echo "=== triage 09-14-06-25 (head) ===" && head -30 triage/run-2026-09-14-06-25.md
+=== triage 09-15-22-18 ===
+
+===== TRIAGE 2026-09-15 22:18:01 UTC =====
+[0m
+> build · mimo-v2.5-free
+[0m
+No leads were provided after "LEADS:". Please paste the probe results/leads you want me to triage.
+=== triage 09-15-19-12 (head) ===
+
+===== TRIAGE 2026-09-15 19:12:05 UTC =====
+[0m
+> build · mimo-v2.5-free
+[0m
+[0m✱ [0mGlob "**/*.md"[90m 100 matches[0m
+[0m✱ [0mGlob "**/*scope*"[90m 1 match[0m
+[0m✱ [0mGlob "**/*lead*"[90m 7 matches[0m
+I need to check the workspace for the actual leads and scope information. Let me look at what's available.
+[0m→ [0mRead scope.yml
+[0m→ [0mRead probe-results.md
+[0m→ [0mRead inventory/ozoon-sportsbook-casino.md
+[0m→ [0mRead new-leads.txt
+Let me read the scope, probe results, and lead files.
+[0m→ [0mRead leads/lead-bigpickle.md
+[0m→ [0mRead leads/lead-nemotron3.md
+[0m→ [0mRead leads/lead-longcat.md
+[0m→ [0mRead leads/lead-ling3.md
+[0m→ [0mRead leads/lead-laguna.md
+[0m→ [0mRead triage/run-2026-09-15-15-35.md
+Let me read the lead files and check the latest triage run for the actual leads to validate.
+The message ends with "LEADS:" but no leads were pasted. I'll triage the consolidated unique hypotheses extracted from the active hunt bot outputs (bigpickle + nemotron3). Models longcat, ling3, laguna produced no substantive leads.
+
+---
+
+## TRIAGE — 7-Question Gate
+
+### LEAD 1: BOLA on UUID-Profiled API Endpoints
+**Asset:** `services.ozoon.eu/services/*/v1/profiles/{uuid}/...` (5 services: wallet-gateway, transaction-group, referral, player-verification, player-messages)
+**Class:** IDOR/BOLA | **Confidence:** 65 | **Testability:** AUTH_HELPED
+
+| # | Question | Answer |
+|---|----------|--------|
+| Q1 In scope? | **YES** — scope.yml covers "all infrastructure, brands, services and gaming platforms operated by Ozoon"; services.ozoon.eu is backend API confirmed in HTML `<link rel="preconnect">` |
+| Q2 Attacker reachable? | **YES** — unauthenticated GETs return structured 401 (`errorCode:"unauthorized"`), proving endpoints are live and internet-facing; session cookie (sid) is the only gate |
+| Q3 Real security impact? | **YES** — cross-tenant PII (names, DOB, emails, messages), financial transaction history, wallet balances, referral data; write variants enable account modification on real-money platform |
+| Q4 Provable non-invasively? | **PARTIAL** — requires AUTH_HELPED (two throwaway accounts + swap UUIDs in GET). Not provable from passive recon alone; the 401-unauthenticated baseline is confirmed, but BOLA itself requires authenticated differential testing. No customer data exposure needed. |
+| Q5 Novel/unreported? | **UNKNOWN but plausible** — UUID-path BOLA is a common class; no prior reports found in triage history; server-side binding correctness untested |
+| Q6 Not on always-rejected list? | **YES** — not on out-of-scope list; not DoS, not info disclosure of known-public files, not brute force |
+| Q7 Would reasonable triager accept? | **YES, conditional** — needs authenticated PoC with two accounts showing cross-tenant data return. Hypothesis is strong (5 services × UUID paths × real-money platform) but requires AUTH_HELPED proof. |
+=== triage 09-14-06-25 (head) ===
+
+===== TRIAGE 2026-09-14 06:25:25 UTC =====
+[0m
+> build · mimo-v2.5-free
+[0m
+The LEADS section appears empty. Let me check the workspace for any lead data and scope files.
+[0m✱ [0mGlob "**/scope*"[90m 1 match[0m
+[0m✱ [0mGlob "**/*"[90m 100 matches[0m
+[0m→ [0mRead probe-results.txt
+[0m→ [0mRead probe-results.md
+[0m→ [0mRead new-leads.txt
+[0m→ [0mRead scope.yml
+[0m→ [0mRead inventory/ozoon-sportsbook-casino.md
+Let me read the key files to find the leads and scope.
+[0m→ [0mRead leads/lead-mimo.md
+[0m→ [0mRead leads/lead-longcat.md
+[0m→ [0mRead leads/lead-ling3.md
+[0m→ [0mRead leads/lead-laguna.md
+[0m→ [0mRead leads/lead-bigpickle.md
+[0m→ [0mRead leads/lead-nemotron3.md
+[0m→ [0mRead leads/reposcan-ozoon-sportsbook-casino.md
+Let me read the individual lead files from the leads directory.
+[0m→ [0mRead leads/lead-bigpickle.md[90m [offset=345][0m
+[0m→ [0mRead leads/lead-nemotron3.md[90m [offset=330][0m
+[0m→ [0mRead triage/run-2026-09-14-01-11.md
+Let me read the remaining parts of the key lead files to get the most recent/latest hypotheses.
+Now I have all the data. Let me deduplicate the unique hypotheses across all models (bigpickle, nemotron3, longcat, ling3, laguna) and reposcan, then triage each through the 7-Question Gate.
+
+---
+[0m
+[0m$ [0mgit log --oneline -15 && echo "===" && cat state_bigpickle.json && echo && echo "=== inventory ===" && head -30 inventory/ozoon-sportsbook-casino.md && echo "=== leads ===" && ls -la leads/
+b840b68 triage 2026-09-15-22-18
+===
+{"phase": "POC", "target": "api"}
+=== inventory ===
+# Ozoon inventory (discovery seed 2026-09-02)
+# NOTE: hosts below are discovery candidates from passive DNS/CT; confirm in-scope vs program scope before active testing.
+ozoon.com
+www.ozoon.com
+
+## PASSIVE RECON 2026-09-02 (read-only, non-intrusive)
+
+> Recon observations only. These are NOT confirmed vulnerabilities; ownership/in-scope of each host must be confirmed against the program scope before any active testing. Hosts resolve + serve HTTP — investigation requires scoped authorization.
+
+**Probed:** 2 hosts | **Live HTTP:** 1
+
+| Host | Status | Server/Tech |
+|---|---|---|
+| `www.ozoon.com` | 200 | Server: PWS/8.3.1.0.8; Via: 1.1 PS-MAA-01KXf40:1 ( |
+
+**CNAME review signals (1):**
+- `www.ozoon.com` -> `www.ozoon.com.wnacloud.com`
+
+## DEEP SERVICE SCAN 2026-09-02 (read-only connect+banner)
+**Host:** `www.ozoon.com` | **Ports:** [80, 443, 1080, 1433, 2082, 2083, 2086, 2087, 3306, 7001, 7070, 8000, 8009, 8080, 8081, 8082, 8083, 8088, 8090, 8443, 8800, 8888, 9000, 9090, 9200, 9999, 10000, 50070]
+**Non-web ports observed:** [1080, 1433, 2082, 2083, 2086, 2087, 3306, 7001, 7070, 8000, 8009, 8080, 8081, 8082, 8083, 8088, 8090, 8443, 8800, 8888, 9000, 9090, 9200, 9999, 10000, 50070]
+> NOTE: repeated identical non-web port sets (e.g. 2082,2083,2086,2087,8080,8443) across many hosts and wide port sets are likely a shared edge/proxy answering EOF, NOT confirmed real services. Verify with a proper port scanner (e.g. nmap) under authorization before treating as real. These are surface-map hints only, not findings.
+
+## 2026-09-02 21:55:20 UTC
+
+## 2026-09-03 00:00:11 UTC
+
+## 2026-09-03 04:18:13 UTC
+
+## 2026-09-03 09:03:56 UTC
+=== leads ===
+total 1508
+drwxr-xr-x  2 runner runner   4096 Sep 15 22:58 .
+drwxr-xr-x 12 runner runner   4096 Sep 15 22:58 ..
+-rw-r--r--  1 runner runner 538965 Sep 15 22:58 lead-bigpickle.md
+-rw-r--r--  1 runner runner   4233 Sep 15 22:58 lead-laguna.md
+-rw-r--r--  1 runner runner   4150 Sep 15 22:58 lead-ling3.md
+-rw-r--r--  1 runner runner   4316 Sep 15 22:58 lead-longcat.md
+-rw-r--r--  1 runner runner     18 Sep 15 22:58 lead-mimo.md
+-rw-r--r--  1 runner runner 924440 Sep 15 22:58 lead-nemotron3.md
+-rw-r--r--  1 runner runner  37791 Sep 15 22:58 reposcan-ozoon-sportsbook-casino.md
+[0m
+[0m$ [0mtail -40 inventory/ozoon-sportsbook-casino.md && echo "=== leads-laguna ===" && cat leads/lead-laguna.md | head -60
+- CHANGED Zero authenticated probes executed against core platform (`ozoon.eu`/`services.ozoon.eu`) across all 18+ probe rounds; all probes target only `www.ozoon.com` marketing edge — critical testing gap unch
+- CHANGED Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway at `www.ozoon.eu/api/v1/signup`
+- CHANGED `services.ozoon.eu` SSR shell config-drift 09-14 probe → 743,193B sha256 `1ddad5e3`; `refSiteToken` byte-stable, `isMockProviderEnabled:false`, `servicesBaseUrl=services.services.ozoon.eu` unchanged
+- CHANGED Pipeline: triage empty (8th consecutive), probe-results.md no new data, certspotter CT refresh → same 7 names, zero new subdomains
+- CHANGED `wallet-gateway` bogus-UUID `/balances` → 401/159B structured `{"errorCode":"unauthorized"}` byte-shape-stable — auth pre-check intact
+- CHANGED SSRF at `www.ozoon.com` formally INVALID'd by triage 06:38 — all `?url=?view=?page=` probes → catch-all 200, no collab callback; PWS/wnacloud behavior indistinguishable from catch-all
+
+## 2026-09-15 11:59:12 UTC
+- NEW Inventory still lists ONLY `ozoon.com`/`www.ozoon.com` (marketing edge); `ozoon.eu` (core gambling platform) and `services.ozoon.eu` (backend API) confirmed in-scope per scope.yml but **absent from in
+- NEW 4 live in-scope subdomains from CT enumeration absent from inventory: `nfl-pickem-league.ozoon.eu` (Vercel/Remix + Supabase), `static.ozoon.eu` (2nd PWS SSR front), `blog.ozoon.eu`, `sportsfeeds.ozoon
+- NEW `nfl-pickem-league.ozoon.eu` exposes complete Supabase client init in public JS: URL `cgoqgofzqunixkwcttzi.supabase.co` + anon key `sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM` (SBP v2, public-by-d
+- NEW `static.ozoon.eu` SSR shell carries `servicesBaseUrl=https://services.ozoon.eu` (public entry) vs `services.ozoon.eu` shell carrying split-horizon `services.services.ozoon.eu` — config split fingerpri
+- CHANGED Zero authenticated probes executed against core platform (`ozoon.eu`/`services.ozoon.eu`) across all 18+ probe rounds; all probes target only `www.ozoon.com` marketing edge — critical testing gap unch
+- CHANGED Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway at `www.ozoon.eu/api/v1/signup`
+- CHANGED `services.ozoon.eu` SSR shell config-drift 09-14 probe → 743,193B sha256 `1ddad5e3`; `refSiteToken` byte-stable, `isMockProviderEnabled:false`, `servicesBaseUrl=services.services.ozoon.eu` unchanged
+- CHANGED Pipeline: triage empty (8th consecutive), probe-results.md no new data, certspotter CT refresh → same 7 names, zero new subdomains
+- CHANGED `wallet-gateway` bogus-UUID `/balances` → 401/159B structured `{"errorCode":"unauthorized"}` byte-shape-stable — auth pre-check intact
+- CHANGED SSRF at `www.ozoon.com` formally INVALID'd by triage 06:38 — all `?url=?view=?page=` probes → catch-all 200, no collab callback; PWS/wnacloud behavior indistinguishable from catch-all
+
+## 2026-09-15 16:50:31 UTC
+- CHANGED Inventory file still lists ONLY ozoon.com/www.ozoon.com; ozoon.eu (core platform) and services.ozoon.eu (backend API) confirmed in-scope per scope.yml but absent from inventory
+- CHANGED Zero authenticated probes executed against core platform (ozoon.eu/services.ozoon.eu) across all 18+ probe rounds; all probes target only www.ozoon.com marketing edge
+- CHANGED SSRF at www.ozoon.com formally INVALID'd by triage 06:38 — all ?url=?view=?page= probes → catch-all 200, no collab callback
+- CHANGED services.ozoon.eu SSR shell config-drift 09-14 probe → 743,193B sha256 1ddad5e3; refSiteToken byte-stable, isMockProviderEnabled:false, servicesBaseUrl=services.services.ozoon.eu unchanged
+- CHANGED wallet-gateway bogus-UUID /balances → 401/159B structured {"errorCode":"unauthorized"} byte-shape-stable — auth pre-check intact
+- NEW 4 live in-scope subdomains from CT enumeration absent from inventory: nfl-pickem-league.ozoon.eu (Vercel/Remix + Supabase), static.ozoon.eu (2nd PWS SSR front), blog.ozoon.eu, sportsfeeds.ozoon.eu
+- NEW nfl-pickem-league.ozoon.eu exposes complete Supabase client init in public JS: URL cgoqgofzqunixkwcttzi.supabase.co + anon key sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM (SBP v2, public-by-design)
+- NEW static.ozoon.eu SSR shell carries servicesBaseUrl=https://services.ozoon.eu (public entry) vs services.ozoon.eu shell carrying split-horizon services.services.ozoon.eu — config split fingerprint
+- CHANGED Pipeline: triage empty (8th consecutive), probe-results.md no new data, certspotter CT refresh → same 7 names, zero new subdomains
+
+## 2026-09-15 20:14:45 UTC
+- NEW 4 live in-scope subdomains from CT enumeration absent from inventory: nfl-pickem-league.ozoon.eu (Vercel/Remix + Supabase), static.ozoon.eu (2nd PWS SSR front), blog.ozoon.eu, sportsfeeds.ozoon.eu
+- NEW nfl-pickem-league.ozoon.eu exposes complete Supabase client init in public JS: URL cgoqgofzqunixkwcttzi.supabase.co + anon key sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM (SBP v2, public-by-design)
+- NEW static.ozoon.eu SSR shell carries servicesBaseUrl=https://services.ozoon.eu (public entry) vs services.ozoon.eu shell carrying split-horizon services.services.ozoon.eu — config split fingerprint
+- CHANGED Inventory file still lists ONLY ozoon.com/www.ozoon.com; ozoon.eu (core platform) and services.ozoon.eu (backend API) confirmed in-scope per scope.yml but absent from inventory
+- CHANGED Zero authenticated probes executed against core platform (ozoon.eu/services.ozoon.eu) across all 18+ probe rounds; all probes target only www.ozoon.com marketing edge
+- CHANGED SSRF at www.ozoon.com formally INVALID'd by triage 06:38 — all ?url=?view=?page= probes → catch-all 200, no collab callback
+- CHANGED services.ozoon.eu SSR shell config-drift 09-14 probe → 743,193B sha256 1ddad5e3; refSiteToken byte-stable, isMockProviderEnabled:false, servicesBaseUrl=services.services.ozoon.eu unchanged
+- CHANGED wallet-gateway bogus-UUID /balances → 401/159B structured {"errorCode":"unauthorized"} byte-shape-stable — auth pre-check intact
+- CHANGED Pipeline: triage empty (8th consecutive), probe-results.md no new data, certspotter CT refresh → same 7 names, zero new subdomains
+=== leads-laguna ===
+## 2026-09-03 17:13:57 UTC [target] (model laguna)
+## 2026-09-03 19:59:02 UTC [target] (model laguna)
+## 2026-09-03 22:29:43 UTC [target] (model laguna)
+## 2026-09-04 00:29:41 UTC [target] (model laguna)
+## 2026-09-04 05:08:56 UTC [target] (model laguna)
+## 2026-09-04 09:45:55 UTC [target] (model laguna)
+## 2026-09-04 14:09:10 UTC [target] (model laguna)
+## 2026-09-04 17:40:26 UTC [target] (model laguna)
+## 2026-09-04 19:59:05 UTC [target] (model laguna)
+## 2026-09-04 22:17:29 UTC [target] (model laguna)
+## 2026-09-05 00:15:53 UTC [target] (model laguna)
+## 2026-09-05 04:42:27 UTC [target] (model laguna)
+## 2026-09-05 08:41:58 UTC [target] (model laguna)
+## 2026-09-05 12:07:20 UTC [target] (model laguna)
+## 2026-09-05 15:23:51 UTC [target] (model laguna)
+## 2026-09-05 17:39:17 UTC [target] (model laguna)
+## 2026-09-05 19:32:39 UTC [target] (model laguna)
+## 2026-09-05 21:44:18 UTC [target] (model laguna)
+## 2026-09-05 23:43:10 UTC [target] (model laguna)
+## 2026-09-06 04:08:14 UTC [target] (model laguna)
+## 2026-09-06 08:44:02 UTC [target] (model laguna)
+## 2026-09-06 12:47:40 UTC [target] (model laguna)
+## 2026-09-06 16:07:29 UTC [target] (model laguna)
+## 2026-09-06 18:25:17 UTC [target] (model laguna)
+## 2026-09-06 20:49:45 UTC [target] (model laguna)
+## 2026-09-06 22:50:07 UTC [target] (model laguna)
+## 2026-09-07 00:49:23 UTC [target] (model laguna)
+## 2026-09-07 05:54:05 UTC [target] (model laguna)
+## 2026-09-07 12:10:52 UTC [target] (model laguna)
+## 2026-09-07 17:46:55 UTC [target] (model laguna)
+## 2026-09-07 21:23:53 UTC [target] (model laguna)
+## 2026-09-07 23:47:00 UTC [target] (model laguna)
+## 2026-09-08 04:09:01 UTC [target] (model laguna)
+## 2026-09-08 08:55:47 UTC [target] (model laguna)
+## 2026-09-08 13:29:31 UTC [target] (model laguna)
+## 2026-09-08 17:30:53 UTC [target] (model laguna)
+## 2026-09-08 20:18:16 UTC [target] (model laguna)
+## 2026-09-08 22:46:47 UTC [target] (model laguna)
+## 2026-09-09 01:09:25 UTC [target] (model laguna)
+## 2026-09-09 06:08:20 UTC [target] (model laguna)
+## 2026-09-09 11:37:54 UTC [target] (model laguna)
+## 2026-09-09 15:24:54 UTC [target] (model laguna)
+## 2026-09-09 18:44:34 UTC [target] (model laguna)
+## 2026-09-09 21:36:08 UTC [target] (model laguna)
+## 2026-09-09 23:33:40 UTC [target] (model laguna)
+## 2026-09-10 01:28:19 UTC [target] (model laguna)
+## 2026-09-10 06:43:49 UTC [target] (model laguna)
+## 2026-09-10 11:54:17 UTC [target] (model laguna)
+## 2026-09-10 16:13:20 UTC [target] (model laguna)
+## 2026-09-10 19:11:11 UTC [target] (model laguna)
+## 2026-09-10 21:43:16 UTC [target] (model laguna)
+## 2026-09-10 23:55:43 UTC [target] (model laguna)
+## 2026-09-11 04:21:08 UTC [target] (model laguna)
+## 2026-09-11 09:08:58 UTC [target] (model laguna)
+## 2026-09-11 13:39:21 UTC [target] (model laguna)
+## 2026-09-11 17:17:14 UTC [target] (model laguna)
+## 2026-09-11 19:51:46 UTC [target] (model laguna)
+## 2026-09-11 22:24:29 UTC [target] (model laguna)
+## 2026-09-12 00:38:29 UTC [target] (model laguna)
+## 2026-09-12 05:05:54 UTC [target] (model laguna)
+[0m
+[0m$ [0mtimeout 15 curl -sS -o /dev/null -w "wallet-gate:%{http_code}:%{size_download}\n" "https://services.ozoon.eu/services/wallet-gateway/v1/profiles/00000000-0000-0000-0000-000000000000/balances" 2>&1; timeout 15 curl -sS -o /dev/null -w "shell:%{http_code}:%{size_download}\n" "https://services.ozoon.eu/" 2>&1; timeout 15 curl -sS -o /dev/null -w "ct:%{http_code}\n" "https://api.certspotter.com/v1/issuances?domain=ozoon.eu&include_subdomains=true&expand=dns_names" 2>&1
+wallet-gate:401:159
+shell:200:743947
+ct:200
+[0m
+[0m$ [0mtimeout 20 curl -sS "https://api.certspotter.com/v1/issuances?domain=ozoon.eu&include_subdomains=true&expand=dns_names" | python3 -c "import sys,json; d=json.load(sys.stdin); names=set(); [names.update(i.get('dns_names',[])) for i in d]; print('TOTAL CERTS',len(d)); print('\n'.join(sorted(n for n in names if n.endswith('.ozoon.eu') or n=='ozoon.eu')))" 2>&1
+TOTAL CERTS 7
+*.ozoon.eu
+blog.ozoon.eu
+nfl-pickem-league.ozoon.eu
+ozoon.eu
+sportsfeeds.ozoon.eu
+static.ozoon.eu
+www.ozoon.eu
+[0m
+[0m$ [0mtimeout 20 curl -sS -o /tmp/opencode/sb_openapi.json -w "openapi:%{http_code}:%{size_download}\n" -H "apikey: sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM" -H "Authorization: Bearer sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM" "https://cgoqgofzqunixkwcttzi.supabase.co/rest/v1/" 2>&1; python3 -c "
+import json,sys
+try:
+    d=json.load(open('/tmp/opencode/sb_openapi.json'))
+    p=d.get('paths',{})
+    print('PATHS',len(p))
+    for k in sorted(p)[:40]: print(k)
+    info=d.get('info',{}); print('TITLE',info.get('title'))
+except Exception as e:
+    print('parse-fail',e)
+" 2>&1
+openapi:401:98
+PATHS 0
+TITLE None
+[0m
+[0m$ [0mcat /tmp/opencode/sb_openapi.json; echo; timeout 20 curl -sS -o /dev/null -w "probe2:%{http_code}:%{size_download}\n" -H "apikey: sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM" -H "Authorization: Bearer sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM" "https://cgoqgofzqunixkwcttzi.supabase.co/rest/v1/information_schema.tables" 2>&1
+{"message":"Secret API key required","hint":"Only secret API keys can be used for this endpoint."}
+probe2:404:138
+[0m
+[0m$ [0mtimeout 25 curl -sS "https://services.ozoon.eu/" -o /tmp/opencode/shell.html 2>&1; python3 -c "
+import hashlib,re
+b=open('/tmp/opencode/shell.html','rb').read()
+print('SIZE',len(b))
+print('SHA256',hashlib.sha256(b).hexdigest())
+s=b.decode('utf-8','ignore')
+for pat in ['refSiteToken','reCaptcha','isMockProviderEnabled','servicesBaseUrl','X-MOCK-2FA','allow-permanent-skip','profileupdateform']:
+    hits=[m.start() for m in re.finditer(re.escape(pat),s)]
+    print(pat,len(hits))
+    for h in hits[:3]:
+        seg=s[max(0,h-40):h+80].replace(chr(10),' ')
+        print('   ...',seg)
+"
+SIZE 743947
+SHA256 19974e767df406c612819892093d61b47bf49e6ed863582e79d49032f3d0073e
+refSiteToken 1
+   ... cUAAAAAJ4B8pbbh8EFdv1iTtoC6FG9ljkC\"},\"refSiteToken\":\"a0b5b21a0e7cdbad660f4ce03481b084\",\"responsiveSlidesEnabled\":
+reCaptcha 1
+   ... "],\"profileIdentifiers\":[\"email\"],\"reCaptcha\":{\"enabled\":false,\"publicKey\":\"6LdenecUAAAAAJ4B8pbbh8EFdv1iTtoC6
+isMockProviderEnabled 1
+   ... l,{\"children\":[\"$\",\"$L14\",null,{\"isMockProviderEnabled\":false,\"children\":\"$L15\"}]}],\"$L16\"],\"data-part\":
+servicesBaseUrl 2
+   ... 11\",null,false,[\"$\",\"$L12\",null,{\"servicesBaseUrl\":\"https://services.services.ozoon.eu\"}],[\"$\",\"$L13\",null,
+   ... "https://chat.ozoon.eu/webChat.html\",\"servicesBaseUrl\":\"https://services.services.ozoon.eu\"},\"children\":[[\"$\",\
+X-MOCK-2FA 0
+allow-permanent-skip 0
+profileupdateform 0
+[0m
+STEP 1 — DELTA:
+- [NEW] Supabase surface closure: `GET https://cgoqgofzqunixkwcttzi.supabase.co/rest/v1/` (OpenAPI) with public anon key → 401 `{"message":"Secret API key required","hint":"Only secret API keys can be used for this endpoint."}` — schema introspection is key-level gated; `information_schema.tables` guess → 404/138B; last passive enrichment path on nfl-pickem closed.
+- [CHANGED] services.ozoon.eu shell drift (fresh curl-fetch, raw-body): 743,947B sha256 `19974e767df406c612819892093d61b47bf49e6ed863582e79d49032f3d0073e` (+754B vs 09-14 tooling baseline, benign); `refSiteToken a0b5b21a0e7cdbad660f4ce03481b084`, `reCaptcha.enabled:false`, `isMockProviderEnabled:false`, `servicesBaseUrl=https://services.services.ozoon.eu` all byte-identical.
+- [CHANGED] wallet-gate re-probe: `GET /services/wallet-gateway/v1/profiles/{0000…}/balances` → 401/159B — byte-shape-stable auth-gate baseline intact.
+- [CHANGED] pipeline: triage 09-15-22:18 empty (9th consecutive); certspotter refresh → same 7 names (zero new subdomains); no new anonymous evidence.
+
+STEP 2 — PRIORITIZE:
+[PRIO] services.ozoon.eu/services/{wallet-gateway,transaction-group,referral,player-verification,player-messages}/v1/profiles/{uuid}/...,6.70,a8/b10/t8/g2/c2/f5
+[PRIO] services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify,5.80,a6/b9/t7/g2/c2/f5
+[PRIO] www.ozoon.eu/api/v1/signup,5.05,a5/b8/t6/g2/c1/f5
+[PRIO] nfl-pickem-league.ozoon.eu (Supabase cgoqgofzqunixkwcttzi),4.55,a3/b4/t4/g6/c7/f6
+
+STEP 3 — HYPOTHESES:
+[HYP] BOLA on Profile-Keyed UUID Endpoints Across 5 Services
+class: IDOR
+asset: https://services.ozoon.eu/services/{wallet-gateway,transaction-group,referral,player-verification,player-messages}/v1/profiles/{uuid}/...
+confidence: 65
+reasoning: SDK-confirmed {uuid}-path route shape on 5 services; my fresh read-only probe today → 401/159B structured {"errorCode":"unauthorized"}; byte-shape-stable since 2026-09-08 baseline; zero authenticated sessions exist so session→path-UUID binding never observed (9th empty triage).
+evidence_needed: A reads foreign B's /balances or /verifications → 200/data vs own control; 401/403 = bound.
+verify_steps: [AUTH_HELPED] A signs in; GET own {A}/services/wallet-gateway/.../profiles/{A-PID}/balances vs {B-PID}; repeat on player-verification/.../verifications.
+impact: Critical — cross-player wallet/transactions/PII across 5 services; ATO enabler.
+testability: AUTH_HELPED
+[HYP] Mock-2FA Verification Header Honored = 2FA/KYC Gate Bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify
+confidence: 55
+reasoning: production SDK sends X-MOCK-2FA-VERIFICATION:true; config two_factor_authenticator.allow-permanent-skip:["true"]; SSR isMockProviderEnabled:false reconfirmed byte-identical today but is a client-side flag and does not resolve server behavior.
+evidence_needed: POST verify {"verificationType":"PHONE"} + header succeeds while byte-identical control without rejects, on own sid.
+verify_steps: [AUTH_HELPED] signup → own sid; POST .../verifications/verify with X-MOCK-2FA-VERIFICATION:true then identical control without; compare status/body.
+impact: Critical — 2FA/KYC gate bypass across player base; ATO enabler.
+testability: AUTH_HELPED
+[HYP] Signup Mass-Assignment for role/vip/currency Injection
+class: BUSLOGIC
+asset: https://www.ozoon.eu/api/v1/signup
+confidence: 60
+reasoning: captcha-free signup (reCaptcha.enabled:false reconfirmed today, gated login-only), client-controlled attributes/address sub-objects, static refSiteToken a0b5…b084 byte-stable with affiliate.check-referring-site.enabled:["false"]; update DTO strict but signup DTO separate; sole gateway to all authenticated testing.
+evidence_needed: POST signup +role/vip/balance vs minimal control wins → elevated account or credited balance.
+verify_steps: [AUTH_HELPED] throwaway signup with extra fields vs minimal control; diff resulting session claims.
+impact: High — privilege escalation / bonus+balance manipulation.
+testability: AUTH_HELPED
+
+STEP 4 — SELF-CRITIQUE:
+[PARKED] nfl-pickem-league Supabase RLS differential: requires reading foreign players' picks = program-prohibited customer-data exposure; additionally now schema introspection is key-gated (OpenAPI 401 "Secret API key required") so no passive path remains. PARKED until explicit scope authorization.
+[PARKED] Partner-join complete-registration mass-assignment: confidence 50 < threshold; no differential evidence.
+[FINAL] BOLA UUID (65) — survives; highest attack surface + business value; binding unverifiable anonymously.
+[FINAL] Mass-assignment (60) — survives; sole gateway to authenticated testing.
+[FINAL] Mock-2FA header (55) — survives; critical if honored; client-side false flag is contrary but not dispositive.
+
+STEP 5 — NEXT ACTION:
+[NEXT] HUMAN: Request program authorization at bugs.olivermaicher.eu for ONE restricted throwaway account creation on www.ozoon.eu (POST /api/v1/signup, no live customer data, account deletion after) to obtain a session cookie enabling AUTH_HELPED testing of all three FINAL hypotheses — the only remaining unblock; passive testing is exhausted (9 consecutive empty triages, byte-stable surface).
+
+STEP 6 — LEARNING:
+[LEARN] ACCEPTED MISCONFIG @ services.ozoon.eu SSR shell: fresh raw-body snapshot 743,947B sha256 19974e76…; refSiteToken a0b5…b084 / reCaptcha.enabled:false / isMockProviderEnabled:false / servicesBaseUrl=services.services.ozoon.eu byte-identical to 09-14; new curl-tooling baseline hash for cheap diffs.
+[LEARN] REJECTED OTHER @ nfl-pickem-league Supabase: GET /rest/v1/ with publishable anon key → 401 {"message":"Secret API key required"} — schema catalog is key-level gated, not a vuln; closes last passive enrichment path on this surface.
+[LEARN] REJECTED OTHER @ nfl-pickem-league Supabase: information_schema.tables guess → 404/138B; no row/table leak exposed anonymously; keep probes off (parked differential).
+[LEARN] REJECTED OTHER @ ozoon-sportsbook-casino pipeline: triage 09-15-22:18 empty (9th consecutive), certspotter → same 7 names, probe-results only drift rows; no new anonymous evidence this cycle.
+
+STEP 7 — RISK:
+[RISK] ozoon-sportsbook-casino: 80 — three critical AUTH_HELPED vectors (BOLA UUID 65, Mass-assignment 60, Mock-2FA 55) confirmed via public SDK/config remain unprobed after 13 days because every testing path is gated on auth that requires human authorization for a single restricted throwaway signup; anonymous surface byte-stable; risk ceiling unchanged.

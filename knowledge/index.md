@@ -401,3 +401,7 @@
 - 2026-09-15 ACCEPTED OTHER @ nfl-pickem-league.ozoon.eu: Supabase anon key is public-by-design client credential, not a secret claim; RLS is sole row control.
 - 2026-09-15 REJECTED OTHER @ nfl-pickem-league RLS differential: testing requires reading foreign players' picks = program-prohibited customer-data exposure; PARKED until explicit scope authorization.
 - 2026-09-15 REJECTED OTHER @ ozoon-sportsbook-casino pipeline: triage empty 8th consecutive; no new anonymous evidence generated.
+- 2026-09-15 ACCEPTED MISCONFIG @ services.ozoon.eu SSR shell: fresh raw-body snapshot 743,947B sha256 19974e76…; refSiteToken a0b5…b084 / reCaptcha.enabled:false / isMockProviderEnabled:false / servicesBaseUrl=services.services.ozoon.eu byte-identical to 09-14; new curl-tooling baseline hash for cheap diffs.
+- 2026-09-15 REJECTED OTHER @ nfl-pickem-league Supabase: GET /rest/v1/ with publishable anon key → 401 {"message":"Secret API key required"} — schema catalog is key-level gated, not a vuln; closes last passive enrichment path on this surface.
+- 2026-09-15 REJECTED OTHER @ nfl-pickem-league Supabase: information_schema.tables guess → 404/138B; no row/table leak exposed anonymously; keep probes off (parked differential).
+- 2026-09-15 REJECTED OTHER @ ozoon-sportsbook-casino pipeline: triage 09-15-22:18 empty (9th consecutive), certspotter → same 7 names, probe-results only drift rows; no new anonymous evidence this cycle.
