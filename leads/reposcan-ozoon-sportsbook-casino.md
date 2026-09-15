@@ -469,3 +469,5 @@ reasoning: Both apps set `error_reporting(E_ALL)` and `ini_set('display_errors',
 impact: Low-Medium — Information disclosure; aids attackers in mapping application internals and discovering injection points.
 verify_steps: Trigger a malformed request to any ozoon PHP endpoint to verify error output is shown
 TARGET_ORG not configured for ozoon-sportsbook-casino; skipping public-org deep scan.
+## REPOSCAN 2026-09-15 12:43:12 UTC
+TARGET_ORG not configured for ozoon-sportsbook-casino; skipping public-org deep scan.
