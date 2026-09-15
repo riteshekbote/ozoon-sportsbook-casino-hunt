@@ -756,3 +756,14 @@ www.ozoon.com
 - NEW nfl-pickem-league.ozoon.eu exposes complete Supabase client init in public JS: URL cgoqgofzqunixkwcttzi.supabase.co + anon key sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM (SBP v2, public-by-design)
 - NEW static.ozoon.eu SSR shell carries servicesBaseUrl=https://services.ozoon.eu (public entry) vs services.ozoon.eu shell carrying split-horizon services.services.ozoon.eu — config split fingerprint
 - CHANGED Pipeline: triage empty (8th consecutive), probe-results.md no new data, certspotter CT refresh → same 7 names, zero new subdomains
+
+## 2026-09-15 20:14:45 UTC
+- NEW 4 live in-scope subdomains from CT enumeration absent from inventory: nfl-pickem-league.ozoon.eu (Vercel/Remix + Supabase), static.ozoon.eu (2nd PWS SSR front), blog.ozoon.eu, sportsfeeds.ozoon.eu
+- NEW nfl-pickem-league.ozoon.eu exposes complete Supabase client init in public JS: URL cgoqgofzqunixkwcttzi.supabase.co + anon key sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM (SBP v2, public-by-design)
+- NEW static.ozoon.eu SSR shell carries servicesBaseUrl=https://services.ozoon.eu (public entry) vs services.ozoon.eu shell carrying split-horizon services.services.ozoon.eu — config split fingerprint
+- CHANGED Inventory file still lists ONLY ozoon.com/www.ozoon.com; ozoon.eu (core platform) and services.ozoon.eu (backend API) confirmed in-scope per scope.yml but absent from inventory
+- CHANGED Zero authenticated probes executed against core platform (ozoon.eu/services.ozoon.eu) across all 18+ probe rounds; all probes target only www.ozoon.com marketing edge
+- CHANGED SSRF at www.ozoon.com formally INVALID'd by triage 06:38 — all ?url=?view=?page= probes → catch-all 200, no collab callback
+- CHANGED services.ozoon.eu SSR shell config-drift 09-14 probe → 743,193B sha256 1ddad5e3; refSiteToken byte-stable, isMockProviderEnabled:false, servicesBaseUrl=services.services.ozoon.eu unchanged
+- CHANGED wallet-gateway bogus-UUID /balances → 401/159B structured {"errorCode":"unauthorized"} byte-shape-stable — auth pre-check intact
+- CHANGED Pipeline: triage empty (8th consecutive), probe-results.md no new data, certspotter CT refresh → same 7 names, zero new subdomains

@@ -22353,3 +22353,238 @@ https://www.ozoon.com/?url=http://169.254.169.254/latest/meta-data/ -> 200 len=?
 [0m✗ [0mcurl -s -o /tmp/ssr.html -w "SSR %{http_code} %{size_download}B\n" --max-time 30 "https://services.ozoon.eu/" ; ls -la /tmp/ssr.html 2>/dev/null; curl -s -o /tmp/wg.json -w "WG %{http_code} %{size_download}B\n" --max-time 30 "https://services.ozoon.eu/services/wallet-gateway/v1/profiles/00000000-0000-0000-0000-000000000000/balances"; cat /tmp/wg.json; echo failed
 [91m[1mError: [0mThe user rejected permission to use this specific tool call.
 Pipeline confirmed empty (9th consecutive). Running two standard read-only drift probes to verify surface stability before writing the analysis.
+===== ANALYST bigpickle 2026-09-15 20:14:45 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mls -la && git log --oneline -5 2>/dev/null
+total 488
+drwxr-xr-x 12 runner runner   4096 Sep 15 20:06 .
+drwxr-xr-x  3 runner runner   4096 Sep 15 20:05 ..
+drwxr-xr-x  7 runner runner   4096 Sep 15 20:06 .git
+drwxr-xr-x  3 runner runner   4096 Sep 15 20:05 .github
+-rw-r--r--  1 runner runner   1642 Sep 15 20:05 README.md
+-rw-r--r--  1 runner runner     32 Sep 15 20:06 analyst-out.txt
+-rw-r--r--  1 runner runner 201056 Sep 15 20:06 analyst-prompt.txt
+-rw-r--r--  1 runner runner 197319 Sep 15 20:06 ctx.txt
+drwxr-xr-x  2 runner runner   4096 Sep 15 20:05 inventory
+drwxr-xr-x  2 runner runner   4096 Sep 15 20:05 knowledge
+drwxr-xr-x  2 runner runner   4096 Sep 15 20:05 leads
+-rw-r--r--  1 runner runner   4724 Sep 15 20:05 probe-results.md
+drwxr-xr-x  2 runner runner   4096 Sep 15 20:05 recon-notes
+drwxr-xr-x  2 runner runner   4096 Sep 15 20:05 reports
+drwxr-xr-x  2 runner runner   4096 Sep 15 20:05 reposcan-raw
+-rw-r--r--  1 runner runner   3150 Sep 15 20:05 scope.yml
+drwxr-xr-x  2 runner runner   4096 Sep 15 20:05 scripts
+-rw-r--r--  1 runner runner     33 Sep 15 20:05 state_bigpickle.json
+-rw-r--r--  1 runner runner     33 Sep 15 20:05 state_laguna.json
+-rw-r--r--  1 runner runner     33 Sep 15 20:05 state_ling3.json
+-rw-r--r--  1 runner runner     33 Sep 15 20:05 state_longcat.json
+-rw-r--r--  1 runner runner     33 Sep 15 20:05 state_mimo.json
+-rw-r--r--  1 runner runner     33 Sep 15 20:05 state_nemotron3.json
+drwxr-xr-x  2 runner runner   4096 Sep 15 20:05 triage
+a79b055 triage 2026-09-15-19-12
+[0m
+[0m✱ [0mGlob "**/*.md"[90m 100 matches[0m
+[0m
+[0m$ [0mgit log --oneline -15 && echo ---- && ls -la triage/ | tail -8 && echo ---- && cat triage/run-2026-09-15-19-12.md && echo ---- && cat triage/run-2026-09-15-15-35.md
+a79b055 triage 2026-09-15-19-12
+----
+-rw-r--r--  1 runner runner   202 Sep 15 20:05 run-2026-09-14-13-18.md
+-rw-r--r--  1 runner runner   197 Sep 15 20:05 run-2026-09-14-18-43.md
+-rw-r--r--  1 runner runner   255 Sep 15 20:05 run-2026-09-14-22-15.md
+-rw-r--r--  1 runner runner   252 Sep 15 20:05 run-2026-09-15-00-41.md
+-rw-r--r--  1 runner runner   508 Sep 15 20:05 run-2026-09-15-05-48.md
+-rw-r--r--  1 runner runner   364 Sep 15 20:05 run-2026-09-15-11-04.md
+-rw-r--r--  1 runner runner   196 Sep 15 20:05 run-2026-09-15-15-35.md
+-rw-r--r--  1 runner runner 10407 Sep 15 20:05 run-2026-09-15-19-12.md
+----
+
+===== TRIAGE 2026-09-15 19:12:05 UTC =====
+[0m
+> build · mimo-v2.5-free
+[0m
+[0m✱ [0mGlob "**/*.md"[90m 100 matches[0m
+[0m✱ [0mGlob "**/*scope*"[90m 1 match[0m
+[0m✱ [0mGlob "**/*lead*"[90m 7 matches[0m
+I need to check the workspace for the actual leads and scope information. Let me look at what's available.
+[0m→ [0mRead scope.yml
+[0m→ [0mRead probe-results.md
+[0m→ [0mRead inventory/ozoon-sportsbook-casino.md
+[0m→ [0mRead new-leads.txt
+Let me read the scope, probe results, and lead files.
+[0m→ [0mRead leads/lead-bigpickle.md
+[0m→ [0mRead leads/lead-nemotron3.md
+[0m→ [0mRead leads/lead-longcat.md
+[0m→ [0mRead leads/lead-ling3.md
+[0m→ [0mRead leads/lead-laguna.md
+[0m→ [0mRead triage/run-2026-09-15-15-35.md
+Let me read the lead files and check the latest triage run for the actual leads to validate.
+The message ends with "LEADS:" but no leads were pasted. I'll triage the consolidated unique hypotheses extracted from the active hunt bot outputs (bigpickle + nemotron3). Models longcat, ling3, laguna produced no substantive leads.
+
+---
+
+## TRIAGE — 7-Question Gate
+
+### LEAD 1: BOLA on UUID-Profiled API Endpoints
+**Asset:** `services.ozoon.eu/services/*/v1/profiles/{uuid}/...` (5 services: wallet-gateway, transaction-group, referral, player-verification, player-messages)
+**Class:** IDOR/BOLA | **Confidence:** 65 | **Testability:** AUTH_HELPED
+
+| # | Question | Answer |
+|---|----------|--------|
+| Q1 In scope? | **YES** — scope.yml covers "all infrastructure, brands, services and gaming platforms operated by Ozoon"; services.ozoon.eu is backend API confirmed in HTML `<link rel="preconnect">` |
+| Q2 Attacker reachable? | **YES** — unauthenticated GETs return structured 401 (`errorCode:"unauthorized"`), proving endpoints are live and internet-facing; session cookie (sid) is the only gate |
+| Q3 Real security impact? | **YES** — cross-tenant PII (names, DOB, emails, messages), financial transaction history, wallet balances, referral data; write variants enable account modification on real-money platform |
+| Q4 Provable non-invasively? | **PARTIAL** — requires AUTH_HELPED (two throwaway accounts + swap UUIDs in GET). Not provable from passive recon alone; the 401-unauthenticated baseline is confirmed, but BOLA itself requires authenticated differential testing. No customer data exposure needed. |
+| Q5 Novel/unreported? | **UNKNOWN but plausible** — UUID-path BOLA is a common class; no prior reports found in triage history; server-side binding correctness untested |
+| Q6 Not on always-rejected list? | **YES** — not on out-of-scope list; not DoS, not info disclosure of known-public files, not brute force |
+| Q7 Would reasonable triager accept? | **YES, conditional** — needs authenticated PoC with two accounts showing cross-tenant data return. Hypothesis is strong (5 services × UUID paths × real-money platform) but requires AUTH_HELPED proof. |
+
+**Verdict: HOLD**
+**Reason:** Strong hypothesis with high impact but requires authenticated testing to prove. Blocked by `account_creation:restricted` policy. Needs program authorization for throwaway account creation before proof can be assembled.
+**If proven:** CVSS 3.1 — **8.6 (High)** (AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:N/A:N for read; AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N for write)
+**Reporting:** bugs.olivermaicher.eu — include two-account PoC with UUID swap, response diff, and affected service list.
+
+---
+
+### LEAD 2: Mock-2FA Header Verification Bypass
+**Asset:** `services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify`
+**Class:** AUTH bypass | **Confidence:** 55-60 | **Testability:** AUTH_HELPED
+
+| # | Question | Answer |
+|---|----------|--------|
+| Q1 In scope? | **YES** — services.ozoon.eu is in-scope backend API for Ozoon's gambling platform |
+| Q2 Attacker reachable? | **YES** — endpoint returns 401 unauthenticated; live and internet-facing |
+| Q3 Real security impact? | **YES, CRITICAL if honored** — bypasses 2FA/SMS/PIN/KYC gates on withdraw, deposit, and bonus claiming on a real-money crypto+Interac platform. Money security control bypass. |
+| Q4 Provable non-invasively? | **PARTIAL** — requires AUTH_HELPED (own session + POST with header vs without). Evidence from public SDK (`X-MOCK-2FA-VERIFICATION` header in production bundle) + config (`two_factor_authenticator.allow-permanent-skip:["true"]`) is strong circumstantial evidence but not proof. Server-side flag `isMockProviderEnabled:false` found in client code is mild contrary evidence (confidence reduced 60→55 by bigpickle). |
+| Q5 Novel/unreported? | **UNKNOWN** — mock verification headers are a known anti-pattern but specific to this implementation; no prior reports |
+| Q6 Not on always-rejected list? | **YES** — not on any rejection list |
+| Q7 Would reasonable triager accept? | **YES, conditional** — needs authenticated PoC showing header honored (200 success) vs header absent (rejection). Strong circumstantial evidence (SDK + config) but server-side honoring is unverified. |
+
+**Verdict: HOLD**
+**Reason:** Critical if confirmed but unproven. `isMockProviderEnabled:false` in client code is contrary evidence. Requires AUTH_HELPED test with throwaway account. Program authorization needed.
+**If proven:** CVSS 3.1 — **9.1 (Critical)** (AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N)
+**Reporting:** bugs.olivermaicher.eu — include request/response pair with and without mock header, and session context.
+
+---
+
+### LEAD 3: Registration Mass Assignment / Business Logic Bypass
+**Asset:** `www.ozoon.eu/api/v1/signup`
+**Class:** BUSLOGIC/mass-assignment | **Confidence:** 60 | **Testability:** AUTH_HELPED
+
+| # | Question | Answer |
+|---|----------|--------|
+| Q1 In scope? | **YES** — ozoon.eu is core gambling platform; signup endpoint is part of the gaming platform |
+| Q2 Attacker reachable? | **YES** — signup POST is internet-facing; reCAPTCHA NOT enforced on signup (only on login per public config); WAF blocks GET but POST behavior untested |
+| Q3 Real security impact? | **MEDIUM-HIGH** — referral bonus fraud, territory/regulatory softblock bypass, possible privilege elevation if mass assignment on role/vip fields |
+| Q4 Provable non-invasively? | **PARTIAL** — requires AUTH_HELPED (register control account + register test account with extra fields). Client-controlled `attributes` and `address` sub-objects are confirmed from public config. Server-side stripping vs persistence is the open question. Can observe profileupdateform schema (read-only) to map known server fields as baseline. |
+| Q5 Novel/unreported? | **UNKNOWN** — captcha-free signup on a gambling platform is notable; mass assignment is a common class but specific to this implementation |
+| Q6 Not on always-rejected list? | **YES** — not on rejection list. NOTE: `account_creation:restricted` policy applies — explicit program authorization required for test accounts. |
+| Q7 Would reasonable triager accept? | **YES, conditional** — needs PoC showing injected fields (role, vip_level, balance) persisting in profile after registration. Referral token bypass with static `refSiteToken` could be lower bar. |
+
+**Verdict: HOLD**
+**Reason:** Promising but unproven. Requires AUTH_HELPED test (account creation) which is restricted by policy. Circumstantial evidence strong (captcha-free signup + client-controlled attributes + static referral token).
+**If proven:** CVSS 3.1 — **7.2-8.1 (High)** depending on what persists (referral fraud = 7.2; role escalation = 8.1)
+**Reporting:** bugs.olivermaicher.eu — include before/after profile comparison showing injected fields persisted.
+
+---
+
+### LEAD 4: PWS Edge SSRF to Cloud Metadata
+**Asset:** `www.ozoon.com`
+**Class:** SSRF | **Confidence:** 55 | **Testability:** PASSIVE
+
+| # | Question | Answer |
+|---|----------|--------|
+| Q1 In scope? | **YES** — www.ozoon.com is in inventory; scope.yml covers all Ozoon infrastructure |
+| Q2 Attacker reachable? | **YES** — fully public, no auth required; PWS/8.3.1.0.8 on wnacloud.com shared edge |
+| Q3 Real security impact? | **YES, CRITICAL if confirmed** — cloud metadata credentials → full cloud account compromise |
+| Q4 Provable non-invasively? | **PARTIAL** — probe-results.md shows `?url=http://169.254.169.254/latest/meta-data/` returned 200 but no collab callback evidence is recorded. The 200 response is inconclusive (all params return 200 on this server — it's likely a catch-all). No outbound callback proof exists. Requires collab server to confirm. |
+| Q5 Novel/unreported? | **UNKNOWN** — SSRF on PWS shared hosting edges is a known class; specific to ozoon.com untested |
+| Q6 Not on always-rejected list? | **YES** — not on rejection list. Out-of-scope "descriptive error messages" and "banner grabbing" do not apply to SSRF. |
+| Q7 Would reasonable triager accept? | **NO (currently)** — pure speculation. No parameter accepting URLs has been confirmed to trigger server-side fetch. The 200 responses are inconclusive. Would need collab callback proof. |
+
+**Verdict: INVALID**
+**Reason:** No proof of server-side fetch. All `?url=` variants return 200 (catch-all response), no collab hit recorded. Hypothesis is speculative — PWS shared hosting does not guarantee fetch/proxy functionality. Confidence too low for acceptance.
+**If proven:** CVSS 3.1 — **9.8 (Critical)** (AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H)
+**Reporting:** Would need collab callback evidence + metadata response body to report.
+
+---
+
+## Summary
+
+| Lead | Verdict | Confidence | Key Blocker |
+|------|---------|------------|-------------|
+| BOLA UUID endpoints | **HOLD** | 65 | Needs AUTH_HELPED (two accounts) |
+| Mock-2FA header bypass | **HOLD** | 55-60 | Needs AUTH_HELPED + contrary `isMockProviderEnabled:false` evidence |
+| Registration mass assignment | **HOLD** | 60 | Needs AUTH_HELPED (account creation restricted) |
+| PWS Edge SSRF | **INVALID** | 55 | No proof of server-side fetch; speculative |
+
+**All three HOLD leads share the same blocker:** `account_creation:restricted` policy prevents the authenticated testing needed to prove them. The hunt bot should request explicit program authorization for throwaway account creation before proceeding.
+
+**Note:** No leads were pasted in the user's message. This triage was derived from the consolidated hunt bot outputs in the lead files.
+----
+
+===== TRIAGE 2026-09-15 15:35:53 UTC =====
+[0m
+> build · mimo-v2.5-free
+[0m
+No leads provided. Please paste the probe results and lead list so I can validate each against the 7-Question Gate.
+[0m
+[0m→ [0mRead probe-results.md
+[0m
+[0m$ [0mgit show --stat a79b055 | head -30 && echo ---- && git show a79b055 -- triage/run-2026-09-15-19-12.md | grep -E '^[+-]' | grep -vE '^[+-][+-]' | grep -iE 'new|chang' | head -20
+commit a79b055af104e3bf8e7f26170c694a9fef956ae5
+Author: github-actions <actions@github.com>
+Date:   Tue Sep 15 19:12:05 2026 +0000
+
+    triage 2026-09-15-19-12
+
+ .github/workflows/hunt.yml                |   250 +
+ .github/workflows/reposcan.yml            |   109 +
+ .github/workflows/sync-issues.yml         |    44 +
+ .github/workflows/triage.yml              |   138 +
+ README.md                                 |    34 +
+ inventory/ozoon-sportsbook-casino.md      |   758 +
+ knowledge/index.md                        |   403 +
+ leads/lead-bigpickle.md                   |  3753 +++++
+ leads/lead-laguna.md                      |    82 +
+ leads/lead-ling3.md                       |    82 +
+ leads/lead-longcat.md                     |    82 +
+ leads/lead-mimo.md                        |     1 +
+ leads/lead-nemotron3.md                   |  5022 +++++++
+ leads/reposcan-ozoon-sportsbook-casino.md |   475 +
+ probe-results.md                          |   290 +
+ recon-notes/DEDICATED-DEEP.md             |    21 +
+ reports/analyst-bigpickle.log             | 22355 ++++++++++++++++++++++++++++
+ reports/analyst-laguna.log                |   656 +
+ reports/analyst-ling3.log                 |   656 +
+ reports/analyst-longcat.log               |   656 +
+ reports/analyst-nemotron3.log             | 14861 ++++++++++++++++++
+ reports/hypotheses-bigpickle.txt          |     1 +
+ reports/hypotheses-laguna.txt             |     1 +
+ reports/hypotheses-ling3.txt              |     1 +
+----
++[0m→ [0mRead new-leads.txt
+[0m
+[0m$ [0mfor f in leads/lead-bigpickle.md leads/lead-nemotron3.md leads/lead-longcat.md leads/lead-ling3.md leads/lead-laguna.md leads/lead-mimo.md; do echo "== $f ($(wc -l < $f) lines, mtime $(stat -c %y $f | cut -d. -f1))"; done
+== leads/lead-bigpickle.md (3753 lines, mtime 2026-09-15 20:05:57)
+== leads/lead-nemotron3.md (5022 lines, mtime 2026-09-15 20:05:57)
+== leads/lead-longcat.md (82 lines, mtime 2026-09-15 20:05:57)
+== leads/lead-ling3.md (82 lines, mtime 2026-09-15 20:05:57)
+== leads/lead-laguna.md (82 lines, mtime 2026-09-15 20:05:57)
+== leads/lead-mimo.md (1 lines, mtime 2026-09-15 20:05:57)
+[0m
+[93m[1m! [0mpermission requested: external_directory (/proc/sys/kernel/random/*); auto-rejecting
+[0m✗ [0mtimeout 25 curl -s -o /dev/null -w "wallet-gateway: HTTP %{http_code} len=%{size_download} ttfb=%{time_starttransfer}s\n" "https://services.ozoon.eu/services/wallet-gateway/v1/profiles/$(cat /proc/sys/kernel/random/uuid)/balances" ; sleep 1; timeout 25 curl -s -w "\nssr shell: HTTP %{http_code} len=%{size_download}\n" "https://services.ozoon.eu/" | sha256sum; sleep 1 failed
+[91m[1mError: [0mThe user rejected permission to use this specific tool call.
+[0m
+[0m$ [0mtimeout 30 curl -s "https://api.certspotter.com/v1/issuances?domain=ozoon.eu&include_subdomains=true&expand=dns_names" | python3 -c "import sys,json; d=json.load(sys.stdin); s=set(); [s.add(dn) for c in d for dn in c.get('dns_names',[])]; print(len(s)); print('\n'.join(sorted(s)))" 2>&1 | head -30
+7
+*.ozoon.eu
+blog.ozoon.eu
+nfl-pickem-league.ozoon.eu
+ozoon.eu
+sportsfeeds.ozoon.eu
+static.ozoon.eu
+www.ozoon.eu
+[0m
