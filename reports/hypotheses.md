@@ -2339,3 +2339,5 @@
 - LEARN: REJECTED SSRF @ www.ozoon.com: triage 06:38 verdict INVALID — ?url=?view=?page= all 200 len=? catch-all shared-edge responses, no collab callback; PWS/wnacloud 
 - LEARN: ACCEPTED MISCONFIG @ services.ozoon.eu SSR shell: config-drift probe 09-14 → 743,193B sha256 1ddad5e3 (+37B vs 09-13 743,156B, benign ts/version); refSiteToken 
 - LEARN: REJECTED OTHER @ ozoon-sportsbook-casino pipeline: triage empty (8th consecutive), probe-results.md no new data, certspotter CT refresh → same 7 names, zero new
+
+## RANKED HYPOTHESES 2026-09-16 20:02:34 UTC

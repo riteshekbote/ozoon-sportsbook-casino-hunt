@@ -24629,3 +24629,129 @@ STEP 6 — LEARNING
 
 STEP 7 — RISK
 - [RISK] ozoon-sportsbook-casino: 80 — three critical AUTH_HELPED vectors (BOLA UUID 65, Mass-assignment 60, Mock-2FA 55) confirmed via public SDK/config remain unprobed after 14+ days, every path gated on human authorization for one restricted throwaway signup; 16:38 drift confirms anonymous surface byte-stable and passive testing exhausted; risk ceiling unchanged pending authorization.
+===== ANALYST bigpickle 2026-09-16 20:02:34 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mls -la /home/runner/work/ozoon-sportsbook-casino-hunt/ozoon-sportsbook-casino-hunt
+total 528
+drwxr-xr-x 12 runner runner   4096 Sep 16 19:42 .
+drwxr-xr-x  3 runner runner   4096 Sep 16 19:42 ..
+drwxr-xr-x  7 runner runner   4096 Sep 16 19:42 .git
+drwxr-xr-x  3 runner runner   4096 Sep 16 19:42 .github
+-rw-r--r--  1 runner runner   1642 Sep 16 19:42 README.md
+-rw-r--r--  1 runner runner     32 Sep 16 19:42 analyst-out.txt
+-rw-r--r--  1 runner runner 224850 Sep 16 19:42 analyst-prompt.txt
+-rw-r--r--  1 runner runner 221113 Sep 16 19:42 ctx.txt
+drwxr-xr-x  2 runner runner   4096 Sep 16 19:42 inventory
+drwxr-xr-x  2 runner runner   4096 Sep 16 19:42 knowledge
+drwxr-xr-x  2 runner runner   4096 Sep 16 19:42 leads
+-rw-r--r--  1 runner runner   4898 Sep 16 19:42 probe-results.md
+drwxr-xr-x  2 runner runner   4096 Sep 16 19:42 recon-notes
+drwxr-xr-x  2 runner runner   4096 Sep 16 19:42 reports
+drwxr-xr-x  2 runner runner   4096 Sep 16 19:42 reposcan-raw
+-rw-r--r--  1 runner runner   3150 Sep 16 19:42 scope.yml
+drwxr-xr-x  2 runner runner   4096 Sep 16 19:42 scripts
+-rw-r--r--  1 runner runner     33 Sep 16 19:42 state_bigpickle.json
+-rw-r--r--  1 runner runner     33 Sep 16 19:42 state_laguna.json
+-rw-r--r--  1 runner runner     33 Sep 16 19:42 state_ling3.json
+-rw-r--r--  1 runner runner     33 Sep 16 19:42 state_longcat.json
+-rw-r--r--  1 runner runner     33 Sep 16 19:42 state_mimo.json
+-rw-r--r--  1 runner runner     33 Sep 16 19:42 state_nemotron3.json
+drwxr-xr-x  2 runner runner   4096 Sep 16 19:42 triage
+[0m
+[0m✱ [0mGlob "**/*.md"[90m 100 matches[0m
+[0m✱ [0mGlob "**/*.yml"[90m 1 match[0m
+[0m→ [0mRead scope.yml
+[0m→ [0mRead probe-results.md
+[0m→ [0mRead state_bigpickle.json
+[0m→ [0mRead leads/lead-bigpickle.md
+[0m→ [0mRead leads/lead-nemotron3.md
+[0m→ [0mRead reports/hypotheses.md
+[0m→ [0mRead inventory/ozoon-sportsbook-casino.md
+[0m
+[0m$ [0mcurl -s -o /tmp/opencode/ssr.bin -w "SSR status=%{http_code} size=%{size_download}\n" --max-time 30 https://services.ozoon.eu/ ; sha256sum /tmp/opencode/ssr.bin ; sleep 1.2 ; curl -s -o /tmp/opencode/wallet.txt -w "WALLET status=%{http_code} size=%{size_download}\n" --max-time 30 "https://services.ozoon.eu/services/wallet-gateway/v1/profiles/00000000-0000-4000-8000-000000000000/balances" ; cat /tmp/opencode/wallet.txt
+SSR status=200 size=745184
+5f18ef43786e9827680c2fb2f1c9318651637e0f5b5a72520fc50773bb3b0a0e  /tmp/opencode/ssr.bin
+WALLET status=401 size=159
+{"timestamp":"2026-09-16T19:44:36.488Z","status":401,"message":"Authentication required for requested route","error":"Unauthorized","errorCode":"unauthorized"}
+[0m
+## Objective
+- Act as the analyst in the recurring Ozoon bug bounty pipeline cycle: run the mandated 8 steps (DELTA → PRIORITIZE → HYPOTHESES → SELF-CRITIQUE → NEXT ACTION → LEARNING → RISK) and emit ONLY structured blocks, grounded in the knowledge base and repo files, with passive-first read-only probes only.
+- Keep the three AUTH_HELPED hypotheses (BOLA UUID 65, signup mass-assignment 60, mock-2FA header 55) ranked and unprobed; the only viable unblock is a HUMAN authorization request for one restricted throwaway signup.
+
+## Important Details
+- Program: `ozoon-sportsbook-casino`; disclosure via `bugs.olivermaicher.eu`; in-scope = "All infrastructure, brands, services and gaming platforms operated by Ozoon"; out-of-scope incl. exposure of customer/employee/financial/authentication data during testing.
+- Hard rules: passive-first, ≤1 rps, GET/HEAD/OPTIONS only for live probes; no auth-bypass/mutating tests against live customer data; AUTH_HELPED gating; no endpoint-map-only findings; sha256 any secrets; REJECTED classes (descriptive errors, WSGI/port-EOF artifacts, learning-repo creds/SQLi, third-party hosts) — carry forward as REJECTED.
+- Current NEXT from last cycle is HUMAN: request program authorization to create ONE throwaway account, then POST `https://www.ozoon.eu/api/v1/signup` `{"email":"<throwaway>@<valid-domain>","password":"Test1234!","country":"CA","language":"en","attributes":{},"address":{"country":"CA","addressLine":"123 Test St","postalCode":"K1A 0A6"}}`, capture sid+ownPID, baseline GET `https://services.ozoon.eu/services/wallet-gateway/v1/profiles/{ownPID}/balances` (expect 200 vs anonymous 401 `{"errorCode":"unauthorized"}`).
+- Confirmed stable fingerprints: `refSiteToken` `a0b5…b084` byte-stable; `reCaptcha.enabled:false`; `isMockProviderEnabled:false` (client-side only); `servicesBaseUrl=https://services.services.ozoon.eu` (split-horizon, NXDOMAIN public); `SETTLE: wallet-gateway bogus-UUID /balances → 401/159B` byte-shape-stable; SSR shell 09-15 raw-body baseline 743,947B sha256 `19974e76…`.
+- Inventory gap: `inventory/ozoon-sportsbook-casino.md` still lists only `ozoon.com`/`www.ozoon.com`; `ozoon.eu` + `services.ozoon.eu` confirmed in-scope per scope.yml but absent.
+- SSRF @ www.ozoon.com formally INVALID (triage 2026-09-10 06:38): `?url=?view=?page=` → catch-all 200, no collab callback; PWS/wnacloud indistinguishable from catch-all.
+- Assertions must be traceable to KB context or own read-only probes; no new anonymous evidence has been produced for 9 consecutive pipeline cycles.
+
+## Work State
+### Completed
+- Read repo grounding files this cycle: `scope.yml`, `inventory/ozoon-sportsbook-casino.md` (ozoon.com/www.ozoon.com only), `probe-results.md` (cycles 2026-09-02 → 09-16; recent cycles empty), `state_bigpickle.json`/`state_*.json` (all `{"phase": "POC", "target": "api"}`), `leads/lead-bigpickle.md`, `leads/lead-nemotron3.md`, `reports/hypotheses.md`.
+- KB delta vs prior tail: 2026-09-16 REJECTED OTHER @ `oZoon/diploma`, `oZoon/diploma-try` (Unsplash key — liveness confirmed, learning-repo credential, no deployed reuse); 2026-09-16 pipeline triage 10:03 + reposcan empty (9th consecutive empty cycle, no new anonymous evidence).
+- Risk remains 81/100: real-money sportsbook/casino/poker, micro-frontend API fully mapped via public SDK/config, three critical AUTH_HELPED vectors, zero authenticated probes ever executed.
+
+### Active
+- Preparing the 8-step structured output for this cycle (DELTA includes the diploma reposcan row + 9th-consecutive-empty pipeline row; PRIORITIZE focuses `services.ozoon.eu` API surface and `www.ozoon.eu/api/v1/signup`; HYPOTHESES = the three existing AUTH_HELPED candidates; SELF-CRITIQUE keeps them as FINAL 65/60/55; NEXT remains HUMAN authorization request; LEARNING/REJECTED rows carried forward).
+- Possible live work this cycle: one passive drift check (`GET https://services.ozoon.eu/` hash/size vs 743,947B/`19974e76…`; `GET /services/wallet-gateway/v1/profiles/{bogus-uuid}/balances` → expect 401/159B) if a probe is emitted — not yet executed.
+
+### Blocked
+- All three FINAL hypotheses `AUTH_HELPED` — no authorized session exists; signup POST is a mutating create on a live real-money platform requiring explicit program authorization (HUMAN action at bugs.olivermaicher.eu).
+- nfl-pickem-league RLS differential PARKED: verifying requires reading foreign players' picks = program-prohibited customer-data exposure.
+- No network probing has been executed in this cycle; pipeline triage/reposcan produced nothing (9th consecutive).
+
+## Next Move
+1. Emit the 8 structured blocks only (STEP 1 DELTA → STEP 7 RISK) with `[NEXT] HUMAN: Request program authorization ... to create ONE throwaway account on www.ozoon.eu/api/v1/signup` as the single next action (exact payload above).
+2. If any passive probe is included, make it exactly one read-only drift GET at ≤1 rps: `GET https://services.ozoon.eu/services/wallet-gateway/v1/profiles/{bogus-uuid}/balances` (expect 401/159B) to reconfirm the byte-stable baseline, then carry the 3 FINAL AUTH_HELPED hypotheses forward unchanged.
+
+## Relevant Files
+- `scope.yml`: program scope/OOS rules (disclosure via bugs.olivermaicher.eu; broad asset clause).
+- `inventory/ozoon-sportsbook-casino.md`: only ozoon.com/www.ozoon.com; ozoon.eu & services.ozoon.eu missing (known recurring gap).
+- `probe-results.md`: cycle log; recent cycles empty/byte-unchanged — source for the "9th consecutive empty" delta.
+- `leads/lead-bigpickle.md`, `leads/lead-nemotron3.md`, `leads/lead-laguna.md`, `leads/lead-ling3.md`, `leads/lead-longcat.md`, `leads/lead-mimo.md`: model hypothesis/lead sources carried into KB.
+- `reports/hypotheses.md`: ranked hypothesis history; `reports/valid-bugs.md`: (none/empty).
+- `triage/run-2026-09-10-06-38.md`: formal INVALID verdict for www.ozoon.com PWS-edge SSRF; other `triage/run-*.md`: empty-cycle evidence.
+- `knowledge/index.md`, `reposcan-raw/`: KB and repo-scan artifacts backing LEARN/REJECTED rows.
+- `analyst-prompt.txt`, `ctx.txt`, `analyst-out.txt`: cycle input/context/output plumbing — analyst-out.txt is the destination for this cycle's structured blocks.
+Continue if you have next steps, or stop and ask for clarification if you are unsure how to proceed.
+`drift-probe 2026-09-16 19:44 UTC` complete. Structure-only output below.
+
+---
+
+## STEP 1 — DELTA
+1. `[LEARN] SSR-shell drift @ https://services.ozoon.eu/`: 2026-09-15 baseline 743,947B / sha256 `19974e76…` → 2026-09-16 19:44 745,184B (+1,237B) / sha256 `5f18ef43786e9827680c2fb2f1c9318651637e0f5b5a72520fc50773bb3b0a0e`. Content hash NEW (not the 09-14 `1ddad5e3` either). Code or dynamic-inject section touched; low signal, feed into next-cycle drift re-check.
+2. `[LEARN] wallet-gateway baseline stable`: `GET /services/wallet-gateway/v1/profiles/00000000-0000-4000-8000-000000000000/balances` → 401/159B, shape `{"timestamp":"<rot>","status":401,"message":"Authentication required for requested route","error":"Unauthorized","errorCode":"unauthorized"}` — byte-shape stable (timestamp rotates).
+3. `[LEARN] REJECTED OTHER @ ozoon-sportsbook-casino pipeline`: triage/reposcan still empty per KB tail → no new anonymous pivot evidence; the only new evidence this cycle is the drift probe above.
+4. No change to `refSiteToken a0b5…b084`, `reCaptcha.enabled:false`, `isMockProviderEnabled:false`, `servicesBaseUrl=https://services.services.ozoon.eu`.
+
+## STEP 2 — PRIORITIZE
+1. `services.ozoon.eu/services/*/v1/profiles/{uuid}/…` (5 services) — AUTH_HELPED BOLA surface. **[HIGH]**
+2. `www.ozoon.eu/api/v1/signup` — BUSLOGIC gateway, mass-assignment injection. **[HIGH]**
+3. `services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify` — mock-2FA / KYC bypass. **[MED-HIGH]**
+4. `nfl-pickem-league.ozoon.eu` (Supabase RLS differential) — PARKED (customer-data exposure prohibited).
+5. `static/blog/sportsfeeds/…ozoon.eu` — none on core path. **[LOW]**
+
+## STEP 3 — HYPOTHESES
+| # | Hypothesis | Target | Confidence | Testability |
+|---|-----------|--------|-----------|-------------|
+| 1 | BOLA on profile-UUID endpoints across 5 services (wallet-gateway, transaction-group, referral, player-verification, player-messages) | services.ozoon.eu | 65 | AUTH_HELPED |
+| 2 | Mass-assignment for role/vip/balance injection via signup attributes/address object | www.ozoon.eu/api/v1/signup | 60 | AUTH_HELPED |
+| 3 | Mock-2FA `X-MOCK-2FA` response header honored server-side = 2FA/KYC bypass | player-verification verify | 55 | AUTH_HELPED |
+
+## STEP 4 — SELF-CRITIQUE
+Stand. H1 mitigated only if admin-JWT scoping enforced; unproven. H2 depends on server-side DTO whitelisting which the per-key attributes object suggests is lax. H3 weakest (`isMockProviderEnabled:false` is client-side static), but header never tested against real session → keep floor. No new evidence shifts ordering; anonymous host-sweep exhausted.
+
+## STEP 5 — NEXT ACTION
+`[NEXT] HUMAN: Request program authorization at bugs.olivermaicher.eu to create ONE throwaway account on www.ozoon.eu. On approval: POST https://www.ozoon.eu/api/v1/signup {"email":"<throwaway>@<valid-domain>","password":"Test1234!","country":"CA","language":"en","attributes":{},"address":{"country":"CA","addressLine":"123 Test St","postalCode":"K1A 0A6"}}; capture sid + ownPID; baseline GET https://services.ozoon.eu/services/wallet-gateway/v1/profiles/{ownPID}/balances (expect 200 vs anonymous 401).`
+
+## STEP 6 — LEARNING
+1. New SSR baseline to re-check next cycle: 745,184B / `5f18ef43…` @ services.ozoon.eu `/`.
+2. Wallet-gateway 401/159B shape persists; treat as `{timestamp,status,message,error,errorCode}` = "unauthorized".
+3. 9th-consecutive empty anonymous cycle → all three FINAL hypotheses stay AUTH_HELPED, unprobed.
+
+## STEP 7 — RISK
+Unchanged — **81/100**. Real-money sportsbook/casino/poker; API micro-front-end fully mapped via public SDK; server-side auth and privilege boundaries entirely unverified (no authenticated probes ever executed); SSR content drift observed this cycle.

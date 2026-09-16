@@ -4064,3 +4064,4 @@ evidence_needed: POST verify {"verificationType":"PHONE"} with X-MOCK-2FA-VERIFI
 verify_steps: [AUTH_HELPED] authorized signup → own sid; POST .../verifications/verify with header, then identical control without; compare status/body.
 impact: Critical — 2FA/SMS/PIN/KYC gate bypass on withdraw/deposit/bonus money flows; ATO enabler.
 testability: AUTH_HELPED
+## 2026-09-16 19:45:42 UTC [target] (model bigpickle)

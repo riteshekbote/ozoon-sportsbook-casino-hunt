@@ -825,3 +825,5 @@ www.ozoon.com
 - CHANGED Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway at www.ozoon.eu/api/v1/signup
 - CHANGED Pipeline: triage empty (8th+ consecutive), probe-results.md byte-unchanged, certspotter CT refresh → same 7 names, zero new subdomains; no new anonymous evidence this cycle
 - CHANGED services.ozoon.eu SSR shell config-drift 09-14 probe → 743,193B sha256 1ddad5e3; refSiteToken a0b5…b084, reCaptcha.enabled:false, isMockProviderEnabled:false, servicesBaseUrl=services.services.ozoon.e
+
+## 2026-09-16 20:02:34 UTC
