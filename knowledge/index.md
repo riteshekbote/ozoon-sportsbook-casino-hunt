@@ -447,3 +447,7 @@
 - 2026-09-16 REJECTED OTHER @ oZoon/diploma, oZoon/diploma-try (Unsplash key): liveness confirmed but learning-repo credential, deployment to in-scope infra unconfirmed; no production-bundle reuse observed — REJECTED-class pending cross-reference.
 - 2026-09-16 REJECTED OTHER @ ozoon-sportsbook-casino pipeline: triage 10:03 + reposcan empty — 9th consecutive cycle, surface byte-identical; no new anonymous evidence generated today.
 - 2026-09-16 REJECTED SSRF @ www.ozoon.com: triage 06:38 verdict INVALID stands — PWS/wnacloud catch-all behavior indistinguishable; hypothesis stays out of active consideration.
+- 2026-09-16 ACCEPTED BUSLOGIC @ ozoon.eu: Registration form with referral email field, country override, and client-side rendering suggests server-side validation is the only defense. Mass assignment testing requires authenticated interception.
+- 2026-09-16 ACCEPTED IDOR @ services.ozoon.eu: Backend API domain confirmed in HTML source. Micro-frontend architecture means API calls are likely routed through this domain. Discovery requires browser-based interception.
+- 2026-09-16 REJECTED SECRET @ oZoon/hyper, oZoon/mas-film (reposcan): Hardcoded MySQL credentials in GitHub repos are in learning/demo repos, not confirmed deployed to ozoon.com/ozoon.eu infrastructure. Low confidence without deployment confirmation.
+- 2026-09-16 REJECTED OTHER @ oZoon/secure-query-string (reposcan): SQL injection patterns in learning repos. Not confirmed as deployed code. Requires deployment confirmation.
