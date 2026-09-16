@@ -777,3 +777,14 @@ www.ozoon.com
 - CHANGED Pipeline: triage empty (8th consecutive), probe-results.md no new data, certspotter CT refresh → same 7 names, zero new subdomains
 - CHANGED `wallet-gateway` bogus-UUID `/balances` → 401/159B structured `{"errorCode":"unauthorized"}` byte-shape-stable — auth pre-check intact
 - CHANGED `services.ozoon.eu` SSR shell config-drift 09-14 probe → 743,193B sha256 `1ddad5e3`; `refSiteToken` byte-stable, `isMockProviderEnabled:false`, `servicesBaseUrl=services.services.ozoon.eu` unchanged
+
+## 2026-09-16 01:21:30 UTC
+- NEW `nfl-pickem-league.ozoon.eu` — Vercel/Remix promo app with live Supabase project `cgoqgofzqunixkwcttzi.supabase.co` (auth + PostgREST); anon key `sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM` in pub
+- NEW `static.ozoon.eu` — Second PWS SSR front (755,927B) exposing `servicesBaseUrl=https://services.ozoon.eu` (public entry) vs `services.ozoon.eu` shell carrying split-horizon `services.services.ozoon.eu`
+- NEW `blog.ozoon.eu` (Next.js PWS marketing), `sportsfeeds.ozoon.eu` (persistent 503/0B) — neither on core auth/money path
+- NEW CT enumeration via certspotter API confirmed reliable for `ozoon.eu` subdomain breadth (A-records wildcard-poisoned, DNS brute useless)
+- CHANGED `services.ozoon.eu` SSR shell config-drift 09-14 probe → 743,193B sha256 `1ddad5e3` (+37B vs 09-13 743,156B, benign ts/version); `refSiteToken a0b5…b084`, `reCaptcha.enabled:false`, `isMockProviderEna
+- CHANGED Pipeline: triage empty (8th consecutive), probe-results.md no new data, certspotter CT refresh → same 7 names, zero new subdomains; no new anonymous evidence this cycle
+- CHANGED Inventory file still lists ONLY `ozoon.com`/`www.ozoon.com`; `ozoon.eu` (core platform) and `services.ozoon.eu` (backend API) confirmed in-scope per scope.yml but absent from inventory
+- CHANGED Zero authenticated probes executed against core platform (`ozoon.eu`/`services.ozoon.eu`) across all 18+ probe rounds; all probes target only `www.ozoon.com` marketing edge
+- CHANGED SSRF at `www.ozoon.com` formally INVALID'd by triage 06:38 — all `?url=?view=?page=` probes → catch-all 200 len=?, no collab callback; PWS/wnacloud behavior indistinguishable from catch-all

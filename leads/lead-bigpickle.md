@@ -3795,3 +3795,31 @@ testability: AUTH_HELPED
 [LEARN] REJECTED OTHER @ nfl-pickem-league Supabase: information_schema.tables guess → 404/138B; no row/table leak exposed anonymously; keep probes off (parked differential).
 [LEARN] REJECTED OTHER @ ozoon-sportsbook-casino pipeline: triage 09-15-22:18 empty (9th consecutive), certspotter → same 7 names, probe-results only drift rows; no new anonymous evidence this cycle.
 [RISK] ozoon-sportsbook-casino: 80 — three critical AUTH_HELPED vectors (BOLA UUID 65, Mass-assignment 60, Mock-2FA 55) confirmed via public SDK/config remain unprobed after 13 days because every testing path is gated on auth that requires human authorization for a single restricted throwaway signup; anonymous surface byte-stable; risk ceiling unchanged.
+## 2026-09-16 01:21:20 UTC [target] (model bigpickle)
+[HYP] BOLA on Profile-Keyed UUID Endpoints Across 5 Services
+class: IDOR
+asset: https://services.ozoon.eu/services/{wallet-gateway,transaction-group,referral,player-verification,player-messages}/v1/profiles/{uuid}/...
+confidence: 65
+reasoning: SDK-confirmed {uuid}-path route shape on 5 services; fresh probe today → 401/159B structured {"errorCode":"unauthorized"} byte-shape-stable since 2026-09-08 baseline; zero authenticated sessions exist, session→UUID binding never observed.
+evidence_needed: A reads foreign B's /balances or /verifications → 200/data vs own control; 401/403 = bound.
+verify_steps: [AUTH_HELPED] A signs in; GET own {A}/services/wallet-gateway/v1/profiles/{A-PID}/balances vs {B-PID}; repeat on player-verification/.../verifications.
+impact: Critical — cross-player wallet/transactions/PII across 5 services; ATO enabler.
+testability: AUTH_HELPED
+[HYP] Mock-2FA Verification Header Honored = 2FA/KYC Gate Bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify
+confidence: 55
+reasoning: production SDK sends X-MOCK-2FA-VERIFICATION:true; config two_factor_authenticator.allow-permanent-skip:["true"]; SSR isMockProviderEnabled:false reconfirmed byte-identical today but is a client-side flag and does not resolve server behavior.
+evidence_needed: POST verify {"verificationType":"PHONE"} + header succeeds while byte-identical control without rejects, on own sid.
+verify_steps: [AUTH_HELPED] signup → own sid; POST .../verifications/verify with X-MOCK-2FA-VERIFICATION:true then identical control without; compare status/body.
+impact: Critical — 2FA/KYC gate bypass across player base; ATO enabler.
+testability: AUTH_HELPED
+[HYP] Signup Mass-Assignment for role/vip/currency Injection
+class: BUSLOGIC
+asset: https://www.ozoon.eu/api/v1/signup
+confidence: 60
+reasoning: captcha-free signup (reCaptcha.enabled:false reconfirmed today, gated login-only), client-controlled attributes/address sub-objects, static refSiteToken a0b5…b084 byte-stable with affiliate.check-referring-site.enabled:["false"]; update DTO strict but signup DTO separate; sole gateway to all authenticated testing.
+evidence_needed: POST signup +role/vip/balance vs minimal control wins → elevated account or credited balance.
+verify_steps: [AUTH_HELPED] throwaway signup with extra fields vs minimal control; diff resulting session claims.
+impact: High — privilege escalation / bonus+balance manipulation.
+testability: AUTH_HELPED
