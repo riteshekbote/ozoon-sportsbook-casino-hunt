@@ -309,3 +309,9 @@ https://www.ozoon.com/?url=http://169.254.169.254/latest/meta-data/ -> 200 len=?
 
 ## 2026-09-16 20:02:34 UTC
 
+
+## 2026-09-16 22:50:49 UTC
+https://www.ozoon.com/ -> 200 len=?
+https://www.ozoon.com/api/ -> HTTP 404
+https://www.ozoon.com/robots.txt -> 200 len=?
+https://www.ozoon.com/sitemap.xml -> 200 len=?

@@ -827,3 +827,19 @@ www.ozoon.com
 - CHANGED services.ozoon.eu SSR shell config-drift 09-14 probe → 743,193B sha256 1ddad5e3; refSiteToken a0b5…b084, reCaptcha.enabled:false, isMockProviderEnabled:false, servicesBaseUrl=services.services.ozoon.e
 
 ## 2026-09-16 20:02:34 UTC
+
+## 2026-09-16 22:50:39 UTC
+- NEW `ozoon.eu` — actual gambling platform (sportsbook/casino/poker), NOT in inventory. Discovered via web search; ozoon.com is marketing-only.
+- NEW `services.ozoon.eu` — backend service domain found in HTML `<link rel="preconnect">` hints on ozoon.eu.
+- NEW 3 test pages exposed in ozoon.eu sitemap: `/promotions-test` (live, empty), `/blackjack-main-test` (404), `/casino/how-to-play-casino/odds-test` (404).
+- NEW Legacy "Bodog" branding at `/contents/chatbox-psat` — customer survey still references old brand name.
+- NEW ozoon.com runs Next.js on PWS/8.3.1.0.8 with CNAME to `wnacloud.com`; ozoon.eu uses Next.js + micro-frontend architecture (React 19 + TanStack Query shared runtime).
+- NEW `ozoon.eu` — actual gambling platform (sportsbook/casino/poker), NOT in inventory. Discovered via web search; ozoon.com is marketing-only.
+- NEW `services.ozoon.eu` — backend service domain found in HTML `<link rel="preconnect">` hints on ozoon.eu.
+- NEW 3 test pages exposed in ozoon.eu sitemap: `/promotions-test` (live, empty), `/blackjack-main-test` (404), `/casino/how-to-play-casino/odds-test` (404).
+- NEW Legacy "Bodog" branding at `/contents/chatbox-psat` — customer survey still references old brand name.
+- NEW ozoon.com runs Next.js on PWS/8.3.1.0.8 with CNAME to `wnacloud.com`; ozoon.eu uses Next.js + micro-frontend architecture (React 19 + TanStack Query shared runtime).
+- NEW www.ozoon.com live HTTP 200 with Server: PWS/8.3.1.0.8; CNAME to wnacloud.com (shared hosting edge)
+- NEW Wildcard-dominated subdomain space — 0 genuinely dedicated hosts after filtering
+- NEW 6 code-level hypotheses from reposcan (hardcoded creds, SQLi, debug mode, API keys) in Ozoon GitHub repos
+- CHANGED Deep port scan shows 27 non-web ports but likely shared proxy EOF responses, not real services

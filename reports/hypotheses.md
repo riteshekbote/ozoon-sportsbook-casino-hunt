@@ -2341,3 +2341,10 @@
 - LEARN: REJECTED OTHER @ ozoon-sportsbook-casino pipeline: triage empty (8th consecutive), probe-results.md no new data, certspotter CT refresh → same 7 names, zero new
 
 ## RANKED HYPOTHESES 2026-09-16 20:02:34 UTC
+
+## RANKED HYPOTHESES 2026-09-16 22:50:39 UTC
+- [55] https://www.ozoon.eu: Registration Form Mass Assignment / Business Logic Bypass (from art/lead_bigpickle.txt)
+- NEXT(hypotheses-bigpickle.txt): PROBE: Intercept the ozoon.eu registration form submission by loading the page and examining the JavaScript bundles for API endpoint patterns. Exact action: Fet
+- LEARN: ACCEPTED BUSLOGIC @ ozoon.eu: Registration form with referral email field, country override, and client-side rendering suggests server-side validation is the on
+- LEARN: ACCEPTED MISCONFIG @ services.ozoon.eu SSR shell: 22:49 drift → 745,072B sha256 e48c1221… (+1.1KB vs 743,947B 09-15, benign content churn); refSiteToken a0b5…b0
+- LEARN: REJECTED OTHER @ ozoon-sportsbook-casino pipeline: triage 18:56+21:53 empty (9th consecutive), probe-results.md byte-unchanged, certspotter same 7 names, reposc
