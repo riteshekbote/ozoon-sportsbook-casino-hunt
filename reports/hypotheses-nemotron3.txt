@@ -1,8 +1,18 @@
-## 2026-09-16 06:21:12 UTC [target] (model nemotron3)
-[PRIO] services.ozoon.eu/services/*/v1/profiles/{uuid}/...,9.5,attack_surface=10,business_value=10,tech_exposure=9,gate_ease=6,cloud_surface=8,freshness=8
+## 2026-09-16 11:52:45 UTC [target] (model nemotron3)
+[NEW] nfl-pickem-league.ozoon.eu: Vercel/Remix promo app with live Supabase project cgoqgofzqunixkwcttzi.supabase.co (auth+PostgREST), anon key sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM in public chunks; key-less probes 401. RLS is sole row control.
+[NEW] static.ozoon.eu: Second PWS SSR front (755,927B) exposing servicesBaseUrl=https://services.ozoon.eu (public entry) vs services.ozoon.eu shell carrying split-horizon services.services.ozoon.eu — config split fingerprint.
+[NEW] blog.ozoon.eu: Next.js PWS marketing blog; sportsfeeds.ozoon.eu: persistent 503/0B (PWS upstream down). Neither on core auth/money path.
+[NEW] CT enumeration via certspotter API confirmed reliable for ozoon.eu subdomain breadth (A-records wildcard-poisoned, DNS brute useless); fold into each cycle's standard breadth step.
+[CHANGED] services.ozoon.eu SSR shell config-drift 09-14 probe → 743,193B sha256 1ddad5e3 (+37B vs 09-13 743,156B, benign ts/version); refSiteToken a0b5…b084, reCaptcha.enabled:false, isMockProviderEnabled:false, servicesBaseUrl=services.services.ozoon.eu byte-identical; wallet-gate 401/159B byte-stable. New size baseline 743,193B for cheap future diffs.
+[CHANGED] Pipeline: triage empty (8th consecutive), probe-results.md no new data, certspotter CT refresh → same 7 names, zero new subdomains; no new anonymous evidence this cycle.
+[CHANGED] Inventory file (ozoon-sportsbook-casino.md) still lists ONLY ozoon.com/www.ozoon.com (marketing edge); ozoon.eu (core gambling platform) and services.ozoon.eu (backend API) confirmed in-scope per scope.yml but absent from inventory — critical scope gap unchanged.
+[CHANGED] Zero authenticated probes executed against core platform (ozoon.eu/services.ozoon.eu) across all 18+ probe rounds; all probes target only www.ozoon.com marketing edge — critical testing gap unchanged.
+[CHANGED] SSRF at www.ozoon.com formally INVALID'd by triage 06:38 — all ?url=?view=?page= probes → catch-all 200 len=?, no collab callback; PWS/wnacloud behavior indistinguishable from catch-all, removing PWS-edge SSRF hypothesis from active consideration.
+[CHANGED] Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway at www.ozoon.eu/api/v1/signup.
+[PRIO] services.ozoon.eu/services/{wallet-gateway,transaction-group,referral,player-verification,player-messages}/v1/profiles/{uuid}/...,9.5,attack_surface=10,business_value=10,tech_exposure=9,gate_ease=6,cloud_surface=8,freshness=8
 [PRIO] www.ozoon.eu/api/v1/signup,8.5,attack_surface=9,business_value=9,tech_exposure=8,gate_ease=7,cloud_surface=7,freshness=9
-[PRIO] nfl-pickem-league.ozoon.eu,7.0,attack_surface=8,business_value=6,tech_exposure=9,gate_ease=8,cloud_surface=9,freshness=9
 [PRIO] services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify,8.0,attack_surface=9,business_value=10,tech_exposure=8,gate_ease=6,cloud_surface=8,freshness=8
+[PRIO] nfl-pickem-league.ozoon.eu,7.0,attack_surface=8,business_value=6,tech_exposure=9,gate_ease=8,cloud_surface=9,freshness=9
 [PRIO] static.ozoon.eu,6.0,attack_surface=7,business_value=5,tech_exposure=7,gate_ease=9,cloud_surface=7,freshness=9
 [HYP] BOLA on Profile-Keyed UUID Endpoints Across 5 Services
 class: IDOR

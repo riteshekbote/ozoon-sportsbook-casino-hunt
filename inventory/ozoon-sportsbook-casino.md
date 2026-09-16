@@ -790,3 +790,15 @@ www.ozoon.com
 - CHANGED SSRF at `www.ozoon.com` formally INVALID'd by triage 06:38 — all `?url=?view=?page=` probes → catch-all 200 len=?, no collab callback; PWS/wnacloud behavior indistinguishable from catch-all
 
 ## 2026-09-16 06:21:22 UTC
+
+## 2026-09-16 11:54:13 UTC
+- NEW nfl-pickem-league.ozoon.eu: Vercel/Remix promo app with live Supabase project cgoqgofzqunixkwcttzi.supabase.co (auth+PostgREST), anon key sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM in public chunk
+- NEW static.ozoon.eu: Second PWS SSR front (755,927B) exposing servicesBaseUrl=https://services.ozoon.eu (public entry) vs services.ozoon.eu shell carrying split-horizon services.services.ozoon.eu — config
+- NEW blog.ozoon.eu: Next.js PWS marketing blog; sportsfeeds.ozoon.eu: persistent 503/0B (PWS upstream down). Neither on core auth/money path.
+- NEW CT enumeration via certspotter API confirmed reliable for ozoon.eu subdomain breadth (A-records wildcard-poisoned, DNS brute useless); fold into each cycle's standard breadth step.
+- CHANGED services.ozoon.eu SSR shell config-drift 09-14 probe → 743,193B sha256 1ddad5e3 (+37B vs 09-13 743,156B, benign ts/version); refSiteToken a0b5…b084, reCaptcha.enabled:false, isMockProviderEnabled:fals
+- CHANGED Pipeline: triage empty (8th consecutive), probe-results.md no new data, certspotter CT refresh → same 7 names, zero new subdomains; no new anonymous evidence this cycle.
+- CHANGED Inventory file (ozoon-sportsbook-casino.md) still lists ONLY ozoon.com/www.ozoon.com (marketing edge); ozoon.eu (core gambling platform) and services.ozoon.eu (backend API) confirmed in-scope per scop
+- CHANGED Zero authenticated probes executed against core platform (ozoon.eu/services.ozoon.eu) across all 18+ probe rounds; all probes target only www.ozoon.com marketing edge — critical testing gap unchanged.
+- CHANGED SSRF at www.ozoon.com formally INVALID'd by triage 06:38 — all ?url=?view=?page= probes → catch-all 200 len=?, no collab callback; PWS/wnacloud behavior indistinguishable from catch-all, removing PWS-
+- CHANGED Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway at www.ozoon.eu/api/v1/signup.

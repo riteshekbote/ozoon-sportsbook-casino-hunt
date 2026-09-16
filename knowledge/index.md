@@ -441,3 +441,9 @@
 - 2026-09-16 REJECTED OTHER @ services.ozoon.eu: /services/*/v{2,3}/api-docs and /actuator* → gateway 404; no anonymous schema/actuator leak.
 - 2026-09-16 REJECTED OTHER @ games.glovefrog.plus / api.wicket-keeper.com: third-party endpoints; Ozoon ownership unconfirmed.
 - 2026-09-16 REJECTED OTHER @ nfl-pickem-league RLS differential: testing requires reading foreign players' picks = program-prohibited customer-data exposure; PARKED until explicit scope authorization.
+- 2026-09-16 ACCEPTED IDOR @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: Reconfirmed — no new anonymous surface displaces the SDK-confirmed BOLA vector; binding unresolved; AUTH_HELPED.
+- 2026-09-16 ACCEPTED AUTH @ services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify: mock-2FA header + allow-permanent-skip remains the single critical gate-bypass candidate; isMockProviderEnabled:false client-side-only; AUTH_HELPED.
+- 2026-09-16 ACCEPTED BUSLOGIC @ www.ozoon.eu/api/v1/signup: captcha-free signup remains sole gateway to authenticated testing; static refSiteToken unverified; AUTH_HELPED.
+- 2026-09-16 REJECTED OTHER @ oZoon/diploma, oZoon/diploma-try (Unsplash key): liveness confirmed but learning-repo credential, deployment to in-scope infra unconfirmed; no production-bundle reuse observed — REJECTED-class pending cross-reference.
+- 2026-09-16 REJECTED OTHER @ ozoon-sportsbook-casino pipeline: triage 10:03 + reposcan empty — 9th consecutive cycle, surface byte-identical; no new anonymous evidence generated today.
+- 2026-09-16 REJECTED SSRF @ www.ozoon.com: triage 06:38 verdict INVALID stands — PWS/wnacloud catch-all behavior indistinguishable; hypothesis stays out of active consideration.
