@@ -1,4 +1,7 @@
-## 2026-09-16 01:21:20 UTC [target] (model bigpickle)
+## 2026-09-16 06:17:59 UTC [target] (model bigpickle)
+[PRIO] services.ozoon.eu/services/*/v1/profiles/{uuid}/...,9.5,IDOR|business_value=10|gate_ease=0|auth_required
+[PRIO] www.ozoon.eu/api/v1/signup,8.0,BUSLOGIC|business_value=9|gate_ease=2|auth_required
+[PRIO] services.ozoon.eu/services/player-verification/v1/...,8.5,AUTH|business_value=9|gate_ease=0|auth_required
 [HYP] BOLA on Profile-Keyed UUID Endpoints Across 5 Services
 class: IDOR
 asset: https://services.ozoon.eu/services/{wallet-gateway,transaction-group,referral,player-verification,player-messages}/v1/profiles/{uuid}/...
@@ -26,3 +29,24 @@ evidence_needed: POST signup +role/vip/balance vs minimal control wins → eleva
 verify_steps: [AUTH_HELPED] throwaway signup with extra fields vs minimal control; diff resulting session claims.
 impact: High — privilege escalation / bonus+balance manipulation.
 testability: AUTH_HELPED
+[FINAL] BOLA UUID (65) — survives; highest attack surface + business value; binding unverifiable anonymously.
+[FINAL] Mass-assignment (60) — survives; sole gateway to authenticated testing.
+[FINAL] Mock-2FA header (55) — survives; critical if honored; client-side false flag is contrary but not dispositive.
+[NEXT] HUMAN: Request program authorization at bugs.olivermaicher.eu for ONE restricted throwaway account creation on www.ozoon.eu (POST /api/v1/signup, no live customer data, account deletion after) to obtain a session cookie enabling AUTH_HELPED testing of all three FINAL hypotheses — the only remaining unblock; passive testing is exhausted (8 consecutive empty triages, byte-stable surface).
+[LEARN] ACCEPTED IDOR @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: Confirmed UUID-path BOLA surface across 5 services; binding unresolved; AUTH_HELPED testing required.
+[LEARN] ACCEPTED AUTH @ services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify: Mock-2FA header in production SDK + allow-permanent-skip config; critical if honored.
+[LEARN] ACCEPTED BUSLOGIC @ www.ozoon.eu/api/v1/signup: Captcha-free signup with client-controlled attributes/address; static referral token unverified. Gateway probe to unlock authenticated testing.
+[LEARN] ACCEPTED MISCONFIG @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: structured 401 errorCode:"unauthorized" for valid-route bogus UUID = auth pre-check precedes resource lookup; anonymous differential baseline.
+[LEARN] ACCEPTED MISCONFIG @ chat.ozoon.eu: live in-scope subdomain; widget-only, no Ozoon API logic.
+[LEARN] ACCEPTED OTHER @ nfl-pickem-league.ozoon.eu: Vercel/Remix promo app with Supabase client; anon key public-by-design; RLS is sole row control.
+[LEARN] ACCEPTED OTHER @ static.ozoon.eu / blog.ozoon.eu / sportsfeeds.ozoon.eu: static = second PWS SSR front (755,927B) with PUBLIC servicesBaseUrl; blog = Next.js marketing; sportsfeeds = persistent 503/0B — none on core auth/money path.
+[LEARN] ACCEPTED OTHER @ ozoon CT enumeration: certspotter API reliable for ozoon.eu subdomain breadth (A-records wildcard-poisoned).
+[LEARN] REJECTED SSRF @ www.ozoon.com: triage INVALID — all ?url=?view=?page= catch-all shared-edge responses, no collab callback; hypothesis removed from active consideration.
+[LEARN] REJECTED SECRET @ www.ozoon.com:3306: identical port-closed/EOF pattern across hosts = shared proxy artifact.
+[LEARN] REJECTED SECRET @ oZoon/hyper, oZoon/mas-film: creds in learning/demo repos, not confirmed deployed.
+[LEARN] REJECTED OTHER @ oZoon/secure-query-string: SQLi patterns in learning repos, not confirmed deployed.
+[LEARN] REJECTED OTHER @ services.services.ozoon.eu: internal-only backend hostname; NXDOMAIN publicly = split-horizon.
+[LEARN] REJECTED OTHER @ services.ozoon.eu: /services/*/v{2,3}/api-docs and /actuator* → gateway 404; no anonymous schema/actuator leak.
+[LEARN] REJECTED OTHER @ games.glovefrog.plus / api.wicket-keeper.com: third-party endpoints; Ozoon ownership unconfirmed.
+[LEARN] REJECTED OTHER @ nfl-pickem-league RLS differential: testing requires reading foreign players' picks = program-prohibited customer-data exposure; PARKED until explicit scope authorization.
+[RISK] ozoon-sportsbook-casino: 80 — three critical AUTH_HELPED vectors (BOLA UUID 65, Mass-assignment 60, Mock-2FA 55) confirmed via public SDK/config remain unprobed after 14 days because every testing path is gated on auth that requires human authorization for a single restricted throwaway signup; anonymous surface byte-stable; risk ceiling unchanged.
