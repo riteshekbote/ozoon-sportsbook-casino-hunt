@@ -496,3 +496,11 @@ TARGET_ORG not configured for ozoon-sportsbook-casino; skipping public-org deep 
 TARGET_ORG not configured for ozoon-sportsbook-casino; skipping public-org deep scan.
 ## REPOSCAN 2026-09-17 11:46:30 UTC
 TARGET_ORG not configured for ozoon-sportsbook-casino; skipping public-org deep scan.
+## REPOSCAN 2026-09-17 16:00:10 UTC
+class: OTHER
+asset: github.orgs(ozoon|ozzono|rocketship-ventures|caravan-media)
+confidence: 0
+reasoning: |
+impact: N/A — no source code to audit
+verify_steps: |
+TARGET_ORG not configured for ozoon-sportsbook-casino; skipping public-org deep scan.
