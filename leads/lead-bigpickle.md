@@ -4221,3 +4221,15 @@ evidence_needed: POST verify {"verificationType":"PHONE"} with X-MOCK-2FA-VERIFI
 verify_steps: [AUTH_HELPED] authorized signup → own sid; POST verify with header, then identical control without; compare status/body.
 impact: Critical — 2FA/SMS/PIN/KYC gate bypass on withdraw/deposit/bonus money flows; ATO enabler.
 testability: AUTH_HELPED
+## 2026-09-17 06:15:42 UTC [target] (model bigpickle)
+[HYP] Unlisted Money-Path Microservices Under /services/*/v1/
+class: IDOR
+asset: https://services.ozoon.eu/services/{cashier,payment,bonus,kyc,account,session,jackpot,casino,games}/v1/
+confidence: 50
+reasoning: SDK bundles confirm only 5 profile-keyed services (wallet-gateway, transaction-group, referral, player-verification, player-messages) + site-config with the {uuid} BOLA route shape; live probes confirm the gateway 404s unknown names with a distinct Spring Boot JSON shape, so a non-404 response on an untried name identifies a live unlisted service. Sports/casino odds, event, and game-list feeds are normally anonymous public data, so a sports/casino/games probe is the cheapest high-yield test.
+evidence_needed: GET on untried service name returns anything other than the control's structured-404 body (or returns 200/401) → unlisted live microservice, then diff its route shape for {uuid}/ private patterns.
+verify_steps: baseline control `GET https://services.ozoon.eu/services/zzznope/v1/` (record status+body hash) at <=1 rps; then one-by-one `GET .../services/cashier/v1/`, `/payment/v1/`, `/bonus/v1/`, `/kyc/v1/`, `/account/v1/`, `/session/v1/`, `/jackpot/v1/`, `/casino/v1/games`, `/sports/v1/events` — any body/status differing from the control hash = new service; confirm route shape with `/services/<hit>/v1/profiles/{bogus-uuid}` for the known 401/159B BOLA signature.
+impact: Medium — expands the BOLA/auth-gate surface on money flows beyond SDK-known services; new identifiers for later AUTH_HELPED differentials.
+testability: PASSIVE
+[NEXT] PROBE: at 1 req/s: control `GET https://services.ozoon.eu/services/zzznope/v1/` → record status+body sha256; then `GET https://services.ozoon.eu/services/cashier/v1/`, `/payment/v1/`, `/bonus/v1/`, `/kyc/v1/`, `/account/v1/`, `/session/v1/`, `/jackpot/v1/`, `/casino/v1/games`, `/sports/v1/events`; log each status+body-hash; any deviation from control = unlisted live service to probe for the known {uuid} BOLA/auth signature.
+[RISK] ozoon-sportsbook-casino: 81/100 — three critical vectors (BOLA 65, mass-assignment 60, mock-2FA 55) remain AUTH_HELPED, gated on throwaway-account authorization un-granted across 10 empty cycles; surface mapped and byte-stable; only remaining anonymous upside is unlisted-service discovery (50), which is execution pending in the NEXT probe.
