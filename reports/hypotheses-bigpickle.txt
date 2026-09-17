@@ -1,25 +1,30 @@
-## 2026-09-17 12:02:24 UTC [target] (model bigpickle)
-class: IDOR <br>
-asset: https://services.ozoon.eu/services/{wallet-gateway,transaction-group,referral,player-verification,player-messages}/v1/profiles/{uuid}/... <br>
-confidence: 65 <br>
-reasoning: SDK-confirmed {uuid}-path route shape on 5 services; wallet-gateway /balances bogus-UUID → 401/159B {"errorCode":"unauthorized"}, byte-stable ~3 weeks; auth pre-check precedes lookup; session→UUID binding never observable anonymously. This cycle's 33-name enumeration confirmed the public route table is otherwise closed. <br>
-evidence_needed: With own session A, GET /profiles/{B-uuid}/balances returns 200 with B's data while own-UUID control returns own data → unbound path UUID = cross-tenant read. <br>
-verify_steps: [AUTH_HELPED] authorized throwaway signups A+B; with A's cookie GET /wallet-gateway/v1/profiles/{B}/balances, /player-verification/v1/profiles/{B}/verifications + own-UUID control; diff status/body bytes. <br>
-impact: Critical — cross-player wallet/transaction/PII read across 5 services; ATO enabler. <br>
-testability: AUTH_HELPED <br>
-class: BUSLOGIC <br>
-asset: https://www.ozoon.eu/api/v1/signup <br>
-confidence: 60 <br>
-reasoning: reCaptcha.enabled:false on signup; client-controlled attributes/address sub-objects; static refSiteToken a0b5…b084; profileupdateform update DTO strict and separate — signup DTO over-acceptance untested. <br>
-evidence_needed: POST signup with extra keys (attributes.role/vip_level/balance) persists on created session claims vs minimal control. <br>
-verify_steps: [AUTH_HELPED] two authorized throwaway signups (extra-fields vs minimal control); diff resulting /api/v1/whoami or profile claims. <br>
-impact: High — privilege escalation / bonus+balance manipulation / territory-softblock bypass. <br>
-testability: AUTH_HELPED <br>
-class: AUTH <br>
-asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify <br>
-confidence: 55 <br>
-reasoning: production SDK sends X-MOCK-2FA-VERIFICATION:true on verify; config two_factor_authenticator.allow-permanent-skip:["true"]; isMockProviderEnabled:false is client-side only, does not resolve server honoring. <br>
-evidence_needed: POST verify {"verificationType":"PHONE"} with X-MOCK-2FA-VERIFICATION:true succeeds while byte-identical control without header is rejected (own authorized sid). <br>
-verify_steps: [AUTH_HELPED] authorized signup → own sid; POST verify with header, then identical control without; compare status/body. <br>
-impact: Critical — 2FA/SMS/PIN/KYC gate bypass on withdraw/deposit/bonus money flows. <br>
-testability: AUTH_HELPED <br>
+## 2026-09-17 16:46:14 UTC [target] (model bigpickle)
+[HYP] Cross-Tenant BOLA on Profile-Keyed UUID Endpoints Across 5 Services
+class: IDOR
+asset: https://services.ozoon.eu/services/{wallet-gateway,transaction-group,referral,player-verification,player-messages}/v1/profiles/{uuid}/...
+confidence: 65
+reasoning: SDK-confirmed {uuid} path shape on 5 services; wallet-gateway /balances bogus-UUID re-probed 16:45 → 401/159B byte-shape-stable ~3wks; auth pre-check precedes resource lookup (structured errorCode:"unauthorized", not request-rejected); session→UUID binding never observable anonymously; 33+8-name enumeration this cycle confirms public route table otherwise closed.
+evidence_needed: With own session A, GET /profiles/{B-uuid}/balances returns 200+B's data while own-UUID control returns own data → unbound path UUID = cross-tenant read.
+verify_steps: [AUTH_HELPED] authorized throwaway signups A+B; with A's cookie GET /wallet-gateway/v1/profiles/{B}/balances, /player-verification/v1/profiles/{B}/verifications + own-UUID control; diff status/body bytes.
+impact: Critical — cross-player wallet/transaction/PII read across 5 services; ATO enabler.
+testability: AUTH_HELPED
+[HYP] Mock-2FA Verification Header Honored = 2FA/KYC Gate Bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify
+confidence: 55
+reasoning: production SDK sends X-MOCK-2FA-VERIFICATION:true on verify endpoint; config two_factor_authenticator.allow-permanent-skip:["true"]; isMockProviderEnabled:false is client-side only and does not resolve server honoring; header-echo path is anonymously unreachable (401 pre-check).
+evidence_needed: POST verify {"verificationType":"PHONE"} with X-MOCK-2FA-VERIFICATION:true succeeds while byte-identical control without header is rejected (own authorized sid).
+verify_steps: [AUTH_HELPED] authorized signup → own sid; POST verify with header then identical control without; compare status/body.
+impact: Critical — 2FA/SMS/PIN/KYC gate bypass on withdraw/deposit/bonus money flows; ATO enabler.
+testability: AUTH_HELPED
+[HYP] Signup Mass-Assignment for role/vip/balance Injection
+class: BUSLOGIC
+asset: https://www.ozoon.eu/api/v1/signup
+confidence: 60
+reasoning: reCaptcha.enabled:false on signup (login-captcha only); client-controlled attributes/address sub-objects; static refSiteToken a0b5…b084 byte-identical 3+ wks; profileupdateform update DTO strict and separate → signup DTO over-acceptance untested; signup GET → WAF "Request Rejected", POST path untouched.
+evidence_needed: POST signup with extra keys (attributes.role/vip_level/balance) persists on created session claims vs minimal control.
+verify_steps: [AUTH_HELPED] two authorized throwaway signups (extra-fields vs minimal control); diff resulting /api/v1/whoami or profile claims.
+impact: High — privilege escalation / bonus+balance manipulation / territory-softblock bypass.
+testability: AUTH_HELPED
+[NEXT] HUMAN: Request program authorization at bugs.olivermaicher.eu to create ONE throwaway account on www.ozoon.eu (clearly restricted mutating create, no live customer data) — unlocks the three AUTH_HELPED differentials (BOLA, mass-assignment, mock-2FA).
+[RISK] ozoon-sportsbook-casino: 81/100 — three critical vectors (BOLA 65, mass-assignment 60, mock-2FA 55) remain AUTH_HELPED across 10 empty cycles; anonymous surface demonstrably closed (route table + drift re-verified 16:45 today); the only remaining upside requires program authorization for a single restricted throwaway signup.
