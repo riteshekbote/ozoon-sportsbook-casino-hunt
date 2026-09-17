@@ -25836,3 +25836,398 @@ STEP 6 — LEARNING
 
 STEP 7 — RISK
 [RISK] ozoon-sportsbook-casino: 81/100 — three critical vectors (BOLA 65, mass-assignment 60, mock-2FA 55) remain AUTH_HELPED, gated on throwaway-account authorization un-granted across 10 empty cycles; surface mapped and byte-stable; only remaining anonymous upside is unlisted-service discovery (50), which is execution pending in the NEXT probe.
+===== ANALYST bigpickle 2026-09-17 12:02:37 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mls -la
+total 544
+drwxr-xr-x 12 runner runner   4096 Sep 17 11:55 .
+drwxr-xr-x  3 runner runner   4096 Sep 17 11:55 ..
+drwxr-xr-x  7 runner runner   4096 Sep 17 11:55 .git
+drwxr-xr-x  3 runner runner   4096 Sep 17 11:55 .github
+-rw-r--r--  1 runner runner   1642 Sep 17 11:55 README.md
+-rw-r--r--  1 runner runner     32 Sep 17 11:55 analyst-out.txt
+-rw-r--r--  1 runner runner 231575 Sep 17 11:55 analyst-prompt.txt
+-rw-r--r--  1 runner runner 227838 Sep 17 11:55 ctx.txt
+drwxr-xr-x  2 runner runner   4096 Sep 17 11:55 inventory
+drwxr-xr-x  2 runner runner   4096 Sep 17 11:55 knowledge
+drwxr-xr-x  2 runner runner   4096 Sep 17 11:55 leads
+-rw-r--r--  1 runner runner   5181 Sep 17 11:55 probe-results.md
+drwxr-xr-x  2 runner runner   4096 Sep 17 11:55 recon-notes
+drwxr-xr-x  2 runner runner   4096 Sep 17 11:55 reports
+drwxr-xr-x  2 runner runner   4096 Sep 17 11:55 reposcan-raw
+-rw-r--r--  1 runner runner   3150 Sep 17 11:55 scope.yml
+drwxr-xr-x  2 runner runner   4096 Sep 17 11:55 scripts
+-rw-r--r--  1 runner runner     33 Sep 17 11:55 state_bigpickle.json
+-rw-r--r--  1 runner runner     33 Sep 17 11:55 state_laguna.json
+-rw-r--r--  1 runner runner     33 Sep 17 11:55 state_ling3.json
+-rw-r--r--  1 runner runner     33 Sep 17 11:55 state_longcat.json
+-rw-r--r--  1 runner runner     33 Sep 17 11:55 state_mimo.json
+-rw-r--r--  1 runner runner     33 Sep 17 11:55 state_nemotron3.json
+drwxr-xr-x  2 runner runner   4096 Sep 17 11:55 triage
+[0m
+[0m✱ [0mGlob "art/**/*"[90m 0 matches[0m
+[0m✱ [0mGlob "**/*.md"[90m 100 matches[0m
+[0m→ [0mRead state_bigpickle.json
+[0m→ [0mRead probe-results.md
+[0m→ [0mRead leads/lead-bigpickle.md
+[0m→ [0mRead scope.yml
+[0m→ [0mRead triage/run-2026-09-17-09-55.md
+[0m→ [0mRead leads/lead-bigpickle.md[90m [offset=345][0m
+[0m→ [0mRead inventory/ozoon-sportsbook-casino.md
+[0m→ [0mRead triage/run-2026-09-17-05-01.md
+[0m→ [0mRead reports/hypotheses.md
+[0m→ [0mRead knowledge/index.md[90m [offset=1, limit=80][0m
+[0m
+[0m$ [0mdate -u +"%Y-%m-%d %H:%M:%S UTC"
+2026-09-17 11:56:39 UTC
+[0m
+Checking the pending passive probe from the last cycle (unlisted-service enumeration), then running it.
+[0m$ [0mcurl -sk -o /tmp/opencode/ctrl.txt -w "ctrl status=%{http_code} size=%{size_download} sha=" https://services.ozoon.eu/services/zzznope/v1/ ; sha256sum /tmp/opencode/ctrl.txt | cut -d' ' -f1; echo; sleep 1
+ctrl status=404 size=110 sha=17a35ff17f097b24c31b10aee849c01461767c37f5ff533b88f83ae18892f4e5
+[0m
+## Objective
+- Continue the Ozoon bug bounty hunt (report channel: bugs.olivermaicher.eu) as a senior analyst, executing the mandated 8-step cycle (DELTA → PRIORITIZE → HYPOTHESES → SELF-CRITIQUE → NEXT → LEARNING → RISK) and emitting only the structured blocks.
+- The agent had just finished reading workspace state (inventory, leads, triage, probe-results, knowledge base) and must now produce the cycle output; the last exchanged message before cut-off was the knowledge/index.md read.
+
+## Important Details
+- Scope: "All infrastructure, brands, services and gaming platforms operated by Ozoon" — includes ozoon.eu + services.ozoon.eu per scope.yml even though inventory/ozoon-sportsbook-casino.md still lists only ozoon.com/www.ozoon.com.
+- Constraints: passive-first, ≤1 rps, GET/HEAD/OPTIONS only for live probes; no auth-bypass/mutating tests on live customer data; sha256 any secret; REJECTED classes must be dropped (descriptive errors, robots.txt, OPTIONS/TRACE, CSRF-on-logout/anonymous forms, username enumeration, brute-force/lockout policy, TLS, clickjacking without exploit, known-vulnerable library without program-specific exploit, scanner output without POC, etc.); no reading foreign players' data (nfl-pickem RLS differential is program-prohibited, PARKED).
+- Output rule: facts vs hypotheses strictly separated, exact fields one per line under [HYP], no inline fields in the [HYP] title; max 1 hypothesis per asset, top 3 assets; fields: class, asset, confidence, reasoning, evidence_needed, verify_steps, impact, testability (PASSIVE|AUTH_HELPED|HUMAN_ONLY).
+- Critical gate: the three top hypotheses (BOLA 65, signup mass-assignment 60, mock-2FA bypass 55) are all AUTH_HELPED and unprobed across ~10 empty triage cycles; the only unblocking move is HUMAN authorization at bugs.olivermaicher.eu for ONE throwaway signup POST on www.ozoon.eu/api/v1/signup (restricted mutating create, no live customer data).
+- Last executed anonymous probe priority: unlisted money-path microservice discovery (50, PASSIVE) = control GET https://services.ozoon.eu/services/zzznope/v1/ then candidates cashier/payment/bonus/kyc/account/session/jackpot/casino/v1/games, sports/v1/events at 1 rps; any body/status deviation from control = new live service to check for the known {uuid} BOLA 401 signature.
+- Known stable fingerprints: wallet-gate 401/159B {"errorCode":"unauthorized"} byte-stable; SSR shell drift baselines (09-14: 743,193B sha256 1ddad5e3; 09-16 22:49: 745,072B sha256 e48c1221…); refSiteToken a0b5…b084 byte-stable; reCaptcha.enabled:false; isMockProviderEnabled:false; servicesBaseUrl=https://services.services.ozoon.eu (split-horizon, NXDOMAIN public).
+- Risk currently assessed at 81/100, unchanged due to persistent auth gate.
+
+## Work State
+### Completed
+- Workspace inspection done: inventory/ozoon-sportsbook-casino.md, leads (bigpickle, nemotron3, mimo, laguna, ling3, longcat, reposcan), scope.yml, probe-results.md, triage runs (latest 2026-09-17 09:55 = empty leads), reports/hypotheses.md, knowledge/index.md, state_bigpickle.json = {"phase": "POC", "target": "api"}.
+- All prior cycles fully mapped the anonymous surface: byte-stable 401 BOLA gate on 5 profile-keyed services; WAF only on mutating signup path (support_id 6279731412718049849); GoBet/Beatrix fingerprint leak via CountryNotFoundException; flat profileupdateform whitelist (CA=CAD+XBT, US=USD); chat/static/blog/sportsfeeds/nfl-pickem subdomains enumerated via certspotter (A-records wildcard-poisoned, DNS brute useless).
+- Rejected-disposition summary stands: 3306=shared proxy EOF; oZoon/hyper + mas-film + secure-query-string + diploma/diploma-try = learning repos; services.services.ozoon.eu=split-horizon; api-docs/actuator=404; games.glovefrog.plus + api.wicket-keeper.com=third-party; www.ozoon.com ?url/?view/?page SSRF = triage INVALID 06:38 (catch-all 200, no collab callback).
+
+### Active
+- Cycle output for 2026-09-17 (after 06:17:24 ranked hypotheses) not yet emitted; latest triage run 09:55 was empty ("The leads section is empty…"), confirming no new anonymous evidence.
+- Candidate to rank: BOLA UUID (65, IDOR), unlisted money-path microservices (50, IDOR, PASSIVE — only probed-in-this-cycle candidate), signup mass-assignment (60, BUSLOGIC), mock-2FA (55, AUTH); four live CT subdomains and drift-baseline changes are LEARN-class material.
+
+### Blocked
+- All three critical vectors remain AUTH_HELPED; throwaway-account authorization via bugs.olivermaicher.eu has not been granted across ~10 consecutive empty cycles.
+- No collab/OAST callback server available in this environment (previously parked SSRF evidence path for that reason).
+- nfl-pickem-league RLS differential permanently PARKED (program-prohibited customer-data exposure).
+
+## Next Move
+1. Emit the 8-step structured output now: STEP 1 DELTA (new: unlisted-service probe hypothesis from 06:15; triage 09:55 empty = NO_DELTA on surface; state_bigpickle unchanged), STEP 2 PRIO (e.g., services.ozoon.eu /services/{cashier,payment,bonus,kyc,account,session,jackpot,casino,games}/v1/ with gate_ease high), STEP 3 hypotheses with strict schema, STEP 4 drop <40 / REJECTED, STEP 5 exactly one [NEXT] (recommend the PASSIVE unlisted-service PROBE at ≤1 rps, since the HUMAN auth request is already queued and was re-emitted last cycle).
+2. If [NEXT] PROBE chosen: run control GET https://services.ozoon.eu/services/zzznope/v1/ (record status + body sha256), then the 9 candidate GETs, log status+body-hash vs control; any deviation → probe /services/<hit>/v1/profiles/{bogus-uuid} for the 401/159B signature.
+3. Otherwise re-emit [NEXT] HUMAN for the single throwaway signup on https://www.ozoon.eu/api/v1/signup (body: email/password/country CA/language en/attributes {}/address {country CA, addressLine, postalCode}) → capture sid+ownPID, then baseline GET https://services.ozoon.eu/services/wallet-gateway/v1/profiles/{ownPID}/balances (expect 200 vs recorded 401), which unlocks BOLA/2FA/mass-assignment differentials.
+
+## Relevant Files
+- inventory/ozoon-sportsbook-casino.md: official inventory, still only ozoon.com/www.ozoon.com — cite as scope gap (ozoon.eu/services.ozoon.eu in-scope per scope.yml but absent).
+- scope.yml: program definition, disclosure via bugs.olivermaicher.eu, full out-of-scope list.
+- knowledge/index.md: knowledge base (accepted/rejected findings, drift baselines, fingerprints).
+- leads/lead-bigpickle.md: source of BOLA 65 / mass-assignment 60 / mock-2FA 55 / unlisted-service 50 hypotheses and prior [NEXT] actions.
+- leads/lead-nemotron3.md: mirror BOLA/BUSLOGIC hypotheses + HUMAN auth request variant.
+- reports/hypotheses.md: ranked hypotheses history (latest 2026-09-17 06:17:24).
+- probe-results.md: probe log (no data since ~00:40:45; drift rows only).
+- triage/run-2026-09-17-09-55.md: latest triage = empty leads, no new evidence.
+- state_bigpickle.json: {"phase": "POC", "target": "api"} (unchanged).
+- recon-notes/DEDICATED-DEEP.md, leads/reposcan-ozoon-sportsbook-casino.md: supporting notes (reposcan not configured for this program).
+Continue if you have next steps, or stop and ask for clarification if you are unsure how to proceed.
+Control baseline captured (404/110B, sha256 17a35ff1). Probing candidates at 1 rps now.
+[0m$ [0mfor s in cashier payment bonus kyc account session jackpot; do
+  curl -sk -o /tmp/opencode/r.txt -w "$s status=%{http_code} size=%{size_download} " https://services.ozoon.eu/services/$s/v1/
+  sha256sum /tmp/opencode/r.txt | cut -d' ' -f1
+  sleep 1
+done
+cashier status=404 size=110 6b5f74e2dd75e983f73f8195198edd7a3cbe42649b1608bfbde33d4bf123fe94
+payment status=404 size=110 65709e58bdbe4629972eef8445b88c41821b0995b415190ce518c54d5f164460
+bonus status=404 size=110 3553db615bc014fb94810cf29428edcdd0a9c37fd7ab889bb26679da8ec7d9c7
+kyc status=404 size=110 fd59262f6ab3ab6339a3797f459ca262fdfaf29c958cfb9e57566351363eb220
+account status=404 size=110 4a3dae54d34ad47e68a0df8d6776cbb9f8f101b48f3712efd938d2f135925d5a
+session status=404 size=110 2a5e45fa9db7768e566b49336a8a7459f4e7aec0e1a6787a675f217ab740270c
+jackpot status=404 size=110 11ba82730091c4a99d3670e986d225ecae7c3fb3b6fe3376411245e9002be8d7
+[0m
+[0m$ [0msleep 8; curl -sk -o /tmp/opencode/r2.txt -w "casino status=%{http_code} size=%{size_download} " https://services.ozoon.eu/services/casino/v1/games; sha256sum /tmp/opencode/r2.txt | cut -d' ' -f1; echo; sleep 2; curl -sk -o /tmp/opencode/r3.txt -w "sports status=%{http_code} size=%{size_download} " https://services.ozoon.eu/services/sports/v1/events; sha256sum /tmp/opencode/r3.txt | cut -d' ' -f1
+casino status=404 size=146 55f7d9e99b8e2d4e0e193b2f0275501e6d9c1ebd29cadbea6a0da48a8587e3e0
+
+sports status=404 size=110 b3d38ddcda333e181229986678a0facd3a1f35eaa6c8f62b4869f1ed630df131
+[0m
+[0m$ [0mecho "=== control (404): ==="; cat /tmp/opencode/ctrl.txt; echo; echo "=== casino (404, size 146): ==="; cat /tmp/opencode/r2.txt; echo; echo "=== one sample candidate (cashier, size 110): ==="; cat /tmp/opencode/r.txt
+=== control (404): ===
+{"timestamp":"2026-09-17T11:56:40.546+0000","status":404,"error":"Not Found","message":"No message available"}
+=== casino (404, size 146): ===
+<html>
+<head><title>404 Not Found</title></head>
+<body>
+<center><h1>404 Not Found</h1></center>
+<hr><center>nginx</center>
+</body>
+</html>
+
+=== one sample candidate (cashier, size 110): ===
+{"timestamp":"2026-09-17T11:57:45.617+0000","status":404,"error":"Not Found","message":"No message available"}
+[0m
+All returned 404, but `casino` body size differs (146 vs control 110). Inspecting deviation.
+Casino returned an **nginx HTML 404** while all others returned **Spring JSON 404** — a routing deviation. Ruling out path-shape artifact with control at the same deeper shape.
+[0m$ [0mcurl -sk -o /tmp/opencode/a.txt -w "zzznope/v1/games status=%{http_code} size=%{size_download} " https://services.ozoon.eu/services/zzznope/v1/games; sha256sum /tmp/opencode/a.txt | cut -d' ' -f1; sleep 1
+curl -sk -o /tmp/opencode/b.txt -w "zzznope/v1/events status=%{http_code} size=%{size_download} " https://services.ozoon.eu/services/zzznope/v1/events; sha256sum /tmp/opencode/b.txt | cut -d' ' -f1; sleep 1
+curl -sk -o /tmp/opencode/c.txt -w "casino/v1/ status=%{http_code} size=%{size_download} " https://services.ozoon.eu/services/casino/v1/; sha256sum /tmp/opencode/c.txt | cut -d' ' -f1; sleep 1
+curl -sk -o /tmp/opencode/d.txt -w "casino status=%{http_code} size=%{size_download} " https://services.ozoon.eu/services/casino; sha256sum /tmp/opencode/d.txt | cut -d' ' -f1
+zzznope/v1/games status=404 size=110 f1ab34504dc04570817917f43b764b642a2b1a7ada916174c037d7e9ebd4cf92
+zzznope/v1/events status=404 size=110 feb9a4e2c4a1e8c83ac9f263c1530d35c44f3266a1eb5a1abe10713cdb009993
+casino/v1/ status=404 size=146 55f7d9e99b8e2d4e0e193b2f0275501e6d9c1ebd29cadbea6a0da48a8587e3e0
+casino status=404 size=110 0e8b2fa6353e3860de52bf182ddb43e39db18be105b6d890e5e594509f515429
+[0m
+Confirmed deviation: `/services/casino/v1/` → nginx HTML 404, while same-shape control → Spring JSON. Characterizing the casino route boundaries at 1 rps.
+[0m$ [0mfor p in "casino/" "casino/x" "casino/v1" "casino/v1/x"; do
+  curl -sk -o /tmp/opencode/e.txt -w "/services/$p => status=%{http_code} size=%{size_download} sha=" https://services.ozoon.eu/services/$p
+  sha256sum /tmp/opencode/e.txt | cut -d' ' -f1
+  sleep 1
+done
+echo "--- body head of casino/v1/x vs casino/ ---"
+curl -sk -o /tmp/opencode/f.txt -w "/services/casino/v1/x => status=%{http_code} size=%{size_download}\n" https://services.ozoon.eu/services/casino/v1/x; echo; sleep 1
+curl -sk -o /tmp/opencode/g.txt -w "/services/casino/ => status=%{http_code} size=%{size_download}\n" https://services.ozoon.eu/services/casino/; echo
+/services/casino/ => status=404 size=146 sha=55f7d9e99b8e2d4e0e193b2f0275501e6d9c1ebd29cadbea6a0da48a8587e3e0
+/services/casino/x => status=404 size=146 sha=55f7d9e99b8e2d4e0e193b2f0275501e6d9c1ebd29cadbea6a0da48a8587e3e0
+/services/casino/v1 => status=404 size=146 sha=55f7d9e99b8e2d4e0e193b2f0275501e6d9c1ebd29cadbea6a0da48a8587e3e0
+/services/casino/v1/x => status=404 size=146 sha=55f7d9e99b8e2d4e0e193b2f0275501e6d9c1ebd29cadbea6a0da48a8587e3e0
+--- body head of casino/v1/x vs casino/ ---
+/services/casino/v1/x => status=404 size=146
+
+/services/casino/ => status=404 size=146
+[0m
+Casino subpath → distinct nginx 404 vs Spring JSON elsewhere. Comparing response headers to fingerprint backend.
+[0m$ [0mecho "=== /services/casino/v1/ headers ==="; curl -sk -D - -o /dev/null https://services.ozoon.eu/services/casino/v1/; echo; sleep 1; echo "=== /services/zzznope/v1/ headers ==="; curl -sk -D - -o /dev/null https://services.ozoon.eu/services/zzznope/v1/; echo; sleep 1; echo "=== /services/wallet-gateway/v1/ headers ==="; curl -sk -D - -o /dev/null https://services.ozoon.eu/services/wallet-gateway/v1/
+=== /services/casino/v1/ headers ===
+HTTP/2 404 
+date: Thu, 17 Sep 2026 11:58:30 GMT
+content-type: text/html
+content-length: 146
+set-cookie: TS0181f769=014b5d5d07ccf6ffd2691f3f7c0c8ec0286070f0d8b8ce95a5196cd2f820ad6e502594661aef947bb609e84b8ebde3d52fa31219dd; Path=/
+strict-transport-security: max-age=63072000
+
+
+=== /services/zzznope/v1/ headers ===
+HTTP/2 404 
+set-cookie: JSESSIONID=B1D09D3BCBE376A3A2D9670FC74FF536; Path=/; Secure; HttpOnly;SameSite=Strict
+vary: origin,access-control-request-method,access-control-request-headers,accept-encoding
+content-type: application/json
+date: Thu, 17 Sep 2026 11:58:31 GMT
+age: 0
+referrer-policy: strict-origin-when-cross-origin
+access-control-allow-credentials: true
+set-cookie: TS0181f769=014b5d5d07b12128aca7832ceed8bdbf24e8ff400ba960bcd286d608e01f0df0034363b64f800edaf28aa853db2f26777d4e246f5f4d61e4e36eec78a3d1e33c240ef8a754; Path=/
+strict-transport-security: max-age=63072000
+
+
+=== /services/wallet-gateway/v1/ headers ===
+HTTP/2 404 
+set-cookie: JSESSIONID=0F9BD89B6BF26A6E8745D96618BD40F8; Path=/; Secure; HttpOnly;SameSite=Strict
+vary: origin,access-control-request-method,access-control-request-headers,accept-encoding
+content-type: application/json
+date: Thu, 17 Sep 2026 11:58:33 GMT
+age: 0
+referrer-policy: strict-origin-when-cross-origin
+access-control-allow-credentials: true
+set-cookie: TS0181f769=014b5d5d0767ea37cab2d1c8bb836bef6238c2eb44ba0380cb212d71def00fc3338155569d03e81a2a3e4db80a33ec435a553196cc1a4d7009aae4c9f153bf1de05a40ed06; Path=/
+strict-transport-security: max-age=63072000
+[0m
+Distinct route confirmed: `/services/casino/*` terminates at a different nginx layer (no JSESSIONID, plain HTML 404) while every other name reaches the Spring backend. `casino` is an unlisted-but-routed service name. Enumerating more igaming names against the same fingerprint.
+[0m$ [0mfor s in games game bet bets wager provider providers igaming slots live spins tournaments sportsbook bookmaker; do
+  curl -sk -o /tmp/opencode/n.txt -w "$s status=%{http_code} size=%{size_download} " https://services.ozoon.eu/services/$s/v1/
+  sha256sum /tmp/opencode/n.txt | cut -d' ' -f1
+  sleep 1
+done
+games status=404 size=110 0b5309159b958e75060252bd4e3b191f13e181a1cf275a597a2a444b5f668aed
+game status=404 size=110 418dc6ae5bd0c1227e33d526a9a172e01f4f7d8b9782b67bb2357922ad3b10fd
+bet status=404 size=110 e1c17c8edfb3560798709335229b53e735094b296d53e73b1258d97c5a09fe88
+bets status=404 size=110 b3015440376ecd99b444500a99ece6cbd92e743a94ee9fc1a6a38c7007d83fe5
+wager status=404 size=110 62c53c09079efdbc69defcb060bce021a94a5fddb77f730e839692e9166b30d9
+provider status=404 size=110 b8e5fa9e7ae5f9b2e2f5c8830d89d8a4cc3da56fc4cc0a6cacaec704d5a69106
+providers status=404 size=110 f8c9b14058ea958b916dfa419c78c5a2486a27bf9cf35f1a79ac53a2d9f93f21
+igaming status=404 size=110 945a9ad8ca213e0fd769683db301a15c8c4d45d66b6dfe7844fb4febbb614a30
+slots status=404 size=110 3d3484e12860ff6eb56a90d6b551d524dcb7350526511afe71351d2aa28d5e70
+live status=404 size=110 94b61be7c728a026c10f4e1fd5d5b1d12de14662451794b232af76d23a7af3d8
+spins status=404 size=110 ac09d3549feba60b307405dcc23bcc3b7948c1bd527b15891e0404b32150329e
+tournaments status=404 size=110 7aa5d6131bcd363b484f9ae71d4e24717c66e881c6f0daee1fb1445a13c72a9b
+sportsbook status=404 size=110 5bd2c636a3de019b914adbd9900574ce69824818701dc93e6c07704ffcbf5c0e
+bookmaker status=404 size=110 0c43f2dfde6ff42956c6722fd92b9b186839b0af85f643569c7220f87691cb38
+[0m
+Only `casino` deviates. Probing its path tree for any live endpoints.
+[0m$ [0mfor p in "casino/v1/games" "casino/v2/games" "casino/v1/profiles" "casino/api/games" "casino/v1/health" "casino/health" "casino/games" "casino/v1/spins"; do
+  curl -sk -o /tmp/opencode/m.txt -w "/services/$p => status=%{http_code} size=%{size_download} ctype=" https://services.ozoon.eu/services/$p
+  curl -sk -I -o /dev/null -w "\n" https://services.ozoon.eu/services/$p | head -c 0
+  file /tmp/opencode/m.txt | cut -d: -f2
+  sleep 1
+done
+/services/casino/v1/games => status=404 size=146 ctype= HTML document, ASCII text, with CRLF line terminators
+/services/casino/v2/games => status=404 size=146 ctype= HTML document, ASCII text, with CRLF line terminators
+/services/casino/v1/profiles => status=404 size=146 ctype= HTML document, ASCII text, with CRLF line terminators
+/services/casino/api/games => status=404 size=146 ctype= HTML document, ASCII text, with CRLF line terminators
+/services/casino/v1/health => status=404 size=146 ctype= HTML document, ASCII text, with CRLF line terminators
+/services/casino/health => status=404 size=146 ctype= HTML document, ASCII text, with CRLF line terminators
+/services/casino/games => status=404 size=146 ctype= HTML document, ASCII text, with CRLF line terminators
+/services/casino/v1/spins => status=404 size=146 ctype= HTML document, ASCII text, with CRLF line terminators
+[0m
+Consistent deviation: every `/services/casino/*` subpath → nginx HTML 404, while `/services/casino` (bare) and all other names → Spring JSON 404. A distinct `casino` route exists at the edge. Final confirmation checks and a few more candidate names.
+[0m$ [0mfor s in casino-gateway game-gateway game-manager bonus-gateway wallet wallet-service account-service identity gatekeeper auth session-service; do
+  curl -sk -o /tmp/opencode/y.txt -w "$s status=%{http_code} size=%{size_download} " https://services.ozoon.eu/services/$s/v1/
+  sha256sum /tmp/opencode/y.txt | cut -d' ' -f1
+  sleep 1
+done
+casino-gateway status=404 size=110 91cb8dde27d0d1105395b795d143337917ff621bc6c4df8a9dc8fb62d39a9903
+game-gateway status=404 size=110 92334cbc468309c351f2cd684d93d81762726ce435de80ac8dfa01535910dfda
+game-manager status=404 size=110 64b5575b5f1dbdc38a936f1111ddafa86333890f8b61f4df75c14bbf4095b863
+bonus-gateway status=404 size=110 b23e7f3ffe526ea63221f3aca225ec915777a429891d4658affd3a466bdbcba7
+wallet status=404 size=110 f8fff90cda0650ff1ae4ecb7bd1ca723c58792d2f768242379f66b794bd367ce
+wallet-service status=404 size=110 3c66a97ba5ce54c6dd4cf86be47b7166965d687943b781672b883500819e9712
+account-service status=404 size=110 407f9e65bc722c42d8da98a1b95bd1b8600b2f93b481c41e8631b935b7805007
+identity status=404 size=110 3a88a278d588977969ac26977a2d02ca13549e0496c479f9e53b3f9c0ae224a6
+gatekeeper status=404 size=110 376cace80ccda16042007d81bb35fe2902da913f4fe58a6b5f6050820c2ffdfa
+auth status=404 size=110 8cd277bbefd81f379452dd68c62e618992918255d1b29151a2902a104a3b68b5
+session-service status=404 size=110 41ec268bbbfd01e962910f8548753d19bfef9d145b897f1cbae8362bac8a8b51
+[0m
+Only `casino` deviates. Probing the casino route for any live leaf endpoint, including the known BOLA signature pattern.
+[0m$ [0mfor p in "casino/v1/games/mega-wheel" "casino/v1/spins" "casino/v1/providers" "casino/v1/bonuses" "casino/v1" "casino-svc/v1" "casino-service/v1"; do
+  curl -sk -o /tmp/opencode/z.txt -w "/services/$p => status=%{http_code} size=%{size_download} " https://services.ozoon.eu/services/$p
+  sha256sum /tmp/opencode/z.txt | cut -d' ' -f1
+  sleep 1
+done
+/services/casino/v1/games/mega-wheel => status=404 size=146 55f7d9e99b8e2d4e0e193b2f0275501e6d9c1ebd29cadbea6a0da48a8587e3e0
+/services/casino/v1/spins => status=404 size=146 55f7d9e99b8e2d4e0e193b2f0275501e6d9c1ebd29cadbea6a0da48a8587e3e0
+/services/casino/v1/providers => status=404 size=146 55f7d9e99b8e2d4e0e193b2f0275501e6d9c1ebd29cadbea6a0da48a8587e3e0
+/services/casino/v1/bonuses => status=404 size=146 55f7d9e99b8e2d4e0e193b2f0275501e6d9c1ebd29cadbea6a0da48a8587e3e0
+/services/casino/v1 => status=404 size=146 55f7d9e99b8e2d4e0e193b2f0275501e6d9c1ebd29cadbea6a0da48a8587e3e0
+/services/casino-svc/v1 => status=404 size=110 b93d0c09631bff6a0b774e4717d08d081ccf982fd2273cc000122bbf4e873f2b
+/services/casino-service/v1 => status=404 size=110 12515c678b509bdaba3a107bcc66dda552dafb7bfa828aa1bbc88e310b8d9955
+[0m
+[0m→ [0mRead probe-results.md
+Distinct `casino` route confirmed — a routed-but-currently-unreachable backend. Logging findings to the workspace files.
+[0m
+[0m← [0mEdit probe-results.md
+Index: /home/runner/work/ozoon-sportsbook-casino-hunt/ozoon-sportsbook-casino-hunt/probe-results.md
+===================================================================
+--- /home/runner/work/ozoon-sportsbook-casino-hunt/ozoon-sportsbook-casino-hunt/probe-results.md
++++ /home/runner/work/ozoon-sportsbook-casino-hunt/ozoon-sportsbook-casino-hunt/probe-results.md
+@@ -320,4 +320,35 @@
+ 
+ 
+ ## 2026-09-17 06:17:24 UTC
+ 
++
++## 2026-09-17 11:58 UTC
++https://services.ozoon.eu/services/zzznope/v1/ -> 404 len=110 Spring JSON {"error:"Not Found"} control
++https://services.ozoon.eu/services/cashier/v1/ -> 404 len=110 Spring JSON
++https://services.ozoon.eu/services/payment/v1/ -> 404 len=110 Spring JSON
++https://services.ozoon.eu/services/bonus/v1/ -> 404 len=110 Spring JSON
++https://services.ozoon.eu/services/kyc/v1/ -> 404 len=110 Spring JSON
++https://services.ozoon.eu/services/account/v1/ -> 404 len=110 Spring JSON
++https://services.ozoon.eu/services/session/v1/ -> 404 len=110 Spring JSON
++https://services.ozoon.eu/services/jackpot/v1/ -> 404 len=110 Spring JSON
++https://services.ozoon.eu/services/casino/v1/games -> 404 len=146 NGINX HTML (DEVIATION)
++https://services.ozoon.eu/services/sports/v1/events -> 404 len=110 Spring JSON
++https://services.ozoon.eu/services/casino/ -> 404 len=146 NGINX HTML
++https://services.ozoon.eu/services/casino -> 404 len=110 Spring JSON (bare name = Spring catch-all!)
++https://services.ozoon.eu/services/casino/v1/games -> 404 len=146 NGINX HTML (repeat stable)
++https://services.ozoon.eu/services/casino/v2/games -> 404 len=146 NGINX HTML
++https://services.ozoon.eu/services/casino/v1/profiles -> 404 len=146 NGINX HTML
++https://services.ozoon.eu/services/casino/api/games -> 404 len=146 NGINX HTML
++https://services.ozoon.eu/services/casino/v1/health -> 404 len=146 NGINX HTML
++https://services.ozoon.eu/services/casino/games -> 404 len=146 NGINX HTML
++https://services.ozoon.eu/services/casino/v1/spins -> 404 len=146 NGINX HTML
++https://services.ozoon.eu/services/casino/v1/games/mega-wheel -> 404 len=146 NGINX HTML
++https://services.ozoon.eu/services/casino/v1/spins -> 404 len=146 NGINX HTML
++https://services.ozoon.eu/services/casino/v1/providers -> 404 len=146 NGINX HTML
++https://services.ozoon.eu/services/casino/v1/bonuses -> 404 len=146 NGINX HTML
++https://services.ozoon.eu/services/casino/v1 -> 404 len=146 NGINX HTML
++https://services.ozoon.eu/services/casino-svc/v1 -> 404 len=110 Spring JSON
++https://services.ozoon.eu/services/casino-service/v1 -> 404 len=110 Spring JSON
++[NEGATIVE] 30 candidate names incl cashier/payment/bonus/kyc/account/session/jackpot/games/game/bet/bets/wager/provider/providers/igaming/slots/live/spins/tournaments/sportsbook/bookmaker/wallet/identity/auth/gatekeeper etc -> ALL 404 len=110 Spring JSON (no route hit)
++[DISCOVERY] /services/casino/* (keyword casino, any suffix) -> 404 len=146 nginx HTML, no JSESSIONID, no vary/access-control headers, distinct from Spring catch-all (len=110). Indicates an edge route consuming 'casino' as a path keyword, terminating at nginx layer (different upstream). No Spring route bound. sha256 body = 55f7d9e99b8e2d4e0e193b2f0275501e6d9c1ebd29cadbea6a0da48a8587e3e0 stable.
++
+
+[0m
+[0m→ [0mRead leads/lead-bigpickle.md
+Now updating the lead file with the new discovery.
+[0m→ [0mRead leads/lead-bigpickle.md[90m [offset=345][0m
+[0m→ [0mRead leads/lead-bigpickle.md[90m [offset=662][0m
+[0m
+[0m$ [0mwc -l leads/lead-bigpickle.md
+4235 leads/lead-bigpickle.md
+[0m
+Let me see the most recent tail of the lead file to match the current format.
+[0m→ [0mRead leads/lead-bigpickle.md[90m [offset=4090][0m
+[0m
+[0m← [0mEdit leads/lead-bigpickle.md
+Index: /home/runner/work/ozoon-sportsbook-casino-hunt/ozoon-sportsbook-casino-hunt/leads/lead-bigpickle.md
+===================================================================
+--- /home/runner/work/ozoon-sportsbook-casino-hunt/ozoon-sportsbook-casino-hunt/leads/lead-bigpickle.md
++++ /home/runner/work/ozoon-sportsbook-casino-hunt/ozoon-sportsbook-casino-hunt/leads/lead-bigpickle.md
+@@ -4232,4 +4232,10 @@
+ impact: Medium — expands the BOLA/auth-gate surface on money flows beyond SDK-known services; new identifiers for later AUTH_HELPED differentials.
+ testability: PASSIVE
+ [NEXT] PROBE: at 1 req/s: control `GET https://services.ozoon.eu/services/zzznope/v1/` → record status+body sha256; then `GET https://services.ozoon.eu/services/cashier/v1/`, `/payment/v1/`, `/bonus/v1/`, `/kyc/v1/`, `/account/v1/`, `/session/v1/`, `/jackpot/v1/`, `/casino/v1/games`, `/sports/v1/events`; log each status+body-hash; any deviation from control = unlisted live service to probe for the known {uuid} BOLA/auth signature.
+ [RISK] ozoon-sportsbook-casino: 81/100 — three critical vectors (BOLA 65, mass-assignment 60, mock-2FA 55) remain AUTH_HELPED, gated on throwaway-account authorization un-granted across 10 empty cycles; surface mapped and byte-stable; only remaining anonymous upside is unlisted-service discovery (50), which is execution pending in the NEXT probe.
++## 2026-09-17 11:58 UTC [target] (model bigpickle)
++[DISCOVERY] Executed the pending unlisted-service probe. Control `GET /services/zzznope/v1/` → 404 len=110 Spring Boot JSON `{"timestamp":…,"status":404,"error":"Not Found","message":"No message available"}` (+JSESSIONID, vary, access-control-allow-credentials). Same 404/110B/Spring-JSON shape for ALL 33 candidate names tested at 1 rps: cashier/payment/bonus/kyc/account/session/jackpot/games/game/bet/bets/wager/provider/providers/igaming/slots/live/spins/tournaments/sportsbook/bookmaker/casino-gateway/game-gateway/game-manager/bonus-gateway/wallet/wallet-service/account-service/identity/gatekeeper/auth/session-service/casino-svc/casino-service, plus sports/v1/events and casino/v1/games variants — i.e., NO other unlisted service name resolves.
++[DISCOVERY] EXCEPTION: every `/services/casino/*` subpath (casino/, casino/x, casino/v1, casino/v1/, casino/v1/games, casino/v2/games, casino/v1/profiles, casino/api/games, casino/v1/health, casino/games, casino/v1/spins, casino/v1/games/mega-wheel, casino/v1/providers, casino/v1/bonuses) → 404 len=146 nginx default-HTML page (sha256 55f7d9e99b8e2d4e0e193b2f0275501e6d9c1ebd29cadbea6a0da48a8587e3e0), NO JSESSIONID/vary/access-control headers, only Akamai TS0181f769 cookie — while bare `/services/casino` (no trailing segment) → 404/110B Spring JSON like every other name. ⇒ an explicit gateway/nginx route consumes the `casino` keyword and terminates at a DIFFERENT layer than the Spring BFF catch-all (no backend bound → nginx local 404). No live leaf found; route is reserved/pointing at a separate (absent/unbound) upstream.
++[LEARN] ACCEPTED MISCONFIG @ services.ozoon.eu/services/casino: `casino` is the ONLY keyword among ~35 tested that does not fall through to the Spring catch-all — a genuine distinct edge route. No data returned (nginx 404, no backend), so no BOLA surface yet; value = routing-table keyword + candidate AUTH_BYPASS/backing-upstream discovery later (host header / alternate path on the same LB).
++[LEARN] REJECTED OTHER @ services.ozoon.eu/services/{…}: 33 candidate names all → byte-shape-identical Spring 404 = no unlisted money-path/bonus-provider microservice reachable anonymously; the 5 SDK-known + site-config + casino-reserved set appears to be the complete public route table.
++[RISK] ozoon-sportsbook-casino: 81/100 (unchanged) — the casino edge route is a routing-table artifact with no reachable backend this cycle; core vectors (BOLA 65, mass-assignment 60, mock-2FA 55) remain AUTH_HELPED and unprobed, gated on throwaway-account authorization still un-granted; anonymous surface now fully enumerated (33 names + 9 money-path candidates negative), leaving no new anonymous upside. Next: re-request HUMAN authorization — the sole unblocking move.
+
+[0m
+Executing complete. All 9 candidate names plus ~30 more returned the control's Spring JSON 404 — except `casino`, which is a distinct edge route (nginx HTML 404, no JSESSIONID). Logging the lead entry.
+## STEP 1 — DELTA
+- Executed the pending unlisted-service PASSIVE probe: control `GET /services/zzznope/v1/` → 404/110B Spring JSON; **all 33 candidate names** (cashier, payment, bonus, kyc, account, session, jackpot, games, igaming, slots, live, sportsbook, wallet, auth, gateway variants, etc.), plus `sports/v1/events` → identical Spring-JSON 404/110B = **no unlisted service resolves**.
+- **EXCEPTION / new discovery**: every `/services/casino/*` subpath → 404/146B **nginx default-HTML** (no JSESSIONID/vary/CORS, Akamai TS cookie only), while bare `/services/casino` → Spring JSON like everything else. Distinct reserved edge route for keyword `casino`, terminating at a layer with no bound backend (nginx local 404). No live leaf, no data. sha256 55f7d9e9… stable across 14 requests.
+- No AUTH_HELPED progress; authorization still ungranted. Probe log and lead appended.
+
+## STEP 2 — PRIORITIZE
+- Prevent 5 known SDK services (wallet-gateway, transaction-group, referral, player-verification, player-messages): carry over, unchanged.
+- Unlisted-service discovery (09-17 06:15 hypothesis): **RESOLVED (negative)** — 33+9 names all negative; only `casino` reserved route artifact with no backend → drop from active.
+- New: `casino` reserved route at services edge — routing-table keyword, no reachable backend this cycle → low priority, note-only.
+
+## STEP 3 — HYPOTHESES
+- [HYP] BOLA on Profile-Keyed UUID Endpoints Across 5 Services <br>
+class: IDOR <br>
+asset: https://services.ozoon.eu/services/{wallet-gateway,transaction-group,referral,player-verification,player-messages}/v1/profiles/{uuid}/... <br>
+confidence: 65 <br>
+reasoning: SDK-confirmed {uuid}-path route shape on 5 services; wallet-gateway /balances bogus-UUID → 401/159B {"errorCode":"unauthorized"}, byte-stable ~3 weeks; auth pre-check precedes lookup; session→UUID binding never observable anonymously. This cycle's 33-name enumeration confirmed the public route table is otherwise closed. <br>
+evidence_needed: With own session A, GET /profiles/{B-uuid}/balances returns 200 with B's data while own-UUID control returns own data → unbound path UUID = cross-tenant read. <br>
+verify_steps: [AUTH_HELPED] authorized throwaway signups A+B; with A's cookie GET /wallet-gateway/v1/profiles/{B}/balances, /player-verification/v1/profiles/{B}/verifications + own-UUID control; diff status/body bytes. <br>
+impact: Critical — cross-player wallet/transaction/PII read across 5 services; ATO enabler. <br>
+testability: AUTH_HELPED <br>
+- [HYP] Signup Mass-Assignment for role/vip/balance Injection <br>
+class: BUSLOGIC <br>
+asset: https://www.ozoon.eu/api/v1/signup <br>
+confidence: 60 <br>
+reasoning: reCaptcha.enabled:false on signup; client-controlled attributes/address sub-objects; static refSiteToken a0b5…b084; profileupdateform update DTO strict and separate — signup DTO over-acceptance untested. <br>
+evidence_needed: POST signup with extra keys (attributes.role/vip_level/balance) persists on created session claims vs minimal control. <br>
+verify_steps: [AUTH_HELPED] two authorized throwaway signups (extra-fields vs minimal control); diff resulting /api/v1/whoami or profile claims. <br>
+impact: High — privilege escalation / bonus+balance manipulation / territory-softblock bypass. <br>
+testability: AUTH_HELPED <br>
+- [HYP] Mock-2FA Verification Header Honored = 2FA/KYC Gate Bypass <br>
+class: AUTH <br>
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify <br>
+confidence: 55 <br>
+reasoning: production SDK sends X-MOCK-2FA-VERIFICATION:true on verify; config two_factor_authenticator.allow-permanent-skip:["true"]; isMockProviderEnabled:false is client-side only, does not resolve server honoring. <br>
+evidence_needed: POST verify {"verificationType":"PHONE"} with X-MOCK-2FA-VERIFICATION:true succeeds while byte-identical control without header is rejected (own authorized sid). <br>
+verify_steps: [AUTH_HELPED] authorized signup → own sid; POST verify with header, then identical control without; compare status/body. <br>
+impact: Critical — 2FA/SMS/PIN/KYC gate bypass on withdraw/deposit/bonus money flows. <br>
+testability: AUTH_HELPED <br>
+
+## STEP 4 — SELF-CRITIQUE
+- Unlisted-service hypothesis (50) tested 3 weeks late and now resolved negative; `casino` exception is a routing artifact without a backend — avoid overstating as a finding (no impact).
+- Enumeration keep scope tight: only `casino` deviated; 33 names negative is strong evidence the public route table is the 5+site-config set — no more brute-force names worth the request budget.
+- AUTH_HELPED trio unchanged for ~10 cycles; no anonymous vector remains — all further anonymous GETs would be REJECTED-class validation.
+- Streaming claim: NEXT action must not repeat an already-executed probe.
+
+## STEP 5 — NEXT
+- [NEXT] HUMAN: Request authorization at bugs.olivermaicher.eu to create ONE throwaway account on www.ozoon.eu (restricted mutating create, no live customer data) — the sole unblocking move. If granted, fire exactly: POST https://www.ozoon.eu/api/v1/signup {"email":"<throwaway>@<valid-domain>","password":"Test1234!","country":"CA","language":"en","attributes":{},"address":{"country":"CA","addressLine":"123 Test St","postalCode":"K1A 0A6"}} (browser-profile fingerprint; GET is WAF-blocked support_id 6279731412718049849) → capture sid + ownPID, then baseline GET https://services.ozoon.eu/services/wallet-gateway/v1/profiles/{ownPID}/balances (expect 200 vs recorded 401) — unlocks BOLA/2FA/mass-assignment differential.
+
+## STEP 6 — LEARNING
+- ACCEPTED MISCONFIG @ services.ozoon.eu/services/casino: only keyword among ~35 that bypasses the Spring catch-all; distinct reserved edge route, nginx-terminated, no bound backend → routing-table knowledge + future upstream-discovery lead; no data/BOLA surface.
+- REJECTED OTHER @ services.ozoon.eu/services/*: 33 candidate names → byte-identical Spring 404; 5 SDK-known + site-config + casino-reserved is the complete public route table.
+- Other accepted/rejected KB items (BOLA surface, mock-2FA, mass-assignment, 3306 shared-proxy, reposcan learning-repos, split-horizon, glovefrog/wicket-keeper third-party) unchanged.
+
+## STEP 7 — RISK
+- ozoon-sportsbook-casino: 81/100 (unchanged). The unlisted-service vector (50) is now resolved negative, leaving zero anonymous upside; the three critical vectors (BOLA 65, mass-assignment 60, mock-2FA 55) remain AUTH_HELPED and unprobed, gated solely on throwaway-account authorization ungranted across ~10 cycles. Real-money platform, signed surface fully enumerated and byte-stable. Risk rises only on authenticated differential evidence (+1 on BOLA/bypass confirmation) or declines (−2) if headers/fields are stripped server-side; until then flat.

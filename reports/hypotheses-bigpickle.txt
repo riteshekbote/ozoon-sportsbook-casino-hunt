@@ -1,12 +1,25 @@
-## 2026-09-17 06:15:42 UTC [target] (model bigpickle)
-[HYP] Unlisted Money-Path Microservices Under /services/*/v1/
-class: IDOR
-asset: https://services.ozoon.eu/services/{cashier,payment,bonus,kyc,account,session,jackpot,casino,games}/v1/
-confidence: 50
-reasoning: SDK bundles confirm only 5 profile-keyed services (wallet-gateway, transaction-group, referral, player-verification, player-messages) + site-config with the {uuid} BOLA route shape; live probes confirm the gateway 404s unknown names with a distinct Spring Boot JSON shape, so a non-404 response on an untried name identifies a live unlisted service. Sports/casino odds, event, and game-list feeds are normally anonymous public data, so a sports/casino/games probe is the cheapest high-yield test.
-evidence_needed: GET on untried service name returns anything other than the control's structured-404 body (or returns 200/401) → unlisted live microservice, then diff its route shape for {uuid}/ private patterns.
-verify_steps: baseline control `GET https://services.ozoon.eu/services/zzznope/v1/` (record status+body hash) at <=1 rps; then one-by-one `GET .../services/cashier/v1/`, `/payment/v1/`, `/bonus/v1/`, `/kyc/v1/`, `/account/v1/`, `/session/v1/`, `/jackpot/v1/`, `/casino/v1/games`, `/sports/v1/events` — any body/status differing from the control hash = new service; confirm route shape with `/services/<hit>/v1/profiles/{bogus-uuid}` for the known 401/159B BOLA signature.
-impact: Medium — expands the BOLA/auth-gate surface on money flows beyond SDK-known services; new identifiers for later AUTH_HELPED differentials.
-testability: PASSIVE
-[NEXT] PROBE: at 1 req/s: control `GET https://services.ozoon.eu/services/zzznope/v1/` → record status+body sha256; then `GET https://services.ozoon.eu/services/cashier/v1/`, `/payment/v1/`, `/bonus/v1/`, `/kyc/v1/`, `/account/v1/`, `/session/v1/`, `/jackpot/v1/`, `/casino/v1/games`, `/sports/v1/events`; log each status+body-hash; any deviation from control = unlisted live service to probe for the known {uuid} BOLA/auth signature.
-[RISK] ozoon-sportsbook-casino: 81/100 — three critical vectors (BOLA 65, mass-assignment 60, mock-2FA 55) remain AUTH_HELPED, gated on throwaway-account authorization un-granted across 10 empty cycles; surface mapped and byte-stable; only remaining anonymous upside is unlisted-service discovery (50), which is execution pending in the NEXT probe.
+## 2026-09-17 12:02:24 UTC [target] (model bigpickle)
+class: IDOR <br>
+asset: https://services.ozoon.eu/services/{wallet-gateway,transaction-group,referral,player-verification,player-messages}/v1/profiles/{uuid}/... <br>
+confidence: 65 <br>
+reasoning: SDK-confirmed {uuid}-path route shape on 5 services; wallet-gateway /balances bogus-UUID → 401/159B {"errorCode":"unauthorized"}, byte-stable ~3 weeks; auth pre-check precedes lookup; session→UUID binding never observable anonymously. This cycle's 33-name enumeration confirmed the public route table is otherwise closed. <br>
+evidence_needed: With own session A, GET /profiles/{B-uuid}/balances returns 200 with B's data while own-UUID control returns own data → unbound path UUID = cross-tenant read. <br>
+verify_steps: [AUTH_HELPED] authorized throwaway signups A+B; with A's cookie GET /wallet-gateway/v1/profiles/{B}/balances, /player-verification/v1/profiles/{B}/verifications + own-UUID control; diff status/body bytes. <br>
+impact: Critical — cross-player wallet/transaction/PII read across 5 services; ATO enabler. <br>
+testability: AUTH_HELPED <br>
+class: BUSLOGIC <br>
+asset: https://www.ozoon.eu/api/v1/signup <br>
+confidence: 60 <br>
+reasoning: reCaptcha.enabled:false on signup; client-controlled attributes/address sub-objects; static refSiteToken a0b5…b084; profileupdateform update DTO strict and separate — signup DTO over-acceptance untested. <br>
+evidence_needed: POST signup with extra keys (attributes.role/vip_level/balance) persists on created session claims vs minimal control. <br>
+verify_steps: [AUTH_HELPED] two authorized throwaway signups (extra-fields vs minimal control); diff resulting /api/v1/whoami or profile claims. <br>
+impact: High — privilege escalation / bonus+balance manipulation / territory-softblock bypass. <br>
+testability: AUTH_HELPED <br>
+class: AUTH <br>
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify <br>
+confidence: 55 <br>
+reasoning: production SDK sends X-MOCK-2FA-VERIFICATION:true on verify; config two_factor_authenticator.allow-permanent-skip:["true"]; isMockProviderEnabled:false is client-side only, does not resolve server honoring. <br>
+evidence_needed: POST verify {"verificationType":"PHONE"} with X-MOCK-2FA-VERIFICATION:true succeeds while byte-identical control without header is rejected (own authorized sid). <br>
+verify_steps: [AUTH_HELPED] authorized signup → own sid; POST verify with header, then identical control without; compare status/body. <br>
+impact: Critical — 2FA/SMS/PIN/KYC gate bypass on withdraw/deposit/bonus money flows. <br>
+testability: AUTH_HELPED <br>

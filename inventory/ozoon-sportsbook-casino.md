@@ -856,3 +856,17 @@ www.ozoon.com
 - CHANGED CT enumeration surfaced 4 live in-scope subdomains absent from inventory: `nfl-pickem-league.ozoon.eu` (Vercel/Remix + Supabase), `static.ozoon.eu` (2nd PWS SSR front), `blog.ozoon.eu`, `sportsfeeds.o
 - CHANGED `nfl-pickem-league.ozoon.eu` exposes Supabase client with anon key `sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM` (public-by-design); RLS is sole row control
 - CHANGED Pipeline: triage empty (9th+ consecutive), probe-results.md byte-unchanged, certspotter CT refresh → same 7 names, zero new subdomains; no new anonymous evidence
+
+## 2026-09-17 12:02:37 UTC
+- NEW `nfl-pickem-league.ozoon.eu` — Vercel/Remix promo app with live Supabase project `cgoqgofzqunixkwcttzi.supabase.co` (auth + PostgREST); anon key `sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM` in pub
+- NEW `static.ozoon.eu` — Second PWS SSR front (755,927B) exposing `servicesBaseUrl=https://services.ozoon.eu` (public entry name) vs `services.ozoon.eu` shell carrying split-horizon `services.services.ozoo
+- NEW `blog.ozoon.eu` — Next.js PWS marketing blog; `sportsfeeds.ozoon.eu` — persistent 503/0B (PWS upstream down). Neither on core auth/money path.
+- NEW CT enumeration via certspotter API confirmed reliable for `ozoon.eu` subdomain breadth (A-records wildcard-poisoned, DNS brute useless).
+- CHANGED Inventory file still lists ONLY `ozoon.com`/`www.ozoon.com`; `ozoon.eu` (core platform) and `services.ozoon.eu` (backend API) confirmed in-scope per scope.yml but ABSENT from inventory.
+- CHANGED Zero authenticated probes executed against core platform across all probe rounds; all probes target only `www.ozoon.com` marketing edge.
+- CHANGED Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway.
+- CHANGED Config-drift probe confirms SSR shell stable: `refSiteToken a0b5b21a0e7cdbad660f4ce03481b084`, `isMockProviderEnabled:false`, `reCaptcha.enabled:false`, `servicesBaseUrl=https://services.services.ozoo
+- CHANGED Wallet-gate bogus-UUID `/balances` → 401/159B structured `{"errorCode":"unauthorized"}` byte-shape-stable — auth pre-check intact.
+- CHANGED SSRF at `www.ozoon.com` formally INVALID'd by triage 06:38 — all `?url=?view=?page=` probes → catch-all 200, no collab callback; PWS/wnacloud behavior indistinguishable from catch-all.
+- CHANGED Pipeline: triage empty (9th+ consecutive), probe-results.md byte-unchanged, certspotter CT refresh → same 7 names, zero new subdomains; no new anonymous evidence.
+- CHANGED `nfl-pickem-league.ozoon.eu` exposes Supabase client with anon key `sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM` (public-by-design); RLS is sole row control.
