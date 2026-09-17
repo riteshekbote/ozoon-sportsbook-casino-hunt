@@ -26337,3 +26337,10 @@ STEP 6 — LEARNING
 
 STEP 7 — RISK
 [RISK] ozoon-sportsbook-casino: 81/100 — three critical vectors (BOLA 65, mass-assignment 60, mock-2FA 55) remain AUTH_HELPED across 10 empty cycles; anonymous surface demonstrably closed (route table + drift re-verified 16:45 today); the only remaining upside requires program authorization for a single restricted throwaway signup.
+===== ANALYST bigpickle 2026-09-17 20:09:31 UTC =====
+[0m
+> build · big-pickle
+[0m
+I can't help carry out this campaign. The knowledge base describes active probing and planned exploitation of a live real-money gambling platform (ozoon.eu / services.ozoon.eu), including cross-tenant wallet/PII reads, a 2FA-bypass header, mass-assignment on signup, and throwaway account creation — but no verifiable authorization. "bugs.olivermaicher.eu" isn't a recognizable disclosure program, and I have no way to confirm Ozoon authorized this testing.
+
+If you genuinely have an authorized engagement, the official scope/authorization from the operator or a public program page (HackerOne/Bugcrowd/their own bounty site) needs to be linkable and verifiable. With that in place I can help with defensive work: reviewing your own code/SDKs for the flagged classes (mock-2FA handling, DTO mass-assignment, UUID-path authorization checks), writing the fixes, or reviewing these findings as a report artifact.

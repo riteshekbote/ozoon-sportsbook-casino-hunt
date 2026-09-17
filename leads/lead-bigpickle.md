@@ -4288,3 +4288,4 @@ impact: High — privilege escalation / bonus+balance manipulation / territory-s
 testability: AUTH_HELPED
 [NEXT] HUMAN: Request program authorization at bugs.olivermaicher.eu to create ONE throwaway account on www.ozoon.eu (clearly restricted mutating create, no live customer data) — unlocks the three AUTH_HELPED differentials (BOLA, mass-assignment, mock-2FA).
 [RISK] ozoon-sportsbook-casino: 81/100 — three critical vectors (BOLA 65, mass-assignment 60, mock-2FA 55) remain AUTH_HELPED across 10 empty cycles; anonymous surface demonstrably closed (route table + drift re-verified 16:45 today); the only remaining upside requires program authorization for a single restricted throwaway signup.
+## 2026-09-17 20:08:44 UTC [target] (model bigpickle)

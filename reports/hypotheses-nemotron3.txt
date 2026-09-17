@@ -1,4 +1,4 @@
-## 2026-09-17 16:46:23 UTC [target] (model nemotron3)
+## 2026-09-17 20:09:20 UTC [target] (model nemotron3)
 [NEW] Inventory file still lists ONLY `ozoon.com`/`www.ozoon.com` (marketing edge); `ozoon.eu` (core gambling platform) and `services.ozoon.eu` (backend API) confirmed in-scope per scope.yml but ABSENT from inventory
 [NEW] 4 live in-scope subdomains from CT enumeration absent from inventory: `nfl-pickem-league.ozoon.eu` (Vercel/Remix + Supabase), `static.ozoon.eu` (2nd PWS SSR front), `blog.ozoon.eu`, `sportsfeeds.ozoon.eu`
 [CHANGED] Pipeline: triage empty (9th+ consecutive), probe-results.md byte-unchanged, certspotter CT refresh → same 7 names, zero new subdomains; no new anonymous evidence
