@@ -892,3 +892,11 @@ www.ozoon.com
 - CHANGED Wallet-gate bogus-UUID `/balances` → 401/159B structured `{"errorCode":"unauthorized"}` byte-shape-stable — auth pre-check intact
 - CHANGED SSRF at `www.ozoon.com` formally INVALID'd by triage 06:38 — all `?url=?view=?page=` probes → catch-all 200, no collab callback; PWS/wnacloud behavior indistinguishable from catch-all
 - CHANGED `nfl-pickem-league.ozoon.eu` exposes Supabase client with anon key `sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM` (public-by-design); RLS is sole row control
+
+## 2026-09-17 22:57:37 UTC
+- NEW `services.ozoon.eu` SSR shell now returns 503 (was serving 743KB Next.js shell); `static.ozoon.eu` is the live PWS SSR front exposing `servicesBaseUrl=https://services.ozoon.eu` (public entry vs split
+- NEW `www.ozoon.eu/api/v1/signup` GET now returns WAF "Request Rejected" page (was Spring Boot Whitelabel 404 per KB); POST empty body → WAF METHOD NOT ALLOWED
+- CHANGED `www.ozoon.eu/api/v1/login` and `/api/v1/whoami` still return Spring Boot Whitelabel 404 JSON (consistent)
+- CHANGED `nfl-pickem-league.ozoon.eu` confirmed: Vercel/Remix + Supabase project `cgoqgofzqunixkwcttzi.supabase.co` with anon key `sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM` in public JS chunk
+- CHANGED Pipeline: 9+ consecutive empty triage runs; probe-results.md byte-unchanged; certspotter CT static at 7 names
+- CHANGED Inventory file still lists ONLY `ozoon.com`/`www.ozoon.com`; `ozoon.eu` + `services.ozoon.eu` confirmed in-scope per scope.yml but ABSENT from inventory
