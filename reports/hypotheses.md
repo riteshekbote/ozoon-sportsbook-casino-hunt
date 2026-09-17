@@ -2348,3 +2348,6 @@
 - LEARN: ACCEPTED BUSLOGIC @ ozoon.eu: Registration form with referral email field, country override, and client-side rendering suggests server-side validation is the on
 - LEARN: ACCEPTED MISCONFIG @ services.ozoon.eu SSR shell: 22:49 drift → 745,072B sha256 e48c1221… (+1.1KB vs 743,947B 09-15, benign content churn); refSiteToken a0b5…b0
 - LEARN: REJECTED OTHER @ ozoon-sportsbook-casino pipeline: triage 18:56+21:53 empty (9th consecutive), probe-results.md byte-unchanged, certspotter same 7 names, reposc
+
+## RANKED HYPOTHESES 2026-09-17 01:16:27 UTC
+- [65] https://services.ozoon.eu/services/{wallet-gateway,transaction-group,referral,player-verification,player-messages}/v1/profiles/{uuid}/...: BOLA on Profile-Keyed UUID Endpoints Across 5 Services (from art/lead_bigpickle.txt)

@@ -25535,3 +25535,263 @@ STEP 6 — LEARNING
 
 STEP 7 — RISK
 [RISK] ozoon-sportsbook-casino: 81/100 — Three critical vectors (BOLA UUID 65, signup mass-assignment 60, mock-2FA bypass 55) remain AUTH_HELPED and unprobed, gated solely on throwaway-account authorization that has not been granted across 9 empty cycles; surface is fully mapped and byte-stable, so unchanged risk. Real-money platform, F5 ASM WAF (signup path only), captcha-free signup confirmed, refSiteToken static. Scope gap persists: inventory file still omits ozoon.eu/services.ozoon.eu.
+===== ANALYST bigpickle 2026-09-17 01:16:27 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mls -la && ls -la inventory/ 2>/dev/null; ls -la *.md 2>/dev/null
+total 528
+drwxr-xr-x 12 runner runner   4096 Sep 17 01:14 .
+drwxr-xr-x  3 runner runner   4096 Sep 17 01:14 ..
+drwxr-xr-x  7 runner runner   4096 Sep 17 01:14 .git
+drwxr-xr-x  3 runner runner   4096 Sep 17 01:14 .github
+-rw-r--r--  1 runner runner   1642 Sep 17 01:14 README.md
+-rw-r--r--  1 runner runner     32 Sep 17 01:14 analyst-out.txt
+-rw-r--r--  1 runner runner 224250 Sep 17 01:14 analyst-prompt.txt
+-rw-r--r--  1 runner runner 220513 Sep 17 01:14 ctx.txt
+drwxr-xr-x  2 runner runner   4096 Sep 17 01:14 inventory
+drwxr-xr-x  2 runner runner   4096 Sep 17 01:14 knowledge
+drwxr-xr-x  2 runner runner   4096 Sep 17 01:14 leads
+-rw-r--r--  1 runner runner   5123 Sep 17 01:14 probe-results.md
+drwxr-xr-x  2 runner runner   4096 Sep 17 01:14 recon-notes
+drwxr-xr-x  2 runner runner   4096 Sep 17 01:14 reports
+drwxr-xr-x  2 runner runner   4096 Sep 17 01:14 reposcan-raw
+-rw-r--r--  1 runner runner   3150 Sep 17 01:14 scope.yml
+drwxr-xr-x  2 runner runner   4096 Sep 17 01:14 scripts
+-rw-r--r--  1 runner runner     33 Sep 17 01:14 state_bigpickle.json
+-rw-r--r--  1 runner runner     33 Sep 17 01:14 state_laguna.json
+-rw-r--r--  1 runner runner     33 Sep 17 01:14 state_ling3.json
+-rw-r--r--  1 runner runner     33 Sep 17 01:14 state_longcat.json
+-rw-r--r--  1 runner runner     33 Sep 17 01:14 state_mimo.json
+-rw-r--r--  1 runner runner     33 Sep 17 01:14 state_nemotron3.json
+drwxr-xr-x  2 runner runner   4096 Sep 17 01:14 triage
+total 124
+drwxr-xr-x  2 runner runner   4096 Sep 17 01:14 .
+drwxr-xr-x 12 runner runner   4096 Sep 17 01:14 ..
+-rw-r--r--  1 runner runner 118213 Sep 17 01:14 ozoon-sportsbook-casino.md
+-rw-r--r-- 1 runner runner 1642 Sep 17 01:14 README.md
+-rw-r--r-- 1 runner runner 5123 Sep 17 01:14 probe-results.md
+[0m
+[0m✱ [0mGlob "**/probe-results.md"[90m 1 match[0m
+[0m→ [0mRead probe-results.md
+[0m
+[0m$ [0mcat analyst-out.txt; echo "---"; ls -la triage/ reports/ leads/ knowledge/ 2>/dev/null | head -60
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mls -la && ls -la inventory/ 2>/dev/null; ls -la *.md 2>/dev/null
+total 528
+drwxr-xr-x 12 runner runner   4096 Sep 17 01:14 .
+drwxr-xr-x  3 runner runner   4096 Sep 17 01:14 ..
+drwxr-xr-x  7 runner runner   4096 Sep 17 01:14 .git
+drwxr-xr-x  3 runner runner   4096 Sep 17 01:14 .github
+-rw-r--r--  1 runner runner   1642 Sep 17 01:14 README.md
+-rw-r--r--  1 runner runner     32 Sep 17 01:14 analyst-out.txt
+-rw-r--r--  1 runner runner 224250 Sep 17 01:14 analyst-prompt.txt
+-rw-r--r--  1 runner runner 220513 Sep 17 01:14 ctx.txt
+drwxr-xr-x  2 runner runner   4096 Sep 17 01:14 inventory
+drwxr-xr-x  2 runner runner   4096 Sep 17 01:14 knowledge
+drwxr-xr-x  2 runner runner   4096 Sep 17 01:14 leads
+-rw-r--r--  1 runner runner   5123 Sep 17 01:14 probe-results.md
+drwxr-xr-x  2 runner runner   4096 Sep 17 01:14 recon-notes
+drwxr-xr-x  2 runner runner   4096 Sep 17 01:14 reports
+drwxr-xr-x  2 runner runner   4096 Sep 17 01:14 reposcan-raw
+-rw-r--r--  1 runner runner   3150 Sep 17 01:14 scope.yml
+drwxr-xr-x  2 runner runner   4096 Sep 17 01:14 scripts
+-rw-r--r--  1 runner runner     33 Sep 17 01:14 state_bigpickle.json
+-rw-r--r--  1 runner runner     33 Sep 17 01:14 state_laguna.json
+-rw-r--r--  1 runner runner     33 Sep 17 01:14 state_ling3.json
+-rw-r--r--  1 runner runner     33 Sep 17 01:14 state_longcat.json
+-rw-r--r--  1 runner runner     33 Sep 17 01:14 state_mimo.json
+-rw-r--r--  1 runner runner     33 Sep 17 01:14 state_nemotron3.json
+drwxr-xr-x  2 runner runner   4096 Sep 17 01:14 triage
+total 124
+drwxr-xr-x  2 runner runner   4096 Sep 17 01:14 .
+drwxr-xr-x 12 runner runner   4096 Sep 17 01:14 ..
+-rw-r--r--  1 runner runner 118213 Sep 17 01:14 ozoon-sportsbook-casino.md
+-rw-r--r-- 1 runner runner 1642 Sep 17 01:14 README.md
+-rw-r--r-- 1 runner runner 5123 Sep 17 01:14 probe-results.md
+[0m
+[0m✱ [0mGlob "**/probe-results.md"[90m 1 match[0m
+[0m→ [0mRead probe-results.md
+---
+knowledge/:
+total 96
+drwxr-xr-x  2 runner runner  4096 Sep 17 01:14 .
+drwxr-xr-x 12 runner runner  4096 Sep 17 01:14 ..
+-rw-r--r--  1 runner runner 89611 Sep 17 01:14 index.md
+
+leads/:
+total 1632
+drwxr-xr-x  2 runner runner   4096 Sep 17 01:14 .
+drwxr-xr-x 12 runner runner   4096 Sep 17 01:14 ..
+-rw-r--r--  1 runner runner 599623 Sep 17 01:14 lead-bigpickle.md
+-rw-r--r--  1 runner runner   4590 Sep 17 01:14 lead-laguna.md
+-rw-r--r--  1 runner runner   4500 Sep 17 01:14 lead-ling3.md
+-rw-r--r--  1 runner runner   4680 Sep 17 01:14 lead-longcat.md
+-rw-r--r--  1 runner runner     18 Sep 17 01:14 lead-mimo.md
+-rw-r--r--  1 runner runner 990920 Sep 17 01:14 lead-nemotron3.md
+-rw-r--r--  1 runner runner  38767 Sep 17 01:14 reposcan-ozoon-sportsbook-casino.md
+
+reports/:
+total 4416
+drwxr-xr-x  2 runner runner    4096 Sep 17 01:14 .
+drwxr-xr-x 12 runner runner    4096 Sep 17 01:14 ..
+-rw-r--r--  1 runner runner 1939566 Sep 17 01:14 analyst-bigpickle.log
+-rw-r--r--  1 runner runner   19530 Sep 17 01:14 analyst-laguna.log
+-rw-r--r--  1 runner runner   19440 Sep 17 01:14 analyst-ling3.log
+-rw-r--r--  1 runner runner   19620 Sep 17 01:14 analyst-longcat.log
+-rw-r--r--  1 runner runner 2123881 Sep 17 01:14 analyst-nemotron3.log
+-rw-r--r--  1 runner runner   16708 Sep 17 01:14 hypotheses-bigpickle.txt
+-rw-r--r--  1 runner runner      51 Sep 17 01:14 hypotheses-laguna.txt
+-rw-r--r--  1 runner runner      50 Sep 17 01:14 hypotheses-ling3.txt
+-rw-r--r--  1 runner runner      52 Sep 17 01:14 hypotheses-longcat.txt
+-rw-r--r--  1 runner runner      54 Sep 17 01:14 hypotheses-nemotron3.txt
+-rw-r--r--  1 runner runner  340405 Sep 17 01:14 hypotheses.md
+-rw-r--r--  1 runner runner    1072 Sep 17 01:14 valid-bugs.md
+
+triage/:
+total 460
+drwxr-xr-x  2 runner runner  4096 Sep 17 01:14 .
+drwxr-xr-x 12 runner runner  4096 Sep 17 01:14 ..
+-rw-r--r--  1 runner runner     0 Sep 17 01:14 .gitkeep
+-rw-r--r--  1 runner runner   203 Sep 17 01:14 run-2026-09-02-21-52.md
+-rw-r--r--  1 runner runner   224 Sep 17 01:14 run-2026-09-02-23-50.md
+-rw-r--r--  1 runner runner   178 Sep 17 01:14 run-2026-09-03-02-55.md
+-rw-r--r--  1 runner runner   205 Sep 17 01:14 run-2026-09-03-07-48.md
+-rw-r--r--  1 runner runner   155 Sep 17 01:14 run-2026-09-03-12-35.md
+-rw-r--r--  1 runner runner   182 Sep 17 01:14 run-2026-09-03-16-40.md
+-rw-r--r--  1 runner runner   149 Sep 17 01:14 run-2026-09-03-19-27.md
+-rw-r--r--  1 runner runner   178 Sep 17 01:14 run-2026-09-03-21-52.md
+-rw-r--r--  1 runner runner   172 Sep 17 01:14 run-2026-09-03-23-46.md
+-rw-r--r--  1 runner runner   304 Sep 17 01:14 run-2026-09-04-02-55.md
+-rw-r--r--  1 runner runner   822 Sep 17 01:14 run-2026-09-04-07-43.md
+-rw-r--r--  1 runner runner   224 Sep 17 01:14 run-2026-09-04-12-30.md
+-rw-r--r--  1 runner runner   347 Sep 17 01:14 run-2026-09-04-16-35.md
+-rw-r--r--  1 runner runner   248 Sep 17 01:14 run-2026-09-04-19-07.md
+-rw-r--r--  1 runner runner  5887 Sep 17 01:14 run-2026-09-04-21-33.md
+-rw-r--r--  1 runner runner   189 Sep 17 01:14 run-2026-09-04-23-17.md
+-rw-r--r--  1 runner runner   749 Sep 17 01:14 run-2026-09-05-01-06.md
+-rw-r--r--  1 runner runner   171 Sep 17 01:14 run-2026-09-05-05-50.md
+-rw-r--r--  1 runner runner   174 Sep 17 01:14 run-2026-09-05-09-57.md
+-rw-r--r--  1 runner runner   213 Sep 17 01:14 run-2026-09-05-13-17.md
+[0m
+[0m$ [0mfor f in state_*.json; do echo "== $f =="; cat "$f"; echo; done; echo "== lead-laguna =="; head -40 leads/lead-laguna.md; echo "== lead-mimo =="; cat leads/lead-mimo.md
+== state_bigpickle.json ==
+{"phase": "POC", "target": "api"}
+== state_laguna.json ==
+{"phase": "POC", "target": "api"}
+== state_ling3.json ==
+{"phase": "POC", "target": "api"}
+== state_longcat.json ==
+{"phase": "POC", "target": "api"}
+== state_mimo.json ==
+{"phase": "POC", "target": "api"}
+== state_nemotron3.json ==
+{"phase": "POC", "target": "api"}
+== lead-laguna ==
+## 2026-09-03 17:13:57 UTC [target] (model laguna)
+## 2026-09-03 19:59:02 UTC [target] (model laguna)
+## 2026-09-03 22:29:43 UTC [target] (model laguna)
+## 2026-09-04 00:29:41 UTC [target] (model laguna)
+## 2026-09-04 05:08:56 UTC [target] (model laguna)
+## 2026-09-04 09:45:55 UTC [target] (model laguna)
+## 2026-09-04 14:09:10 UTC [target] (model laguna)
+## 2026-09-04 17:40:26 UTC [target] (model laguna)
+## 2026-09-04 19:59:05 UTC [target] (model laguna)
+## 2026-09-04 22:17:29 UTC [target] (model laguna)
+## 2026-09-05 00:15:53 UTC [target] (model laguna)
+## 2026-09-05 04:42:27 UTC [target] (model laguna)
+## 2026-09-05 08:41:58 UTC [target] (model laguna)
+## 2026-09-05 12:07:20 UTC [target] (model laguna)
+## 2026-09-05 15:23:51 UTC [target] (model laguna)
+## 2026-09-05 17:39:17 UTC [target] (model laguna)
+## 2026-09-05 19:32:39 UTC [target] (model laguna)
+## 2026-09-05 21:44:18 UTC [target] (model laguna)
+## 2026-09-05 23:43:10 UTC [target] (model laguna)
+## 2026-09-06 04:08:14 UTC [target] (model laguna)
+## 2026-09-06 08:44:02 UTC [target] (model laguna)
+## 2026-09-06 12:47:40 UTC [target] (model laguna)
+## 2026-09-06 16:07:29 UTC [target] (model laguna)
+## 2026-09-06 18:25:17 UTC [target] (model laguna)
+## 2026-09-06 20:49:45 UTC [target] (model laguna)
+## 2026-09-06 22:50:07 UTC [target] (model laguna)
+## 2026-09-07 00:49:23 UTC [target] (model laguna)
+## 2026-09-07 05:54:05 UTC [target] (model laguna)
+## 2026-09-07 12:10:52 UTC [target] (model laguna)
+## 2026-09-07 17:46:55 UTC [target] (model laguna)
+## 2026-09-07 21:23:53 UTC [target] (model laguna)
+## 2026-09-07 23:47:00 UTC [target] (model laguna)
+## 2026-09-08 04:09:01 UTC [target] (model laguna)
+## 2026-09-08 08:55:47 UTC [target] (model laguna)
+## 2026-09-08 13:29:31 UTC [target] (model laguna)
+## 2026-09-08 17:30:53 UTC [target] (model laguna)
+## 2026-09-08 20:18:16 UTC [target] (model laguna)
+## 2026-09-08 22:46:47 UTC [target] (model laguna)
+## 2026-09-09 01:09:25 UTC [target] (model laguna)
+## 2026-09-09 06:08:20 UTC [target] (model laguna)
+== lead-mimo ==
+# Lead log (seed)
+[0m
+## STEP 1 — DELTA
+
+- CHANGED: probe-results.md gained 2026-09-16 22:50:49 entry — `www.ozoon.com/` 200, `/api/` 404, `/robots.txt` 200, `/sitemap.xml` 200, byte-identical to every prior baseline; confirms no anonymous-surface drift.
+- CHANGED: all 6 peer states `{"phase":"POC","target":"api"}`; lead files (laguna/ling3/longcat/nemotron3/mimo) contain timestamp headers only, zero new hypotheses this cycle; bigpickle lead unchanged.
+- NO_DELTA: inventory (still only ozoon.com/www.ozoon.com; ozoon.eu + services.ozoon.eu absent), KB tail (SSR shell e48c1221…/745,072B + wallet-gate 401/159B + site-config fingerprint all reconfirmed), and the three AUTH_HELPED vectors remain byte-stable and unprobed. 9th consecutive empty triage.
+
+## STEP 2 — PRIORITIZE
+
+- [PRIO] services.ozoon.eu/services/*/v1/profiles/{uuid},6.55,axis=attack_surface8/business9/tech8/gate2/cloud3/fresh5 — SDK-mapped BOLA surface, auth-gated, highest value
+- [PRIO] www.ozoon.eu/api/v1/signup,5.55,axis=attack_surface6/business8/tech6/gate3/cloud2/fresh5 — sole gateway to all authenticated testing
+- [PRIO] nfl-pickem-league.ozoon.eu,5.30,axis=attack_surface5/business3/tech6/gate8/cloud8/fresh4 — anon-testable Supabase surface but differential read parked (customer data)
+
+## STEP 3 — HYPOTHESES
+
+[HYP] BOLA on Profile-Keyed UUID Endpoints Across 5 Services
+class: IDOR
+asset: https://services.ozoon.eu/services/{wallet-gateway,transaction-group,referral,player-verification,player-messages}/v1/profiles/{uuid}/...
+confidence: 65
+reasoning: SDK-confirmed {uuid}-path route shape on 5 services; wallet-gateway /balances bogus-UUID re-probed 09-16 → 401/159B {"errorCode":"unauthorized"}, byte-shape-stable ~3 weeks; auth pre-check precedes resource lookup; session→UUID binding never observable anonymously (zero authenticated sessions exist).
+evidence_needed: With own session A, GET /profiles/{B-uuid}/balances returns 200 with B's data while own-UUID control returns own data → unbound path UUID = cross-tenant read.
+verify_steps: [AUTH_HELPED] authorized throwaway signup A+B; with A's cookie GET /services/wallet-gateway/v1/profiles/{B}/balances and /services/player-verification/v1/profiles/{B}/verifications + own-UUID control; diff status/body bytes.
+impact: Critical — cross-player wallet/transaction/PII read across 5 services; ATO enabler.
+testability: AUTH_HELPED
+
+[HYP] Signup Mass-Assignment for role/vip/balance Injection
+class: BUSLOGIC
+asset: https://www.ozoon.eu/api/v1/signup
+confidence: 60
+reasoning: reCaptcha.enabled:false on signup (login-captcha only); client-controlled attributes/address sub-objects; static refSiteToken a0b5…b084 byte-identical 3+ weeks; profileupdateform update DTO is strict and separate — signup DTO over-acceptance untested.
+evidence_needed: POST signup with extra keys (attributes.role/vip_level/balance) persists on created session claims vs minimal control.
+verify_steps: [AUTH_HELPED] two authorized throwaway signups (extra-fields vs minimal control); diff resulting /api/v1/whoami or profile claims.
+impact: High — privilege escalation / bonus+balance manipulation / territory-softblock bypass.
+testability: AUTH_HELPED
+
+[HYP] Mock-2FA Verification Header Honored = 2FA/KYC Gate Bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify
+confidence: 55
+reasoning: production SDK sends X-MOCK-2FA-VERIFICATION:true on verify endpoint; config two_factor_authenticator.allow-permanent-skip:["true"]; isMockProviderEnabled:false is client-side only, does not resolve server honoring.
+evidence_needed: POST verify {"verificationType":"PHONE"} with X-MOCK-2FA-VERIFICATION:true succeeds while byte-identical control without header is rejected (own authorized sid).
+verify_steps: [AUTH_HELPED] authorized signup → own sid; POST verify with header, then identical control without; compare status/body.
+impact: Critical — 2FA/SMS/PIN/KYC gate bypass on withdraw/deposit/bonus money flows; ATO enabler.
+testability: AUTH_HELPED
+
+## STEP 4 — SELF-CRITIQUE
+
+- [PARKED] nfl-pickem-league RLS differential: verifying requires reading foreign players' picks = program-prohibited customer-data exposure; no authorized surface change to re-open.
+- [PARKED] www.ozoon.com PWS-edge SSRF: triage 06:38 INVALID — catch-all shared-edge responses indistinguishable from real fetch; no collab callback.
+- [FINAL] (ranked): BOLA UUID (65) > Signup mass-assignment (60) > Mock-2FA header (55). All confidence ≥ 40, non-REJECTED class, concrete AUTH_HELPED verify steps retained. Nothing new entered the anonymous surface to displace them.
+
+## STEP 5 — NEXT ACTION
+
+- [NEXT] HUMAN: Request authorization at bugs.olivermaicher.eu for ONE throwaway account on www.ozoon.eu (restricted mutating create, no live customer data). If granted, fire exactly: POST https://www.ozoon.eu/api/v1/signup {"email":"<throwaway>@<valid-domain>","password":"Test1234!","country":"CA","language":"en","attributes":{},"address":{"country":"CA","addressLine":"123 Test St","postalCode":"K1A 0A6"}} → capture sid+ownPID, baseline GET https://services.ozoon.eu/services/wallet-gateway/v1/profiles/{ownPID}/balances (expect 200 vs recorded 401) — unlocks BOLA/mass-assignment/mock-2FA differential. This remains the sole unblocking move; anonymous surface is fully mapped and byte-stable.
+
+## STEP 6 — LEARNING
+
+- [LEARN] ACCEPTED OTHER @ ozoon-sportsbook-casino pipeline: 09-16 22:50 probe-results entry re-confirms www.ozoon.com 200/404/200/200 identical to baseline — 10th consecutive cycle with zero new anonymous evidence (all 6 peer states identical, lead files timestamp-only).
+- [LEARN] ACCEPTED MISCONFIG @ services.ozoon.eu SSR shell: prior drift hash e48c1221… (745,072B, 09-16) still current; refSiteToken a0b5…b084 / servicesBaseUrl / reCaptcha.enabled:false byte-stable; wallet-gate 401/159B intact.
+
+## STEP 7 — RISK
+
+- [RISK] ozoon-sportsbook-casino: 81/100 — Three critical vectors (BOLA UUID 65, signup mass-assignment 60, mock-2FA bypass 55) remain AUTH_HELPED and unprobed, gated solely on throwaway-account authorization not granted across 10 empty cycles; surface fully mapped and byte-stable, so risk unchanged. Real-money platform, F5 ASM WAF on signup path only, captcha-free signup + static refSiteToken confirmed. Scope gap persists: inventory omits ozoon.eu/services.ozoon.eu.
