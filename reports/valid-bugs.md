@@ -9,3 +9,9 @@
 
 - 1 lead(s) marked VALID at 2026-09-11 06:38:29 UTC
   - | Q7 Reasonable triager? | **No** — triager would classify as informational/informative at best, not a valid bug |
+
+- 4 lead(s) marked VALID at 2026-09-17 05:01:21 UTC
+  - | Q6 Not always-rejected? | **Yes** — hardcoded creds is a valid class |
+  - | Q4 Provable? | **Yes** — already proven active via live API call (non-invasive GET returning valid photo data) |
+  - | Q6 Not always-rejected? | **Borderline** — credential in public repo is valid, but Unsplash is a third-party service, not Ozoon infra. Program scope says "all infrastructure...operated by Ozoon." Th
+  - | Q4 Provable? | **No** — all probes return 401 unauthenticated; cannot confirm BOLA without valid session |
