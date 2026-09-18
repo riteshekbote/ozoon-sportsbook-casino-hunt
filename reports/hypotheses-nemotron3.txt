@@ -1,12 +1,12 @@
-## 2026-09-18 18:44:25 UTC [target] (model nemotron3)
-[CHANGED] services.ozoon.eu recovered from 503 (09-17 22:57) → 200 at 06:03 UTC (745,210B, +138B benign churn vs 09-16 745,072B baseline); wallet-gate bogus-UUID /balances re-verified 401/159B structured {"errorCode":"unauthorized"} auth pre-check intact
-[CHANGED] www.ozoon.eu/api/v1/signup GET now returns WAF "Request Rejected" page (was Spring Boot Whitelabel 404 per KB); POST empty body → WAF METHOD NOT ALLOWED — WAF now staged on mutating signup path, not login/whoami
-[CHANGED] Inventory file still lists ONLY ozoon.com/www.ozoon.com (marketing edge); ozoon.eu + services.ozoon.eu confirmed in-scope per scope.yml ("All infrastructure, brands, services and gaming platforms operated by Ozoon") but ABSENT from inventory
-[CHANGED] Pipeline: 9+ consecutive empty triage runs; probe-results.md byte-unchanged; certspotter CT static at 7 names
-[CHANGED] Zero authenticated probes executed against core platform (ozoon.eu/services.ozoon.eu) across all probe rounds; all probes target only www.ozoon.com marketing edge
+## 2026-09-18 21:19:19 UTC [target] (model nemotron3)
+[NEW] services.ozoon.eu recovered from 503 (09-17 22:57) → 200 at 06:03 UTC (745,210B, +138B benign churn vs 09-16 baseline); wallet-gate bogus-UUID /balances re-verified 401/159B structured {"errorCode":"unauthorized"}
+[NEW] www.ozoon.eu/api/v1/signup GET now returns WAF "Request Rejected" page (was Spring Boot Whitelabel 404); POST empty body → WAF METHOD NOT ALLOWED — WAF now staged on mutating signup path
 [NEW] nfl-pickem-league.ozoon.eu confirmed: Vercel/Remix + Supabase project cgoqgofzqunixkwcttzi.supabase.co with anon key sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM in public JS chunk; RLS is sole row control
 [NEW] static.ozoon.eu is second PWS SSR front (755KB) exposing servicesBaseUrl=https://services.ozoon.eu (public entry name) vs services.ozoon.eu shell carrying split-horizon services.services.ozoon.eu
+[CHANGED] Zero authenticated probes executed against core platform (ozoon.eu/services.ozoon.eu) across all probe rounds; all probes target only www.ozoon.com marketing edge
+[CHANGED] Inventory file still lists ONLY ozoon.com/www.ozoon.com; ozoon.eu + services.ozoon.eu confirmed in-scope per scope.yml but ABSENT from inventory
 [CHANGED] Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway at www.ozoon.eu/api/v1/signup
+[CHANGED] Pipeline: 9+ consecutive empty triage runs; probe-results.md byte-unchanged; certspotter CT static at 7 names
 [PRIO] https://services.ozoon.eu/services/{wallet-gateway,transaction-group,referral,player-verification,player-messages}/v1/profiles/{uuid}/...,8.85,attack_surface=10,business_value=10,tech_exposure=9,gate_ease=6,cloud_surface=8,freshness=8
 [PRIO] https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify,8.45,attack_surface=9,business_value=10,tech_exposure=8,gate_ease=6,cloud_surface=8,freshness=8
 [PRIO] https://www.ozoon.eu/api/v1/signup,8.20,attack_surface=9,business_value=9,tech_exposure=8,gate_ease=6,cloud_surface=7,freshness=9
@@ -39,7 +39,6 @@ evidence_needed: With own session, POST /verifications/verify with X-MOCK-2FA-VE
 verify_steps: 1. Register + login throwaway account (from HYP1/HYP2). 2. POST /services/player-verification/v1/profiles/{ownPID}/verifications/verify with header X-MOCK-2FA-VERIFICATION:true + minimal body. 3. Observe response. 4. Repeat without header as control. Self-created throwaway only.
 impact: Critical if honored — bypass 2FA/SMS/PIN/KYC gates on withdraw/deposit/bonus (money security control bypass)
 testability: AUTH_HELPED
-[PARKED] nfl-pickem-league Supabase RLS differential: requires reading foreign players' picks = program-prohibited customer-data exposure during testing; supersedes prior ACCEPTED OTHER confidence-42 row.
 [FINAL] 1. BOLA on Profile-Keyed UUID Endpoints Across 5 Services (65) — services.ozoon.eu — AUTH_HELPED
 [FINAL] 2. Registration/Referral Mass Assignment via Captcha-Free Signup (60) — www.ozoon.eu/api/v1/signup — AUTH_HELPED
 [FINAL] 3. Mock-2FA Header Honored → Verification/KYC Bypass (55) — services.ozoon.eu — AUTH_HELPED
