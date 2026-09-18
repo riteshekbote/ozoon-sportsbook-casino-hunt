@@ -17402,3 +17402,496 @@ STEP 6 — LEARNING
 
 STEP 7 — RISK
 [RISK] ozoon-sportsbook-casino: 81/100 — Core gambling platform (ozoon.eu) with micro-frontend API (services.ozoon.eu) fully mapped via public SDK/config. Three critical vectors with clear AUTH_HELPED test paths: (1) BOLA on UUID-keyed profile endpoints across 5 services (confidence 65), (2) Registration/referral mass assignment on captcha-free signup with unverified static referral token (confidence 60), (3) 2FA/KYC bypass via client-controlled X-MOCK-2FA-VERIFICATION header honored by allow-permanent-skip config (confidence 55). Zero authenticated probes executed; all prior probes target only www.ozoon.com marketing edge. Real-money gaming with crypto/Interac payments, F5 ASM WAF, reCAPTCHA v3 (login-only), 2FA present but backend binding correctness and mock-header handling unverified. High business value + high attack surface + low gate ease (public registration, public API config) = elevated risk. New Supabase-backed promo app (nfl-pickem-league) adds RLS-dependent data surface. Inventory file still missing ozoon.eu/services.ozoon.eu — scope gap.
+===== ANALYST nemotron3 2026-09-18 11:35:04 UTC =====
+[0m
+> build · nemotron-3-ultra-free
+[0m
+[0m$ [0mcat inventory/ozoon-sportsbook-casino.md
+...output truncated...
+
+Full output saved to: /home/runner/.local/share/opencode/tool-output/tool_0b448cec30011d88k82jn2K5St
+
+- CHANGED Zero authenticated probes executed against core platform (`ozoon.eu`/`services.ozoon.eu`) across all probe rounds; all probes target only `www.ozoon.com` marketing edge — critical testing gap unchange
+- CHANGED SSRF at `www.ozoon.com` formally INVALID'd by triage 06:38 — all `?url=` probes → catch-all 200 len=?, no collab callback; PWS/wnacloud behavior indistinguishable from catch-all, removing PWS-edge SSR
+- CHANGED Triage runs 01:31 + 06:29 both empty — 5th consecutive empty triage; laguna cycle 05:05 empty; probe-results.md byte-unchanged since 00:40:45
+- NEW Config-drift probe 09:27 UTC on `services.ozoon.eu/` (743,198B SSR shell, sha256 `6cbdef8e4be9f9f54940f708dbf9d8b698e2657741316fd5fd89ba00ee4684f5`): `refSiteToken` byte-identical `a0b5…b084`, `reCapt
+- NEW `api.wicket-keeper.com` referenced in homepage SSR as `apmRum.url` — third-party RUM/APM endpoint, ownership unconfirmed; off-scope pending verification (parallel to `games.glovefrog.plus`)
+- CHANGED Live drift probe 05:06 UTC: `GET /services/wallet-gateway/v1/profiles/{bogus-uuid}/balances` → 401/159B, byte-shape-stable structured 401 `{"errorCode":"unauthorized"}` baseline intact vs 2026-09-08
+- NEW Inventory file still lists ONLY `ozoon.com`/`www.ozoon.com` (marketing edge); `ozoon.eu` (core gambling platform) and `services.ozoon.eu` (backend API) confirmed in-scope per scope.yml but absent from
+- NEW Config-drift probe 09:27 UTC on `services.ozoon.eu/` (743,198B SSR shell, sha256 `6cbdef8e4be9f9f54940f708dbf9d8b698e2657741316fd5fd89ba00ee4684f5`): `refSiteToken` byte-identical `a0b5…b084`, `reCapt
+- NEW Live drift probe 05:06 UTC: `GET /services/wallet-gateway/v1/profiles/{bogus-uuid}/balances` → 401/159B, byte-shape-stable structured 401 `{"errorCode":"unauthorized"}` baseline intact vs 2026-09-08
+- NEW `api.wicket-keeper.com` referenced in homepage SSR as `apmRum.url` — third-party RUM/APM endpoint, ownership unconfirmed; off-scope pending verification (parallel to `games.glovefrog.plus`)
+- CHANGED Triage runs 01:31 + 06:29 both empty — 5th consecutive empty triage; laguna cycle 05:05 empty; probe-results.md byte-unchanged since 00:40:45
+- CHANGED Zero authenticated probes executed against core platform (`ozoon.eu`/`services.ozoon.eu`) across all 18+ probe rounds; all probes target only `www.ozoon.com` marketing edge — critical testing gap unch
+- CHANGED SSRF at `www.ozoon.com` formally INVALID'd by triage 06:38 — all `?url=` probes → catch-all 200 len=?, no collab callback; PWS/wnacloud behavior indistinguishable from catch-all
+- CHANGED Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway at `www.ozoon.eu/api/v1/signup`
+
+## 2026-09-12 21:23:15 UTC
+- CHANGED Inventory file (`inventory/ozoon-sportsbook-casino.md`) still lists ONLY `ozoon.com`/`www.ozoon.com` (marketing edge); `ozoon.eu` (core gambling platform) and `services.ozoon.eu` (backend API) confirm
+- CHANGED Zero authenticated probes executed against core platform (`ozoon.eu`/`services.ozoon.eu`) across all 18+ probe rounds; all probes target only `www.ozoon.com` marketing edge — critical testing gap unch
+- CHANGED Triage runs 01:31 + 06:29 both empty — 5th consecutive empty triage; laguna cycle 05:05 empty; probe-results.md byte-unchanged since 00:40:45
+- CHANGED Live drift probe 05:06 UTC: `GET /services/wallet-gateway/v1/profiles/{bogus-uuid}/balances` → 401/159B, byte-shape-stable structured 401 `{"errorCode":"unauthorized"}` baseline intact vs 2026-09-08
+- CHANGED Config-drift probe 09:27 UTC on `services.ozoon.eu/` (743,198B SSR shell, sha256 `6cbdef8e4be9f9f54940f708dbf9d8b698e2657741316fd5fd89ba00ee4684f5`): `refSiteToken` byte-identical `a0b5…b084`, `reCapt
+- CHANGED SSRF at `www.ozoon.com` formally INVALID'd by triage 06:38 — all `?url=` probes → catch-all 200 len=?, no collab callback; PWS/wnacloud behavior indistinguishable from catch-all, removing PWS-edge SSR
+- CHANGED Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway at `www.ozoon.eu/api/v1/signup`
+
+## 2026-09-12 23:23:25 UTC
+
+## 2026-09-13 01:30:08 UTC
+- NEW certspotter CT enumeration (`*.ozoon.eu`) surfaces 4 live in-scope hosts absent from KB/inventory: `blog.ozoon.eu`, `nfl-pickem-league.ozoon.eu`, `sportsfeeds.ozoon.eu`, `static.ozoon.eu`.
+- NEW `nfl-pickem-league.ozoon.eu` = Vercel/Remix promo app ("Ozoon NFL Pick'Em League"), distinct edge, embedding a Supabase client (auth `persistSession`/`supabase.auth.token` + PostgREST) against live pr
+- NEW `static.ozoon.eu` = second SSR front (755,927B, PWS/8.3.1.0.8) whose shell carries `servicesBaseUrl=https://services.ozoon.eu` (public entry name) vs `services.ozoon.eu` shell carrying the split-horiz
+- NEW `sportsfeeds.ozoon.eu` root → persistent 503/0B (PWS, twice); `blog.ozoon.eu` = Next.js PWS marketing blog.
+- CHANGED My 01:25 drift: `services.ozoon.eu/` now 743,201B sha256 `59a51c62…` (was 743,198B / `6cbdef8e…`) — +3B benign version/ts shift; `refSiteToken a0b5…b084`, `reCaptcha.enabled:false`, `isMockProviderEna
+- CHANGED `wallet-gateway` bogus-UUID balances → 401/159B structured `{"errorCode":"unauthorized"}` byte-shape-stable (timestamp varies) — auth pre-check intact.
+- CHANGED Pipeline: triage 01:11 empty (6th consecutive); probe-results.md had no new data through 23:23.
+- CHANGED Inventory file still lists ONLY `ozoon.com`/`www.ozoon.com`; `ozoon.eu` (core platform) and `services.ozoon.eu` (backend API) confirmed in-scope per scope.yml but absent from inventory
+- CHANGED Zero authenticated probes executed against core platform (`ozoon.eu`/`services.ozoon.eu`) across all 18+ probe rounds; all probes target only `www.ozoon.com` marketing edge
+- CHANGED Live drift probe 05:06 UTC: `GET /services/wallet-gateway/v1/profiles/{bogus-uuid}/balances` → 401/159B, byte-shape-stable structured 401 `{"errorCode":"unauthorized"}` baseline intact
+- CHANGED Config-drift probe 09:27 UTC on `services.ozoon.eu/` (743,198B SSR shell, sha256 `6cbdef8e4be9f9f54940f708dbf9d8b698e2657741316fd5fd89ba00ee4684f5`): `refSiteToken` byte-identical `a0b5…b084`, `reCapt
+- CHANGED SSRF at `www.ozoon.com` formally INVALID'd by triage 06:38 — all `?url=` probes → catch-all 200 len=?, no collab callback; PWS/wnacloud behavior indistinguishable from catch-all
+- CHANGED Triage runs 01:31 + 06:29 both empty — 5th consecutive empty triage; laguna cycle 05:05 empty; probe-results.md byte-unchanged since 00:40:45
+- CHANGED Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway at `www.ozoon.eu/api/v1/signup`
+
+## 2026-09-13 06:54:45 UTC
+
+## 2026-09-13 12:59:51 UTC
+
+## 2026-09-13 16:45:42 UTC
+- NEW `ozoon.eu` — actual gambling platform (sportsbook/casino/poker), NOT in inventory. Discovered via web search; ozoon.com is marketing-only.
+- NEW `services.ozoon.eu` — backend service domain found in HTML `<link rel="preconnect">` hints on ozoon.eu.
+- NEW 3 test pages exposed in ozoon.eu sitemap: `/promotions-test` (live, empty), `/blackjack-main-test` (404), `/casino/how-to-play-casino/odds-test` (404).
+- NEW Legacy "Bodog" branding at `/contents/chatbox-psat` — customer survey still references old brand name.
+- NEW ozoon.com runs Next.js on PWS/8.3.1.0.8 with CNAME to `wnacloud.com`; ozoon.eu uses Next.js + micro-frontend architecture (React 19 + TanStack Query shared runtime).
+
+## 2026-09-13 19:17:08 UTC
+- NEW `nfl-pickem-league.ozoon.eu` — Vercel/Remix promo app with live Supabase project `cgoqgofzqunixkwcttzi.supabase.co` (auth + PostgREST); anon key server-side in fetched chunks; key-less probes return 4
+- NEW `static.ozoon.eu` — Second PWS SSR front (755,927B) exposing `servicesBaseUrl=https://services.ozoon.eu` (public entry name) vs `services.ozoon.eu` shell carrying split-horizon `services.services.ozoo
+- NEW `blog.ozoon.eu` — Next.js PWS marketing blog; `sportsfeeds.ozoon.eu` — persistent 503/0B (PWS upstream down). Neither on core auth/money path.
+- NEW CT enumeration via certspotter API confirmed reliable for `ozoon.eu` subdomain breadth (A-records wildcard-poisoned, DNS brute useless).
+- CHANGED `services.ozoon.eu` SSR shell config-drift: 01:25 probe → 743,201B sha256 `59a51c62` (+3B vs 743,198B/`6cbdef8e` baseline, benign ts/version); `refSiteToken a0b5…b084`, `reCaptcha.enabled:false`, `isM
+- CHANGED `wallet-gateway` bogus-UUID `/balances` → 401/159B structured `{"errorCode":"unauthorized"}` byte-shape-stable (timestamp varies) — auth pre-check intact.
+- CHANGED Pipeline: triage 01:11 empty (6th consecutive); probe-results.md held no new data through 23:23.
+- CHANGED Inventory file still lists ONLY `ozoon.com`/`www.ozoon.com`; `ozoon.eu` (core platform) and `services.ozoon.eu` (backend API) confirmed in-scope per scope.yml but absent from inventory.
+- CHANGED Zero authenticated probes executed against core platform (`ozoon.eu`/`services.ozoon.eu`) across all 18+ probe rounds; all probes target only `www.ozoon.com` marketing edge.
+- CHANGED Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway at `www.ozoon.eu/api/v1/signup`.
+- CHANGED SSRF at `www.ozoon.com` formally INVALID'd by triage 06:38 — all `?url=?view=?page=` probes → catch-all 200 len=?, no collab callback; PWS/wnacloud behavior indistinguishable from catch-all.
+
+## 2026-09-13 21:28:47 UTC
+- NEW `nfl-pickem-league.ozoon.eu` live Vercel/Remix promo app with embedded Supabase client (project `cgoqgofzqunixkwcttzi.supabase.co`), auth + PostgREST; anon key server-side in chunks; keyless probes 40
+- NEW `static.ozoon.eu` second PWS SSR front (755,927B) exposing `servicesBaseUrl=https://services.ozoon.eu` (public entry) vs `services.ozoon.eu` shell carrying split-horizon `services.services.ozoon.eu`
+- NEW `blog.ozoon.eu` (Next.js PWS marketing), `sportsfeeds.ozoon.eu` (persistent 503/0B) — neither on core auth/money path
+- NEW CT enumeration via certspotter API reliable for `ozoon.eu` subdomain breadth (A-records wildcard-poisoned)
+- CHANGED `services.ozoon.eu` SSR shell config-drift: 01:25 probe → 743,201B sha256 `59a51c62` (+3B vs 743,198B/`6cbdef8e` baseline, benign ts/version); `refSiteToken a0b5…b084`, `reCaptcha.enabled:false`, `isM
+- CHANGED `wallet-gateway` bogus-UUID `/balances` → 401/159B structured `{"errorCode":"unauthorized"}` byte-shape-stable — auth pre-check intact
+- CHANGED Inventory file still lists ONLY `ozoon.com`/`www.ozoon.com`; `ozoon.eu` (core platform) and `services.ozoon.eu` (backend API) confirmed in-scope per scope.yml but absent from inventory
+- CHANGED Zero authenticated probes executed against core platform (`ozoon.eu`/`services.ozoon.eu`) across all 18+ probe rounds; all probes target only `www.ozoon.com` marketing edge
+- CHANGED SSRF at `www.ozoon.com` formally INVALID'd by triage 06:38 — all `?url=?view=?page=` probes → catch-all 200 len=?, no collab callback; PWS/wnacloud behavior indistinguishable from catch-all
+
+## 2026-09-13 23:37:51 UTC
+- NEW `nfl-pickem-league.ozoon.eu` — Vercel/Remix promo app with live Supabase project `cgoqgofzqunixkwcttzi.supabase.co` (auth + PostgREST); anon key server-side in fetched chunks; keyless probes return 40
+- NEW `static.ozoon.eu` — Second PWS SSR front (755,927B) exposing `servicesBaseUrl=https://services.ozoon.eu` (public entry name) vs `services.ozoon.eu` shell carrying split-horizon `services.services.ozoo
+- NEW `blog.ozoon.eu` (Next.js PWS marketing), `sportsfeeds.ozoon.eu` (persistent 503/0B) — neither on core auth/money path
+- NEW CT enumeration via certspotter API reliable for `ozoon.eu` subdomain breadth (A-records wildcard-poisoned, DNS brute useless)
+- CHANGED `services.ozoon.eu` SSR shell config-drift: 01:25 probe → 743,201B sha256 `59a51c62` (+3B vs 743,198B/`6cbdef8e` baseline, benign ts/version); `refSiteToken a0b5…b084`, `reCaptcha.enabled:false`, `isM
+- CHANGED `wallet-gateway` bogus-UUID `/balances` → 401/159B structured `{"errorCode":"unauthorized"}` byte-shape-stable — auth pre-check intact
+- CHANGED Pipeline: triage 01:11 empty (6th consecutive); probe-results.md held no new data through 23:23
+- CHANGED Inventory file still lists ONLY `ozoon.com`/`www.ozoon.com`; `ozoon.eu` (core platform) and `services.ozoon.eu` (backend API) confirmed in-scope per scope.yml but absent from inventory
+- CHANGED Zero authenticated probes executed against core platform (`ozoon.eu`/`services.ozoon.eu`) across all 18+ probe rounds; all probes target only `www.ozoon.com` marketing edge
+- CHANGED Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway at `www.ozoon.eu/api/v1/signup`
+- CHANGED SSRF at `www.ozoon.com` formally INVALID'd by triage 06:38 — all `?url=?view=?page=` probes → catch-all 200 len=?, no collab callback; PWS/wnacloud behavior indistinguishable from catch-all
+
+## 2026-09-14 01:43:23 UTC
+- NEW certspotter CT enumeration surfaced 4 live in-scope subdomains absent from inventory: `nfl-pickem-league.ozoon.eu` (Vercel/Remix + Supabase), `static.ozoon.eu` (2nd PWS SSR front, public `servicesBase
+- NEW `nfl-pickem-league.ozoon.eu` exposes complete Supabase client init in public JS: URL `cgoqgofzqunixkwcttzi.supabase.co` + anon key `sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM` (SBP v2, public-by-d
+- CHANGED `services.ozoon.eu` SSR shell config-drift 09-13 01:25 → 743,201B sha256 `59a51c62` (+3B vs 743,198B baseline, benign ts/version); `refSiteToken a0b5…b084`, `reCaptcha.enabled:false`, `isMockProviderE
+- CHANGED `wallet-gateway` bogus-UUID `/balances` → 401/159B structured `{"errorCode":"unauthorized"}` byte-shape-stable — auth pre-check intact
+- CHANGED Pipeline: triage 01:11 empty (6th consecutive); probe-results.md held no new data through 23:23
+- CHANGED Inventory file still lists ONLY `ozoon.com`/`www.ozoon.com`; `ozoon.eu` (core platform) and `services.ozoon.eu` (backend API) confirmed in-scope per scope.yml but absent from inventory
+- CHANGED Zero authenticated probes executed against core platform (`ozoon.eu`/`services.ozoon.eu`) across all 18+ probe rounds; all probes target only `www.ozoon.com` marketing edge
+- CHANGED SSRF at `www.ozoon.com` formally INVALID'd by triage 06:38 — all `?url=?view=?page=` probes → catch-all 200 len=?, no collab callback; PWS/wnacloud behavior indistinguishable from catch-all
+
+## 2026-09-14 07:18:54 UTC
+- NEW `nfl-pickem-league.ozoon.eu` — Vercel/Remix promo app with live Supabase project `cgoqgofzqunixkwcttzi.supabase.co` (auth + PostgREST); anon key `sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM` in pub
+- NEW `static.ozoon.eu` — Second PWS SSR front (755,927B) exposing `servicesBaseUrl=https://services.ozoon.eu` (public entry name) vs `services.ozoon.eu` shell carrying split-horizon `services.services.ozoo
+- NEW `blog.ozoon.eu` — Next.js PWS marketing blog; `sportsfeeds.ozoon.eu` — persistent 503/0B (PWS upstream down). Neither on core auth/money path.
+- NEW CT enumeration via certspotter API confirmed reliable for `ozoon.eu` subdomain breadth (A-records wildcard-poisoned, DNS brute useless).
+- CHANGED `services.ozoon.eu` SSR shell config-drift: 09-14 probe → 743,193B sha256 `1ddad5e3` (+37B vs 09-13 743,156B, benign ts/version); `refSiteToken a0b5…b084`, `reCaptcha.enabled:false`, `isMockProviderEn
+- CHANGED Pipeline: triage empty (8th consecutive), probe-results.md no new data, certspotter CT refresh → same 7 names, zero new subdomains; no new anonymous evidence this cycle.
+- CHANGED Inventory file still lists ONLY `ozoon.com`/`www.ozoon.com`; `ozoon.eu` (core platform) and `services.ozoon.eu` (backend API) confirmed in-scope per scope.yml but absent from inventory.
+- CHANGED Zero authenticated probes executed against core platform (`ozoon.eu`/`services.ozoon.eu`) across all 18+ probe rounds; all probes target only `www.ozoon.com` marketing edge.
+- CHANGED SSRF at `www.ozoon.com` formally INVALID'd by triage 06:38 — all `?url=?view=?page=` probes → catch-all 200 len=?, no collab callback; PWS/wnacloud behavior indistinguishable from catch-all.
+- CHANGED Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway at `www.ozoon.eu/api/v1/signup`.
+
+## 2026-09-14 14:27:22 UTC
+
+## 2026-09-14 19:33:02 UTC
+- NEW `ozoon.eu` — actual gambling platform (sportsbook/casino/poker), NOT in inventory. Discovered via web search; ozoon.com is marketing-only.
+- NEW `services.ozoon.eu` — backend service domain found in HTML `<link rel="preconnect">` hints on ozoon.eu.
+- NEW 3 test pages exposed in ozoon.eu sitemap: `/promotions-test` (live, empty), `/blackjack-main-test` (404), `/casino/how-to-play-casino/odds-test` (404).
+- NEW Legacy "Bodog" branding at `/contents/chatbox-psat` — customer survey still references old brand name.
+- NEW ozoon.com runs Next.js on PWS/8.3.1.0.8 with CNAME to `wnacloud.com`; ozoon.eu uses Next.js + micro-frontend architecture (React 19 + TanStack Query shared runtime).
+- NEW nfl-pickem-league.ozoon.eu: Vercel/Remix promo app with live Supabase project cgoqgofzqunixkwcttzi.supabase.co (auth+PostgREST); anon key sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM in public chunk
+- NEW static.ozoon.eu: second PWS SSR front (755,927B) exposing servicesBaseUrl=https://services.ozoon.eu (public entry) vs services.ozoon.eu shell carrying split-horizon services.services.ozoon.eu
+- NEW blog.ozoon.eu: Next.js PWS marketing blog; sportsfeeds.ozoon.eu: persistent 503/0B (PWS upstream down) — neither on core auth/money path
+- NEW CT enumeration via certspotter API confirmed reliable for ozoon.eu subdomain breadth (A-records wildcard-poisoned, DNS brute useless)
+- CHANGED services.ozoon.eu SSR shell config-drift 09-14 probe → 743,193B sha256 1ddad5e3 (+37B vs 09-13 743,156B, benign ts/version); refSiteToken a0b5…b084, reCaptcha.enabled:false, isMockProviderEnabled:fals
+- CHANGED wallet-gateway bogus-UUID /balances → 401/159B structured {"errorCode":"unauthorized"} byte-shape-stable — auth pre-check intact
+- CHANGED Pipeline: triage empty (8th consecutive), probe-results.md no new data, certspotter CT refresh → same 7 names, zero new subdomains; no new anonymous evidence this cycle
+- CHANGED Inventory file still lists ONLY ozoon.com/www.ozoon.com; ozoon.eu (core platform) and services.ozoon.eu (backend API) confirmed in-scope per scope.yml but absent from inventory
+- CHANGED Zero authenticated probes executed against core platform (ozoon.eu/services.ozoon.eu) across all 18+ probe rounds; all probes target only www.ozoon.com marketing edge
+- CHANGED Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway at www.ozoon.eu/api/v1/signup
+- CHANGED SSRF at www.ozoon.com formally INVALID'd by triage 06:38 — all ?url=?view=?page= probes → catch-all 200 len=?, no collab callback; PWS/wnacloud behavior indistinguishable from catch-all
+
+## 2026-09-14 22:48:45 UTC
+- NEW certspotter CT enumeration surfaced 4 live in-scope subdomains absent from inventory: `nfl-pickem-league.ozoon.eu` (Vercel/Remix + Supabase), `static.ozoon.eu` (2nd PWS SSR front, public `servicesBase
+- NEW `nfl-pickem-league.ozoon.eu` exposes complete Supabase client init in public JS: URL `cgoqgofzqunixkwcttzi.supabase.co` + anon key `sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM` (SBP v2, public-by-d
+- CHANGED `services.ozoon.eu` SSR shell config-drift 09-14 probe → 743,193B sha256 `1ddad5e3` (+37B vs 09-13 743,156B, benign ts/version); `refSiteToken a0b5…b084`, `reCaptcha.enabled:false`, `isMockProviderEna
+- CHANGED Pipeline: triage empty (8th consecutive), probe-results.md no new data, certspotter CT refresh → same 7 names, zero new subdomains; no new anonymous evidence this cycle
+- CHANGED Inventory file still lists ONLY `ozoon.com`/`www.ozoon.com`; `ozoon.eu` (core platform) and `services.ozoon.eu` (backend API) confirmed in-scope per scope.yml but absent from inventory
+- CHANGED Zero authenticated probes executed against core platform (`ozoon.eu`/`services.ozoon.eu`) across all 18+ probe rounds; all probes target only `www.ozoon.com` marketing edge
+- CHANGED Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway at `www.ozoon.eu/api/v1/signup`
+- CHANGED SSRF at `www.ozoon.com` formally INVALID'd by triage 06:38 — all `?url=?view=?page=` probes → catch-all 200 len=?, no collab callback; PWS/wnacloud behavior indistinguishable from catch-all
+
+## 2026-09-15 01:22:44 UTC
+- NEW Inventory still lists ONLY `ozoon.com`/`www.ozoon.com`; `ozoon.eu` (core gambling platform) and `services.ozoon.eu` (backend API) confirmed in-scope per scope.yml but absent from inventory
+- NEW 4 live in-scope subdomains from CT enumeration absent from inventory: `nfl-pickem-league.ozoon.eu` (Vercel/Remix + Supabase), `static.ozoon.eu` (2nd PWS SSR front), `blog.ozoon.eu`, `sportsfeeds.ozoon
+- NEW `nfl-pickem-league.ozoon.eu` exposes complete Supabase client init in public JS: URL `cgoqgofzqunixkwcttzi.supabase.co` + anon key `sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM` (SBP v2)
+- NEW `static.ozoon.eu` SSR shell carries `servicesBaseUrl=https://services.ozoon.eu` (public entry) vs `services.ozoon.eu` shell carrying split-horizon `services.services.ozoon.eu`
+- CHANGED Zero authenticated probes executed against core platform (`ozoon.eu`/`services.ozoon.eu`) across all 18+ probe rounds; all probes target only `www.ozoon.com` marketing edge
+- CHANGED Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway at `www.ozoon.eu/api/v1/signup`
+- CHANGED SSRF at `www.ozoon.com` formally INVALID'd by triage 06:38 — all `?url=?view=?page=` probes → catch-all 200, no collab callback
+- CHANGED `services.ozoon.eu` SSR shell config-drift 09-14 probe → 743,193B sha256 `1ddad5e3`; `refSiteToken` byte-stable, `isMockProviderEnabled:false`, `servicesBaseUrl=services.services.ozoon.eu` unchanged
+- CHANGED Pipeline: triage empty (8th consecutive), probe-results.md no new data, certspotter CT refresh → same 7 names, zero new subdomains
+- CHANGED `wallet-gateway` bogus-UUID `/balances` → 401/159B structured `{"errorCode":"unauthorized"}` byte-shape-stable — auth pre-check intact
+
+## 2026-09-15 06:23:08 UTC
+- NEW `ozoon.eu` (core gambling platform: sportsbook/casino/poker) and `services.ozoon.eu` (backend API) confirmed in-scope per scope.yml but **STILL absent from inventory file** — only `ozoon.com`/`www.ozo
+- NEW 4 live in-scope subdomains from CT enumeration absent from inventory: `nfl-pickem-league.ozoon.eu` (Vercel/Remix + Supabase), `static.ozoon.eu` (2nd PWS SSR front), `blog.ozoon.eu`, `sportsfeeds.ozoon
+- NEW `nfl-pickem-league.ozoon.eu` exposes complete Supabase client init in public JS: URL `cgoqgofzqunixkwcttzi.supabase.co` + anon key `sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM` (SBP v2, public-by-d
+- NEW `static.ozoon.eu` SSR shell carries `servicesBaseUrl=https://services.ozoon.eu` (public entry) vs `services.ozoon.eu` shell carrying split-horizon `services.services.ozoon.eu`
+- CHANGED Zero authenticated probes executed against core platform (`ozoon.eu`/`services.ozoon.eu`) across all 18+ probe rounds; all probes target only `www.ozoon.com` marketing edge — critical testing gap unch
+- CHANGED Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway at `www.ozoon.eu/api/v1/signup`
+- CHANGED `services.ozoon.eu` SSR shell config-drift 09-14 probe → 743,193B sha256 `1ddad5e3`; `refSiteToken` byte-stable, `isMockProviderEnabled:false`, `servicesBaseUrl=services.services.ozoon.eu` unchanged
+- CHANGED Pipeline: triage empty (8th consecutive), probe-results.md no new data, certspotter CT refresh → same 7 names, zero new subdomains
+- CHANGED `wallet-gateway` bogus-UUID `/balances` → 401/159B structured `{"errorCode":"unauthorized"}` byte-shape-stable — auth pre-check intact
+- CHANGED SSRF at `www.ozoon.com` formally INVALID'd by triage 06:38 — all `?url=?view=?page=` probes → catch-all 200, no collab callback; PWS/wnacloud behavior indistinguishable from catch-all
+
+## 2026-09-15 11:59:12 UTC
+- NEW Inventory still lists ONLY `ozoon.com`/`www.ozoon.com` (marketing edge); `ozoon.eu` (core gambling platform) and `services.ozoon.eu` (backend API) confirmed in-scope per scope.yml but **absent from in
+- NEW 4 live in-scope subdomains from CT enumeration absent from inventory: `nfl-pickem-league.ozoon.eu` (Vercel/Remix + Supabase), `static.ozoon.eu` (2nd PWS SSR front), `blog.ozoon.eu`, `sportsfeeds.ozoon
+- NEW `nfl-pickem-league.ozoon.eu` exposes complete Supabase client init in public JS: URL `cgoqgofzqunixkwcttzi.supabase.co` + anon key `sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM` (SBP v2, public-by-d
+- NEW `static.ozoon.eu` SSR shell carries `servicesBaseUrl=https://services.ozoon.eu` (public entry) vs `services.ozoon.eu` shell carrying split-horizon `services.services.ozoon.eu` — config split fingerpri
+- CHANGED Zero authenticated probes executed against core platform (`ozoon.eu`/`services.ozoon.eu`) across all 18+ probe rounds; all probes target only `www.ozoon.com` marketing edge — critical testing gap unch
+- CHANGED Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway at `www.ozoon.eu/api/v1/signup`
+- CHANGED `services.ozoon.eu` SSR shell config-drift 09-14 probe → 743,193B sha256 `1ddad5e3`; `refSiteToken` byte-stable, `isMockProviderEnabled:false`, `servicesBaseUrl=services.services.ozoon.eu` unchanged
+- CHANGED Pipeline: triage empty (8th consecutive), probe-results.md no new data, certspotter CT refresh → same 7 names, zero new subdomains
+- CHANGED `wallet-gateway` bogus-UUID `/balances` → 401/159B structured `{"errorCode":"unauthorized"}` byte-shape-stable — auth pre-check intact
+- CHANGED SSRF at `www.ozoon.com` formally INVALID'd by triage 06:38 — all `?url=?view=?page=` probes → catch-all 200, no collab callback; PWS/wnacloud behavior indistinguishable from catch-all
+
+## 2026-09-15 16:50:31 UTC
+- CHANGED Inventory file still lists ONLY ozoon.com/www.ozoon.com; ozoon.eu (core platform) and services.ozoon.eu (backend API) confirmed in-scope per scope.yml but absent from inventory
+- CHANGED Zero authenticated probes executed against core platform (ozoon.eu/services.ozoon.eu) across all 18+ probe rounds; all probes target only www.ozoon.com marketing edge
+- CHANGED SSRF at www.ozoon.com formally INVALID'd by triage 06:38 — all ?url=?view=?page= probes → catch-all 200, no collab callback
+- CHANGED services.ozoon.eu SSR shell config-drift 09-14 probe → 743,193B sha256 1ddad5e3; refSiteToken byte-stable, isMockProviderEnabled:false, servicesBaseUrl=services.services.ozoon.eu unchanged
+- CHANGED wallet-gateway bogus-UUID /balances → 401/159B structured {"errorCode":"unauthorized"} byte-shape-stable — auth pre-check intact
+- NEW 4 live in-scope subdomains from CT enumeration absent from inventory: nfl-pickem-league.ozoon.eu (Vercel/Remix + Supabase), static.ozoon.eu (2nd PWS SSR front), blog.ozoon.eu, sportsfeeds.ozoon.eu
+- NEW nfl-pickem-league.ozoon.eu exposes complete Supabase client init in public JS: URL cgoqgofzqunixkwcttzi.supabase.co + anon key sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM (SBP v2, public-by-design)
+- NEW static.ozoon.eu SSR shell carries servicesBaseUrl=https://services.ozoon.eu (public entry) vs services.ozoon.eu shell carrying split-horizon services.services.ozoon.eu — config split fingerprint
+- CHANGED Pipeline: triage empty (8th consecutive), probe-results.md no new data, certspotter CT refresh → same 7 names, zero new subdomains
+
+## 2026-09-15 20:14:45 UTC
+- NEW 4 live in-scope subdomains from CT enumeration absent from inventory: nfl-pickem-league.ozoon.eu (Vercel/Remix + Supabase), static.ozoon.eu (2nd PWS SSR front), blog.ozoon.eu, sportsfeeds.ozoon.eu
+- NEW nfl-pickem-league.ozoon.eu exposes complete Supabase client init in public JS: URL cgoqgofzqunixkwcttzi.supabase.co + anon key sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM (SBP v2, public-by-design)
+- NEW static.ozoon.eu SSR shell carries servicesBaseUrl=https://services.ozoon.eu (public entry) vs services.ozoon.eu shell carrying split-horizon services.services.ozoon.eu — config split fingerprint
+- CHANGED Inventory file still lists ONLY ozoon.com/www.ozoon.com; ozoon.eu (core platform) and services.ozoon.eu (backend API) confirmed in-scope per scope.yml but absent from inventory
+- CHANGED Zero authenticated probes executed against core platform (ozoon.eu/services.ozoon.eu) across all 18+ probe rounds; all probes target only www.ozoon.com marketing edge
+- CHANGED SSRF at www.ozoon.com formally INVALID'd by triage 06:38 — all ?url=?view=?page= probes → catch-all 200, no collab callback
+- CHANGED services.ozoon.eu SSR shell config-drift 09-14 probe → 743,193B sha256 1ddad5e3; refSiteToken byte-stable, isMockProviderEnabled:false, servicesBaseUrl=services.services.ozoon.eu unchanged
+- CHANGED wallet-gateway bogus-UUID /balances → 401/159B structured {"errorCode":"unauthorized"} byte-shape-stable — auth pre-check intact
+- CHANGED Pipeline: triage empty (8th consecutive), probe-results.md no new data, certspotter CT refresh → same 7 names, zero new subdomains
+
+## 2026-09-15 23:02:18 UTC
+- NEW 4 live in-scope subdomains from CT enumeration absent from inventory: `nfl-pickem-league.ozoon.eu` (Vercel/Remix + Supabase), `static.ozoon.eu` (2nd PWS SSR front), `blog.ozoon.eu`, `sportsfeeds.ozoon
+- NEW `nfl-pickem-league.ozoon.eu` exposes complete Supabase client init in public JS: URL `cgoqgofzqunixkwcttzi.supabase.co` + anon key `sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM` (SBP v2, public-by-d
+- NEW `static.ozoon.eu` SSR shell carries `servicesBaseUrl=https://services.ozoon.eu` (public entry) vs `services.ozoon.eu` shell carrying split-horizon `services.services.ozoon.eu` — config split fingerpri
+- CHANGED Inventory file still lists ONLY `ozoon.com`/`www.ozoon.com`; `ozoon.eu` (core platform) and `services.ozoon.eu` (backend API) confirmed in-scope per scope.yml but absent from inventory
+- CHANGED Zero authenticated probes executed against core platform (`ozoon.eu`/`services.ozoon.eu`) across all 18+ probe rounds; all probes target only `www.ozoon.com` marketing edge
+- CHANGED Pipeline: triage empty (8th consecutive), probe-results.md no new data, certspotter CT refresh → same 7 names, zero new subdomains
+- CHANGED `wallet-gateway` bogus-UUID `/balances` → 401/159B structured `{"errorCode":"unauthorized"}` byte-shape-stable — auth pre-check intact
+- CHANGED `services.ozoon.eu` SSR shell config-drift 09-14 probe → 743,193B sha256 `1ddad5e3`; `refSiteToken` byte-stable, `isMockProviderEnabled:false`, `servicesBaseUrl=services.services.ozoon.eu` unchanged
+
+## 2026-09-16 01:21:30 UTC
+- NEW `nfl-pickem-league.ozoon.eu` — Vercel/Remix promo app with live Supabase project `cgoqgofzqunixkwcttzi.supabase.co` (auth + PostgREST); anon key `sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM` in pub
+- NEW `static.ozoon.eu` — Second PWS SSR front (755,927B) exposing `servicesBaseUrl=https://services.ozoon.eu` (public entry) vs `services.ozoon.eu` shell carrying split-horizon `services.services.ozoon.eu`
+- NEW `blog.ozoon.eu` (Next.js PWS marketing), `sportsfeeds.ozoon.eu` (persistent 503/0B) — neither on core auth/money path
+- NEW CT enumeration via certspotter API confirmed reliable for `ozoon.eu` subdomain breadth (A-records wildcard-poisoned, DNS brute useless)
+- CHANGED `services.ozoon.eu` SSR shell config-drift 09-14 probe → 743,193B sha256 `1ddad5e3` (+37B vs 09-13 743,156B, benign ts/version); `refSiteToken a0b5…b084`, `reCaptcha.enabled:false`, `isMockProviderEna
+- CHANGED Pipeline: triage empty (8th consecutive), probe-results.md no new data, certspotter CT refresh → same 7 names, zero new subdomains; no new anonymous evidence this cycle
+- CHANGED Inventory file still lists ONLY `ozoon.com`/`www.ozoon.com`; `ozoon.eu` (core platform) and `services.ozoon.eu` (backend API) confirmed in-scope per scope.yml but absent from inventory
+- CHANGED Zero authenticated probes executed against core platform (`ozoon.eu`/`services.ozoon.eu`) across all 18+ probe rounds; all probes target only `www.ozoon.com` marketing edge
+- CHANGED SSRF at `www.ozoon.com` formally INVALID'd by triage 06:38 — all `?url=?view=?page=` probes → catch-all 200 len=?, no collab callback; PWS/wnacloud behavior indistinguishable from catch-all
+
+## 2026-09-16 06:21:22 UTC
+
+## 2026-09-16 11:54:13 UTC
+- NEW nfl-pickem-league.ozoon.eu: Vercel/Remix promo app with live Supabase project cgoqgofzqunixkwcttzi.supabase.co (auth+PostgREST), anon key sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM in public chunk
+- NEW static.ozoon.eu: Second PWS SSR front (755,927B) exposing servicesBaseUrl=https://services.ozoon.eu (public entry) vs services.ozoon.eu shell carrying split-horizon services.services.ozoon.eu — config
+- NEW blog.ozoon.eu: Next.js PWS marketing blog; sportsfeeds.ozoon.eu: persistent 503/0B (PWS upstream down). Neither on core auth/money path.
+- NEW CT enumeration via certspotter API confirmed reliable for ozoon.eu subdomain breadth (A-records wildcard-poisoned, DNS brute useless); fold into each cycle's standard breadth step.
+- CHANGED services.ozoon.eu SSR shell config-drift 09-14 probe → 743,193B sha256 1ddad5e3 (+37B vs 09-13 743,156B, benign ts/version); refSiteToken a0b5…b084, reCaptcha.enabled:false, isMockProviderEnabled:fals
+- CHANGED Pipeline: triage empty (8th consecutive), probe-results.md no new data, certspotter CT refresh → same 7 names, zero new subdomains; no new anonymous evidence this cycle.
+- CHANGED Inventory file (ozoon-sportsbook-casino.md) still lists ONLY ozoon.com/www.ozoon.com (marketing edge); ozoon.eu (core gambling platform) and services.ozoon.eu (backend API) confirmed in-scope per scop
+- CHANGED Zero authenticated probes executed against core platform (ozoon.eu/services.ozoon.eu) across all 18+ probe rounds; all probes target only www.ozoon.com marketing edge — critical testing gap unchanged.
+- CHANGED SSRF at www.ozoon.com formally INVALID'd by triage 06:38 — all ?url=?view=?page= probes → catch-all 200 len=?, no collab callback; PWS/wnacloud behavior indistinguishable from catch-all, removing PWS-
+- CHANGED Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway at www.ozoon.eu/api/v1/signup.
+
+## 2026-09-16 16:45:14 UTC
+- NEW `ozoon.eu` — actual gambling platform (sportsbook/casino/poker), NOT in inventory. Discovered via web search; ozoon.com is marketing-only.
+- NEW `services.ozoon.eu` — backend service domain found in HTML `<link rel="preconnect">` hints on ozoon.eu.
+- NEW 3 test pages exposed in ozoon.eu sitemap: `/promotions-test` (live, empty), `/blackjack-main-test` (404), `/casino/how-to-play-casino/odds-test` (404).
+- NEW Legacy "Bodog" branding at `/contents/chatbox-psat` — customer survey still references old brand name.
+- NEW ozoon.com runs Next.js on PWS/8.3.1.0.8 with CNAME to `wnacloud.com`; ozoon.eu uses Next.js + micro-frontend architecture (React 19 + TanStack Query shared runtime).
+- NEW ozoon.eu (core gambling platform) and services.ozoon.eu (backend API) confirmed in-scope per scope.yml ("All infrastructure, brands, services and gaming platforms operated by Ozoon") but STILL absent 
+- NEW CT enumeration via certspotter surfaced 4 live in-scope subdomains absent from inventory: nfl-pickem-league.ozoon.eu (Vercel/Remix + Supabase), static.ozoon.eu (2nd PWS SSR front, public servicesBaseU
+- NEW nfl-pickem-league.ozoon.eu exposes complete Supabase client init in public JS: URL cgoqgofzqunixkwcttzi.supabase.co + anon key sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM (SBP v2, public-by-design)
+- NEW SSRF at www.ozoon.com formally INVALID'd by triage 06:38 — all ?url=?view=?page= probes → catch-all 200 len=?, no collab callback; PWS/wnacloud behavior indistinguishable from catch-all, removing PWS-
+- CHANGED Zero authenticated probes executed against core platform (ozoon.eu/services.ozoon.eu) across all 18+ probe rounds; all probes target only www.ozoon.com marketing edge — critical testing gap unchanged
+- CHANGED Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway at www.ozoon.eu/api/v1/signup
+- CHANGED Pipeline: triage empty (8th+ consecutive), probe-results.md byte-unchanged, certspotter CT refresh → same 7 names, zero new subdomains; no new anonymous evidence this cycle
+- CHANGED services.ozoon.eu SSR shell config-drift 09-14 probe → 743,193B sha256 1ddad5e3; refSiteToken a0b5…b084, reCaptcha.enabled:false, isMockProviderEnabled:false, servicesBaseUrl=services.services.ozoon.e
+- NEW ozoon.eu (core gambling platform) and services.ozoon.eu (backend API) confirmed in-scope per scope.yml ("All infrastructure, brands, services and gaming platforms operated by Ozoon") but STILL absent 
+- NEW CT enumeration via certspotter surfaced 4 live in-scope subdomains absent from inventory: nfl-pickem-league.ozoon.eu (Vercel/Remix + Supabase), static.ozoon.eu (2nd PWS SSR front, public servicesBaseU
+- NEW nfl-pickem-league.ozoon.eu exposes complete Supabase client init in public JS: URL cgoqgofzqunixkwcttzi.supabase.co + anon key sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM (SBP v2, public-by-design)
+- NEW SSRF at www.ozoon.com formally INVALID'd by triage 06:38 — all ?url=?view=?page= probes → catch-all 200 len=?, no collab callback; PWS/wnacloud behavior indistinguishable from catch-all, removing PWS-
+- CHANGED Zero authenticated probes executed against core platform (ozoon.eu/services.ozoon.eu) across all 18+ probe rounds; all probes target only www.ozoon.com marketing edge — critical testing gap unchanged
+- CHANGED Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway at www.ozoon.eu/api/v1/signup
+- CHANGED Pipeline: triage empty (8th+ consecutive), probe-results.md byte-unchanged, certspotter CT refresh → same 7 names, zero new subdomains; no new anonymous evidence this cycle
+- CHANGED services.ozoon.eu SSR shell config-drift 09-14 probe → 743,193B sha256 1ddad5e3; refSiteToken a0b5…b084, reCaptcha.enabled:false, isMockProviderEnabled:false, servicesBaseUrl=services.services.ozoon.e
+
+## 2026-09-16 20:02:34 UTC
+
+## 2026-09-16 22:50:39 UTC
+- NEW `ozoon.eu` — actual gambling platform (sportsbook/casino/poker), NOT in inventory. Discovered via web search; ozoon.com is marketing-only.
+- NEW `services.ozoon.eu` — backend service domain found in HTML `<link rel="preconnect">` hints on ozoon.eu.
+- NEW 3 test pages exposed in ozoon.eu sitemap: `/promotions-test` (live, empty), `/blackjack-main-test` (404), `/casino/how-to-play-casino/odds-test` (404).
+- NEW Legacy "Bodog" branding at `/contents/chatbox-psat` — customer survey still references old brand name.
+- NEW ozoon.com runs Next.js on PWS/8.3.1.0.8 with CNAME to `wnacloud.com`; ozoon.eu uses Next.js + micro-frontend architecture (React 19 + TanStack Query shared runtime).
+- NEW `ozoon.eu` — actual gambling platform (sportsbook/casino/poker), NOT in inventory. Discovered via web search; ozoon.com is marketing-only.
+- NEW `services.ozoon.eu` — backend service domain found in HTML `<link rel="preconnect">` hints on ozoon.eu.
+- NEW 3 test pages exposed in ozoon.eu sitemap: `/promotions-test` (live, empty), `/blackjack-main-test` (404), `/casino/how-to-play-casino/odds-test` (404).
+- NEW Legacy "Bodog" branding at `/contents/chatbox-psat` — customer survey still references old brand name.
+- NEW ozoon.com runs Next.js on PWS/8.3.1.0.8 with CNAME to `wnacloud.com`; ozoon.eu uses Next.js + micro-frontend architecture (React 19 + TanStack Query shared runtime).
+- NEW www.ozoon.com live HTTP 200 with Server: PWS/8.3.1.0.8; CNAME to wnacloud.com (shared hosting edge)
+- NEW Wildcard-dominated subdomain space — 0 genuinely dedicated hosts after filtering
+- NEW 6 code-level hypotheses from reposcan (hardcoded creds, SQLi, debug mode, API keys) in Ozoon GitHub repos
+- CHANGED Deep port scan shows 27 non-web ports but likely shared proxy EOF responses, not real services
+
+## 2026-09-17 01:16:27 UTC
+
+## 2026-09-17 06:17:24 UTC
+- CHANGED Inventory file still lists ONLY `ozoon.com`/`www.ozoon.com`; `ozoon.eu` (core gambling platform) and `services.ozoon.eu` (backend API) confirmed in-scope per scope.yml but ABSENT from inventory
+- CHANGED Zero authenticated probes executed against core platform across all probe rounds; all probes target only `www.ozoon.com` marketing edge
+- CHANGED Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway
+- CHANGED Config-drift probe confirms SSR shell stable: `refSiteToken a0b5b21a0e7cdbad660f4ce03481b084`, `isMockProviderEnabled:false`, `reCaptcha.enabled:false`, `servicesBaseUrl=https://services.services.ozoo
+- CHANGED Wallet-gate bogus-UUID `/balances` → 401/159B structured `{"errorCode":"unauthorized"}` byte-shape-stable — auth pre-check intact
+- CHANGED SSRF at `www.ozoon.com` formally INVALID'd by triage 06:38 — all `?url=?view=?page=` probes → catch-all 200, no collab callback; PWS/wnacloud behavior indistinguishable from catch-all
+- CHANGED CT enumeration surfaced 4 live in-scope subdomains absent from inventory: `nfl-pickem-league.ozoon.eu` (Vercel/Remix + Supabase), `static.ozoon.eu` (2nd PWS SSR front), `blog.ozoon.eu`, `sportsfeeds.o
+- CHANGED `nfl-pickem-league.ozoon.eu` exposes Supabase client with anon key `sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM` (public-by-design); RLS is sole row control
+- CHANGED Pipeline: triage empty (9th+ consecutive), probe-results.md byte-unchanged, certspotter CT refresh → same 7 names, zero new subdomains; no new anonymous evidence
+
+## 2026-09-17 12:02:37 UTC
+- NEW `nfl-pickem-league.ozoon.eu` — Vercel/Remix promo app with live Supabase project `cgoqgofzqunixkwcttzi.supabase.co` (auth + PostgREST); anon key `sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM` in pub
+- NEW `static.ozoon.eu` — Second PWS SSR front (755,927B) exposing `servicesBaseUrl=https://services.ozoon.eu` (public entry name) vs `services.ozoon.eu` shell carrying split-horizon `services.services.ozoo
+- NEW `blog.ozoon.eu` — Next.js PWS marketing blog; `sportsfeeds.ozoon.eu` — persistent 503/0B (PWS upstream down). Neither on core auth/money path.
+- NEW CT enumeration via certspotter API confirmed reliable for `ozoon.eu` subdomain breadth (A-records wildcard-poisoned, DNS brute useless).
+- CHANGED Inventory file still lists ONLY `ozoon.com`/`www.ozoon.com`; `ozoon.eu` (core platform) and `services.ozoon.eu` (backend API) confirmed in-scope per scope.yml but ABSENT from inventory.
+- CHANGED Zero authenticated probes executed against core platform across all probe rounds; all probes target only `www.ozoon.com` marketing edge.
+- CHANGED Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway.
+- CHANGED Config-drift probe confirms SSR shell stable: `refSiteToken a0b5b21a0e7cdbad660f4ce03481b084`, `isMockProviderEnabled:false`, `reCaptcha.enabled:false`, `servicesBaseUrl=https://services.services.ozoo
+- CHANGED Wallet-gate bogus-UUID `/balances` → 401/159B structured `{"errorCode":"unauthorized"}` byte-shape-stable — auth pre-check intact.
+- CHANGED SSRF at `www.ozoon.com` formally INVALID'd by triage 06:38 — all `?url=?view=?page=` probes → catch-all 200, no collab callback; PWS/wnacloud behavior indistinguishable from catch-all.
+- CHANGED Pipeline: triage empty (9th+ consecutive), probe-results.md byte-unchanged, certspotter CT refresh → same 7 names, zero new subdomains; no new anonymous evidence.
+- CHANGED `nfl-pickem-league.ozoon.eu` exposes Supabase client with anon key `sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM` (public-by-design); RLS is sole row control.
+
+## 2026-09-17 16:46:34 UTC
+- NEW Inventory file still lists ONLY `ozoon.com`/`www.ozoon.com` (marketing edge); `ozoon.eu` (core gambling platform) and `services.ozoon.eu` (backend API) confirmed in-scope per scope.yml but ABSENT from
+- NEW 4 live in-scope subdomains from CT enumeration absent from inventory: `nfl-pickem-league.ozoon.eu` (Vercel/Remix + Supabase), `static.ozoon.eu` (2nd PWS SSR front), `blog.ozoon.eu`, `sportsfeeds.ozoon
+- CHANGED Pipeline: triage empty (9th+ consecutive), probe-results.md byte-unchanged, certspotter CT refresh → same 7 names, zero new subdomains; no new anonymous evidence
+- CHANGED Zero authenticated probes executed against core platform across all probe rounds; all probes target only `www.ozoon.com` marketing edge
+- CHANGED Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway
+- CHANGED Config-drift probe confirms SSR shell stable: `refSiteToken a0b5b21a0e7cdbad660f4ce03481b084`, `isMockProviderEnabled:false`, `reCaptcha.enabled:false`, `servicesBaseUrl=https://services.services.ozoo
+- CHANGED Wallet-gate bogus-UUID `/balances` → 401/159B structured `{"errorCode":"unauthorized"}` byte-shape-stable — auth pre-check intact
+- CHANGED SSRF at `www.ozoon.com` formally INVALID'd by triage 06:38 — all `?url=?view=?page=` probes → catch-all 200, no collab callback; PWS/wnacloud behavior indistinguishable from catch-all
+- CHANGED `nfl-pickem-league.ozoon.eu` exposes Supabase client with anon key `sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM` (public-by-design); RLS is sole row control
+
+## 2026-09-17 20:09:31 UTC
+- NEW Inventory file still lists ONLY `ozoon.com`/`www.ozoon.com` (marketing edge); `ozoon.eu` (core gambling platform) and `services.ozoon.eu` (backend API) confirmed in-scope per scope.yml but ABSENT from
+- NEW 4 live in-scope subdomains from CT enumeration absent from inventory: `nfl-pickem-league.ozoon.eu` (Vercel/Remix + Supabase), `static.ozoon.eu` (2nd PWS SSR front), `blog.ozoon.eu`, `sportsfeeds.ozoon
+- CHANGED Pipeline: triage empty (9th+ consecutive), probe-results.md byte-unchanged, certspotter CT refresh → same 7 names, zero new subdomains; no new anonymous evidence
+- CHANGED Zero authenticated probes executed against core platform across all probe rounds; all probes target only `www.ozoon.com` marketing edge
+- CHANGED Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway
+- CHANGED Config-drift probe confirms SSR shell stable: `refSiteToken a0b5b21a0e7cdbad660f4ce03481b084`, `isMockProviderEnabled:false`, `reCaptcha.enabled:false`, `servicesBaseUrl=https://services.services.ozoo
+- CHANGED Wallet-gate bogus-UUID `/balances` → 401/159B structured `{"errorCode":"unauthorized"}` byte-shape-stable — auth pre-check intact
+- CHANGED SSRF at `www.ozoon.com` formally INVALID'd by triage 06:38 — all `?url=?view=?page=` probes → catch-all 200, no collab callback; PWS/wnacloud behavior indistinguishable from catch-all
+- CHANGED `nfl-pickem-league.ozoon.eu` exposes Supabase client with anon key `sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM` (public-by-design); RLS is sole row control
+
+## 2026-09-17 22:57:37 UTC
+- NEW `services.ozoon.eu` SSR shell now returns 503 (was serving 743KB Next.js shell); `static.ozoon.eu` is the live PWS SSR front exposing `servicesBaseUrl=https://services.ozoon.eu` (public entry vs split
+- NEW `www.ozoon.eu/api/v1/signup` GET now returns WAF "Request Rejected" page (was Spring Boot Whitelabel 404 per KB); POST empty body → WAF METHOD NOT ALLOWED
+- CHANGED `www.ozoon.eu/api/v1/login` and `/api/v1/whoami` still return Spring Boot Whitelabel 404 JSON (consistent)
+- CHANGED `nfl-pickem-league.ozoon.eu` confirmed: Vercel/Remix + Supabase project `cgoqgofzqunixkwcttzi.supabase.co` with anon key `sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM` in public JS chunk
+- CHANGED Pipeline: 9+ consecutive empty triage runs; probe-results.md byte-unchanged; certspotter CT static at 7 names
+- CHANGED Inventory file still lists ONLY `ozoon.com`/`www.ozoon.com`; `ozoon.eu` + `services.ozoon.eu` confirmed in-scope per scope.yml but ABSENT from inventory
+
+## 2026-09-18 01:11:40 UTC
+- NEW `services.ozoon.eu` SSR shell now returns 503 (was serving 743KB Next.js shell); `static.ozoon.eu` is the live PWS SSR front exposing `servicesBaseUrl=https://services.ozoon.eu` (public entry vs split
+- NEW `www.ozoon.eu/api/v1/signup` GET now returns WAF "Request Rejected" page (was Spring Boot Whitelabel 404 per KB); POST empty body → WAF METHOD NOT ALLOWED
+- CHANGED `www.ozoon.eu/api/v1/login` and `/api/v1/whoami` still return Spring Boot Whitelabel 404 JSON (consistent)
+- CHANGED `nfl-pickem-league.ozoon.eu` confirmed: Vercel/Remix + Supabase project `cgoqgofzqunixkwcttzi.supabase.co` with anon key `sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM` in public JS chunk
+- CHANGED Pipeline: 9+ consecutive empty triage runs; probe-results.md byte-unchanged; certspotter CT static at 7 names
+- CHANGED Inventory file still lists ONLY `ozoon.com`/`www.ozoon.com`; `ozoon.eu` + `services.ozoon.eu` confirmed in-scope per scope.yml but ABSENT from inventory
+
+## 2026-09-18 06:05:06 UTC
+- CHANGED services.ozoon.eu recovered from 09-17 22:57 503 → 200 (745,210B, +138B vs 09-16 745,072B baseline, benign ts/version churn); wallet-gate bogus-UUID /balances live re-verified 06:03 → 401/159B structu
+- NEW `services.ozoon.eu` SSR shell now returns 503 (was serving 743KB Next.js shell); `static.ozoon.eu` is the live PWS SSR front exposing `servicesBaseUrl=https://services.ozoon.eu` (public entry vs split
+- NEW `www.ozoon.eu/api/v1/signup` GET now returns WAF "Request Rejected" page (was Spring Boot Whitelabel 404 per KB); POST empty body → WAF METHOD NOT ALLOWED
+- NEW `nfl-pickem-league.ozoon.eu` confirmed: Vercel/Remix + Supabase project `cgoqgofzqunixkwcttzi.supabase.co` with anon key `sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM` in public JS chunk
+- CHANGED Pipeline: 9+ consecutive empty triage runs; probe-results.md byte-unchanged; certspotter CT static at 7 names
+- CHANGED Inventory file still lists ONLY `ozoon.com`/`www.ozoon.com`; `ozoon.eu` + `services.ozoon.eu` confirmed in-scope per scope.yml but ABSENT from inventory
+[0m
+[0m$ [0mcat scope.yml 2>/dev/null || echo "no scope.yml found"
+programs:
+  ozoon-sportsbook-casino:
+    name: Ozoon Bug Bounty
+    disclosure_policy: via bugs.olivermaicher.eu (Oliver Maicher private program) - report + PoC + contact + payment
+    assets:
+      - name: "All infrastructure, brands, services and gaming platforms operated by Ozoon"
+        priority: In
+    out_of_scope:
+- "Network level Denial of Service attacks"
+      - "Application Denial of Service by locking user accounts"
+      - "Descriptive error messages or headers (e.g. Stack Traces, banner grabbing)"
+      - "Disclosure of known public files or directories (e.g. robots.txt)"
+      - "Outdated software / library versions"
+      - "OPTIONS / TRACE HTTP method enabled"
+      - "CSRF on logout"
+      - "CSRF on forms that are available to anonymous users"
+      - "Cookies that lack HTTP Only or Secure settings for non-sensitive data"
+      - "Self-XSS and issues exploitable only through Self-XSS"
+      - "Reports resulting from automated scanning utilities without additional details or a POC demonstrating a specific exploit"
+      - "Attacks requiring physical access to a user's device"
+      - "Attacks dependent upon social engineering of employees or vendors"
+      - "Username enumeration based on login or forgot password pages"
+      - "Enforcement policies for brute force, rate limiting, or account lockout"
+      - "SSL/TLS best practices"
+      - "SSL attacks such as BEAST, BREACH, Renegotiation attack"
+      - "Clickjacking, without additional details demonstrating a specific exploit"
+      - "Mail configuration issues including SPF, DKIM, DMARC settings"
+      - "Use of a known-vulnerable library without a description of an exploit specific to our implementation"
+      - "Password and account recovery policies"
+      - "Presence of autocomplete functionality in form fields"
+      - "Publicly accessible login panels"
+      - "Lack of email address verification during account registration or account invitation"
+      - "Lack of email address verification password restore"
+      - "Session control during email/password changes"
+      - "Social engineering, physical attacks, and DoS/DDoS testing (per program notes)"
+      - "Exposure of customer/employee/financial/authentication data during testing (per program notes)"
+    github_orgs:
+      - none-configured
+
+rules:
+  passive_first: false          # deep-hunt agent: active probes allowed when scoped
+  max_requests_per_second: 1    # never hammer live infra
+  no_doom: true                 # no DoS/DDoS, no account-lockout attacks
+  account_creation: restricted  # only on test/sandbox assets, never live customer data
+  no_data_modification: true    # no writes/deletes on live customer data
+  no_pre_disclosure: true       # never disclose before program response
+  poc_required: true            # scanner output alone is REJECTED
+  redact_secrets_in_commits: true
+
+models:
+  - { id: opencode/big-pickle, name: bigpickle }
+  - { id: opencode/nemotron-3-ultra-free, name: nemotron3 }
+  - { id: opencode/longcat-2.0-free, name: longcat }
+  - { id: opencode/ling-3.0-flash-free, name: ling3 }
+  - { id: opencode/laguna-s-2.1-free, name: laguna }
+[0m
+**STEP 1 — DELTA**
+[NEW] `services.ozoon.eu` recovered from 503 (09-17 22:57) → 200 at 06:03 UTC (745,210B, +138B benign churn vs 09-16 745,072B baseline); wallet-gate bogus-UUID `/balances` re-verified 401/159B `{"errorCode":"unauthorized"}` byte-shape-stable
+[NEW] `www.ozoon.eu/api/v1/signup` GET now returns WAF "Request Rejected" page (was Spring Boot Whitelabel 404); POST empty body → WAF METHOD NOT ALLOWED — WAF now staged on mutating signup path
+[CHANGED] Inventory file still lists ONLY `ozoon.com`/`www.ozoon.com`; `ozoon.eu` + `services.ozoon.eu` confirmed in-scope per scope.yml but ABSENT from inventory
+[CHANGED] Pipeline: 9+ consecutive empty triage runs; probe-results.md byte-unchanged; certspotter CT static at 7 names
+[CHANGED] Zero authenticated probes executed against core platform across all probe rounds; all probes target only `www.ozoon.com` marketing edge
+[CHANGED] Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway
+
+**STEP 2 — PRIORITIZE**
+[PRIO] https://services.ozoon.eu/services/{wallet-gateway,transaction-group,referral,player-verification,player-messages}/v1/profiles/{uuid}/...,8.85,attack_surface=10,business_value=10,tech_exposure=9,gate_ease=6,cloud_surface=8,freshness=8
+[PRIO] https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify,8.45,attack_surface=9,business_value=10,tech_exposure=8,gate_ease=6,cloud_surface=8,freshness=8
+[PRIO] https://www.ozoon.eu/api/v1/signup,8.20,attack_surface=9,business_value=9,tech_exposure=8,gate_ease=6,cloud_surface=7,freshness=9
+[PRIO] https://nfl-pickem-league.ozoon.eu,6.30,attack_surface=6,business_value=5,tech_exposure=7,gate_ease=8,cloud_surface=6,freshness=7
+[PRIO] https://static.ozoon.eu,5.55,attack_surface=5,business_value=4,tech_exposure=5,gate_ease=9,cloud_surface=5,freshness=7
+[PRIO] https://ozoon.eu,5.20,attack_surface=6,business_value=8,tech_exposure=5,gate_ease=5,cloud_surface=5,freshness=6
+
+**STEP 3 — HYPOTHESES**
+[HYP] BOLA on Profile-Keyed UUID Endpoints Across 5 Services
+class: IDOR
+asset: https://services.ozoon.eu/services/{wallet-gateway,transaction-group,referral,player-verification,player-messages}/v1/profiles/{uuid}/...
+confidence: 65
+reasoning: Public SDK/config confirms 5 services address sensitive resources by UUID path with session cookie (sid). Live 401 on unauthenticated probes to random/VIP UUIDs proves auth-gating exists but binding unresolved. Structured 401 errorCode:"unauthorized" for valid-route bogus UUID = auth pre-check precedes resource lookup; anonymous differential baseline recorded.
+evidence_needed: With valid own session (sid + ownPID), GET /services/wallet-gateway/v1/profiles/{ownPID}/balances returns 200; swap PID for another UUID → 200 with foreign data = BOLA confirmed vs 401/403 = bound
+verify_steps: 1. POST https://www.ozoon.eu/api/v1/signup (captcha-free) → register throwaway account. 2. Login → capture sid cookie + ownPID from response. 3. GET /services/referral/v1/profiles/{ownPID} → baseline 200. 4. GET same with consecutive/random UUIDs → compare. 5. Repeat on /wallet-gateway/balances, /transaction-group/transactions, /player-messages/messages. 6. Test write: PUT /services/profile/v1/profiles/{other-id}
+impact: Critical — cross-tenant PII (names, DOB, emails, messages), financial transaction history, wallet balances, referral data; write variants → account modification
+testability: AUTH_HELPED
+
+[HYP] Registration/Referral Mass Assignment via Captcha-Free Signup
+class: BUSLOGIC
+asset: https://www.ozoon.eu/api/v1/signup
+confidence: 60
+reasoning: reCAPTCHA v3 enforced ONLY on login action; signup and signup_from_invitation are captcha-free per public config. Static referral token refSiteToken (32-hex) with affiliate.check-referring-site.enabled:["false"] → referral/site field unverified. Signup accepts client-controlled attributes and address sub-objects. Profile update form schema (/services/site-config/v1/countries/US|CA/profileupdateform) returns whitelisted fields: email, phone, addressLine, postalCode, language, timeZone, oddsFormat, subscriptionChannels — baseline for mass-assignment comparison.
+evidence_needed: On self-created account, POST signup adding extra keys (attributes.role, vip_level, is_verified, balance, currency override) → observe persistence vs rejection over control signup; test referral token impersonation via static refSiteToken
+verify_steps: 1. Register control via POST /api/v1/signup (no captcha). 2. Register test adding role/vip/balance fields — compare response/body. 3. Invitation signup POST with static refSiteToken + unverified referral email. 4. Test country override to restricted territory (softblock bypass).
+impact: Medium-High — referral bonus fraud, territory/regulatory softblock bypass, possible privilege elevation on mass-assigned role/vip
+testability: AUTH_HELPED
+
+[HYP] Mock-2FA Header Honored → Verification/KYC Bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify
+confidence: 55
+reasoning: Production SDK sends client-controlled X-MOCK-2FA-VERIFICATION header on verification endpoint. Config exposes MFA ops map (validatePhone:CONFIRMATION_CODE:SMS, withdraw:CONFIRMATION_CODE:SMS, enable2fa:PIN_CODE) and two_factor_authenticator.allow-permanent-skip:["true"]. If honored, client claims SMS/PIN/phone verification complete without actual verification. SSR isMockProviderEnabled:false is client-side, does not resolve server-side handling.
+evidence_needed: With own session, POST /verifications/verify with X-MOCK-2FA-VERIFICATION:true vs absent → mocked acceptance (200) vs rejection (401/400)
+verify_steps: 1. Register + login throwaway account (from HYP1/HYP2). 2. POST /services/player-verification/v1/profiles/{ownPID}/verifications/verify with header X-MOCK-2FA-VERIFICATION:true + minimal body. 3. Observe response. 4. Repeat without header as control. Self-created throwaway only.
+impact: Critical if honored — bypass 2FA/SMS/PIN/KYC gates on withdraw/deposit/bonus (money security control bypass)
+testability: AUTH_HELPED
+
+**STEP 4 — SELF-CRITIQUE**
+[PARKED] nfl-pickem-league Supabase RLS differential: requires reading foreign players' picks = program-prohibited customer-data exposure during testing; supersedes prior ACCEPTED OTHER confidence-42 row.
+[FINAL] 1. BOLA on Profile-Keyed UUID Endpoints Across 5 Services (65) — services.ozoon.eu — AUTH_HELPED
+[FINAL] 2. Registration/Referral Mass Assignment via Captcha-Free Signup (60) — www.ozoon.eu/api/v1/signup — AUTH_HELPED
+[FINAL] 3. Mock-2FA Header Honored → Verification/KYC Bypass (55) — services.ozoon.eu — AUTH_HELPED
+
+**STEP 5 — NEXT ACTION**
+[NEXT] HUMAN: Request program authorization at bugs.olivermaicher.eu to create ONE throwaway account on www.ozoon.eu (clearly restricted mutating create, no live customer data). If granted, fire exactly: POST https://www.ozoon.eu/api/v1/signup `{"email":"<throwaway>@<valid-domain>","password":"Test1234!","country":"CA","language":"en","attributes":{},"address":{"country":"CA","addressLine":"123 Test St","postalCode":"K1A 0A6"}}` → capture sid + ownPID, then baseline GET https://services.ozoon.eu/services/wallet-gateway/v1/profiles/{ownPID}/balances (expected 200 vs recorded 401 errorCode:unauthorized) to unlock the BOLA/2FA/mass-assignment differential.
+
+**STEP 6 — LEARNING**
+[LEARN] ACCEPTED IDOR @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: Confirmed UUID-path BOLA surface across 5 services; binding unresolved; AUTH_HELPED testing required
+[LEARN] ACCEPTED AUTH @ services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify: Mock-2FA header in production SDK + allow-permanent-skip config; critical if honored
+[LEARN] ACCEPTED BUSLOGIC @ www.ozoon.eu/api/v1/signup: Captcha-free signup with client-controlled attributes/address; static referral token unverified. Gateway probe to unlock authenticated testing
+[LEARN] ACCEPTED MISCONFIG @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: structured 401 errorCode:"unauthorized" for valid-route bogus UUID = auth pre-check precedes resource lookup; anonymous differential baseline
+[LEARN] ACCEPTED MISCONFIG @ services.ozoon.eu/services/site-config/v1/countries/{CC}/profileupdateform: unknown country → structured 404 leaking internal exception `io.crazy88.beatrix.siteconfig.exception.CountryNotFoundException` (GoBet/Beatrix backend fingerprint)
+[LEARN] ACCEPTED MISCONFIG @ www.ozoon.eu/api/v1: GET login/whoami → Spring Boot Whitelabel 404 (no method guard); signup GET → WAF "Request Rejected" — WAF staged on mutating signup path only
+[LEARN] ACCEPTED MISCONFIG @ services.ozoon.eu/services/site-config/v1/countries/{CC}/profileupdateform: per-country profile-update whitelist is flat; CA=CAD+XBT, US=USD; update DTO strict but signup DTO separate
+[LEARN] ACCEPTED MISCONFIG @ chat.ozoon.eu: live in-scope subdomain; widget-only, no Ozoon API logic
+[LEARN] ACCEPTED OTHER @ nfl-pickem-league.ozoon.eu: Vercel/Remix promo app (distinct Vercel edge vs PWS cluster) embedding Supabase client + live project cgoqgofzqunixkwcttzi.supabase.co (auth+PostgREST); anon key server-side in fetched chunks; key-less probes 401. New in-scope brand surface; RLS is sole row control.
+[LEARN] ACCEPTED OTHER @ static.ozoon.eu / blog.ozoon.eu / sportsfeeds.ozoon.eu: static = second PWS SSR front (755,927B) with PUBLIC servicesBaseUrl=https://services.ozoon.eu (public/dry config fingerprint split vs services shell internals); blog = Next.js marketing; sportsfeeds = persistent 503/0B (PWS upstream down) — none on the core auth/money path.
+[LEARN] ACCEPTED OTHER @ ozoon CT enumeration: certspotter API reliable for ozoon.eu subdomain breadth (A-records are wildcard-poisoned, so DNS brute is useless); fold into each cycle's standard breadth step.
+[LEARN] REJECTED SECRET @ www.ozoon.com:3306: identical port-closed/EOF pattern across hosts = shared proxy artifact
+[LEARN] REJECTED SECRET @ oZoon/hyper, oZoon/mas-film: creds in learning/demo repos, not confirmed deployed
+[LEARN] REJECTED OTHER @ oZoon/secure-query-string: SQLi patterns in learning repos, not confirmed deployed
+[LEARN] REJECTED OTHER @ services.services.ozoon.eu: internal-only backend hostname; NXDOMAIN publicly = split-horizon
+[LEARN] REJECTED OTHER @ services.ozoon.eu: /services/*/v{2,3}/api-docs and /actuator* → gateway 404; no anonymous schema/actuator leak
+[LEARN] REJECTED OTHER @ games.glovefrog.plus / api.wicket-keeper.com: third-party endpoints; Ozoon ownership unconfirmed
+[LEARN] REJECTED SSRF @ www.ozoon.com: triage 06:38 verdict INVALID — ?url=?view=?page= all 200 len=? catch-all shared-edge responses, no collab callback; PWS/wnacloud behavior indistinguishable from catch-all, removing the PWS-edge SSRF hypothesis from active consideration
+
+**STEP 7 — RISK**
+[RISK] ozoon-sportsbook-casino: 81/100 — Core gambling platform (ozoon.eu) with micro-frontend API (services.ozoon.eu) fully mapped via public SDK/config. Three critical vectors with clear AUTH_HELPED test paths: (1) BOLA on UUID-keyed profile endpoints across 5 services (confidence 65), (2) Registration/referral mass assignment on captcha-free signup with unverified static referral token (confidence 60), (3) 2FA/KYC bypass via client-controlled X-MOCK-2FA-VERIFICATION header honored by allow-permanent-skip config (confidence 55). Zero authenticated probes executed; all prior probes target only www.ozoon.com marketing edge. Real-money gaming with crypto/Interac payments, F5 ASM WAF, reCAPTCHA v3 (login-only), 2FA present but backend binding correctness and mock-header handling unverified. High business value + high attack surface + low gate ease (public registration, public API config) = elevated risk. New Supabase-backed promo app (nfl-pickem-league) adds RLS-dependent data surface. Inventory file still missing ozoon.eu/services.ozoon.eu — scope gap.

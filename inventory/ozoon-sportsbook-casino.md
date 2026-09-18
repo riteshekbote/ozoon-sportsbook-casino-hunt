@@ -916,3 +916,11 @@ www.ozoon.com
 - NEW `nfl-pickem-league.ozoon.eu` confirmed: Vercel/Remix + Supabase project `cgoqgofzqunixkwcttzi.supabase.co` with anon key `sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM` in public JS chunk
 - CHANGED Pipeline: 9+ consecutive empty triage runs; probe-results.md byte-unchanged; certspotter CT static at 7 names
 - CHANGED Inventory file still lists ONLY `ozoon.com`/`www.ozoon.com`; `ozoon.eu` + `services.ozoon.eu` confirmed in-scope per scope.yml but ABSENT from inventory
+
+## 2026-09-18 11:35:04 UTC
+- NEW `services.ozoon.eu` recovered from 503 (09-17 22:57) → 200 at 06:03 UTC (745,210B, +138B benign churn vs 09-16 745,072B baseline); wallet-gate bogus-UUID `/balances` re-verified 401/159B `{"errorCode"
+- NEW `www.ozoon.eu/api/v1/signup` GET now returns WAF "Request Rejected" page (was Spring Boot Whitelabel 404); POST empty body → WAF METHOD NOT ALLOWED — WAF now staged on mutating signup path
+- CHANGED Inventory file still lists ONLY `ozoon.com`/`www.ozoon.com`; `ozoon.eu` + `services.ozoon.eu` confirmed in-scope per scope.yml but ABSENT from inventory
+- CHANGED Pipeline: 9+ consecutive empty triage runs; probe-results.md byte-unchanged; certspotter CT static at 7 names
+- CHANGED Zero authenticated probes executed against core platform across all probe rounds; all probes target only `www.ozoon.com` marketing edge
+- CHANGED Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway
