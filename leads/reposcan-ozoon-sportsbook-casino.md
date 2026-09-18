@@ -512,3 +512,47 @@ TARGET_ORG not configured for ozoon-sportsbook-casino; skipping public-org deep 
 TARGET_ORG not configured for ozoon-sportsbook-casino; skipping public-org deep scan.
 ## REPOSCAN 2026-09-18 05:26:43 UTC
 TARGET_ORG not configured for ozoon-sportsbook-casino; skipping public-org deep scan.
+## REPOSCAN 2026-09-18 10:07:00 UTC
+[HYP] Hardcoded MySQL Credentials (hyper)
+class: SECRET
+asset: oZoon/hyper/core/config.php:17
+confidence: 30
+reasoning: Hardcoded MySQL credentials: user='hyper', password='12345', database='hyper'. Trivial password suggests demo/learning data. No evidence this touches bugs.olivermaicher.eu infrastructure.
+impact: Medium (if reused on production DB)
+verify_steps: 1) Check if bugs.olivermaicher.eu has a MySQL instance with user 'hyper'. 2) Attempt login with password '12345' on any exposed DB endpoints.
+[HYP] Hardcoded MySQL Credentials (mas-film)
+class: SECRET
+asset: oZoon/mas-film/core/config.php:16
+confidence: 30
+reasoning: Hardcoded MySQL credentials: user='masha', password='12345', database='masha'. Same trivial password pattern as hyper repo.
+impact: Medium (if reused on production DB)
+verify_steps: 1) Check if bugs.olivermaicher.eu has a MySQL instance with user 'masha'. 2) Attempt login with password '12345'.
+[HYP] Hardcoded Auth Credentials
+class: SECRET
+asset: oZoon/php-learn-5/include/helpers.php:62-68
+confidence: 25
+reasoning: Hardcoded auth array: ['login'=>'1@bk.ru','password'=>'1'], ['login'=>'2@bk.ru','password'=>'2'], etc. Trivial demo credentials with real-looking email addresses.
+impact: Low (demo data unlikely to match production)
+verify_steps: 1) Check if any Ozoon admin/panel accepts these email/password combos. 2) Test against any login endpoints on bugs.olivermaicher.eu.
+[HYP] SQL Injection (hyper - unparameterized queries)
+class: OTHER
+asset: oZoon/hyper/core/functions.php:186-194,200-203,212-215
+confidence: 20
+reasoning: All SQL queries built via string concatenation with user input ($state['qs']). Example: 'SELECT `userId` FROM `tokens` WHERE `token` = \'' . $state['qs']['token'] . '\''. No prepared statements used anywhere.
+impact: High (full DB compromise if deployed)
+verify_steps: 1) Check if hyper app is deployed on bugs.olivermaicher.eu. 2) Test SQLi payloads on token/id parameters.
+[HYP] SQL Injection (mas-film - unparameterized queries)
+class: OTHER
+asset: oZoon/mas-film/core/functions.php:71-75,88-92,118-122,142-146,etc.
+confidence: 20
+reasoning: All CRUD operations use string concatenation: 'SELECT ... WHERE `filmID` = ' . $state['params']['filmID']. No prepared statements. User input flows directly into SQL.
+impact: High (full DB compromise if deployed)
+verify_steps: 1) Check if mas-film app is deployed on bugs.olivermaicher.eu. 2) Test SQLi on filmID, actorID, genreID parameters.
+[HYP] IDOR - Direct File Access via GET Parameter
+class: IDOR
+asset: oZoon/php-learn-5/routes/manages.php:55
+confidence: 25
+reasoning: $_GET['file'] is passed directly to is_file() and used in <img src> without path traversal validation. The file parameter is user-controlled and could allow reading arbitrary files if the base path check is bypassed.
+impact: Medium (arbitrary file read if deployed)
+verify_steps: 1) Check if php-learn-5 is deployed on bugs.olivermaicher.eu. 2) Test path traversal: /manages?file=../../etc/passwd
+TARGET_ORG not configured for ozoon-sportsbook-casino; skipping public-org deep scan.
