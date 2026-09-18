@@ -2547,3 +2547,33 @@
 - LEARN: REJECTED OTHER @ services.ozoon.eu: /services/*/v{2,3}/api-docs and /actuator* → gateway 404; no anonymous schema/actuator leak
 - LEARN: REJECTED OTHER @ games.glovefrog.plus / api.wicket-keeper.com: third-party endpoints; Ozoon ownership unconfirmed
 - LEARN: REJECTED SSRF @ www.ozoon.com: triage 06:38 verdict INVALID — ?url=?view=?page= all 200 len=? catch-all shared-edge responses, no collab callback; PWS/wnacloud 
+
+## RANKED HYPOTHESES 2026-09-18 15:13:39 UTC
+- [65] https://services.ozoon.eu/services/{wallet-gateway,transaction-group,referral,player-verification,player-messages}/v1/profiles/{uuid}/...: BOLA on Profile-Keyed UUID Endpoints Across 5 Services (from art/lead_nemotron3.txt)
+- NEXT(hypotheses-nemotron3.txt): HUMAN: Request program authorization at bugs.olivermaicher.eu to create ONE throwaway account on www.ozoon.eu (clearly restricted mutating create, no live custo
+- LEARN: ACCEPTED IDOR @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: Reconfirmed — post-outage recovery verified (shell 200/745,210B + wallet-gate 401/159B base
+- LEARN: ACCEPTED AUTH @ services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify: mock-2FA header + allow-permanent-skip remains the single
+- LEARN: ACCEPTED BUSLOGIC @ www.ozoon.eu/api/v1/signup: captcha-free signup remains sole gateway to authenticated testing; static `refSiteToken` unverified; WAF now sta
+- LEARN: ACCEPTED MISCONFIG @ services.ozoon.eu SSR shell: post-outage recovery verified — shell 200/745,210B (+138B benign churn vs 745,072B 09-16) and wallet-gate 401/
+- LEARN: REJECTED SECRET @ www.ozoon.com:3306: identical port-closed/EOF pattern across hosts = shared proxy artifact, not MySQL.
+- LEARN: REJECTED SECRET + OTHER @ oZoon/hyper, oZoon/mas-film, oZoon/secure-query-string: hardcoded creds/SQLi in learning/demo repos, not confirmed deployed.
+- LEARN: REJECTED OTHER @ services.services.ozoon.eu / games.glovefrog.plus / api.wicket-keeper.com: split-horizon internal hostname + third-party endpoints; ownership u
+- LEARN: REJECTED SSRF @ www.ozoon.com: triage 06:38 verdict INVALID stands — PWS/wnacloud catch-all behavior indistinguishable; hypothesis stays out of active considera
+- LEARN: ACCEPTED IDOR @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: Confirmed UUID-path BOLA surface across 5 services; binding unresolved; AUTH_HELPED testing
+- LEARN: ACCEPTED AUTH @ services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify: Mock-2FA header in production SDK + allow-permanent-skip 
+- LEARN: ACCEPTED BUSLOGIC @ www.ozoon.eu/api/v1/signup: Captcha-free signup with client-controlled attributes/address; static referral token unverified. Gateway probe t
+- LEARN: ACCEPTED MISCONFIG @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: structured 401 errorCode:"unauthorized" for valid-route bogus UUID = auth pre-check pr
+- LEARN: ACCEPTED MISCONFIG @ services.ozoon.eu/services/site-config/v1/countries/{CC}/profileupdateform: unknown country → structured 404 leaking internal exception `io
+- LEARN: ACCEPTED MISCONFIG @ www.ozoon.eu/api/v1: GET login/whoami → Spring Boot Whitelabel 404 (no method guard); signup GET → WAF "Request Rejected" — WAF staged on m
+- LEARN: ACCEPTED MISCONFIG @ services.ozoon.eu/services/site-config/v1/countries/{CC}/profileupdateform: per-country profile-update whitelist is flat; CA=CAD+XBT, US=US
+- LEARN: ACCEPTED MISCONFIG @ chat.ozoon.eu: live in-scope subdomain; widget-only, no Ozoon API logic
+- LEARN: ACCEPTED OTHER @ nfl-pickem-league.ozoon.eu: Vercel/Remix promo app (distinct Vercel edge vs PWS cluster) embedding Supabase client + live project cgoqgofzqunix
+- LEARN: ACCEPTED OTHER @ static.ozoon.eu / blog.ozoon.eu / sportsfeeds.ozoon.eu: static = second PWS SSR front (755,927B) with PUBLIC servicesBaseUrl=https://services.o
+- LEARN: ACCEPTED OTHER @ ozoon CT enumeration: certspotter API reliable for ozoon.eu subdomain breadth (A-records are wildcard-poisoned, so DNS brute is useless); fold 
+- LEARN: REJECTED SECRET @ www.ozoon.com:3306: identical port-closed/EOF pattern across hosts = shared proxy artifact
+- LEARN: REJECTED SECRET @ oZoon/hyper, oZoon/mas-film: creds in learning/demo repos, not confirmed deployed
+- LEARN: REJECTED OTHER @ oZoon/secure-query-string: SQLi patterns in learning repos, not confirmed deployed
+- LEARN: REJECTED OTHER @ services.services.ozoon.eu: internal-only backend hostname; NXDOMAIN publicly = split-horizon
+- LEARN: REJECTED OTHER @ services.ozoon.eu: /services/*/v{2,3}/api-docs and /actuator* → gateway 404; no anonymous schema/actuator leak
+- LEARN: REJECTED OTHER @ games.glovefrog.plus / api.wicket-keeper.com: third-party endpoints; Ozoon ownership unconfirmed
+- LEARN: REJECTED SSRF @ www.ozoon.com: triage 06:38 verdict INVALID — ?url=?view=?page= all 200 len=? catch-all shared-edge responses, no collab callback; PWS/wnacloud 
