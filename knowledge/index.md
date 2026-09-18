@@ -491,3 +491,4 @@
 - 2026-09-18 REJECTED OTHER @ services.ozoon.eu: /services/*/v{2,3}/api-docs and /actuator* → gateway 404; no anonymous schema/actuator leak
 - 2026-09-18 REJECTED OTHER @ games.glovefrog.plus / api.wicket-keeper.com: third-party endpoints; Ozoon ownership unconfirmed
 - 2026-09-18 REJECTED SSRF @ www.ozoon.com: triage 06:38 verdict INVALID — ?url=?view=?page= all 200 len=? catch-all shared-edge responses, no collab callback; PWS/wnacloud behavior indistinguishable from catch-all, removing the PWS-edge SSRF hypothesis from active consideration
+- 2026-09-18 ACCEPTED MISCONFIG @ services.ozoon.eu SSR shell + wallet-gate: post-outage recovery verified — shell 200/745,210B (+138B benign churn vs 745,072B 09-16) and wallet-gate 401/159B baseline intact at 06:03; surface state unchanged, gate reachable, no drift beyond ts/version; prior 22:57 503 was transient upstream, not route change.

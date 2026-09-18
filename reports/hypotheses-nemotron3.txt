@@ -1,8 +1,7 @@
-## 2026-09-18 01:11:29 UTC [target] (model nemotron3)
-[NEW] `services.ozoon.eu` SSR shell now returns 503 (was serving 743KB Next.js shell); `static.ozoon.eu` is the live PWS SSR front exposing `servicesBaseUrl=https://services.ozoon.eu` (public entry vs split-horizon `services.services.ozoon.eu`)
+## 2026-09-18 06:04:54 UTC [target] (model nemotron3)
+[NEW] `services.ozoon.eu` SSR shell now returns 503 (was serving 743KB Next.js shell); `static.ozoon.eu` is the live PWS SSR front exposing `servicesBaseUrl=https://services.ozoon.eu` (public entry vs split-horizon internal)
 [NEW] `www.ozoon.eu/api/v1/signup` GET now returns WAF "Request Rejected" page (was Spring Boot Whitelabel 404 per KB); POST empty body → WAF METHOD NOT ALLOWED
-[CHANGED] `www.ozoon.eu/api/v1/login` and `/api/v1/whoami` still return Spring Boot Whitelabel 404 JSON (consistent)
-[CHANGED] `nfl-pickem-league.ozoon.eu` confirmed: Vercel/Remix + Supabase project `cgoqgofzqunixkwcttzi.supabase.co` with anon key `sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM` in public JS chunk
+[NEW] `nfl-pickem-league.ozoon.eu` confirmed: Vercel/Remix + Supabase project `cgoqgofzqunixkwcttzi.supabase.co` with anon key `sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM` in public JS chunk
 [CHANGED] Pipeline: 9+ consecutive empty triage runs; probe-results.md byte-unchanged; certspotter CT static at 7 names
 [CHANGED] Inventory file still lists ONLY `ozoon.com`/`www.ozoon.com`; `ozoon.eu` + `services.ozoon.eu` confirmed in-scope per scope.yml but ABSENT from inventory
 [PRIO] https://services.ozoon.eu/services/{wallet-gateway,transaction-group,referral,player-verification,player-messages}/v1/profiles/{uuid}/...,8.85,attack_surface=10,business_value=10,tech_exposure=9,gate_ease=6,cloud_surface=8,freshness=8

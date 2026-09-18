@@ -1,19 +1,23 @@
-## 2026-09-18 01:11:16 UTC [target] (model bigpickle)
+## 2026-09-18 06:03:59 UTC [target] (model bigpickle)
+[CHANGED] services.ozoon.eu recovered from 09-17 22:57 503 → 200 (745,210B, +138B vs 09-16 745,072B baseline, benign ts/version churn); wallet-gate bogus-UUID /balances live re-verified 06:03 → 401/159B structured `{"errorCode":"unauthorized"}`, auth pre-check baseline intact.
+[PRIO] https://services.ozoon.eu/services/{wallet-gateway,transaction-group,referral,player-verification,player-messages}/v1/profiles/{uuid}/...,9.0,auth-money-surface:gate_ease low(401 pre-check) but business_value maximal; only AUTH_HELPED unlock remains.
+[PRIO] https://www.ozoon.eu/api/v1/signup,7.5,buslogic:sole gateway to all authenticated testing; WAF now stages GET+empty-POST but full valid-body POST path unprobed.
+[PRIO] https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify,8.5,auth:mock-2FA header + allow-permanent-skip; needs own sid.
 [HYP] Cross-Tenant BOLA on Profile-Keyed UUID Endpoints Across 5 Services
 class: IDOR
 asset: https://services.ozoon.eu/services/{wallet-gateway,transaction-group,referral,player-verification,player-messages}/v1/profiles/{uuid}/...
 confidence: 65
-reasoning: SDK-confirmed {uuid} path shape on 5 services; wallet-gate /balances bogus-UUID re-probed live today → 401/159B structured errorCode:"unauthorized", byte-stable ~3 wks; auth pre-check precedes lookup; session→UUID binding never observable anonymously; route table otherwise 404-closed.
-evidence_needed: own session A reading {B-uuid} 200 vs own-UUID control → path UUID unbound to session = cross-tenant read.
-verify_steps: [AUTH_HELPED] authorized signups A+B; A's cookie GET /wallet-gateway/v1/profiles/{B}/balances, /player-verification/v1/profiles/{B}/verifications + own-UUID control; diff status/body bytes.
+reasoning: SDK-confirmed {uuid} path shape on 5 services; wallet-gate /balances live re-probed 06:03 today → 401/159B byte-shape-stable (~3 wks); auth pre-check precedes resource lookup; services.ozoon.eu recovered from 503, gate reachable; route table otherwise 404-closed; session↔UUID binding never observable anonymously.
+evidence_needed: own session A GET /profiles/{B-uuid}/balances → 200+B data; own-UUID control returns own data → path UUID unbound to session.
+verify_steps: [AUTH_HELPED] authorized throwaway signups A+B; A's cookie GET //wallet-gateway/v1/profiles/{B}/balances, /player-verification/v1/profiles/{B}/verifications + own-UUID control; diff status/body.
 impact: Critical — cross-player wallet/transaction/PII read; ATO enabler.
 testability: AUTH_HELPED
 [HYP] Signup Mass-Assignment for role/vip/balance Injection
 class: BUSLOGIC
 asset: https://www.ozoon.eu/api/v1/signup
 confidence: 50
-reasoning: reCaptcha.enabled:false on signup (login-captcha only); client-controlled attributes/address; static refSiteToken byte-stable 3+ wks; update DTO strict+separate → signup DTO over-acceptance untested; NEW: signup now WAF-gated on GET (200 block) and empty POST (METHOD NOT ALLOWED) — full valid-body POST behavior unknown pre-auth, lowers gate_ease (60→50).
-evidence_needed: POST signup with extra keys (attributes.role/vip_level/balance) persists on session vs minimal control.
+reasoning: reCaptcha.enabled:false (login-captcha only); client-controlled attributes/address sub-objects; static refSiteToken a0b5…b084 byte-stable 3+wks; update DTO strict+separate → signup DTO over-acceptance untested; GET+empty-POST now WAF-gated, full valid-body POST behavior unknown pre-auth.
+evidence_needed: POST signup with extra keys (attributes.role/vip_level/balance) persists on created session vs minimal control.
 verify_steps: [AUTH_HELPED] two authorized throwaway signups (extra vs minimal); diff /api/v1/whoami claims.
 impact: High — privilege escalation / balance+bonus manipulation / territory-softblock bypass.
 testability: AUTH_HELPED
@@ -21,8 +25,15 @@ testability: AUTH_HELPED
 class: AUTH
 asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify
 confidence: 55
-reasoning: production SDK sends X-MOCK-2FA-VERIFICATION:true; config two_factor_authenticator.allow-permanent-skip:["true"]; isMockProviderEnabled:false client-side only; endpoint anonymously unreachable (401 pre-check today reconfirmed).
+reasoning: production SDK sends X-MOCK-2FA-VERIFICATION:true; config two_factor_authenticator.allow-permanent-skip:["true"]; isMockProviderEnabled:false client-side only; endpoint anonymously unreachable (401 pre-check intact 06:03).
 evidence_needed: POST verify with header succeeds vs byte-identical control without (own authorized sid).
 verify_steps: [AUTH_HELPED] authorized signup → own sid; POST verify ±header; compare status/body.
-impact: Critical — 2FA/SMS/PIN/KYC gate bypass on withdraw/deposit/bonus money flows; ATO enabler.
+impact: Critical — 2FA/SMS/PIN/KYC gate bypass on withdraw/deposit/bonus flows.
 testability: AUTH_HELPED
+[FINAL] BOLA 65 — unchanged, gate re-reachable post-503, highest value. Survivor.
+[FINAL] Mock-2FA 55 — unchanged, single config-backed gate-bypass candidate. Survivor.
+[FINAL] Mass-assignment 50 — downgraded once on WAF gating of the gateway path; still sole authenticated entry. Survivor.
+[PARKED] nfl-pickem-league RLS differential — requires reading foreign players' picks = program-prohibited; needs explicit authorization. (unchanged)
+[NEXT] HUMAN: Request program authorization at bugs.olivermaicher.eu for ONE restricted throwaway signup on www.ozoon.eu (no live customer data) — sole unlock for the three AUTH_HELPED differentials (BOLA 65, mock-2FA 55, mass-assign 50); anonymous surface demonstrably exhausted across 10+ cycles and gate reachability re-confirmed live today.
+[LEARN] ACCEPTED MISCONFIG @ services.ozoon.eu SSR shell + wallet-gate: post-outage recovery verified — shell 200/745,210B (+138B benign churn vs 745,072B 09-16) and wallet-gate 401/159B baseline intact at 06:03; surface state unchanged, gate reachable, no drift beyond ts/version; prior 22:57 503 was transient upstream, not route change.
+[RISK] ozoon-sportsbook-casino: 81/100 — the three critical vectors (BOLA 65, mock-2FA 55, mass-assign 50) persist AUTH_HELPED through 10+ empty cycles; anonymous surface proven closed and gate reachability re-verified live; only remaining upside gated on program authorization for a single throwaway signup, so exposure is stable, not growing.
