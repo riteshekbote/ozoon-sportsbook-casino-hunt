@@ -556,3 +556,12 @@ reasoning: $_GET['file'] is passed directly to is_file() and used in <img src> w
 impact: Medium (arbitrary file read if deployed)
 verify_steps: 1) Check if php-learn-5 is deployed on bugs.olivermaicher.eu. 2) Test path traversal: /manages?file=../../etc/passwd
 TARGET_ORG not configured for ozoon-sportsbook-casino; skipping public-org deep scan.
+## REPOSCAN 2026-09-18 14:35:08 UTC
+[HYP] No auditable public source code found for Ozoon
+class: OTHER
+asset: github.com — all Ozoon-related public repos
+confidence: 100
+reasoning: >
+impact: N/A — no source to audit
+verify_steps: >
+TARGET_ORG not configured for ozoon-sportsbook-casino; skipping public-org deep scan.
