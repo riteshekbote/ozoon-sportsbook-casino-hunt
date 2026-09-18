@@ -4319,3 +4319,31 @@ impact: High — privilege escalation / bonus+balance manipulation / territory-s
 testability: AUTH_HELPED
 [NEXT] HUMAN: Request program authorization at bugs.olivermaicher.eu to create ONE restricted throwaway account on www.ozoon.eu (no live customer data) — sole remaining unlock for the three AUTH_HELPED differentials (BOLA, mass-assign, mock-2FA); anonymous surface now demonstrably exhausted.
 [RISK] ozoon-sportsbook-casino: 81/100 — three critical vectors (BOLA 65, mass-assign 60, mock-2FA 55) persist AUTH_HELPED across 10+ empty cycles; last anonymous upside executed today and net-zero; route table byte-stable and closed; overall exposure unchanged, only remaining upside gated on program authorization for a single throwaway signup.
+## 2026-09-18 01:11:16 UTC [target] (model bigpickle)
+[HYP] Cross-Tenant BOLA on Profile-Keyed UUID Endpoints Across 5 Services
+class: IDOR
+asset: https://services.ozoon.eu/services/{wallet-gateway,transaction-group,referral,player-verification,player-messages}/v1/profiles/{uuid}/...
+confidence: 65
+reasoning: SDK-confirmed {uuid} path shape on 5 services; wallet-gate /balances bogus-UUID re-probed live today → 401/159B structured errorCode:"unauthorized", byte-stable ~3 wks; auth pre-check precedes lookup; session→UUID binding never observable anonymously; route table otherwise 404-closed.
+evidence_needed: own session A reading {B-uuid} 200 vs own-UUID control → path UUID unbound to session = cross-tenant read.
+verify_steps: [AUTH_HELPED] authorized signups A+B; A's cookie GET /wallet-gateway/v1/profiles/{B}/balances, /player-verification/v1/profiles/{B}/verifications + own-UUID control; diff status/body bytes.
+impact: Critical — cross-player wallet/transaction/PII read; ATO enabler.
+testability: AUTH_HELPED
+[HYP] Signup Mass-Assignment for role/vip/balance Injection
+class: BUSLOGIC
+asset: https://www.ozoon.eu/api/v1/signup
+confidence: 50
+reasoning: reCaptcha.enabled:false on signup (login-captcha only); client-controlled attributes/address; static refSiteToken byte-stable 3+ wks; update DTO strict+separate → signup DTO over-acceptance untested; NEW: signup now WAF-gated on GET (200 block) and empty POST (METHOD NOT ALLOWED) — full valid-body POST behavior unknown pre-auth, lowers gate_ease (60→50).
+evidence_needed: POST signup with extra keys (attributes.role/vip_level/balance) persists on session vs minimal control.
+verify_steps: [AUTH_HELPED] two authorized throwaway signups (extra vs minimal); diff /api/v1/whoami claims.
+impact: High — privilege escalation / balance+bonus manipulation / territory-softblock bypass.
+testability: AUTH_HELPED
+[HYP] Mock-2FA Verification Header Honored = 2FA/KYC Gate Bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify
+confidence: 55
+reasoning: production SDK sends X-MOCK-2FA-VERIFICATION:true; config two_factor_authenticator.allow-permanent-skip:["true"]; isMockProviderEnabled:false client-side only; endpoint anonymously unreachable (401 pre-check today reconfirmed).
+evidence_needed: POST verify with header succeeds vs byte-identical control without (own authorized sid).
+verify_steps: [AUTH_HELPED] authorized signup → own sid; POST verify ±header; compare status/body.
+impact: Critical — 2FA/SMS/PIN/KYC gate bypass on withdraw/deposit/bonus money flows; ATO enabler.
+testability: AUTH_HELPED

@@ -27556,3 +27556,107 @@ STEP 6 — LEARNING
 
 STEP 7 — RISK
 [RISK] ozoon-sportsbook-casino: 81/100 — three critical vectors (BOLA 65, mass-assign 60, mock-2FA 55) persist AUTH_HELPED across 10+ empty cycles; last anonymous upside executed today and net-zero; route table byte-stable and closed; overall exposure unchanged, only remaining upside gated on program authorization for a single throwaway signup.
+===== ANALYST bigpickle 2026-09-18 01:11:40 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mfor u in "https://services.ozoon.eu/" "https://static.ozoon.eu/" "https://www.ozoon.eu/api/v1/signup" "https://www.ozoon.eu/api/v1/login" "https://services.ozoon.eu/services/wallet-gateway/v1/profiles/00000000-0000-0000-0000-000000000000/balances"; do code=$(curl -s -o /tmp/opencode/r.bin --max-time 20 -w "%{http_code}" -A "Mozilla/5.0" "$u" 2>/dev/null); size=$(wc -c </tmp/opencode/r.bin 2>/dev/null); echo "$code $size $u"; sleep 1; done
+200 745213 https://services.ozoon.eu/
+200 751125 https://static.ozoon.eu/
+200 3042 https://www.ozoon.eu/api/v1/signup
+404 110 https://www.ozoon.eu/api/v1/login
+401 159 https://services.ozoon.eu/services/wallet-gateway/v1/profiles/00000000-0000-0000-0000-000000000000/balances
+[0m
+[0m$ [0mcurl -s --max-time 20 -A "Mozilla/5.0" -o /tmp/opencode/signup.bin "https://www.ozoon.eu/api/v1/signup"; echo "---signup body head---"; head -c 600 /tmp/opencode/signup.bin; echo; echo "---services shell keys---"; curl -s --max-time 20 -A "Mozilla/5.0" -o /tmp/opencode/svc.bin "https://services.ozoon.eu/"; grep -ao 'refSiteToken[^,}]*' /tmp/opencode/svc.bin | head -1; grep -ao 'servicesBaseUrl":"[^"]*"' /tmp/opencode/svc.bin | head -1; grep -ao 'isMockProviderEnabled[^,}]*' /tmp/opencode/svc.bin | head -1; grep -ao 'reCaptcha[^,}]*' /tmp/opencode/svc.bin | head -2
+---signup body head---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Request Rejected</title>
+<meta charset="UTF-8" />
+<style>
+html,
+body
+{ height: 100%; width: 100%; padding: 0; margin: 0; background-color: #2b2b2b; box-sizing: border-box; color: #fff; }
+
+section
+{ width: 100%; margin: 0 auto; }
+
+header
+{ padding: 20px; }
+
+.cover
+{ margin: 0 auto; text-align: center; }
+
+.cover svg
+{ height: 62px; }
+
+.content-copy
+{ display: block; max-width: 525px; width: 100%; margin: 0 auto; }
+
+.copy
+{ margin: 0 auto; text-align: center; font-family: Helvet
+---services shell keys---
+refSiteToken\":\"a0b5b21a0e7cdbad660f4ce03481b084\"
+isMockProviderEnabled\":false
+reCaptcha\":{\"enabled\":false
+[0m
+Live probes run (5 passive GETs). Structured output follows.
+
+STEP 1 — DELTA
+- [CHANGED] `services.ozoon.eu/` transient 503 (22:57) → recovered 200/745,213B by 23:05 probe; +1.3KB vs 09-15 743,947B benign content churn, config byte-stable (`refSiteToken a0b5…b084`, `isMockProviderEnabled:false`, `reCaptcha.enabled:false`).
+- [CHANGED] `www.ozoon.eu/api/v1/signup` GET → WAF "Request Rejected" block page 200/3,042B (reconfirmed live); inventory 22:57 noted empty POST → WAF METHOD NOT ALLOWED — signup mutating gateway now WAF-staged on both methods.
+- [NEW] `wallet-gateway` bogus-UUID `/balances` → 401/159B reconfirmed live byte-shape-stable (auth pre-check intact).
+- NO_DELTA on `login` 404/110B JSON baseline, static.ozoon.eu 200, nfl-pickem/CT/brand surfaces, pipeline (10th empty triage).
+
+STEP 2 — PRIORITIZE
+- [PRIO] services.ozoon.eu/services/*/v1/profiles/{uuid}/...,priority=6.60,axis=5-service BOLA 9/10/6/1/3/5
+- [PRIO] www.ozoon.eu/api/v1/signup,priority=5.75,axis=signup mass-assign 8/8/5/2/2/5 (gate_ease↓ WAF both methods)
+- [PRIO] services.ozoon.eu player-verification verify,priority=5.75,axis=mock-2FA gate-bypass 7/9/6/1/3/4
+- [PRIO] static.ozoon.eu,priority=4.25,axis=public/dry config fingerprint 4/3/4/8/3/4 (low value, high ease)
+
+STEP 3 — HYPOTHESES
+[HYP] Cross-Tenant BOLA on Profile-Keyed UUID Endpoints Across 5 Services
+class: IDOR
+asset: https://services.ozoon.eu/services/{wallet-gateway,transaction-group,referral,player-verification,player-messages}/v1/profiles/{uuid}/...
+confidence: 65
+reasoning: SDK-confirmed {uuid} path shape on 5 services; wallet-gate /balances bogus-UUID re-probed live today → 401/159B structured errorCode:"unauthorized", byte-stable ~3 wks; auth pre-check precedes lookup; session→UUID binding never observable anonymously; route table otherwise 404-closed.
+evidence_needed: own session A reading {B-uuid} 200 vs own-UUID control → path UUID unbound to session = cross-tenant read.
+verify_steps: [AUTH_HELPED] authorized signups A+B; A's cookie GET /wallet-gateway/v1/profiles/{B}/balances, /player-verification/v1/profiles/{B}/verifications + own-UUID control; diff status/body bytes.
+impact: Critical — cross-player wallet/transaction/PII read; ATO enabler.
+testability: AUTH_HELPED
+[HYP] Signup Mass-Assignment for role/vip/balance Injection
+class: BUSLOGIC
+asset: https://www.ozoon.eu/api/v1/signup
+confidence: 50
+reasoning: reCaptcha.enabled:false on signup (login-captcha only); client-controlled attributes/address; static refSiteToken byte-stable 3+ wks; update DTO strict+separate → signup DTO over-acceptance untested; NEW: signup now WAF-gated on GET (200 block) and empty POST (METHOD NOT ALLOWED) — full valid-body POST behavior unknown pre-auth, lowers gate_ease (60→50).
+evidence_needed: POST signup with extra keys (attributes.role/vip_level/balance) persists on session vs minimal control.
+verify_steps: [AUTH_HELPED] two authorized throwaway signups (extra vs minimal); diff /api/v1/whoami claims.
+impact: High — privilege escalation / balance+bonus manipulation / territory-softblock bypass.
+testability: AUTH_HELPED
+[HYP] Mock-2FA Verification Header Honored = 2FA/KYC Gate Bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify
+confidence: 55
+reasoning: production SDK sends X-MOCK-2FA-VERIFICATION:true; config two_factor_authenticator.allow-permanent-skip:["true"]; isMockProviderEnabled:false client-side only; endpoint anonymously unreachable (401 pre-check today reconfirmed).
+evidence_needed: POST verify with header succeeds vs byte-identical control without (own authorized sid).
+verify_steps: [AUTH_HELPED] authorized signup → own sid; POST verify ±header; compare status/body.
+impact: Critical — 2FA/SMS/PIN/KYC gate bypass on withdraw/deposit/bonus money flows; ATO enabler.
+testability: AUTH_HELPED
+
+STEP 4 — SELF-CRITIQUE
+- [PARKED] Signup mass-assignment: WAF now stages on both signup methods — a valid full POST must first clear WAF, so even under authorization the gateway may be hard-blocked; confidence 60→50, kept (not dropped) as it is the sole account-creation path.
+- Others (BOLA 65, mock-2FA 55) survive critique: no REJECTED-class element, concrete verify steps.
+- [FINAL] 1) BOLA UUID 65  2) Mock-2FA 55  3) Signup mass-assign 50.
+
+STEP 5 — NEXT ACTION
+- [NEXT] HUMAN: Request program authorization at bugs.olivermaicher.eu for ONE restricted throwaway signup on www.ozoon.eu (no live customer data) — sole unlock for BOLA+mock-2FA+mass-assign differentials; flag to the program that signup is now WAF-staged (GET 200 block, empty POST METHOD NOT ALLOWED) so a full valid-body POST + refSiteToken payload is the exact authorize-and-test case needed.
+
+STEP 6 — LEARNING
+- [LEARN] ACCEPTED MISCONFIG @ services.ozoon.eu: 22:57 503 → 200 recovered by 23:05 (745,213B, +1.3KB benign churn); config keys byte-identical to 09-15; 503 was transient edge blip, not a service cutover.
+- [LEARN] ACCEPTED MISCONFIG @ www.ozoon.eu/api/v1/signup: GET → WAF block 200/3,042B (hosted "Request Rejected" page); empty POST → WAF METHOD NOT ALLOWED — control hardening observable, no new vuln (both prior-knowledge categories).
+- [LEARN] REJECTED OTHER @ www.ozoon.eu/api/v1/signup GET: WAF block page is a known public-file/block class, status-200 facade; descriptive-error only, no scoped finding.
+
+STEP 7 — RISK
+- [RISK] ozoon-sportsbook-casino: 81/100 — three critical vectors (BOLA 65, mock-2FA 55, mass-assign 50) persist AUTH_HELPED across 10+ empty cycles; anonymous surface closed and drift-stable this cycle (config byte-identical, wallet-gate 401/159B, signup WAF both methods, transient 503 recovered to benign state); net-zero new exposure; sole remaining upside gated on program-authorized single throwaway signup, itself now WAF-hardened.

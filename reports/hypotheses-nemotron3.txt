@@ -1,5 +1,5 @@
-## 2026-09-17 22:57:26 UTC [target] (model nemotron3)
-[NEW] `services.ozoon.eu` SSR shell now returns 503 (was serving 743KB Next.js shell); `static.ozoon.eu` is the live PWS SSR front exposing `servicesBaseUrl=https://services.ozoon.eu` (public entry vs split-horizon internal)
+## 2026-09-18 01:11:29 UTC [target] (model nemotron3)
+[NEW] `services.ozoon.eu` SSR shell now returns 503 (was serving 743KB Next.js shell); `static.ozoon.eu` is the live PWS SSR front exposing `servicesBaseUrl=https://services.ozoon.eu` (public entry vs split-horizon `services.services.ozoon.eu`)
 [NEW] `www.ozoon.eu/api/v1/signup` GET now returns WAF "Request Rejected" page (was Spring Boot Whitelabel 404 per KB); POST empty body → WAF METHOD NOT ALLOWED
 [CHANGED] `www.ozoon.eu/api/v1/login` and `/api/v1/whoami` still return Spring Boot Whitelabel 404 JSON (consistent)
 [CHANGED] `nfl-pickem-league.ozoon.eu` confirmed: Vercel/Remix + Supabase project `cgoqgofzqunixkwcttzi.supabase.co` with anon key `sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM` in public JS chunk
@@ -10,6 +10,7 @@
 [PRIO] https://www.ozoon.eu/api/v1/signup,8.35,attack_surface=9,business_value=9,tech_exposure=8,gate_ease=7,cloud_surface=7,freshness=9
 [PRIO] https://nfl-pickem-league.ozoon.eu,6.30,attack_surface=6,business_value=5,tech_exposure=7,gate_ease=8,cloud_surface=6,freshness=7
 [PRIO] https://static.ozoon.eu,5.55,attack_surface=5,business_value=4,tech_exposure=5,gate_ease=9,cloud_surface=5,freshness=7
+[PRIO] https://ozoon.eu,5.20,attack_surface=6,business_value=8,tech_exposure=5,gate_ease=5,cloud_surface=5,freshness=6
 [HYP] BOLA on Profile-Keyed UUID Endpoints Across 5 Services
 class: IDOR
 asset: https://services.ozoon.eu/services/{wallet-gateway,transaction-group,referral,player-verification,player-messages}/v1/profiles/{uuid}/...
