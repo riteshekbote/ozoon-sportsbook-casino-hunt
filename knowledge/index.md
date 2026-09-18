@@ -500,3 +500,7 @@
 - 2026-09-18 REJECTED SECRET + OTHER @ oZoon/hyper, oZoon/mas-film, oZoon/secure-query-string: hardcoded creds/SQLi in learning/demo repos, not confirmed deployed.
 - 2026-09-18 REJECTED OTHER @ services.services.ozoon.eu / games.glovefrog.plus / api.wicket-keeper.com: split-horizon internal hostname + third-party endpoints; ownership unconfirmed, off-scope until verified.
 - 2026-09-18 REJECTED SSRF @ www.ozoon.com: triage 06:38 verdict INVALID stands — PWS/wnacloud catch-all behavior indistinguishable; hypothesis stays out of active consideration.
+- 2026-09-18 ACCEPTED MISCONFIG @ services.ozoon.eu SSR shell + wallet-gate: 23:24 drift → shell 200/745,240B sha256 2486ea86 (+30B vs 06:03 745,210B, benign) + wallet-gate 401/159B byte-shape-stable; surface state unchanged since 09-18 06:03 post-outage recovery; new drift baseline 2486ea86…/745,240B for cheap future diffs.
+- 2026-09-18 ACCEPTED MISCONFIG @ www.ozoon.eu/api/v1/signup: GET → 200/3,042B WAF "Request Rejected" (support_id page) — WAF staging on mutating signup path reconfirmed 23:24; login/whoami still Whitelabel-404 per prior; no handler change.
+- 2026-09-18 REJECTED OTHER @ ozoon-sportsbook-casino pipeline: triage 22:16 empty (12th consecutive), probe-results.md no new data since 21:19, certspotter CT → same 7 names, reposcan not configured — no new anonymous evidence this cycle.
+- 2026-09-18 REJECTED OTHER @ ozoon CT enumeration: refresh → same 7 names (wildcard churn zero); A-records remain wildcard-poisoned; no new subdomain surface.

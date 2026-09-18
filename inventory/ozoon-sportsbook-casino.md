@@ -954,3 +954,14 @@ www.ozoon.com
 - CHANGED Inventory file still lists ONLY ozoon.com/www.ozoon.com; ozoon.eu + services.ozoon.eu confirmed in-scope per scope.yml but ABSENT from inventory
 - CHANGED Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway at www.ozoon.eu/api/v1/signup
 - CHANGED Pipeline: 9+ consecutive empty triage runs; probe-results.md byte-unchanged; certspotter CT static at 7 names
+
+## 2026-09-18 23:25:53 UTC
+- NEW Certspotter CT refresh (23:25 UTC) → same 7 names (`*.ozoon.eu` wildcard, blog, nfl-pickem-league, ozoon.eu, sportsfeeds, static, www) — zero new subdomains; breadth unchanged.
+- CHANGED `services.ozoon.eu/` drift 23:24 → 200/745,240B sha256 `2486ea86…` (+30B vs 06:03 745,210B baseline, benign ts/version churn); wallet-gate bogus-UUID `/balances` → 401/159B byte-shape-stable; signup G
+- CHANGED Pipeline triage 22:16 (mimo) → "LEADS section appears to be empty" — 12th consecutive empty triage; reposcan not configured; probe-results.md has no data after 2026-09-18 21:19:29.
+- CHANGED services.ozoon.eu recovered from 503 (09-17 22:57) → 200 at 06:03 UTC (745,210B, +138B benign churn vs 09-16 745,072B baseline); wallet-gate bogus-UUID `/balances` re-verified 401/159B structured `{"e
+- CHANGED www.ozoon.eu/api/v1/signup GET now returns WAF "Request Rejected" page (was Spring Boot Whitelabel 404); POST empty body → WAF METHOD NOT ALLOWED — WAF now staged on mutating signup path
+- CHANGED Inventory file still lists ONLY ozoon.com/www.ozoon.com; ozoon.eu + services.ozoon.eu confirmed in-scope per scope.yml but ABSENT from inventory
+- CHANGED Zero authenticated probes executed against core platform across all probe rounds; all probes target only www.ozoon.com marketing edge
+- NEW nfl-pickem-league.ozoon.eu confirmed: Vercel/Remix + Supabase project cgoqgofzqunixkwcttzi.supabase.co with anon key sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM in public JS chunk; RLS is sole row 
+- NEW static.ozoon.eu is second PWS SSR front (755KB) exposing servicesBaseUrl=https://services.ozoon.eu (public entry name) vs services.ozoon.eu shell carrying split-horizon services.services.ozoon.eu
