@@ -1,28 +1,28 @@
-## 2026-09-19 17:54:39 UTC [target] (model bigpickle)
+## 2026-09-19 20:25:50 UTC [target] (model bigpickle)
 [HYP] Cross-Tenant BOLA on Profile-Keyed UUID Endpoints Across 5 Services
 class: IDOR
 asset: https://services.ozoon.eu/services/{wallet-gateway,transaction-group,referral,player-verification,player-messages}/v1/profiles/{uuid}/...
 confidence: 65
-reasoning: SDK-confirmed {uuid} path shape across 5 services; 14:50 re-probe → 401/159B exact-shape; auth pre-check precedes resource lookup; session↔UUID binding never observable anonymously.
-evidence_needed: own session A GET /profiles/{B-uuid}/balances returns foreign data vs own-UUID control returning own data.
-verify_steps: [AUTH_HELPED] two throwaway signups A+B; A cookie GET /wallet-gateway/v1/profiles/{B}/balances + own-UUID control; diff status/body bytes.
-impact: Critical — cross-player wallet/transaction/PII read; ATO enabler.
+reasoning: SDK-confirmed {uuid} path shape on 5 services; 18:xx probe → 401/159B `{"errorCode":"unauthorized"}` exact-shape; auth pre-check precedes resource lookup; session↔UUID binding never observable anonymously; CT breadth and config both stable → no competing new surface
+evidence_needed: own session A GET /profiles/{B-uuid}/balances returns foreign data vs own-UUID control returning own data
+verify_steps: [AUTH_HELPED] two throwaway signups A+B; A cookie GET /wallet-gateway/v1/profiles/{B}/balances + own-UUID control; diff status/body bytes
+impact: Critical — cross-player wallet/transaction/PII read; ATO enabler
 testability: AUTH_HELPED
 [HYP] Mock-2FA Verification Header Honored = 2FA/KYC Gate Bypass
 class: AUTH
 asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify
 confidence: 55
-reasoning: production SDK sends X-MOCK-2FA-VERIFICATION:true; two_factor_authenticator.allow-permanent-skip:["true"]; isMockProviderEnabled:false is client-side only; endpoint anonymously unreachable (401/159B intact 14:50).
-evidence_needed: POST verify with header succeeds vs byte-identical control without (own authorized sid).
-verify_steps: [AUTH_HELPED] authorized signup → own sid; POST verify ±header; compare status/body.
-impact: Critical — 2FA/SMS/PIN/KYC gate bypass on withdraw/deposit flows.
+reasoning: production SDK sends X-MOCK-2FA-VERIFICATION:true; two_factor_authenticator.allow-permanent-skip:["true"]; isMockProviderEnabled:false is client-side only; endpoint 401/159B anonymously (18:xx probe)
+evidence_needed: POST verify with header succeeds vs byte-identical control without (own authorized sid)
+verify_steps: [AUTH_HELPED] authorized signup → own sid; POST verify ±header; compare status/body
+impact: Critical — 2FA/SMS/PIN/KYC gate bypass on withdraw/deposit flows; ATO enabler
 testability: AUTH_HELPED
 [HYP] Signup Mass-Assignment for role/vip/balance Injection
 class: BUSLOGIC
 asset: https://www.ozoon.eu/api/v1/signup
 confidence: 50
-reasoning: reCaptcha.enabled:false; client-controlled attributes/address sub-objects; static refSiteToken byte-stable 3+ wks; update DTO strict+separate → signup DTO over-acceptance untested; valid-body POST unobservable (GET→WAF "Request Rejected", 200/3,042B 14:50).
-evidence_needed: POST with extra keys (attributes.role/vip_level/balance) persists on session vs minimal control.
-verify_steps: [AUTH_HELPED] two throwaway signups (extra vs minimal); diff /api/v1/whoami claims.
-impact: High — privilege escalation / balance+bonus manipulation / territory-softblock bypass.
+reasoning: reCaptcha.enabled:false; client-controlled attributes/address sub-objects; static refSiteToken a0b5…b084 byte-stable; update DTO strict+separate → signup DTO over-acceptance untested; valid POST unobservable (GET→WAF "Request Rejected")
+evidence_needed: POST with extra keys (attributes.role/vip_level/balance) persists on session vs minimal control
+verify_steps: [AUTH_HELPED] two throwaway signups (extra vs minimal); diff /api/v1/whoami claims
+impact: High — privilege escalation / balance manipulation / territory-softblock bypass
 testability: AUTH_HELPED

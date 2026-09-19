@@ -993,3 +993,13 @@ www.ozoon.com
 - CHANGED Zero authenticated probes executed against core platform across all probe rounds; all probes target only www.ozoon.com marketing edge
 - CHANGED Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway at www.ozoon.eu/api/v1/signup
 - CHANGED Pipeline: 12+ consecutive empty triage runs; probe-results.md byte-unchanged; certspotter CT static at 7 names
+
+## 2026-09-19 20:28:14 UTC
+- NEW Inventory file still lists ONLY ozoon.com/www.ozoon.com (marketing edge); ozoon.eu + services.ozoon.eu confirmed in-scope per scope.yml but ABSENT from inventory
+- NEW services.ozoon.eu recovered from 503 (09-17) → 200 at 06:03 UTC (745,210B); wallet-gate bogus-UUID /balances re-verified 401/159B structured {"errorCode":"unauthorized"}
+- NEW www.ozoon.eu/api/v1/signup GET now returns WAF "Request Rejected" page (was Spring Boot Whitelabel 404); POST empty body → WAF METHOD NOT ALLOWED — WAF now staged on mutating signup path
+- NEW nfl-pickem-league.ozoon.eu confirmed: Vercel/Remix + Supabase project cgoqgofzqunixkwcttzi.supabase.co with anon key sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM in public JS chunk; RLS is sole row 
+- NEW static.ozoon.eu is second PWS SSR front (755KB) exposing servicesBaseUrl=https://services.ozoon.eu (public entry) vs services.ozoon.eu shell carrying split-horizon services.services.ozoon.eu
+- CHANGED Pipeline: 12+ consecutive empty triage runs; probe-results.md byte-unchanged; certspotter CT static at 7 names
+- CHANGED Zero authenticated probes executed against core platform across all probe rounds; all probes target only www.ozoon.com marketing edge
+- CHANGED Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway at www.ozoon.eu/api/v1/signup

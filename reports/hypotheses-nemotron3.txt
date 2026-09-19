@@ -1,12 +1,12 @@
-## 2026-09-19 17:57:05 UTC [target] (model nemotron3)
-[NEW] services.ozoon.eu SSR shell recovered from 503 (09-17) → 200 at 06:03 UTC (745,210B, +138B benign churn); wallet-gate bogus-UUID `/balances` re-verified 401/159B structured `{"errorCode":"unauthorized"}` byte-shape-stable
+## 2026-09-19 20:28:04 UTC [target] (model nemotron3)
+[NEW] Inventory file still lists ONLY ozoon.com/www.ozoon.com (marketing edge); ozoon.eu + services.ozoon.eu confirmed in-scope per scope.yml but ABSENT from inventory
+[NEW] services.ozoon.eu recovered from 503 (09-17) → 200 at 06:03 UTC (745,210B); wallet-gate bogus-UUID /balances re-verified 401/159B structured {"errorCode":"unauthorized"}
 [NEW] www.ozoon.eu/api/v1/signup GET now returns WAF "Request Rejected" page (was Spring Boot Whitelabel 404); POST empty body → WAF METHOD NOT ALLOWED — WAF now staged on mutating signup path
 [NEW] nfl-pickem-league.ozoon.eu confirmed: Vercel/Remix + Supabase project cgoqgofzqunixkwcttzi.supabase.co with anon key sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM in public JS chunk; RLS is sole row control
-[NEW] static.ozoon.eu is second PWS SSR front (755KB) exposing servicesBaseUrl=https://services.ozoon.eu (public entry name) vs services.ozoon.eu shell carrying split-horizon services.services.ozoon.eu
-[CHANGED] Inventory file still lists ONLY ozoon.com/www.ozoon.com; ozoon.eu + services.ozoon.eu confirmed in-scope per scope.yml but ABSENT from inventory
+[NEW] static.ozoon.eu is second PWS SSR front (755KB) exposing servicesBaseUrl=https://services.ozoon.eu (public entry) vs services.ozoon.eu shell carrying split-horizon services.services.ozoon.eu
+[CHANGED] Pipeline: 12+ consecutive empty triage runs; probe-results.md byte-unchanged; certspotter CT static at 7 names
 [CHANGED] Zero authenticated probes executed against core platform across all probe rounds; all probes target only www.ozoon.com marketing edge
 [CHANGED] Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway at www.ozoon.eu/api/v1/signup
-[CHANGED] Pipeline: 12+ consecutive empty triage runs; probe-results.md byte-unchanged; certspotter CT static at 7 names
 [PRIO] https://services.ozoon.eu/services/{wallet-gateway,transaction-group,referral,player-verification,player-messages}/v1/profiles/{uuid}/...,9.15,attack_surface=10,business_value=10,tech_exposure=9,gate_ease=6,cloud_surface=8,freshness=8
 [PRIO] https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify,8.75,attack_surface=9,business_value=10,tech_exposure=8,gate_ease=6,cloud_surface=8,freshness=8
 [PRIO] https://www.ozoon.eu/api/v1/signup,8.40,attack_surface=9,business_value=9,tech_exposure=8,gate_ease=6,cloud_surface=7,freshness=9
