@@ -504,3 +504,24 @@
 - 2026-09-18 ACCEPTED MISCONFIG @ www.ozoon.eu/api/v1/signup: GET → 200/3,042B WAF "Request Rejected" (support_id page) — WAF staging on mutating signup path reconfirmed 23:24; login/whoami still Whitelabel-404 per prior; no handler change.
 - 2026-09-18 REJECTED OTHER @ ozoon-sportsbook-casino pipeline: triage 22:16 empty (12th consecutive), probe-results.md no new data since 21:19, certspotter CT → same 7 names, reposcan not configured — no new anonymous evidence this cycle.
 - 2026-09-18 REJECTED OTHER @ ozoon CT enumeration: refresh → same 7 names (wildcard churn zero); A-records remain wildcard-poisoned; no new subdomain surface.
+- 2026-09-19 ACCEPTED MISCONFIG @ services.ozoon.eu SSR shell + wallet-gate: 01:38 drift → shell 200/745,243B sha256 f1c4970b (+3B vs 23:24 745,240B, benign ts/version); refSiteToken a0b5…b084 + servicesBaseUrl=services.services.ozoon.eu byte-identical; wallet-gate 401/159B exact-shape; new drift baseline f1c4970b…/745,243B for cheap future diffs.
+- 2026-09-19 ACCEPTED MISCONFIG @ www.ozoon.eu/api/v1/signup: GET 01:38 → 200/2.9KB WAF "Request Rejected" page — WAF staging on mutating signup path reconfirmed; login/whoami Whitelabel-404 unchanged.
+- 2026-09-19 REJECTED OTHER @ ozoon CT enumeration: refresh 01:38 → same 7 names (wildcard churn zero); A-records remain wildcard-poisoned; no new subdomain surface.
+- 2026-09-19 ACCEPTED IDOR @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: Confirmed UUID-path BOLA surface across 5 services; binding unresolved; AUTH_HELPED testing required
+- 2026-09-19 ACCEPTED AUTH @ services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify: Mock-2FA header in production SDK + allow-permanent-skip config; critical if honored
+- 2026-09-19 ACCEPTED BUSLOGIC @ www.ozoon.eu/api/v1/signup: Captcha-free signup with client-controlled attributes/address; static referral token unverified. Gateway probe to unlock authenticated testing
+- 2026-09-19 ACCEPTED MISCONFIG @ services.ozoon.eu/services/*/v1/profiles/{uuid}/...: structured 401 errorCode:"unauthorized" for valid-route bogus UUID = auth pre-check precedes resource lookup; anonymous differential baseline
+- 2026-09-19 ACCEPTED MISCONFIG @ services.ozoon.eu/services/site-config/v1/countries/{CC}/profileupdateform: unknown country → structured 404 leaking internal exception `io.crazy88.beatrix.siteconfig.exception.CountryNotFoundException` (GoBet/Beatrix backend fingerprint)
+- 2026-09-19 ACCEPTED MISCONFIG @ www.ozoon.eu/api/v1: GET login/whoami → Spring Boot Whitelabel 404 (no method guard); signup GET → WAF "Request Rejected" — WAF staged on mutating signup path only
+- 2026-09-19 ACCEPTED MISCONFIG @ services.ozoon.eu/services/site-config/v1/countries/{CC}/profileupdateform: per-country profile-update whitelist is flat; CA=CAD+XBT, US=USD; update DTO strict but signup DTO separate
+- 2026-09-19 ACCEPTED MISCONFIG @ chat.ozoon.eu: live in-scope subdomain; widget-only, no Ozoon API logic
+- 2026-09-19 ACCEPTED OTHER @ nfl-pickem-league.ozoon.eu: Vercel/Remix promo app (distinct Vercel edge vs PWS cluster) embedding Supabase client + live project cgoqgofzqunixkwcttzi.supabase.co (auth+PostgREST); anon key server-side in fetched chunks; key-less probes 401. New in-scope brand surface; RLS is sole row control.
+- 2026-09-19 ACCEPTED OTHER @ static.ozoon.eu / blog.ozoon.eu / sportsfeeds.ozoon.eu: static = second PWS SSR front (755,927B) with PUBLIC servicesBaseUrl=https://services.ozoon.eu (public/dry config fingerprint split vs services shell internals); blog = Next.js marketing; sportsfeeds = persistent 503/0B (PWS upstream down) — none on the core auth/money path.
+- 2026-09-19 ACCEPTED OTHER @ ozoon CT enumeration: certspotter API reliable for ozoon.eu subdomain breadth (A-records are wildcard-poisoned, so DNS brute is useless); fold into each cycle's standard breadth step.
+- 2026-09-19 REJECTED SECRET @ www.ozoon.com:3306: identical port-closed/EOF pattern across hosts = shared proxy artifact
+- 2026-09-19 REJECTED SECRET @ oZoon/hyper, oZoon/mas-film: creds in learning/demo repos, not confirmed deployed
+- 2026-09-19 REJECTED OTHER @ oZoon/secure-query-string: SQLi patterns in learning repos, not confirmed deployed
+- 2026-09-19 REJECTED OTHER @ services.services.ozoon.eu: internal-only backend hostname; NXDOMAIN publicly = split-horizon
+- 2026-09-19 REJECTED OTHER @ services.ozoon.eu: /services/*/v{2,3}/api-docs and /actuator* → gateway 404; no anonymous schema/actuator leak
+- 2026-09-19 REJECTED OTHER @ games.glovefrog.plus / api.wicket-keeper.com: third-party endpoints; Ozoon ownership unconfirmed
+- 2026-09-19 REJECTED SSRF @ www.ozoon.com: triage 06:38 verdict INVALID — ?url=?view=?page= all 200 len=? catch-all shared-edge responses, no collab callback; PWS/wnacloud behavior indistinguishable from catch-all, removing the PWS-edge SSRF hypothesis from active consideration

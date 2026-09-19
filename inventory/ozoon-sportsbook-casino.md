@@ -965,3 +965,5 @@ www.ozoon.com
 - CHANGED Zero authenticated probes executed against core platform across all probe rounds; all probes target only www.ozoon.com marketing edge
 - NEW nfl-pickem-league.ozoon.eu confirmed: Vercel/Remix + Supabase project cgoqgofzqunixkwcttzi.supabase.co with anon key sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM in public JS chunk; RLS is sole row 
 - NEW static.ozoon.eu is second PWS SSR front (755KB) exposing servicesBaseUrl=https://services.ozoon.eu (public entry name) vs services.ozoon.eu shell carrying split-horizon services.services.ozoon.eu
+
+## 2026-09-19 01:40:36 UTC
