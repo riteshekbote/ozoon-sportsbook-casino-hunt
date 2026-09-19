@@ -4650,3 +4650,31 @@ testability: AUTH_HELPED
 [LEARN] ACCEPTED MISCONFIG @ www.ozoon.eu/api/v1/signup: GET 11:35 → 200/3,042B WAF "Request Rejected" page (new support_id 6279731425471503613) — WAF staging on mutating signup path reconfirmed; login/whoami Whitelabel-404 unchanged.
 [LEARN] REJECTED OTHER @ ozoon-sportsbook-casino pipeline: triage 09-23 empty (13th consecutive), probe-results.md no new data since 09-18 21:19, all lead files unchanged, reposcan not configured — no new anonymous evidence this cycle.
 [RISK] ozoon-sportsbook-casino: 81/100 — three critical vectors (BOLA 65, mock-2FA 55, mass-assign 50) persist AUTH_HELPED through 13 consecutive empty cycles; anonymous surface re-proven closed today (shell byte-state oscillates benignly, wallet-gate 401/159B exact-shape 11:35, signup WAF-staged, CT static); money-platform gates live and reachable; exposure stable, not growing; only upside gated on program authorization for a single throwaway signup.
+## 2026-09-19 14:51:37 UTC [target] (model bigpickle)
+[HYP] Cross-Tenant BOLA on Profile-Keyed UUID Endpoints Across 5 Services
+class: IDOR
+asset: https://services.ozoon.eu/services/{wallet-gateway,transaction-group,referral,player-verification,player-messages}/v1/profiles/{uuid}/...
+confidence: 65
+reasoning: SDK-confirmed {uuid} path shape across 5 services; 14:50 re-probe → 401/159B `{"errorCode":"unauthorized"}` exact-shape; auth pre-check precedes resource lookup; session↔UUID binding never observable anonymously.
+evidence_needed: own session A GET /profiles/{B-uuid}/balances returns foreign data vs own-UUID control returning own data.
+verify_steps: [AUTH_HELPED] two authorized throwaway signups A+B; A cookie GET /wallet-gateway/v1/profiles/{B}/balances + own-UUID control; diff status/body.
+impact: Critical — cross-player wallet/transaction/PII read; ATO enabler.
+testability: AUTH_HELPED
+[HYP] Mock-2FA Verification Header Honored = 2FA/KYC Gate Bypass
+class: AUTH
+asset: https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify
+confidence: 55
+reasoning: production SDK sends X-MOCK-2FA-VERIFICATION:true; config two_factor_authenticator.allow-permanent-skip:["true"]; isMockProviderEnabled:false client-side only; endpoint anonymously unreachable (401/159B intact 14:50).
+evidence_needed: POST verify with header succeeds vs byte-identical control without (own authorized sid).
+verify_steps: [AUTH_HELPED] authorized signup → own sid; POST verify ±header; compare status/body.
+impact: Critical — 2FA/SMS/PIN/KYC gate bypass on withdraw/deposit flows; ATO enabler.
+testability: AUTH_HELPED
+[HYP] Signup Mass-Assignment for role/vip/balance Injection
+class: BUSLOGIC
+asset: https://www.ozoon.eu/api/v1/signup
+confidence: 50
+reasoning: reCaptcha.enabled:false; client-controlled attributes/address sub-objects; static refSiteToken byte-stable 3+ wks; update DTO strict+separate → signup DTO over-acceptance untested; valid-body POST unobservable (GET→WAF "Request Rejected", 200/3,042B 14:50).
+evidence_needed: POST with extra keys (attributes.role/vip_level/balance) persists on session vs minimal control.
+verify_steps: [AUTH_HELPED] two authorized throwaway signups (extra vs minimal); diff /api/v1/whoami claims.
+impact: High — privilege escalation / balance+bonus manipulation / territory-softblock bypass.
+testability: AUTH_HELPED
