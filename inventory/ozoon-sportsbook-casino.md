@@ -979,3 +979,5 @@ www.ozoon.com
 - CHANGED Inventory file still lists ONLY `ozoon.com`/`www.ozoon.com`; `ozoon.eu` + `services.ozoon.eu` confirmed in-scope per scope.yml but ABSENT from inventory
 - CHANGED Zero authenticated probes executed against core platform across all probe rounds; all probes target only `www.ozoon.com` marketing edge
 - CHANGED Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway at `www.ozoon.eu/api/v1/signup`
+
+## 2026-09-19 11:39:54 UTC

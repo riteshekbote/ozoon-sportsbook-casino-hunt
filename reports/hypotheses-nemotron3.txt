@@ -1,14 +1,4 @@
-## 2026-09-19 06:39:52 UTC [target] (model nemotron3)
-[NEW] `services.ozoon.eu` SSR shell recovered from 503 (09-17 22:57) → 200 at 06:03 UTC (745,210B, +138B benign churn vs 09-16 745,072B baseline); wallet-gate bogus-UUID `/balances` re-verified 401/159B structured `{"errorCode":"unauthorized"}` byte-shape-stable
-[NEW] `www.ozoon.eu/api/v1/signup` GET now returns WAF "Request Rejected" page (was Spring Boot Whitelabel 404); POST empty body → WAF METHOD NOT ALLOWED — WAF now staged on mutating signup path, not login/whoami
-[NEW] `nfl-pickem-league.ozoon.eu` confirmed: Vercel/Remix + Supabase project `cgoqgofzqunixkwcttzi.supabase.co` with anon key `sb_publishable_2k_RJFuVAoP4GNeve-85eg_zqoMHuwM` in public JS chunk; RLS is sole row control
-[NEW] `static.ozoon.eu` is second PWS SSR front (755KB) exposing `servicesBaseUrl=https://services.ozoon.eu` (public entry name) vs `services.ozoon.eu` shell carrying split-horizon `services.services.ozoon.eu`
-[CHANGED] `services.ozoon.eu/` drift 23:24 → 200/745,240B sha256 `2486ea86…` (+30B vs 06:03 745,210B baseline, benign ts/version churn); wallet-gate bogus-UUID `/balances` → 401/159B byte-shape-stable
-[CHANGED] Pipeline triage 22:16 (mimo) → "LEADS section appears to be empty" — 12th consecutive empty triage; reposcan not configured; probe-results.md has no data after 2026-09-18 21:19:29
-[CHANGED] Certspotter CT refresh (23:25 UTC) → same 7 names (`*.ozoon.eu` wildcard, blog, nfl-pickem-league, ozoon.eu, sportsfeeds, static, www) — zero new subdomains; breadth unchanged
-[CHANGED] Inventory file still lists ONLY `ozoon.com`/`www.ozoon.com`; `ozoon.eu` + `services.ozoon.eu` confirmed in-scope per scope.yml but ABSENT from inventory
-[CHANGED] Zero authenticated probes executed against core platform across all probe rounds; all probes target only `www.ozoon.com` marketing edge
-[CHANGED] Three FINAL hypotheses remain AUTH_HELPED and unprobed: BOLA UUID (65), Mass-assignment (60), Mock-2FA header (55) — all gated on signup gateway at `www.ozoon.eu/api/v1/signup`
+## 2026-09-19 11:39:43 UTC [target] (model nemotron3)
 [PRIO] https://services.ozoon.eu/services/{wallet-gateway,transaction-group,referral,player-verification,player-messages}/v1/profiles/{uuid}/...,9.15,attack_surface=10,business_value=10,tech_exposure=9,gate_ease=6,cloud_surface=8,freshness=8
 [PRIO] https://services.ozoon.eu/services/player-verification/v1/profiles/{sid}/verifications/verify,8.75,attack_surface=9,business_value=10,tech_exposure=8,gate_ease=6,cloud_surface=8,freshness=8
 [PRIO] https://www.ozoon.eu/api/v1/signup,8.40,attack_surface=9,business_value=9,tech_exposure=8,gate_ease=6,cloud_surface=7,freshness=9
@@ -27,7 +17,7 @@ testability: AUTH_HELPED
 class: BUSLOGIC
 asset: https://www.ozoon.eu/api/v1/signup
 confidence: 60
-reasoning: reCAPTCHA v3 enforced ONLY on login action; signup and signup_from_invitation are captcha-free per public config. Static referral token refSiteToken (32-hex) with affiliate.check-referring-site.enabled:["false"] → referral/site field unverified. Signup accepts client-controlled attributes and address sub-objects. Profile update form schema (/services/site-config/v1/countries/US|CA/profileupdateform) returns whitelisted fields: email, phone, addressLine, postalCode, language, timeZone, oddsFormat, subscriptionChannels — baseline for mass-assignment comparison. WAF now staged on mutating signup path (GET→WAF page, POST empty→METHOD NOT ALLOWED).
+reasoning: reCAPTCHA v3 enforced ONLY on login action; signup and signup
 evidence_needed: On self-created account, POST signup adding extra keys (attributes.role, vip_level, is_verified, balance, currency override) → observe persistence vs rejection over control signup; test referral token impersonation via static refSiteToken
 verify_steps: 1. Register control via POST /api/v1/signup (no captcha). 2. Register test adding role/vip/balance fields — compare response/body. 3. Invitation signup POST with static refSiteToken + unverified referral email. 4. Test country override to restricted territory (softblock bypass).
 impact: Medium-High — referral bonus fraud, territory/regulatory softblock bypass, possible privilege elevation on mass-assigned role/vip
@@ -64,4 +54,4 @@ testability: AUTH_HELPED
 [LEARN] REJECTED OTHER @ services.ozoon.eu: /services/*/v{2,3}/api-docs and /actuator* → gateway 404; no anonymous schema/actuator leak
 [LEARN] REJECTED OTHER @ games.glovefrog.plus / api.wicket-keeper.com: third-party endpoints; Ozoon ownership unconfirmed
 [LEARN] REJECTED SSRF @ www.ozoon.com: triage 06:38 verdict INVALID — ?url=?view=?page= all 200 len=? catch-all shared-edge responses, no collab callback; PWS/wnacloud behavior indistinguishable from catch-all, removing the PWS-edge SSRF hypothesis from active consideration
-[RISK] ozoon-sportsbook-casino: 81/100 — Core gambling platform (ozoon.eu) with micro-frontend API (services.ozoon.eu) fully mapped via public SDK/config. Three critical vectors with clear AUTH_HELPED test paths: (1) BOLA on UUID-keyed profile endpoints across 5 services (confidence 65), (2) Registration/referral mass assignment on captcha-free signup with unverified static referral token (confidence 60), (3) 2FA/KYC bypass via client-controlled X-MOCK-2FA-VERIFICATION header honored by allow-permanent-skip config (confidence 55). Zero authenticated probes executed; all prior probes target only www.ozoon.com marketing edge. Real-money gaming with crypto/Interac payments, F5 ASM WAF, reCAPTCHA v3 (login-only), 2FA present but backend binding correctness and mock-header handling unverified. High business value + high attack surface + low gate ease (public registration, public API config) = elevated risk. New Supabase-backed promo app (nfl-pickem-league) adds RLS-dependent data surface. Inventory file still missing ozoon.eu/services.ozoon.eu — scope gap.
+[RISK] ozoon-sportsbook-casino: 81/100 — Core gambling platform (ozoon.eu) with micro-frontend API (services.ozoon.eu) fully mapped via public SDK/config. Three critical vectors with clear AUTH_HELPED test paths: (1) BOLA
