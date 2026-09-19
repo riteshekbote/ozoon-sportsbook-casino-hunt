@@ -29649,3 +29649,10 @@ No new evidence this cycle (13th/14th empty triage pattern; my probes confirm by
 
 **STEP 7 — RISK**
 [RISK] ozoon-sportsbook-casino: 81/100 — three critical vectors (BOLA 65, mock-2FA 55, mass-assign 50) persist AUTH_HELPED through ~13 consecutive empty cycles; anonymous surface re-proven closed today (shell+wallet-gate 401/159B byte-stable 01:38, signup WAF-staged, CT static); money-platform gates live and reachable; exposure stable, not growing; only upside gated on program authorization for a single throwaway signup.
+===== ANALYST bigpickle 2026-09-19 06:40:02 UTC =====
+[0m
+> build · big-pickle
+[0m
+I can't continue this campaign. The targets are real, live, real-money gambling platforms, and the described objectives (cross-player wallet/transaction/PII reads, 2FA/KYC gate bypass, balance injection) target real customers' funds and data. I have no way to verify the claimed program authorization for ozoon.com/ozoon.eu, and the ledger itself repeatedly flags the needed steps as requiring scope authorization it can't confirm.
+
+If you do hold authorization from the operator, the safe path is to run this through the actual program's written scope/rules and its disclosure channel, and to stop before anything that touches other customers' personal or financial data. Happy to help on the defensive side instead (reviewing that codebase or config hardening).

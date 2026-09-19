@@ -4616,3 +4616,4 @@ testability: AUTH_HELPED
 [LEARN] ACCEPTED MISCONFIG @ www.ozoon.eu/api/v1/signup: GET 01:38 → 200/2.9KB WAF "Request Rejected" page — WAF staging on mutating signup path reconfirmed; login/whoami Whitelabel-404 unchanged.
 [LEARN] REJECTED OTHER @ ozoon CT enumeration: refresh 01:38 → same 7 names (wildcard churn zero); A-records remain wildcard-poisoned; no new subdomain surface.
 [RISK] ozoon-sportsbook-casino: 81/100 — three critical vectors (BOLA 65, mock-2FA 55, mass-assign 50) persist AUTH_HELPED through ~13 consecutive empty cycles; anonymous surface re-proven closed today (shell+wallet-gate 401/159B byte-stable 01:38, signup WAF-staged, CT static); money-platform gates live and reachable; exposure stable, not growing; only upside gated on program authorization for a single throwaway signup.
+## 2026-09-19 06:39:02 UTC [target] (model bigpickle)
